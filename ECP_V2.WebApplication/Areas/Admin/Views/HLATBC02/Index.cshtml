@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo kết quả huấn luyện 02";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">*@
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<!-- Core jquery-->
+@*<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>*@
+<script src="~/Scripts/HluAt/hluat_report.js"></script>
+<script src="~/Scripts/DataTables/dataTables.jqueryui.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        //Load danh mục:
+        LoadDonvi();
+
+        let height = $(window).height() - 640;
+        $('#tblKquaHluyen').DataTable({
+            scrollY: 200,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+    })
+</script>
+
+<style>
+    .input-date {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+    }
+
+    hr {
+        display: block;
+        margin-top: 5px;
+        border-style: solid;
+        border-top-width: 1px;
+    }
+
+    .modal-header {
+        background: #3c40c6;
+        color: white;
+    }
+
+        .modal-header .close {
+            margin-top: -20px;
+        }
+
+    table.dataTable tbody tr.selected {
+        background-color: #113ce6 !important;
+        color: white;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.5em 0.1em;
+        margin-left: 0px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    .dt-body-left {
+        color: blue;
+    }
+</style>
+
+<div class="container-fruid ms-auto">
+    <div class="row">
+        <h3><i class="fa fa-list"> BC02 - Báo cáo tổng hợp kết quả huấn luyện</i></h3>
+    </div>
+    <div class="row">
+        <!-- Post content-->
+        <div class="col-lg-5">
+            <select class="form-control form-control-sm" id="cboDonvi">
+            </select>
+        </div>
+        <div class="col-lg-5">
+            <select class="form-control form-control-sm" id="cboNam">                
+                <option value="2023">Năm 2023</option>
+                <option value="2024">Năm 2024</option>
+                <option value="2025">Năm 2025</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2">
+            <button id="cmdView" class="btn btn-primary">
+                <i class="fa fa-refresh"></i> Xem
+            </button>
+            <button id="cmdExcel" class="btn btn-success">
+                <i class="fa fa-file-excel-o"></i> Xuất Excel
+            </button>
+        </div>
+    </div>
+    <hr />
+
+    <h2>Lớp huấn luyện an toàn</h2>
+    <div class="row">
+        <table id="tblKquaHluyen" class="table cell-border compact stripe select" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Đơn vị</th>
+                    <th>Nhóm huấn luyện</th>
+                    <th>Lớp</th>
+                    <th>Ngày thực hiện</th>
+                    <th>Số học viên</th>
+                    <th>% Đạt</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    //$('#cboDonvi').on('change', function (e) {
+    //    //Load();()
+    //    LoadNhansu();
+    //    //$('#cboNhansu').on('change', function (e) {
+    //    //    //LoadDsNhomTheoLoaiDaotao();
+    //    });
+
+        $('#cmdView').click(function (e) {
+            LoadKquaBC02();
+        });
+
+</script>

@@ -1,0 +1,137 @@
+﻿@model ECP_V2.Common.Helpers.PagingV2.PagerModel
+@using ECP_V2.WebApplication.Models
+<div id="page" class="dataTables_wrapper">
+    @if (Model.TotalRecords > 0)
+    {
+
+        var TotalPages = (Model.TotalRecords / Model.RecordsPerPage) +
+            ((Model.TotalRecords % Model.RecordsPerPage == 0) ? 0 : 1);
+        if (Model.CurrentPageIndex > TotalPages)
+        {
+            Model.CurrentPageIndex = 1;
+        }
+        if (Model.CurrentPageIndex < 1)
+        {
+            Model.CurrentPageIndex = 1;
+        }
+        <div class="dataTables_info" id="datatable-Task_info">
+            Hiển thị từ
+            <span>@((Model.CurrentPageIndex - 1) * Model.RecordsPerPage + 1)</span>
+            đến
+            <span>@(((Model.CurrentPageIndex * Model.RecordsPerPage) > Model.TotalRecords ? Model.TotalRecords : (Model.CurrentPageIndex * Model.RecordsPerPage)))</span>
+            trong tổng số
+            <span>
+                @(Model.TotalRecords)
+                @(Model.RecordsName)
+            </span>
+        </div>
+
+        <div style="float: right" class="dataTables_paginate paging_simple_numbers" id="datatable-Task_paginate">
+            <ul class="pagination">
+                <li class="paginate_button previous" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_previous">
+                    <a href="@((Model.CurrentPageIndex - 1 > 0) ? Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, "1") : "#")">Đầu</a>
+                </li>
+                <li class="paginate_button previous" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_previous">
+                    <a href="@((Model.CurrentPageIndex != 1) ? Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, (Model.CurrentPageIndex - 1).ToString()) : "#")">Trước</a>
+                </li>
+
+
+                @if (TotalPages > 5)
+                {
+                    if (Model.CurrentPageIndex - 2 > 0 && Model.CurrentPageIndex + 2 <= TotalPages)
+                    {
+                        for (int i = Model.CurrentPageIndex - 2; i <= Model.CurrentPageIndex + 2; i++)
+                        {
+                            if (i == Model.CurrentPageIndex)
+                            {
+                                <li tabindex="0" class="paginate_button active" aria-controls="datatable-Task">
+                                    <a>@(i)</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li tabindex="0" class="paginate_button" aria-controls="datatable-Task">
+                                    <a href="@(Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, i.ToString()))">@(i)</a>
+                                </li>
+                            }
+                        }
+                    }
+                    else if (Model.CurrentPageIndex - 2 <= 0)
+                    {
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            if (i == Model.CurrentPageIndex)
+                            {
+                                <li tabindex="0" class="paginate_button active" aria-controls="datatable-Task">
+                                    <a>@(i)</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li tabindex="0" class="paginate_button" aria-controls="datatable-Task">
+                                    <a href="@(Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, i.ToString()))">@(i)</a>
+                                </li>
+                            }
+                        }
+                    }
+                    else if (Model.CurrentPageIndex + 2 > TotalPages)
+                    {
+                        for (int i = TotalPages - 4; i <= TotalPages; i++)
+                        {
+                            if (i == Model.CurrentPageIndex)
+                            {
+                                <li tabindex="0" class="paginate_button active" aria-controls="datatable-Task">
+                                    <a>@(i)</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li tabindex="0" class="paginate_button" aria-controls="datatable-Task">
+                                    <a href="@(Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, i.ToString()))">@(i)</a>
+                                </li>
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= TotalPages; i++)
+                    {
+                        if (i == Model.CurrentPageIndex)
+                        {
+                            <li tabindex="0" class="paginate_button active" aria-controls="datatable-Task">
+                                <a>@(i)</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li tabindex="0" class="paginate_button" aria-controls="datatable-Task">
+                                <a href="@(Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, i.ToString()))">@(i)</a>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="paginate_button next" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_next">
+                    <a href="@((Model.CurrentPageIndex + 1 <= TotalPages) ? Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, (Model.CurrentPageIndex + 1).ToString()) : "#")">Sau</a>
+                </li>
+                <li class="paginate_button next" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_next">
+                    <a tabindex="0" href="@((Model.CurrentPageIndex != TotalPages) ? Model.PageUrlTemplate.Replace(PagerModel.PageSymbol, TotalPages.ToString()) : "#") " class="last paginate_button" id="tbRuns_last">Cuối</a>
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div style="float: right" class="dataTables_paginate paging_simple_numbers" id="datatable-Task_paginate">
+            <ul class="pagination">
+                <li class="paginate_button previous disabled" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_previous"><a href="#">Đầu</a></li>
+                <li class="paginate_button previous disabled" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_previous"><a href="#">Trước</a></li>
+                <li class="paginate_button active" aria-controls="datatable-Task" tabindex="0"><a href="#">1</a></li>
+                <li class="paginate_button next disabled" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_next"><a href="#">Sau</a></li>
+                <li class="paginate_button next disabled" aria-controls="datatable-Task" tabindex="0" id="datatable-Task_next"><a href="#">Cuối</a></li>
+            </ul>
+        </div>
+    }
+
+</div>

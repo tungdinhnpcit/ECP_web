@@ -1,0 +1,44 @@
+﻿<div id="modal_addbbks" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title" id="titBBKS">Thêm mới biên bản khảo sát hiện trường</h4>
+            </div>
+            <div class="modal-body">
+                <span> Tên biên bản</span>
+                <input type="text" id="txtten" />
+                <button id="btnAdd" onclick="model_bbks.addbienban()">Thêm</button>
+                <button id="btnEdit" onclick="model_bbks.editbienban()">Lưu</button>                
+                <input type="hidden" id="id_bbks" name="id_bbks" value="0">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal_vitriBBKS" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm vị trí vào biên bản</h4>
+            </div>
+            <div class="modal-body">
+                <!--<p>Mời bạn gõ vị trí cần thêm vào biên bản</p>-->
+                <div class="row">
+                    <div class="col-md-9">
+                        <input type="text" class="form-control input-tag" name="tags" id="txttagread" placeholder="Nhập vị trí hoặc chọn liên kết từ PMIS" />
+                    </div>              
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary">Chọn vị trí PMIS</button>
+                    </div>
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="model_bbks.addvitri()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</div>

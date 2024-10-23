@@ -1,0 +1,20 @@
+﻿@model List<ECP_V2.DataAccess.tblNhanVien>
+@{
+    Layout = null;
+}
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <li style="cursor:pointer;" id="li_@item.Id" onclick="javascript:register_popup('chatbox_@item.Id', '@item.TenNhanVien');">
+            <figure class="profile-picture">
+                <img src="@(!string.IsNullOrEmpty(item.UrlImage)?item.UrlImage:"/Content/Customs/icon-user-default.png")" alt="@item.TenNhanVien" class="img-circle">
+            </figure>
+            <div class="profile-info">
+                <span class="name">@item.TenNhanVien</span>
+            </div>
+        </li>
+
+    }
+}

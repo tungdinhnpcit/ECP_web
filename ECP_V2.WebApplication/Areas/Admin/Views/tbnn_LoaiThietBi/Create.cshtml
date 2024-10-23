@@ -1,0 +1,26 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.tbnn_LoaiThietBiViewModels
+@{
+    Layout = null;
+}
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+<style>
+    select {
+        height: 40px;
+        padding: 0;
+    }
+</style>
+<div style="padding:10px">
+    @using (Html.BeginForm("Create", "tbnn_LoaiThietBi", FormMethod.Post, new { id = "frmCreate", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+    {
+
+        <div class="row">
+            <div class="col-md-12">
+                <label class="control-label" for="TenLoai">Tên TBNN</label>
+                @Html.TextBoxFor(model => model.TenLoai, new { @class = "form-control", @placeholder = "Nhập tên thiết bị nghiêm ngặt ..." })
+                @Html.ValidationMessageFor(model => model.TenLoai)
+            </div>
+        </div>
+    }
+</div>
+

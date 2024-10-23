@@ -1,0 +1,179 @@
+﻿@model ECP_V2.Common.Helpers.PagedData<ECP_V2.WebApplication.Models.NhanVienModel>
+
+<script type="text/javascript">
+    var pageSize = 10;
+    var currentPage = 1;
+    var currentSearh = $('#txtSearch').val();
+    var curentSort = $("#btnSortName").data("sort");
+
+    $(function () {
+
+        
+
+        /*
+        Modal Dismiss
+        */
+        $(document).on('click', '#modal-dismiss', function (e) {
+            e.preventDefault();
+            $.magnificPopup.close();
+        });
+
+
+        /*
+        Modal Confirm
+        */
+        $(window).keypress(function (e) {
+            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                //$(".ui-dialog:visible").find('.ui-dialog-buttonpane').find('button:first').click();
+                $("#modal-confirm").click();
+                return false;
+            }
+        });
+    });
+
+    function ShowMsg(title, message) {
+        new PNotify({
+            title: title,
+            text: message,
+            type: 'success'
+        });   
+    };
+
+    function txtKeyWordAdd_onKeyPress(e, el) {
+        var key;
+        //var page = parseInt($(".page-number-Current").html());
+        //var sort = $("#btnSortName").data("sort");
+        if (window.event)
+            key = window.event.keyCode;     //IE
+        else
+            key = e.which;     //firefox
+
+        if (key == 13) {
+            GetListTaiKhoanAdd(el.value, $('#drlPhongBanAll').val(), $('#drlDonViAll').val(), $('input[name="ChiTietQuyen"]:checked').val());
+        }
+    }
+
+    function txtKeyWordAdd_onkeyup(e, el) {
+        //var page = parseInt($(".page-number-Current").html());
+        //var sort = $("#btnSortName").data("sort");
+        if (el.value == '')
+            GetListTaiKhoanAdd(el.value, $('#drlPhongBanAll').val(), $('#drlDonViAll').val(), $('input[name="ChiTietQuyen"]:checked').val());
+    }
+
+    function GetListTaiKhoanAdd(filter, phongBanId, donViId, roleName) {
+        //loading('Đang tải dữ liệu...', 1);
+        //$("#preloader").unbind("click");
+        //$('#preloader').click(function () {
+        //    unloading();
+        //})
+
+        var scriptUrl = "/Admin/UserPermission/ListTaiKhoanAdd?keyword=" + filter
+            + "&PhongBanId=" + (phongBanId || 0)
+            + "&DonViId=" + donViId + "&roleName=" + roleName;
+
+        $("#taikhoan-add-container").html("");
+
+        $.ajax({
+            url: scriptUrl,
+            type: 'GET',
+            dataType: 'html',
+            //async: false,
+            success: function (data) {
+                $("#taikhoan-add-container").html(data);
+                //unloading();
+            }
+        });
+    }
+
+    //function loading(name, overlay) {
+
+    //    $('#ndContent').append('<div id="overlay"></div><div id="preloader" style="height: 40px;">' + name + '..</div>');
+
+    //    if (overlay == 1) {
+    //        $('#overlay').css('opacity', 0.4).fadeIn(400, function () { $('#preloader').fadeIn(400); });
+    //        return false;
+    //    }
+    //    $('#preloader').fadeIn();
+    //}
+    //function unloading() {
+    //    $('#preloader').fadeOut(400, function () { $('#overlay').fadeOut(); $(this).remove(); })
+    //}
+
+</script>
+
+@if (Model != null && Model.Data.Count > 0)
+{
+    <table cellspacing="0" id="dataTable" class="table table-hover table-nomargin table-bordered dataTable no-footer" role="grid" aria-describedby="datatable-default_info" style="width: 100%;">
+        <thead>
+            <tr>
+                <th width="50px">
+                    STT
+                </th>
+                <th>
+                    Tên đăng nhập
+                </th>
+                <th>
+                    Tên người dùng
+                </th>
+                <th>
+                    Điện thoại
+                </th>
+                <th class="text-left">
+                    Email
+                </th>
+                
+                <th width="100px" class="text-center">
+                    <a href="javascript:;" class="btn btn-primary mark-all-checked" onclick="markAllTaiKhoanCheck(this)">Chọn tất cả</a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{int rowNo = 0;}
+            @foreach (var item in Model.Data)
+                {
+                <tr>
+                    <td>
+                        <span class="Spanid" style="display: none;">@item.Id</span>
+                        <span class="spanName">
+                            @(rowNo += 1)
+                        </span>
+                    </td>
+                    <td class="text-left">
+                        <span>@item.UserName</span>
+                    </td>
+                    <td>
+                        @if (!String.IsNullOrEmpty(item.TenNhanVien))
+                        {
+                            <span>@item.TenNhanVien</span>
+                        }
+                        else
+                        {
+                            <span>Chưa có dữ liệu.</span>
+                        }
+                    </td>
+
+                    <td class="text-left">
+                        <span>@item.SoDT</span>
+                    </td>
+                    <td class="text-left">
+                        <span>@item.Email</span>
+                    </td>
+                    
+                    <td class="text-center">
+                        <input type="checkbox" name="selected" id="txtSelected" class="chkboxTaiKhoan" value="@item.UserName" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="clear">
+    </div>
+    
+                }
+                else
+                {
+                    <h1 class="text-danger text-center">
+                        Chưa có dữ liệu!
+                    </h1>
+                }

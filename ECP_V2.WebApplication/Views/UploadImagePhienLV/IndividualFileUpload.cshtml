@@ -1,0 +1,36 @@
+﻿@model ECP_V2.DataAccess.tblImage
+
+@if (Model != null)
+{
+    var fileInfo = new FileInfo(Server.MapPath(Model.Url));
+
+    <tr class="template-download fade in" data-img="@Model.Id">
+        <td>
+            <span class="preview">
+
+                <a href="@Model.Url" title="@Path.GetFileName(Server.MapPath(Model.Url))" download="@Path.GetFileName(Server.MapPath(Model.Url))" data-gallery=""><img src="@Model.Url" width="60" height="40"></a>
+
+            </span>
+        </td>
+        <td>
+            <p class="name">
+
+                <a href="@Model.Url" title="@Path.GetFileName(Server.MapPath(Model.Url))" download="@Path.GetFileName(Server.MapPath(Model.Url))" data-gallery="">@Path.GetFileName(Server.MapPath(Model.Url))</a>
+
+            </p>
+
+        </td>
+        <td>
+            <span class="size">@fileInfo.Length Bytes</span>
+        </td>
+        <td>
+
+            <button type="button" class="btn btn-danger delete" data-url="@Model.Url" data-img="@Model.Id" id="btnDeleteImage">
+                <i class="glyphicon glyphicon-trash"></i>
+                <span>Xóa</span>
+            </button>
+            @*<input type="checkbox" name="delete" value="1" class="toggle">*@
+
+        </td>
+    </tr>
+}

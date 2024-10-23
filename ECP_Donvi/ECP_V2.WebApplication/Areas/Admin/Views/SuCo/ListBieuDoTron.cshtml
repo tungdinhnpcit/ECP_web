@@ -1,0 +1,849 @@
+﻿@model List<ECP_V2.Business.Repository.BieuDoTronSuCoModel>
+
+
+<div class="row" style="padding-left:20px;padding-right:20px">
+    <div class="col-md-3" style="text-align:left">
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: #96ed95;text-decoration: none;cursor:default" onclick="">
+                    Tổng số Điện áp 0.4 kV : @string.Format("{0:n0}", Model.Sum(o => o.SLCap04KV))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLCap04KV) * 100) /
+                            (decimal)(Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: #c89f4a;text-decoration: none;cursor:default" onclick="">
+                    Tổng số Điện áp 6 kV : @string.Format("{0:n0}", Model.Sum(o => o.SLCap6KV))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLCap6KV) * 100) /
+                            (decimal)(Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: #F6BB42;text-decoration: none;cursor:default" onclick="">
+                    Tổng số Điện áp 10 kV : @string.Format("{0:n0}", Model.Sum(o => o.SLCap10KV))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLCap10KV) * 100) /
+                            (decimal)(Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: #f26d30;text-decoration: none;cursor:default" onclick="">
+                    Tổng số Điện áp 22 kV : @string.Format("{0:n0}", Model.Sum(o => o.SLCap22KV))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLCap22KV) * 100) /
+                            (decimal)(Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: #ac2925;text-decoration: none;cursor:default" onclick="">
+                    Tổng số Điện áp 35 kV : @string.Format("{0:n0}", Model.Sum(o => o.SLCap35KV))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLCap35KV) * 100) /
+                            (decimal)(Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: #dd2a2a;text-decoration: none;cursor:default" onclick="">
+                    Tổng số Điện áp 110 kV : @string.Format("{0:n0}", Model.Sum(o => o.SLCap110KV))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLCap110KV) * 100) /
+                            (decimal)(Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color: black;text-decoration: none;cursor:default" onclick="">
+                    Tổng số : @string.Format("{0:n0}", Model.Sum(o => o.SLCap04KV) + Model.Sum(o => o.SLCap6KV) + Model.Sum(o => o.SLCap10KV) + Model.Sum(o => o.SLCap22KV) + Model.Sum(o => o.SLCap35KV) + Model.Sum(o => o.SLCap110KV))
+                </a>
+            </strong>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align:left">
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Thời gian xuất hiện --> bắt đầu khắc phục : @string.Format("{0:#,0.##}", Model.Sum(o => o.XuatHienBatDauKhacPhuc)) phút
+                    (
+                    @string.Format("{0:#,0.##}",
+                            Model.Sum(o => o.TongThoiGianMatDien) == 0 ? 0 :
+                            (Model.Sum(o => o.XuatHienBatDauKhacPhuc) * 100) /
+                            (decimal)Model.Sum(o => o.TongThoiGianMatDien)
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Thời gian bắt đầu khắc phục --> khắc phục xong : @string.Format("{0:#,0.##}", Model.Sum(o => o.BatDauDenKhacPhucXong)) phút
+                    (
+                    @string.Format("{0:#,0.##}",
+                            Model.Sum(o => o.TongThoiGianMatDien) == 0 ? 0 :
+                            (Model.Sum(o => o.BatDauDenKhacPhucXong) * 100) /
+                            (decimal)Model.Sum(o => o.TongThoiGianMatDien)
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Thời gian khắc phục xong đến khôi phục đóng điện : @string.Format("{0:#,0.##}", Model.Sum(o => o.KhacPhucXongDenKhoiPhuc)) phút
+                    (
+                    @string.Format("{0:#,0.##}",
+                            Model.Sum(o => o.TongThoiGianMatDien) == 0 ? 0 :
+                            (Model.Sum(o => o.KhacPhucXongDenKhoiPhuc) * 100) /
+                            (decimal)Model.Sum(o => o.TongThoiGianMatDien)
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="color:black;text-decoration: none;cursor:default" onclick="">
+                    Tổng thời gian mất điện do sự cố : @string.Format("{0:#,0.##}", Model.Sum(o => o.TongThoiGianMatDien)) phút
+                </a>
+            </strong>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align:left">
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng loại sự cố thoáng qua : @string.Format("{0:n0}", Model.Sum(o => o.SLThoangQua))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLThoangQua) * 100) /
+                            (decimal)(Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng loại sự cố kéo dài : @string.Format("{0:n0}", Model.Sum(o => o.SLKeoDai))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLKeoDai) * 100) /
+                            (decimal)(Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        @*<p style="font-size:18px">
+                <strong>
+                    <a style="text-decoration: none;cursor:default" onclick="">
+                        Tổng loại không xác định : @string.Format("{0:n0}", Model.Sum(o => o.SLLoaiKhongXacDinh))
+                        (
+                        @string.Format("{0:#,0.##}",
+                                (Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh)) == 0 ? 0 :
+                                (Model.Sum(o => o.SLLoaiKhongXacDinh) * 100) /
+                                (decimal)(Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh))
+                            )
+                        %
+                        )
+                    </a>
+                </strong>
+            </p>*@
+        <p style="font-size:18px">
+            <strong>
+                <a style="color:black;text-decoration: none;cursor:default" onclick="">
+                    Tổng số : @string.Format("{0:n0}", (Model.Sum(o => o.SLThoangQua) + Model.Sum(o => o.SLKeoDai) + Model.Sum(o => o.SLLoaiKhongXacDinh)))
+                </a>
+            </strong>
+        </p>
+
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng loại sự cố theo nguyên nhân khách quan : @string.Format("{0:n0}", Model.Sum(o => o.SLKhachQuan))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLKhachQuan) * 100) /
+                            (decimal)(Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng loại sự cố theo nguyên nhân chủ quan : @string.Format("{0:n0}", Model.Sum(o => o.SLChuQuan))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLChuQuan) * 100) /
+                            (decimal)(Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh))
+                    )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        @*<p style="font-size:18px">
+                <strong>
+                    <a style="text-decoration: none;cursor:default" onclick="">
+                        Tổng loại sự cố theo nguyên nhân không xác định : @string.Format("{0:n0}", Model.Sum(o => o.SLNguyenNhanKhongXacDinh))
+                        (
+                        @string.Format("{0:#,0.##}",
+                                (Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh)) == 0 ? 0 :
+                                (Model.Sum(o => o.SLNguyenNhanKhongXacDinh) * 100) /
+                                (decimal)(Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh))
+                            )
+                        %
+                        )
+                    </a>
+                </strong>
+            </p>*@
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default;color:black" onclick="">
+                    Tổng số : @string.Format("{0:n0}", Model.Sum(o => o.SLKhachQuan) + Model.Sum(o => o.SLChuQuan) + Model.Sum(o => o.SLNguyenNhanKhongXacDinh))
+                </a>
+            </strong>
+        </p>
+    </div>
+    <div class="col-md-3" style="text-align:left">
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng tính chất Hành Lang : @string.Format("{0:n0}", Model.Sum(o => o.SLHanhLang))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLHanhLang) * 100) /
+                            (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng tính chất Thiết bị (tủ, atm...) : @string.Format("{0:n0}", Model.Sum(o => o.SLThietBi))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLThietBi) * 100) /
+                            (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng tính chất Máy biến áp : @string.Format("{0:n0}", Model.Sum(o => o.SLMayBienAp))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLMayBienAp) * 100) /
+                            (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng tính chất Đường dây (sứ, đứt dây...) : @string.Format("{0:n0}", Model.Sum(o => o.SLDuongDay))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLDuongDay) * 100) /
+                            (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng tính chất chưa xác định : @string.Format("{0:n0}", Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLTinhChatKhongXacDinh))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLChuaXacDinh) * 100) /
+                            (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng tính chất thiên tai : @string.Format("{0:n0}", Model.Sum(o => o.SLThienTai))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLThienTai) * 100) /
+                            (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                        )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        @*<p style="font-size:18px">
+                <strong>
+                    <a style="text-decoration: none;cursor:default" onclick="">
+                        Tổng tính chất không xác định : @string.Format("{0:n0}", Model.Sum(o => o.SLTinhChatKhongXacDinh))
+                        (
+                        @string.Format("{0:#,0.##}",
+                                (Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai)) == 0 ? 0 :
+                                (Model.Sum(o => o.SLTinhChatKhongXacDinh) * 100) /
+                                (decimal)(Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                            )
+                        %
+                        )
+                    </a>
+                </strong>
+            </p>*@
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default;color:black" onclick="">
+                    Tổng số : @string.Format("{0:n0}", Model.Sum(o => o.SLHanhLang) + Model.Sum(o => o.SLThietBi) + Model.Sum(o => o.SLMayBienAp) + Model.Sum(o => o.SLDuongDay) + Model.Sum(o => o.SLTinhChatKhongXacDinh) + Model.Sum(o => o.SLChuaXacDinh) + Model.Sum(o => o.SLThienTai))
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng loại sự cố theo tài sản điện lực : @string.Format("{0:n0}", Model.Sum(o => o.SLTSDienLuc))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLTSDienLuc) + Model.Sum(o => o.SLTSKhachHang)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLTSDienLuc) * 100) /
+                            (decimal)(Model.Sum(o => o.SLTSDienLuc) + Model.Sum(o => o.SLTSKhachHang))
+                    )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default" onclick="">
+                    Tổng loại sự cố theo tài sản khách hàng : @string.Format("{0:n0}", Model.Sum(o => o.SLTSKhachHang))
+                    (
+                    @string.Format("{0:#,0.##}",
+                            (Model.Sum(o => o.SLTSDienLuc) + Model.Sum(o => o.SLTSKhachHang)) == 0 ? 0 :
+                            (Model.Sum(o => o.SLTSKhachHang) * 100) /
+                            (decimal)(Model.Sum(o => o.SLTSDienLuc) + Model.Sum(o => o.SLTSKhachHang))
+                    )
+                    %
+                    )
+                </a>
+            </strong>
+        </p>
+        <p style="font-size:18px">
+            <strong>
+                <a style="text-decoration: none;cursor:default;color:black" onclick="">
+                    Tổng số : @string.Format("{0:n0}", Model.Sum(o => o.SLTSDienLuc) + Model.Sum(o => o.SLTSKhachHang))
+                </a>
+            </strong>
+        </p>
+    </div>
+</div>
+
+<div class="row" style="padding-left:20px;padding-right:20px">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3" style="border: 1px solid #CFD9DB;height:850px">
+            <h4 style="text-align:center"><strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">Đơn vị: @Html.Raw(item.Id)</a></strong></h4>
+            <div id="chart-@Html.Raw(item.Id)" class="chart chart-md" style="cursor:zoom-in"></div>
+            @if (ViewBag.LoaiListTieuChi == "cda")
+            {
+                <h4 style="text-align:center"><strong><a style="color:black;cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">Tổng số : @string.Format("{0:n0}", item.SLCap04KV + item.SLCap6KV + item.SLCap10KV + item.SLCap22KV + item.SLCap35KV + item.SLCap110KV)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại (thoáng qua/kéo dài):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','2','','','')">@string.Format("{0:n0}", item.SLThoangQua)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','3','','','')">@string.Format("{0:n0}", item.SLKeoDai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','-1','','','')">@string.Format("{0:n0}", item.SLLoaiKhongXacDinh)</a></strong>*@
+                </h4>
+                <h4 style="text-align:left">Sự cố theo tài sản (điện lực/khách hàng): <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','dienluc','','')">@string.Format("{0:n0}", item.SLTSDienLuc)</a></strong>/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','khachhang','','')">@string.Format("{0:n0}", item.SLTSKhachHang)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo nguyên nhân (khách quan/chủ quan):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','6','')">@string.Format("{0:n0}", item.SLKhachQuan)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','7','')">@string.Format("{0:n0}", item.SLChuQuan)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','-1','')">@string.Format("{0:n0}", item.SLNguyenNhanKhongXacDinh)</a></strong>*@
+                </h4>
+                <h4 style="text-align:left">
+                    Sự cố theo tính chất (Hành Lang/Thiết bị/Máy biến áp/Đường dây/Chưa xác định/Thiên tai):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','4')">@string.Format("{0:n0}", item.SLHanhLang)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','5')">@string.Format("{0:n0}", item.SLThietBi)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','8')">@string.Format("{0:n0}", item.SLMayBienAp)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','9')">@string.Format("{0:n0}", item.SLDuongDay)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','10')">@string.Format("{0:n0}", item.SLChuaXacDinh + item.SLTinhChatKhongXacDinh)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','11')">@string.Format("{0:n0}", item.SLThienTai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','-1')">@string.Format("{0:n0}", item.SLTinhChatKhongXacDinh)</a></strong>*@
+                </h4>
+
+
+            }
+            else if (ViewBag.LoaiListTieuChi == "lsc")
+            {
+                <h4 style="text-align:center"><strong><a style="color:black;cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">Tổng số : @string.Format("{0:n0}", item.SLThoangQua + item.SLKeoDai)</a></strong></h4>
+
+                <h4 style="text-align:left">
+                    Sự cố theo loại điện áp (0.4 kV/6 kV/10 kV/22 kV/35 kV/110 kV):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','0.4','','','','')">@string.Format("{0:n0}", item.SLCap04KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','6','','','','')">@string.Format("{0:n0}", item.SLCap6KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','10','','','','')">@string.Format("{0:n0}", item.SLCap10KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','22','','','','')">@string.Format("{0:n0}", item.SLCap22KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','35','','','','')">@string.Format("{0:n0}", item.SLCap35KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','110','','','','')">@string.Format("{0:n0}", item.SLCap110KV)</a></strong>
+                </h4>
+                <h4 style="text-align:left">Sự cố theo tài sản (điện lực/khách hàng): <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','dienluc','','')">@string.Format("{0:n0}", item.SLTSDienLuc)</a></strong>/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','khachhang','','')">@string.Format("{0:n0}", item.SLTSKhachHang)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo nguyên nhân (khách quan/chủ quan):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','6','')">@string.Format("{0:n0}", item.SLKhachQuan)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','7','')">@string.Format("{0:n0}", item.SLChuQuan)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','-1','')">@string.Format("{0:n0}", item.SLNguyenNhanKhongXacDinh)</a></strong>*@
+                </h4>
+
+                <h4 style="text-align:left">
+                    Sự cố theo tính chất (Hành Lang/Thiết bị/Máy biến áp/Đường dây/Chưa xác định/Thiên tai):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','4')">@string.Format("{0:n0}", item.SLHanhLang)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','5')">@string.Format("{0:n0}", item.SLThietBi)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','8')">@string.Format("{0:n0}", item.SLMayBienAp)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','9')">@string.Format("{0:n0}", item.SLDuongDay)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','10')">@string.Format("{0:n0}", item.SLChuaXacDinh + item.SLTinhChatKhongXacDinh)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','11')">@string.Format("{0:n0}", item.SLThienTai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','-1')">@string.Format("{0:n0}", item.SLTinhChatKhongXacDinh)</a></strong>*@
+                </h4>
+            }
+            else if (ViewBag.LoaiListTieuChi == "lts")
+            {
+                <h4 style="text-align:center"><strong><a style="color:black;cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">Tổng số : @string.Format("{0:n0}", item.SLTSDienLuc + item.SLTSKhachHang)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại điện áp (0.4 kV/6 kV/10 kV/22 kV/35 kV/110 kV):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','0.4','','','','')">@string.Format("{0:n0}", item.SLCap04KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','6','','','','')">@string.Format("{0:n0}", item.SLCap6KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','10','','','','')">@string.Format("{0:n0}", item.SLCap10KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','22','','','','')">@string.Format("{0:n0}", item.SLCap22KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','35','','','','')">@string.Format("{0:n0}", item.SLCap35KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','110','','','','')">@string.Format("{0:n0}", item.SLCap110KV)</a></strong>
+                </h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại (thoáng qua/kéo dài):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','2','','','')">@string.Format("{0:n0}", item.SLThoangQua)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','3','','','')">@string.Format("{0:n0}", item.SLKeoDai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','-1','','','')">@string.Format("{0:n0}", item.SLLoaiKhongXacDinh)</a></strong>*@
+                </h4>
+                <h4 style="text-align:left">
+                    Sự cố theo nguyên nhân (khách quan/chủ quan):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','6','')">@string.Format("{0:n0}", item.SLKhachQuan)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','7','')">@string.Format("{0:n0}", item.SLChuQuan)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','-1','')">@string.Format("{0:n0}", item.SLNguyenNhanKhongXacDinh)</a></strong>*@
+                </h4>
+
+                <h4 style="text-align:left">
+                    Sự cố theo tính chất (Hành Lang/Thiết bị/Máy biến áp/Đường dây/Chưa xác định/Thiên tai):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','4')">@string.Format("{0:n0}", item.SLHanhLang)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','5')">@string.Format("{0:n0}", item.SLThietBi)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','8')">@string.Format("{0:n0}", item.SLMayBienAp)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','9')">@string.Format("{0:n0}", item.SLDuongDay)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','10')">@string.Format("{0:n0}", item.SLChuaXacDinh + item.SLTinhChatKhongXacDinh)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','11')">@string.Format("{0:n0}", item.SLThienTai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','-1')">@string.Format("{0:n0}", item.SLTinhChatKhongXacDinh)</a></strong>*@
+                </h4>
+            }
+            else if (ViewBag.LoaiListTieuChi == "nn")
+            {
+                <h4 style="text-align:center"><strong><a style="color:black;cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">Tổng số : @string.Format("{0:n0}", item.SLKhachQuan + item.SLChuQuan)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại điện áp (0.4 kV/6 kV/10 kV/22 kV/35 kV/110 kV):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','0.4','','','','')">@string.Format("{0:n0}", item.SLCap04KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','6','','','','')">@string.Format("{0:n0}", item.SLCap6KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','10','','','','')">@string.Format("{0:n0}", item.SLCap10KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','22','','','','')">@string.Format("{0:n0}", item.SLCap22KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','35','','','','')">@string.Format("{0:n0}", item.SLCap35KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','110','','','','')">@string.Format("{0:n0}", item.SLCap110KV)</a></strong>
+                </h4>
+                <h4 style="text-align:left">Sự cố theo tài sản (điện lực/khách hàng): <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','dienluc','','')">@string.Format("{0:n0}", item.SLTSDienLuc)</a></strong>/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','khachhang','','')">@string.Format("{0:n0}", item.SLTSKhachHang)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại (thoáng qua/kéo dài):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','2','','','')">@string.Format("{0:n0}", item.SLThoangQua)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','3','','','')">@string.Format("{0:n0}", item.SLKeoDai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','-1','','','')">@string.Format("{0:n0}", item.SLLoaiKhongXacDinh)</a></strong>*@
+                </h4>
+
+                <h4 style="text-align:left">
+                    Sự cố theo tính chất (Hành Lang/Thiết bị/Máy biến áp/Đường dây/Chưa xác định/Thiên tai):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','4')">@string.Format("{0:n0}", item.SLHanhLang)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','5')">@string.Format("{0:n0}", item.SLThietBi)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','8')">@string.Format("{0:n0}", item.SLMayBienAp)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','9')">@string.Format("{0:n0}", item.SLDuongDay)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','10')">@string.Format("{0:n0}", item.SLChuaXacDinh + item.SLTinhChatKhongXacDinh)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','11')">@string.Format("{0:n0}", item.SLThienTai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','-1')">@string.Format("{0:n0}", item.SLTinhChatKhongXacDinh)</a></strong>*@
+                </h4>
+            }
+            else if (ViewBag.LoaiListTieuChi == "tc")
+            {
+                <h4 style="text-align:center"><strong><a style="color:black;cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">Tổng số : @string.Format("{0:n0}", item.SLHanhLang + item.SLThietBi + item.SLMayBienAp + item.SLDuongDay)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại điện áp (0.4 kV/6 kV/10 kV/22 kV/35 kV/110 kV):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','0.4','','','','')">@string.Format("{0:n0}", item.SLCap04KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','6','','','','')">@string.Format("{0:n0}", item.SLCap6KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','10','','','','')">@string.Format("{0:n0}", item.SLCap10KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','22','','','','')">@string.Format("{0:n0}", item.SLCap22KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','35','','','','')">@string.Format("{0:n0}", item.SLCap35KV)</a></strong>/
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','110','','','','')">@string.Format("{0:n0}", item.SLCap110KV)</a></strong>
+                </h4>
+                <h4 style="text-align:left">Sự cố theo tài sản (điện lực/khách hàng): <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','dienluc','','')">@string.Format("{0:n0}", item.SLTSDienLuc)</a></strong>/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','khachhang','','')">@string.Format("{0:n0}", item.SLTSKhachHang)</a></strong></h4>
+                <h4 style="text-align:left">
+                    Sự cố theo loại (thoáng qua/kéo dài):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','2','','','')">@string.Format("{0:n0}", item.SLThoangQua)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','3','','','')">@string.Format("{0:n0}", item.SLKeoDai)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','-1','','','')">@string.Format("{0:n0}", item.SLLoaiKhongXacDinh)</a></strong>*@
+                </h4>
+                <h4 style="text-align:left">
+                    Sự cố theo nguyên nhân (khách quan/chủ quan):
+                    <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','6','')">@string.Format("{0:n0}", item.SLKhachQuan)</a></strong>
+                    /<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','7','')">@string.Format("{0:n0}", item.SLChuQuan)</a></strong>
+                    @*/<strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','-1','')">@string.Format("{0:n0}", item.SLNguyenNhanKhongXacDinh)</a></strong>*@
+                </h4>
+
+            }
+
+            <h4 style="text-align:left">Thời gian xuất hiện --> bắt đầu khắc phục : <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">@string.Format("{0:#,0.##}", item.XuatHienBatDauKhacPhuc) phút</a></strong></h4>
+            <h4 style="text-align:left">Thời gian bắt đầu khắc phục --> khắc phục xong : <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">@string.Format("{0:#,0.##}", item.BatDauDenKhacPhucXong) phút</a></strong></h4>
+            <h4 style="text-align:left">Thời gian khắc phục xong đến khôi phục đóng điện : <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">@string.Format("{0:#,0.##}", item.KhacPhucXongDenKhoiPhuc) phút</a></strong></h4>
+            <h4 style="text-align:left">Tổng thời gian mất điện do sự cố : <strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">@string.Format("{0:#,0.##}", item.TongThoiGianMatDien) phút</a></strong></h4>
+
+            <h4 style="text-align:center"><strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','','','','','')">@item.TenDonVi</a></strong></h4>
+        </div>
+    }
+</div>
+
+<style>
+    .legendLabel {
+        padding-left: 5px;
+    }
+</style>
+<script type="text/javascript">
+
+            (function () {
+        @foreach(var item in Model)
+        {
+            if (ViewBag.LoaiListTieuChi == "cda")
+            {
+                @:InitPlotDienAp('chart-@Html.Raw(item.Id)', @item.SLCap04KV, @item.SLCap6KV, @item.SLCap10KV, @item.SLCap22KV,@item.SLCap35KV,@item.SLCap110KV);
+            }
+            else if (ViewBag.LoaiListTieuChi == "lsc")
+            {
+                @:InitPlotSuCo('chart-@Html.Raw(item.Id)',@item.SLThoangQua, @item.SLKeoDai,@item.SLLoaiKhongXacDinh);
+            }
+            else if (ViewBag.LoaiListTieuChi == "lts")
+            {
+                @:InitPlotTaiSan('chart-@Html.Raw(item.Id)',@item.SLTSDienLuc, @item.SLTSKhachHang);
+            }
+            else if (ViewBag.LoaiListTieuChi == "nn")
+            {
+                @:InitPlotNguyenNhan('chart-@Html.Raw(item.Id)',@item.SLKhachQuan, @item.SLChuQuan, @item.SLNguyenNhanKhongXacDinh);
+            }
+            else if (ViewBag.LoaiListTieuChi == "tc")
+            {
+                @:InitPlotTinhChat('chart-@Html.Raw(item.Id)',@item.SLHanhLang, @item.SLThietBi,@item.SLMayBienAp,@item.SLDuongDay,@item.SLChuaXacDinh,@item.SLThienTai,@item.SLTinhChatKhongXacDinh);
+            }
+        }
+        })();
+
+    function InitPlotDienAp(ID, data1, data2, data3, data4, data5, data6) {
+        var piedata = [
+            { label: "Điện áp 0.4 kV ("+data1+")", data: [data1], color: '#96ed95',ID:ID,TrangThai:'0.4' },
+            { label: "Điện áp 6 kV ("+data2+")", data: [data2], color: '#c89f4a',ID:ID,TrangThai:'6' },
+            { label: "Điện áp 10 kV ("+data3+")", data: [data3], color: '#F6BB42',ID:ID,TrangThai:'10' },
+            { label: "Điện áp 22 kV ("+data4+")", data: [data4], color: '#f26d30',ID:ID,TrangThai:'22' },
+            { label: "Điện áp 35 kV ("+data5+")", data: [data5], color: '#ac2925',ID:ID,TrangThai:'35' },
+            { label: "Điện áp 110 kV ("+data6+")", data: [data6], color: '#dd2a2a',ID:ID,TrangThai:'110' },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+            GoToURL(obj.series.ID,obj.series.TrangThai,'','','','');
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+    function InitPlotSuCo(ID, data1, data2, data3) {
+        var piedata = [
+            { label: "Sự cố thoáng qua ("+data1+")", data: [data1], color: '#96ed95',ID:ID,TrangThai:'2' },
+            { label: "Sự cố kéo dài (" + data2 + ")", data: [data2], color: '#F6BB42', ID: ID, TrangThai: '3' },
+            { label: "Sự cố không xác định ("+data3+")", data: [data3], color: '#c89f4a',ID:ID,TrangThai:'-1' },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+            GoToURL(obj.series.ID,'',obj.series.TrangThai,'','','');
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+    function InitPlotTaiSan(ID, data1, data2) {
+        var piedata = [
+           { label: "Tài sản điện lực ("+data1+")", data: [data1], color: '#96ed95',ID:ID,TrangThai:'dienluc' },
+           { label: "Tài sản khách hàng ("+data2+")", data: [data2], color: '#F6BB42',ID:ID,TrangThai:'khachhang' },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+            GoToURL(obj.series.ID,'','',obj.series.TrangThai,'','');
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+    function InitPlotNguyenNhan(ID, data1, data2,data3) {
+        var piedata = [
+           { label: "Khách quan ("+data1+")", data: [data1], color: '#96ed95',ID:ID,TrangThai:'6' },
+           { label: "Chủ quan (" + data2 + ")", data: [data2], color: '#F6BB42', ID: ID, TrangThai: '7' },
+           { label: "Không xác định ("+data3+")", data: [data3], color: '#c89f4a',ID:ID,TrangThai:'-1' },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+             GoToURL(obj.series.ID,'','','',obj.series.TrangThai,'');
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+     function InitPlotTinhChat(ID, data1, data2, data3, data4, data5, data6, data7) {
+        var piedata = [
+          { label: "Hành Lang (" + data1 + ")", data: [data1], color: '#96ed95', ID: ID, TrangThai: '4' },
+          { label: "Thiết bị (tủ, atm...) (" + data2 + ")", data: [data2], color: '#c89f4a', ID: ID, TrangThai: '5' },
+          { label: "Máy biến áp (" + data3 + ")", data: [data3], color: '#F6BB42', ID: ID, TrangThai: '8' },
+          { label: "Đường dây (sứ, đứt dây...) (" + data4 + ")", data: [data4], color: '#f26d30', ID: ID, TrangThai: '9' },
+          { label: "Chưa xác định (" + data5 + ")", data: [data5], color: '#ac2925', ID: ID, TrangThai: '10' },
+          { label: "Thiên tai (" + data6 + ")", data: [data6], color: '#dd2a2a', ID: ID, TrangThai: '11' },
+          { label: "Không xác định (" + data7 + ")", data: [data7], color: '#d6c7c7', ID: ID, TrangThai: '-1' },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+             GoToURL(obj.series.ID, '', '', '', '', obj.series.TrangThai);
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+    function GoToURL(ID, lable,loaisuco,loaitaisan,nguyennhan,tinhchat) {
+
+            var url = "/Admin/SuCo/Index?DonViId="
+                + ID + "&CapDienAp="+ lable
+                +"&LoaiTaiSan="+loaitaisan
+                +"&LoaiSuCo="+loaisuco
+                +"&NguyenNhan="+nguyennhan
+                +"&TinhChat="+tinhchat
+                +"&DateFrom="
+                + $('#GioBd').val()+"&DateTo="
+                + $('#GioKt').val()
+            ;
+
+            var win = window.open(url, '_blank');
+            win.focus();
+
+
+    }
+
+
+</script>

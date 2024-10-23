@@ -1,0 +1,338 @@
+﻿@{
+    ViewBag.Title = "Danh sách vi phạm hành lanh an toàn lưới điện cao áp";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    var donVi = donViRepository.List().Where(o => o.DviCha != "P" || o.CapDvi != 0).ToList();
+}
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+
+<div class="head" id="ndContent">
+    <h1>
+
+
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" href="">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Export
+        </a>
+
+    </h1>
+
+    <div class="clear">
+    </div>
+</div>
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách vi phạm khoảng cách pha đất, cây trong/ngoài hành lang
+            </div>
+            <div class="panel-title fulltable hide" style="position: absolute; top: 17px; right: 20px; cursor:pointer">
+                <span class="glyphicon glyphicon-fullscreen"></span>
+            </div>
+            <div class="panel-title nonetable hide" style="position: fixed; top: 0px; right: 18px; z-index: 99999999; cursor: pointer; color: #fff;">
+                <span class="glyphicon glyphicon-resize-small" style="background: red; display: block; height: 32px; width: 32px; padding: 6px;"></span>
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline" style="padding-left:13px">
+                    <div style="position:relative;width:170px;float:left">
+                        <span>Tháng: &nbsp;</span>
+                        <select class="form-control">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option @(DateTime.Now.Month == i ? "selected" : "")>@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div style="position:relative;width:170px;float:left">
+                        <span>Năm: &nbsp;</span>
+                        <select class="form-control">
+                            @for (int i = 1900; i <= 2099; i++)
+                            {
+                                <option @(DateTime.Now.Year == i ? "selected" : "")>@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridHLLDCA" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th rowspan="4" style="vertical-align:middle" class="text-center;">TT</th>
+                                    <th rowspan="4" style="vertical-align:middle;max-width:300px;min-width:300px;width:300px" class="text-center">Tên đơn vị</th>
+                                    <th rowspan="2" style="vertical-align:middle" class="text-center">Cấp điện áp (kV)</th>
+                                    <th colspan="2" style="vertical-align:middle" class="text-center">Tổng số vụ vi phạm</th>
+                                    <th colspan="3" style="vertical-align:middle" class="text-center">Số vụ vi phạm tăng, giảm trong kỳ</th>
+                                    <th rowspan="2" style="vertical-align:middle" class="text-center">Độ võng (mét)</th>
+                                    <th rowspan="2" style="vertical-align:middle" class="text-center">Đánh giá mực độ nguy hiểm từng điểm pha-đất (điểm HRN)</th>
+                                    <th colspan="3" style="vertical-align:middle" class="text-center">Cây cối có nguy cơ gây sự cố lưới (km)</th>
+                                    <th rowspan="2" style="vertical-align:middle;max-width:300px;min-width:300px;width:300px" class="text-center">Ghi chú</th>
+                                </tr>
+                                <tr>
+                                    <th style="vertical-align:middle" class="text-center">Tính từ đầu năm @string.Format("{0:yyyy}", DateTime.Now)</th>
+                                    <th style="vertical-align:middle" class="text-center">Lũy kế đến hiện tại</th>
+                                    <th style="vertical-align:middle" class="text-center">Tăng do phát sinh mới</th>
+                                    <th style="vertical-align:middle" class="text-center">Giảm do cải tạo</th>
+                                    <th style="vertical-align:middle" class="text-center">Giảm do phối hợp với địa phương</th>
+                                    <th style="vertical-align:middle" class="text-center">Trong HL</th>
+                                    <th style="vertical-align:middle" class="text-center">Ngoài HL</th>
+                                    <th style="vertical-align:middle" class="text-center">Điểm HRN (khả năng gây sự cố)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in donVi)
+                                {
+                                <tr>
+                                    <td rowspan="2" class="text-center" style="vertical-align:middle">@(donVi.IndexOf(item) + 1)</td>
+                                    <td rowspan="2" class="text-center" style="vertical-align:middle">@item.TenDonVi</td>
+                                    <td class="text-center" style="vertical-align:middle">35</td>
+                                    <td class="text-center" style="vertical-align:middle">10</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle"></td>
+                                    <td class="text-center" style="vertical-align:middle"></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align:middle">22</td>
+                                    <td class="text-center" style="vertical-align:middle">10</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle">0</td>
+                                    <td class="text-center" style="vertical-align:middle"></td>
+                                    <td class="text-center" style="vertical-align:middle"></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="form-group" style="margin-top:15px;">
+                        <label class="control-label">Tiến độ thực hiện giảm vi phạm pha đất (số vụ giảm được trong tháng tương ứng) <strong>Tháng @string.Format("{0:MM}", DateTime.Now)</strong></label>
+                        <div style="width:30%">
+                            <table class="table table-bordered table-striped mb-none dataTable no-footer">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="vertical-align:middle">T1</th>
+                                        <th class="text-center" style="vertical-align:middle">T2</th>
+                                        <th class="text-center" style="vertical-align:middle">T3</th>
+                                        <th class="text-center" style="vertical-align:middle">T4</th>
+                                        <th class="text-center" style="vertical-align:middle">T5</th>
+                                        <th class="text-center" style="vertical-align:middle">T6</th>
+                                        <th class="text-center" style="vertical-align:middle">T7</th>
+                                        <th class="text-center" style="vertical-align:middle">T8</th>
+                                        <th class="text-center" style="vertical-align:middle">T9</th>
+                                        <th class="text-center" style="vertical-align:middle">T10</th>
+                                        <th class="text-center" style="vertical-align:middle">T11</th>
+                                        <th class="text-center" style="vertical-align:middle">T12</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align:middle">7</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                        <td class="text-center" style="vertical-align:middle">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer" style="text-align:right">
+            <button class="btn btn-primary">Lưu</button>
+            <button type="reset" class="btn btn-default">Làm mới</button>
+        </div>
+    </div>
+</div>
+
+<div id="scrollbottom" style="overflow-x: scroll; overflow-y: hidden; height: 20px; width: 300px; position: fixed; bottom: 0px; right: 55px; background-color: #9E9E9E; border-radius: 6px; border: 1px solid #9E9E9E;">
+    <div id="scrollbottomcontent" style="height:23px; width:600px"></div>
+</div>
+
+
+<script>
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+    });
+
+    $("#scrollbottom").scroll(function () {
+        var getRet = ($(this).scrollLeft() / 302) * 100;
+        yourFunction(getRet);
+    });
+
+    function yourFunction(retag) {
+        try {
+            $(".table-responsive").scrollLeft((2500 / 100) * retag);
+        } catch (e) {
+
+        }
+    }
+</script>
+<style>
+    .ui-pnotify .notification-danger, .ui-pnotify .notification-success {
+        color: #fff !important;
+    }
+
+    hr {
+        margin: 7px 0 7px 0;
+    }
+
+    #dtGridHLLDCA tbody tr:hover {
+        background: #d5dcff;
+    }
+
+    #dtGridHLLDCA tbody tr td:hover {
+        background-color: #c7d0ff !important;
+    }
+
+    .content-body {
+        padding: 0px;
+    }
+
+    .spacetd {
+        width: 190px;
+        display: block;
+        border: 0 !important;
+    }
+
+    .multiselect {
+        padding: 3px !important;
+        text-align: left !important;
+    }
+
+    .multiselect-wap .btn-default {
+        display: none !important;
+    }
+
+    .multiselect-wap {
+        /*margin-top: -14px;*/
+    }
+
+    .multiselect-container {
+        /*max-height: 600px;*/
+    }
+
+        .multiselect-container > li > a > label {
+            padding: 3px 5px 3px 22px !important;
+            font-size: 16px !important;
+        }
+
+    .wap-scroll {
+        position: fixed;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        z-index: 999999;
+        background: #fff;
+        height: 100%;
+        width: 100%;
+        overflow: scroll;
+        margin-left: 120px;
+    }
+
+    .body-scoll-none {
+        overflow: hidden !important;
+    }
+
+    .actions {
+        position: absolute;
+        width: 130px;
+        right: 0;
+        top: auto;
+        border-top-width: 1px;
+        /*only relevant for first row*/
+        margin-top: -1px;
+        /*compensate for top border*/
+        padding-left: 3px;
+        padding-right: 3px;
+        background: #faf9f9;
+        margin-top: -16px;
+        height: 100%;
+        padding: 12px !important;
+    }
+
+        .actions:before {
+        }
+
+    .table .actions a, .table .actions-hover a {
+        margin-right: 10px !important;
+    }
+
+    .pererror {
+        background: #ffd6c7 url(/Content/Customs/erroricon.png) no-repeat top right !important;
+    }
+
+    .statusdone {
+        background-color: #d9ffad !important;
+    }
+
+    .statusreview {
+        /*background-color: #c4edff !important;*/
+    }
+
+    .statusnon {
+        /*background-color: gainsboro !important;*/
+    }
+
+    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+        /*padding: 8px;
+        padding-bottom:16px;*/
+    }
+
+    .empdata {
+        margin-top: -9px;
+    }
+
+    #dtGridHLLDCA tbody tr:last-child {
+        /*height: 500px !important;*/
+        background: #f1f1f1;
+    }
+
+        #dtGridHLLDCA tbody tr:last-child td {
+            border: none !important;
+        }
+
+    .radioStyle input[type="checkbox"] {
+        -webkit-appearance: radio;
+        -moz-appearance: radio;
+        -ms-appearance: radio;
+    }
+
+    .multiselect-container > li > label.multiselect-group {
+        font-size: 16px;
+    }
+</style>

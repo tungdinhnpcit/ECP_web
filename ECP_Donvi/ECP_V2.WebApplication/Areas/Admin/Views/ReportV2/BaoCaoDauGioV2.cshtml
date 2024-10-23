@@ -1,0 +1,75 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.TongHopBaoCaoDauGioV2_Result>
+
+@if (Model != null && Model.Count() > 0)
+{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+
+    <div class="block-fluid" style="margin-top:40px">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n">
+                <div class="panel-title hidden-xs">
+                    <span class="glyphicon glyphicon-tasks"></span> BÁO CÁO KIỂM SOÁT VIỆC THỰC HIỆN ATLĐ TRÊN LƯỚI ĐIỆN TỪ NGÀY @string.Format("{0:dd/MM/yyyy}", ViewBag.DST) ĐẾN NGÀY @string.Format("{0:dd/MM/yyyy}", ViewBag.DTE)
+                </div>
+            </div>
+            <div class="panel-body pn">
+                <div class="text-center">
+
+                </div>
+                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <div class="row datatables-header form-inline">
+                    </div>
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;vertical-align: inherit" rowspan="3">STT</th>
+                                    <th style="text-align:center;vertical-align: inherit" rowspan="3">Đơn vị</th>
+                                    <th style="text-align:center" colspan="7">Số lượng công việc trên lưới</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:center" colspan="2">Đăng ký KH</th>
+                                    <th style="text-align:center" colspan="3">Phát sinh</th>
+                                    <th style="text-align:center;vertical-align: inherit" rowspan="2">Tổng hợp</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:center">KH tuần</th>
+                                    <th style="text-align:center">Bổ sung ngày</th>
+                                    <th style="text-align:center">Bổ sung</th>
+                                    <th style="text-align:center">Đột xuất</th>
+                                    <th style="text-align:center">Hoãn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold" colspan="2"><a href="@Url.Action("Index", "BaoCao", new { Area = "Manager", dviId = donVi.Id })">@donVi.TenDonVi</a></td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.KHTuan)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.BoSungNgay)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.BoSung)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.Dotxuat)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.Hoan)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.TongHop)</td>
+                                </tr>
+                                @foreach (var it in Model)
+                                {
+                                    <tr>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.STT)</td>
+                                        <td style="text-align:left"><a href="@Url.Action("Index", "BaoCao", new { Area = "Manager", dviId = it.Id })">@it.TenDonVi</a></td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.KHTuan)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.BoSungNgay)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.BoSung)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.Dotxuat)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.Hoan)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.TongHop)</td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

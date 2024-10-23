@@ -1,0 +1,122 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.TongHopBaoCaoCuoiNgay_Result>
+
+@if (Model != null && Model.Count() > 0)
+{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+
+    <div class="block-fluid" style="margin-top:40px">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n">
+                <div class="panel-title hidden-xs">
+                    <span class="glyphicon glyphicon-tasks"></span> TỔNG HỢP KẾT QUẢ KIỂM TRA, KIỂM SOÁT CÔNG VIỆC TỪ NGÀY @string.Format("{0:dd/MM/yyyy}", ViewBag.DSTCN) ĐẾN NGÀY @string.Format("{0:dd/MM/yyyy}", ViewBag.DTECN)
+                </div>
+            </div>
+            <div class="panel-body pn">
+                <div class="text-center">
+
+                </div>
+                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <div class="row datatables-header form-inline">
+                    </div>
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;vertical-align: inherit" rowspan="2">STT</th>
+                                    <th style="text-align:center;vertical-align: inherit" rowspan="2">Đơn vị</th>
+                                    <th style="text-align:center" colspan="4">Số công việc thực hiện</th>
+                                    <th style="text-align:center" rowspan="2">Số PTT phát ra</th>
+                                    <th style="text-align:center" rowspan="2">Số PCT phát ra</th>
+                                    <th style="text-align:center" rowspan="2">Số LCT phát ra</th>
+                                    <th style="text-align:center" rowspan="2">Số PCT được KT, KS</th>
+                                    <th style="text-align:center" rowspan="2">Số LCT được KT, KS</th>
+                                    <th style="text-align:center" rowspan="2">Số công việc đã gửi ảnh kiểm soát</th>
+                                    <th style="text-align:center" rowspan="2">Số bộ phận được kiểm tra </th>
+                                    <th style="text-align:center" rowspan="2">Số biên bản được lập</th>
+                                    <th style="text-align:center" colspan="2">Kiểm tra PATCTC và BPAT</th>
+                                    <th style="text-align:center" rowspan="2">Số công việc đã kết thúc</th>
+                                    <th style="text-align:center" rowspan="2">Ghi chú</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:center">Theo KH</th>
+                                    <th style="text-align:center">Bổ sung</th>
+                                    <th style="text-align:center">Hoãn</th>
+                                    <th style="text-align:center">Tổng cộng</th>
+                                    <th style="text-align:center">Số PA được KT</th>
+                                    <th style="text-align:center">Số PA không đạt yêu cầu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center"><i>A</i></td>
+                                    <td style="text-align:center"><i>B</i></td>
+                                    <td style="text-align:center"><i>1</i></td>
+                                    <td style="text-align:center"><i>2</i></td>
+                                    <td style="text-align:center"><i>3</i></td>
+                                    <td style="text-align:center"><i>4</i></td>
+                                    <td style="text-align:center"><i>5</i></td>
+                                    <td style="text-align:center"><i>6</i></td>
+                                    <td style="text-align:center"><i>7</i></td>
+                                    <td style="text-align:center"><i>8</i></td>
+                                    <td style="text-align:center"><i>9</i></td>
+                                    <td style="text-align:center"><i>10</i></td>
+                                    <td style="text-align:center"><i>11</i></td>
+                                    <td style="text-align:center"><i>12</i></td>
+                                    <td style="text-align:center"><i>13</i></td>
+                                    <td style="text-align:center"><i>14</i></td>
+                                    <td style="text-align:center"><i>15</i></td>
+                                    <td style="text-align:center"><i>16</i></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold" colspan="2"><a href="@Url.Action("Index", "BaoCaoCuoiNgay", new { Area = "Manager", dviId = donVi.Id })">@donVi.TenDonVi</a></td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.TheoKH)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.BoSung)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.Hoan)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.TongCong)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoPTTPhatRa)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoPCTPhatRa)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoLCTPhatRa)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoPCTDuocKTKS)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoLCTDuocKTKS)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoCongViecDaGuiAnhKiemSoat)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoBoPhanDuocKiemTra)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoBienBanDuocLap)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoPaDuocKT)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoPaKhongDatYeuCau)</td>
+                                    <td style="text-align:center;font-weight:bold">@Model.Sum(o => o.SoCongViecDaKetThuc)</td>
+                                    <td style="text-align:center;font-weight:bold"></td>
+                                </tr>
+                                @foreach (var it in Model)
+                                {
+                                    <tr>
+                                        <td style="text-align:center">@string.Format("{0:n0}",it.STT)</td>
+                                        <td style="text-align:left"><a href="@Url.Action("Index", "BaoCaoCuoiNgay", new { dviId = it.DonViId })">@it.TenDonVi</a></td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.TheoKH)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.BoSung)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.Hoan)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.TongCong)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoPTTPhatRa)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoPCTPhatRa)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoLCTPhatRa)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoPCTDuocKTKS)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoLCTDuocKTKS)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoCongViecDaGuiAnhKiemSoat)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoBoPhanDuocKiemTra)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoBienBanDuocLap)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoPaDuocKT)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoPaKhongDatYeuCau)</td>
+                                        <td style="text-align:center">@string.Format("{0:n0}", it.SoCongViecDaKetThuc)</td>
+                                        <td style="text-align:center">@it.GhiChu</td>
+                                        
+                                    </tr>
+                                }
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

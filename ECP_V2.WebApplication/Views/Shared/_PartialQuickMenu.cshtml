@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ECP_V2.Business.Repository.NewMenuViewModel>
+
+<div class="row">
+    @if (Model != null)
+    {
+
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+                <h2 class="panel-title">
+                    <span class="glyphicon glyphicon-tasks" style="margin-right:5px;"></span>
+                    Danh sách phân hệ phần mềm QLATLĐ ECP 2.0
+                </h2>
+            </header>
+            <div class="panel-body" style="background-color:whitesmoke">
+                @foreach (var item in Model)
+                {
+                    if (item.IsFrontPage == true)
+                    {
+                        <div class="col-md-12 col-lg-4 col-xl-4">
+                            <section class="panel panel-featured-left panel-featured-primary">
+                                <div class="panel-body">
+                                    <div class="widget-summary">
+                                        <div class="widget-summary-col widget-summary-col-icon">
+                                            <a href="/Admin/Home/MenuChildren?parentId=@item.Id">
+                                                <div class="summary-icon bg-primary">
+                                                    <i class="@item.Class"></i>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="widget-summary-col">
+                                            <div class="summary">
+                                                <a href="/Admin/Home/MenuChildren?parentId=@item.Id">
+                                                    <h4 class="title">@item.Text</h4>
+                                                    <div class="info">
+                                                        <strong class="amount">@item.Description</strong>
+                                                        @*<span class="text-primary">(14 unread)</span>*@
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="summary-footer">
+                                                <a class="text-muted text-uppercase" href="/Admin/Home/MenuChildren?parentId=@item.Id">(xem chi tiết)</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    }
+                }
+            </div>
+        </section>
+    }
+</div>
+

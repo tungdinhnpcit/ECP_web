@@ -1,0 +1,666 @@
+﻿@using ECP_V2.DataAccess
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+
+    <!-- Modal Animation -->
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn chuyển dữ liệu trước tháng @DateTime.Now.AddMonths(-3).Month năm @DateTime.Now.AddMonths(-3).Year vào lịch sử?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ConfirmMoveFile()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DismissMoveFile()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <div id="modalAnimBackUpDatabase" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn sao lưu dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ConfirmBackUpDatabase()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DismissBackUpDatabase()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+</div>
+
+   
+
+    <div class="block-fluid">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n">
+                <div class="panel-title hidden-xs">
+                    <span class="glyphicon glyphicon-tasks"></span> Chuyển tháng dữ liệu
+                </div>
+            </div>
+
+            <div class="panel-body pn">
+                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <div class="row datatables-header form-inline">
+
+                        <div class="col-md-5">
+                            <p>
+                                <span>Đơn Vị : &nbsp;</span>
+                                <select class="form-control" id="cmbDonViID" onchange="donvi_change(this)" style="margin-left: 23px;">
+                                    @try
+                                    {
+                                        @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                                    }
+                                    catch { }
+                                </select>
+                            </p>
+
+                            <p>
+                                <span>Phân hệ : &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <select class="form-control" id="txtPhanHe" style="margin-left: 4px;" @*onchange="phanhe_change(this)"*@>
+                                    <option value="@ECP_V2.Common.Helpers.PhanHe.PhanHeImage">Hình ảnh</option>
+                                    <option value="@ECP_V2.Common.Helpers.PhanHe.PhanHePhieuCongTac">Phiếu lệnh công tác</option>
+                                    @*<option value="@ECP_V2.Common.Helpers.PhanHe.PhanHePhienLamViec">Lịch công tác</option>*@
+                                    <option value="@ECP_V2.Common.Helpers.PhanHe.PhanHeSuCo">Sự cố</option>
+                                </select>
+                            </p>
+
+                            <p style="float: left; margin-left: 10px;">
+                                <a href="#modalAnim" id="btnDelete" class="btn btn-danger">Chuyển tháng</a>
+                                <a href="#modalAnimBackUpDatabase" id="btnBackUpDatabase" class="btn btn-success">Sao lưu dữ liệu</a>
+                            </p>
+
+                            @*<p>
+                                <span>Từ ngày : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <input id="GioBd" type="text" placeholder="Thời gian bắt đầu">
+                            </p>
+
+                            <p>
+                                <span>Đến ngày : &nbsp;&nbsp;&nbsp;</span>
+                                <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                            </p>
+
+                            <p>
+                                <input type="button" id="btnBackUp" value="Sao lưu" class="btn btn-primary" />
+                            </p>*@
+                        </div>
+
+                        <div class="col-md-7">
+                            @*<div class="col-md-12" style="padding: 0;">
+                                <p style="float: left;">
+                                    <a id="btnDownload" class="btn btn-primary">Tải về</a>
+                                </p>
+                                <p style="float: left; margin-left: 10px;">
+                                    <a href="#modalAnim" id="btnDelete" class="btn btn-danger">Chuyển tháng</a>
+                                </p>
+                                <p style="float: left; margin-left: 10px;">
+                                    <a href="#modalAnimRestore" id="btnRestore" class="btn btn-success">Phục hồi</a>
+                                </p>
+                            </div>*@
+                            <div class="list-files">
+                                @{Html.RenderAction("ListImageBackUp", "BackUpThangLichSu", new { DonViId = Session["DonViID"].ToString() });}
+                            </div>
+                        </div>
+                        @*<div class="col-md-3">
+                                <span><input type="radio" name="txtBackUpType" id="txtBackUpThang" checked /> Theo tháng</span>
+                                <span><input type="radio" name="txtBackUpType" id="txtBackUpNgay" /> Theo ngày</span>
+                            </div>
+
+                            <div class="col-md-12" id="filter-thang" style="margin-top: 10px;">
+                                <div class="col-md-4">
+                                    <span>Năm: <input type="text" name="txtThangNam" id="txtThangNam" class="form-control" /></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <span>Tháng: <input type="text" name="txtThangThang" id="txtThangThang" class="form-control" /></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12" id="filter-ngay" style="display: none; margin-top: 10px;">
+
+                                <div class="col-md-4">
+                                    <span>Năm: <input type="text" name="txtNgayNam" id="txtNgayNam" class="form-control" /></span>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                    <span>Tháng: <input type="text" name="txtNgayThang" id="txtNgayThang" class="form-control" /></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <span>Ngày: <input type="text" name="txtNgayNgay" id="txtNgayNgay" class="form-control" /></span>
+                                </div>
+
+                            </div>*@
+
+                    </div>
+                    <div class="listRolesName list">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    @section JavaScriptOnePgae{
+
+        @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+
+        <script>
+
+        $(document).ready(function () {
+
+            var DonViId = '@(Session["DonViID"] != null ? Session["DonViID"].ToString() : "")';
+
+            $('html').addClass('sidebar-left-collapsed');
+
+            var start = $("#GioBd").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            var end = $("#GioKt").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+
+            $('#txtBackUpThang').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#filter-ngay').hide();
+                    $('#filter-thang').fadeIn();
+                } else {
+                    $('#filter-thang').hide();
+                }
+            });
+
+            $('#txtBackUpNgay').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#filter-thang').hide();
+                    $('#filter-ngay').fadeIn();
+                } else {
+                    $('#filter-ngay').hide();
+                }
+            });
+
+            $('#btnBackUp').click(function () {
+
+                loading('Đang tải dữ liệu...', 1);
+
+                if ($('#cmbDonViID').val() == '') {
+                    new PNotify({
+                        title: 'Thông báo lỗi!',
+                        text: 'Chọn đơn vị sao lưu',
+                        type: 'error'
+                    });
+
+                    return false;
+                }
+
+                //if ($('#cmbPhongBan').val() == '') {
+                //    new PNotify({
+                //        title: 'Thông báo lỗi!',
+                //        text: 'Chọn phòng ban sao lưu',
+                //        type: 'error'
+                //    });
+
+                //    return false;
+                //}
+
+                if ($("#GioBd").val() == '') {
+                    new PNotify({
+                        title: 'Thông báo lỗi!',
+                        text: 'Nhập ngày bắt đầu sao lưu',
+                        type: 'error'
+                    });
+
+                    return false;
+                }
+
+                if ($("#GioKt").val() == '') {
+                    new PNotify({
+                        title: 'Thông báo lỗi!',
+                        text: 'Nhập ngày kết thúc sao lưu',
+                        type: 'error'
+                    });
+
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/BackUpImage/BackUpTuNgayDenNgay',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        DonViId: $('#cmbDonViID').val(),
+                        PhongBanId: $('#cmbPhongBan').val(),
+                        TuNgay: $('#GioBd').val(),
+                        DenNgay: $('#GioKt').val()
+                    }),
+                    success: function (data) {
+                        if (data.success) {
+
+                            unloading();
+
+                            new PNotify({
+                                title: 'Thông báo',
+                                text: 'Sao lưu thành công',
+                                type: 'success'
+                            });
+
+                            ListImageBackUp($('#cmbDonViID').val());
+
+                        } else {
+
+                            unloading();
+
+                            new PNotify({
+                                title: 'Thông báo lỗi!',
+                                text: 'Sao lưu không thành công',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function () {
+
+                        unloading();
+
+                        new PNotify({
+                            title: 'Thông báo lỗi!',
+                            text: 'Không thể sao lưu',
+                            type: 'error'
+                        });
+                    }
+                });
+
+                //$.UnifiedExportFile(
+                //        {
+                //        action: "/BackUpImage/BackUpTuNgayDenNgay",
+                //            data: {
+                //                DonViId: $('#cmbDonViID').val(),
+                //                PhongBanId: $('#cmbPhongBan').val(),
+                //                TuNgay: $('#GioBd').val(),
+                //                DenNgay: $('#GioKt').val()
+                //            },
+                //            downloadType: 'Progress',
+                //            ajaxLoadingSelector: '#loading'
+                //        });
+
+
+                //if ($('#txtBackUpThang').is(':checked')) {
+                //    if ($('#txtThangNam').val() == '') {
+                //        new PNotify({
+                //            title: 'Thông báo lỗi!',
+                //            text: 'Nhập năm sao lưu',
+                //            type: 'error'
+                //        });
+
+                //        return false;
+                //    }
+
+                //    if ($('#txtThangThang').val() == '') {
+                //        new PNotify({
+                //            title: 'Thông báo lỗi!',
+                //            text: 'Nhập tháng sao lưu',
+                //            type: 'error'
+                //        });
+
+                //        return false;
+                //    }
+
+                //    $.UnifiedExportFile(
+                //        {
+                //            action: "/BackUpImage/BackUpThang",
+                //            data: {
+                //                DonViId: $('#cmbDonViID').val(),
+                //                PhongBanId: $('#cmbPhongBan').val(),
+                //                Nam: $('#txtThangNam').val(),
+                //                Thang: $('#txtThangThang').val()
+                //            },
+                //            downloadType: 'Progress',
+                //            ajaxLoadingSelector: '#loading'
+                //        });
+
+                //}
+                //else if ($('#txtBackUpNgay').is(':checked')) {
+                //    if ($('#txtNgayNam').val() == '') {
+                //        new PNotify({
+                //            title: 'Thông báo lỗi!',
+                //            text: 'Nhập năm sao lưu',
+                //            type: 'error'
+                //        });
+
+                //        return false;
+                //    }
+
+                //    if ($('#txtNgayThang').val() == '') {
+                //        new PNotify({
+                //            title: 'Thông báo lỗi!',
+                //            text: 'Nhập tháng sao lưu',
+                //            type: 'error'
+                //        });
+
+                //        return false;
+                //    }
+
+                //    if ($('#txtNgayNgay').val() == '') {
+                //        new PNotify({
+                //            title: 'Thông báo lỗi!',
+                //            text: 'Nhập ngày sao lưu',
+                //            type: 'error'
+                //        });
+
+                //        return false;
+                //    }
+
+                //    $.UnifiedExportFile(
+                //        {
+                //            action: "/BackUpImage/BackUpNgay",
+                //            data: {
+                //                DonViId: $('#cmbDonViID').val(),
+                //                PhongBanId: $('#cmbPhongBan').val(),
+                //                Nam: $('#txtNgayNam').val(),
+                //                Thang: $('#txtNgayThang').val(),
+                //                Ngay: $('#txtNgayNgay').val()
+                //            },
+                //            downloadType: 'Progress',
+                //            ajaxLoadingSelector: '#loading'
+                //        });
+                //}
+
+            });
+
+            $('a#btnDelete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+                });
+
+            $('a#btnBackUpDatabase').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            $('a#btnRestore').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            $('a#btnDownload').click(function () {
+
+                var url = $('input[name="fileBackUp"]:checked').val();
+
+                if (typeof (url) !== "undefined") {
+                    window.location = url;
+                } else {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Chọn file dữ liệu để tải về',
+                        type: 'error'
+                    });
+                }
+
+            });
+
+        });
+
+        function phanhe_change(el) {
+            ListImageBackUp($('#cmbDonViID').val());
+        }
+
+        function donvi_change(el) {
+            ListImageBackUp(el.value);
+        }
+
+        function ListImageBackUp(DonViId) {
+            if (DonViId != '') {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/BackUpThangLichSu/ListImageBackUp?DonViId=' + DonViId,
+                    contentType: 'html',
+                    success: function (data) {
+                        $('.list-files').html(data);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+
+            function ConfirmBackUpDatabase() {
+
+                loading('Đang tải dữ liệu...', 1);
+
+                $.ajax({
+                    url: '/Admin/SystemConfig/BackUpSystem',
+                    type: 'POST',
+                    data: JSON.stringify({
+
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Sao lưu dữ liệu thành công',
+                                type: 'success'
+                            });
+
+                            unloading();
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Sao lưu dữ liệu không thành công',
+                                type: 'error'
+                            });
+
+                            unloading();
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Sao lưu dữ liệu không thành công',
+                            type: 'error'
+                        });
+
+                        unloading();
+                    }
+                });
+
+                $.magnificPopup.close();
+        }
+
+        function DismissBackUpDatabase() {
+            $.magnificPopup.close();
+        }
+
+
+        function DismissMoveFile() {
+            $.magnificPopup.close();
+        }
+
+        function ConfirmMoveFile() {
+
+            loading('Đang tải dữ liệu...', 1);
+
+            $.ajax({
+                url: '/BackUpThangLichSu/MoveFile',
+                type: 'POST',
+                data: JSON.stringify({
+                    DonViId: $('#cmbDonViID').val(),
+                    phanHe: $('#txtPhanHe').val()
+                }),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.success) {
+
+                        unloading();
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Chuyển tháng dữ liệu thành công',
+                            type: 'success'
+                        });
+
+                        ListImageBackUp($('#cmbDonViID').val());
+
+                    } else {
+
+                        unloading();
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: data.responseText,
+                            type: 'error'
+                        });
+                    }
+                },
+                error: function (e) {
+
+                    unloading();
+
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: data.responseText,
+                        type: 'error'
+                    });
+                }
+            });
+
+            $.magnificPopup.close();
+        }
+
+        //function DismissRestoreFile() {
+        //    $.magnificPopup.close();
+        //}
+
+        //function ConfirmRestoreFile() {
+
+        //    var url = $('input[name="fileBackUp"]:checked').val();
+
+        //    loading('Đang tải dữ liệu...', 1);
+
+        //    if (typeof (url) !== "undefined") {
+        //        $.ajax({
+        //            url: '/BackUpImage/RestoreFile',
+        //            type: 'POST',
+        //            data: JSON.stringify({
+        //                url: url
+        //            }),
+        //            contentType: 'application/json',
+        //            success: function (data) {
+        //                if (data) {
+
+        //                    unloading();
+
+        //                    new PNotify({
+        //                        title: 'Thông báo!',
+        //                        text: 'Phục hồi file dữ liệu thành công',
+        //                        type: 'success'
+        //                    });
+
+        //                    ListImageBackUp($('#cmbDonViID').val());
+
+        //                } else {
+
+        //                    unloading();
+
+        //                    new PNotify({
+        //                        title: 'Thông báo!',
+        //                        text: 'Phục hồi file dữ liệu không thành công',
+        //                        type: 'error'
+        //                    });
+        //                }
+        //            },
+        //            error: function (e) {
+
+        //                unloading();
+
+        //                new PNotify({
+        //                    title: 'Thông báo!',
+        //                    text: 'Không thể phục hồi file dữ liệu',
+        //                    type: 'error'
+        //                });
+        //            }
+        //        });
+        //    } else {
+
+        //        unloading();
+
+        //        new PNotify({
+        //            title: 'Thông báo!',
+        //            text: 'Chọn file dữ liệu để phục hồi',
+        //            type: 'error'
+        //        });
+        //    }
+
+        //    $.magnificPopup.close();
+        //}
+
+        </script>
+    }

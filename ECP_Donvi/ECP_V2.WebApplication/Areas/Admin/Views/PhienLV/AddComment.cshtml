@@ -1,0 +1,17 @@
+﻿@model ECP_V2.DataAccess.tblComment
+<div style="margin-left:5px;margin-right:5px">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "AddComment", @class = "form-horizontal form-bordered" }))
+    {
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(Model => Model.PhienLamViecId)
+
+        <div class="control-group">
+            <label for="textfield" class="control-label">Nhận xét</label>
+            <div class="controls">
+                @Html.TextAreaFor(Model => Model.CommentContent, new { @class = "input-block-level", @placeholder = "Nhận xét", @rows = "3" })
+                @Html.ValidationMessageFor(m => m.CommentContent)
+            </div>
+        </div>
+    }
+</div>

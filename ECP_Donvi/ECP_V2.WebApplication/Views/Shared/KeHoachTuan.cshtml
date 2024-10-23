@@ -1,0 +1,161 @@
+﻿@model bool
+@{ECP_V2.Business.Repository.PhienLVRepository plvr = new ECP_V2.Business.Repository.PhienLVRepository();
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    try
+    {
+        if (Model)
+        {
+            try
+            {
+                ECP_V2.Common.Helpers.MemoryCacheHelper.Delete("Get_KeHoachTuan_" + Session["DonViID"].ToString());
+            }
+            catch (Exception ex)
+            { }
+        }
+
+        List<string> lstDate = plvr.GetListWeekNow();
+        var lstKH = plvr.Get_KeHoachTuan(Session["DonViID"].ToString());
+        var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+        var donViCapCha = donViRepository.GetById(donVi.DviCha);
+        //var lstKHCapCha = plvr.Get_KeHoachTuan(donVi.DviCha);
+        int i = 0;
+
+        <div class="block-fluid" style="margin-top:40px">
+            <div class="panel panel-visible">
+                <div class="panel-heading br-b-n" style="height:50px">
+                    <div class="panel-title hidden-xs" style="margin-top:-5px">
+                        <div class="pull-left">
+                            <span class="glyphicon glyphicon-tasks"></span> KẾ HOẠCH TUẦN
+                        </div>
+                        <div class="pull-right">
+                            <button onclick="ReLoadKeHoachTuan()" class="btn btn-sm" data-toggle="tooltip" data-placement="top" data-title="Làm mới" data-original-title="" title=""><i class="fa fa-refresh"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body pn">
+                    <div class="text-center">
+
+                    </div>
+                    <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row datatables-header form-inline">
+                        </div>
+                        <div class="table-responsive">
+                            <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            STT
+                                        </th>
+                                        <th>
+                                            Đơn vị
+                                        </th>
+                                        <th>
+                                            Điện thoại
+                                        </th>
+                                        <th>Số người online</th>
+                                        <th>
+                                            KH đăng ký
+                                        </th>
+                                        <th>
+                                            KH bổ sung
+                                        </th>
+                                        <th>
+                                            KH đột xuất
+                                        </th>
+                                        <th>
+                                            KH hoãn, hủy
+                                        </th>
+                                        @if (lstDate != null && lstDate.Count > 0)
+                                        {
+                                            foreach (var item in lstDate)
+                                            {
+                                                <th>@item</th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @if (lstKH != null && lstKH.Count() > 0)
+                                    {
+                                        //var loggedInUsers = (Dictionary<string, string>)HttpRuntime.Cache["LoggedInUsers"];
+                                        var loggedInUsers = ECP_V2.WebApplication.SignalRHub.ChatHub.ConnectedUsers;
+
+                                        @*if (lstKHCapCha != null && lstKHCapCha.Count() > 0)
+                                            {
+                                                <tr>
+                                                    <td style="text-align:center;font-weight:bold" colspan="3">@(donViCapCha != null ? donViCapCha.TenDonVi : donVi.TenDonVi)</td>
+                                                    <td>@string.Format("{0:n0}", loggedInUsers.Count)</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.KHDangKy)</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.KHBoSung)</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.KHDotXuat)</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay1)/@lstKHCapCha.Sum(o => o.Ngay1BS)/@lstKHCapCha.Sum(o => o.Ngay1DX) (@lstKHCapCha.Sum(o => o.Ngay1Tong))</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay2)/@lstKHCapCha.Sum(o => o.Ngay2BS)/@lstKHCapCha.Sum(o => o.Ngay2DX) (@lstKHCapCha.Sum(o => o.Ngay2Tong))</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay3)/@lstKHCapCha.Sum(o => o.Ngay3BS)/@lstKHCapCha.Sum(o => o.Ngay3DX) (@lstKHCapCha.Sum(o => o.Ngay3Tong))</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay4)/@lstKHCapCha.Sum(o => o.Ngay4BS)/@lstKHCapCha.Sum(o => o.Ngay4DX) (@lstKHCapCha.Sum(o => o.Ngay4Tong))</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay5)/@lstKHCapCha.Sum(o => o.Ngay5BS)/@lstKHCapCha.Sum(o => o.Ngay5DX) (@lstKHCapCha.Sum(o => o.Ngay5Tong))</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay6)/@lstKHCapCha.Sum(o => o.Ngay6BS)/@lstKHCapCha.Sum(o => o.Ngay6DX) (@lstKHCapCha.Sum(o => o.Ngay6Tong))</td>
+                                                    <td style="font-weight:bold">@lstKHCapCha.Sum(o => o.Ngay7)/@lstKHCapCha.Sum(o => o.Ngay7BS)/@lstKHCapCha.Sum(o => o.Ngay7DX) (@lstKHCapCha.Sum(o => o.Ngay7Tong))</td>
+                                                </tr>
+                                            }
+                                            else
+                                            {*@
+                                        //int totalUserOnlineDonVi = loggedInUsers.Where(x => x.Value == donVi.Id).Count();
+                                        int totalUserOnlineDonVi = loggedInUsers.Where(x => x.DonViId == donVi.Id).Count();
+                                        var totaluser = 0;
+                                        foreach (var it in lstKH)
+                                        {
+                                            totaluser = totaluser + loggedInUsers.Where(x => x.DonViId == it.DonViId).Count();
+                                        }
+                                        <tr>
+                                            <td style="text-align:center;font-weight:bold" colspan="3">@(donViCapCha != null ? donViCapCha.TenDonVi : donVi.TenDonVi)</td>
+                                            <td>@string.Format("{0:n0}", totaluser)</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.KHDangKy)</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.KHBoSung)</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.KHDotXuat)</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.KHHuyBo)</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay1)/@lstKH.Sum(o => o.Ngay1BS)/@lstKH.Sum(o => o.Ngay1DX) (@lstKH.Sum(o => o.Ngay1Tong))</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay2)/@lstKH.Sum(o => o.Ngay2BS)/@lstKH.Sum(o => o.Ngay2DX) (@lstKH.Sum(o => o.Ngay2Tong))</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay3)/@lstKH.Sum(o => o.Ngay3BS)/@lstKH.Sum(o => o.Ngay3DX) (@lstKH.Sum(o => o.Ngay3Tong))</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay4)/@lstKH.Sum(o => o.Ngay4BS)/@lstKH.Sum(o => o.Ngay4DX) (@lstKH.Sum(o => o.Ngay4Tong))</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay5)/@lstKH.Sum(o => o.Ngay5BS)/@lstKH.Sum(o => o.Ngay5DX) (@lstKH.Sum(o => o.Ngay5Tong))</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay6)/@lstKH.Sum(o => o.Ngay6BS)/@lstKH.Sum(o => o.Ngay6DX) (@lstKH.Sum(o => o.Ngay6Tong))</td>
+                                            <td style="font-weight:bold">@lstKH.Sum(o => o.Ngay7)/@lstKH.Sum(o => o.Ngay7BS)/@lstKH.Sum(o => o.Ngay7DX) (@lstKH.Sum(o => o.Ngay7Tong))</td>
+                                        </tr>
+                                        //}
+
+                                        foreach (var it in lstKH)
+                                        {
+                                            //var totalUserOnline = loggedInUsers.Where(x => x.Value == it.DonViId).Count();
+                                            var totalUserOnline = loggedInUsers.Where(x => x.DonViId == it.DonViId).Count();
+
+                                            <tr>
+                                                <td>@it.STT</td>
+                                                <td><a href="/Admin/PhienLV/Index/@it.DonViId">@it.TenDonVi</a></td>
+                                                <td>@it.SDT</td>
+                                                <td>@string.Format("{0:n0}", totalUserOnline)</td>
+                                                <td>@it.KHDangKy</td>
+                                                <td>@it.KHBoSung</td>
+                                                <td>@it.KHDotXuat</td>
+                                                <td>@it.KHHuyBo</td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i]" target="_blank">@it.Ngay1/@it.Ngay1BS/@it.Ngay1DX (@it.Ngay1Tong)</a></td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i + 1]" target="_blank">@it.Ngay2/@it.Ngay2BS/@it.Ngay2DX (@it.Ngay2Tong)</a></td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i + 2]" target="_blank">@it.Ngay3/@it.Ngay3BS/@it.Ngay3DX (@it.Ngay3Tong)</a></td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i + 3]" target="_blank">@it.Ngay4/@it.Ngay4BS/@it.Ngay4DX (@it.Ngay4Tong)</a></td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i + 4]" target="_blank">@it.Ngay5/@it.Ngay5BS/@it.Ngay5DX (@it.Ngay5Tong)</a></td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i + 5]" target="_blank">@it.Ngay6/@it.Ngay6BS/@it.Ngay6DX (@it.Ngay6Tong)</a></td>
+                                                <td><a href="/Admin/PhienLV/Index?date=@lstDate[i + 6]" target="_blank">@it.Ngay7/@it.Ngay7BS/@it.Ngay7DX (@it.Ngay7Tong)</a></td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    catch { }
+}

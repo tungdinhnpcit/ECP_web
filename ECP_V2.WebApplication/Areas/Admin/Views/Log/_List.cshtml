@@ -1,0 +1,130 @@
+﻿@model ECP_V2.Common.Helpers.PageData<ECP_V2.DataAccess.Message>
+
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            $('.page-number').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).html());
+                Paging(page, $("#drlPageSize").val(), $('#txtSearch').val(), /*$('#cmbtype').val()*/ '', $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+            });
+
+            $('.prev').on('click', function (e) {
+                e.preventDefault();
+                Paging(1, $("#drlPageSize").val(), $('#txtSearch').val(),  /*$('#cmbtype').val()*/ '', $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+            });
+
+            $('.next').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($("#btnLast").data("sum"));
+                Paging(page, $("#drlPageSize").val(), $('#txtSearch').val(), /*$('#cmbtype').val()*/ '', $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+            });
+
+            //khai bao Popup cho nut xoa du lieu
+            $('a.detail').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDetail = $(this).attr("id").split("_")[1];
+                DetailPhienLv(IdDetail);
+
+            });
+
+            
+
+        });
+
+
+
+
+
+
+
+
+    </script>
+
+
+
+    @if (Model.Data.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                <thead>
+                    <tr>
+                        <th>
+                            STT
+                        </th>
+                        <th>
+                            Ngày Tạo
+                        </th>
+                        @*<th>
+                            Kiểu
+                        </th>*@
+                        @*<th>
+                            UserName
+                        </th>*@
+                        
+                        <th>
+                            Nội Dung
+                        </th>
+                        <th>
+                            Người tạo
+                        </th>
+                        @*<th width="100px" class="text-center">
+                            Thao tác
+                        </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Data)
+                    {
+                        <tr>
+                            <td>
+                                @(Model.Data.IndexOf(item) + 1)
+                            </td>
+                            <td>
+                                <span>@item.NgayTao</span>
+                            </td>
+                            @*<td>
+                                <span>@item.EventLevel</span>
+                            </td>*@
+                            @*<td>
+                                <span>@item.</span>
+                            </td>*@
+                            <td>
+                                <span>@item.NoiDung</span>
+                            </td>
+                            <td>
+                                <span>@item.NguoiTao</span>
+                            </td>
+                            
+                            @*<td class="actions">
+                                <a id="Detail_@item.Id" href="#modalAnimDetail" title="Chi Tiết Phiên Làm Việc" class="on-default remove-row detail"><i class="fa fa-plus-square-o" style="font-size: 25px; cursor: pointer"></i></a>
+                            </td>*@
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        @Html.Partial("Pager", Model.Page)
+    }
+    else
+    {
+        <h2 class="text-danger text-center">
+            Chưa có dữ liệu!
+        </h2>
+    }

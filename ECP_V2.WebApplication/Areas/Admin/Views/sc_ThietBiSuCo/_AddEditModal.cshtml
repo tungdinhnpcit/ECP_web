@@ -1,0 +1,101 @@
+﻿<div id="modal-add-edit" class="bootbox modal fade modal-darkorange in" tabindex="" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Thêm Vật tư, thiết bị bị sự cố</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" id="frmMaintainance">
+                        <div class="form-group row">
+                            <input type="hidden" id="hidIdM" value="0" />
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Mã hiệu </label>
+                            <div class="col-sm-9">
+                                <select id="ddlMaHieu" class="form-control" name="ddlMaHieu"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Nhà sản xuất </label>
+                            <div class="col-sm-9">
+                                <select id="ddlNhaSX" class="form-control" name="ddlNhaSX"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Số hợp dồng </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtSoHD" class="form-control" id="txtSoHD">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Biên bản nghiệm thu mua sắm VTTB </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtBienban" class="form-control" id="txtBienban">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Tên đơn vị thi công </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtDVTC" class="form-control" id="txtDVTC">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Ngày, tháng sản xuất </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtNgaySX" class=" clsDateTime" id="txtNgaySX">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Lịch sử vận hành của VTTB </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtLichSu" class="form-control" id="txtLichSu">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Ngày tháng đóng điện </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtNgayDongDien" class=" clsDateTime" id="txtNgayDongDien">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Môi trường vận hành </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtMoiTruong" class="form-control" id="txtMoiTruong">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Số lượng </label>
+                            <div class="col-sm-9">
+                                <input type="number" name="txtSoLuong" class="form-control" id="txtSoLuong">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <input type="hidden" id="hidIdM" value="0" />
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Đơn vị tính <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <select id="ddlDonViTinh" class="form-control" name="ddlDonViTinh"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right" style="float:right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
+                                <button type="button" id="btnSave" class="btn btn-primary float-right" style="margin-right:15px; float:right"><i class="fa fa-floppy-o" style="margin-right:6px"></i>Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

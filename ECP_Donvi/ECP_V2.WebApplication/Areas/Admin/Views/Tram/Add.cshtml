@@ -1,0 +1,149 @@
+﻿@using ECP_V2.Common.Helpers
+@model ECP_V2.WebApplication.Models.TramModel
+
+@{
+    ViewBag.Title = "Thêm mới trạm";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        HttpMethod = "post",
+        OnComplete = "CompleteAjaxRequest",
+        OnFailure = "ShowError"
+    };
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<script type="text/javascript">
+    function ShowError(xhr, ajaxOptions, thrownError) {        
+        if (xhr != null) {
+            var err = JSON.parse(xhr.responseText); //you can throw a code-behinde Exception and it will automatically                                                 //render to a valid JSON string when we rerieve the responseText
+            alert("Lỗi: " + err.Message + " tại dòng: " + err.StackTrace);
+        }
+    }
+
+    function CompleteAjaxRequest(obj) {        
+        var returnObj = eval('(' + obj.responseText + ')');
+        if (returnObj.Status == "success") {
+            if (returnObj.Message != null) {                
+                ShowMsg("Thông báo", "Thêm thành công trạm", "success");
+                window.location.href = returnObj.RedirectUrl;
+            }
+            else if (returnObj.RedirectUrl != null) {
+                ShowMsg("Thông báo", "Thêm thành công trạm", 'success');
+                window.location.href = returnObj.RedirectUrl;
+            }
+        } else {            
+            ShowMsg("Thông báo", returnObj.Message, 'error');
+        }
+
+        return false;
+    };
+
+    function ShowMsg(title, message, type) {
+        new PNotify({
+            title: title,
+            text: message,
+            type: type
+        });    
+    };
+
+    $(function () {    
+        $('#drlPhongBan').attr('disabled', 'true');        
+        $("#drlDonViId").change(function () {    
+            var selectDvi = $('#drlDonViId').val();
+            var urlGetPban = "/Admin/Tram/ListPBanByIdDvi?id=" + selectDvi;
+
+            $.ajax({
+                url: urlGetPban,
+                type: 'get',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $('#drlPhongBan').removeAttr('disabled');
+                    $("#divPhongBan").html(data);
+                },
+                error: function () {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Không lấy được dữ liệu!',
+                        type: 'error'
+                    });
+                }
+            });
+        });
+    
+    });
+
+</script>
+@using (Ajax.BeginForm("Add", "Tram", null, ajaxOpts, new { enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+{
+    <div class="col-sm-12">
+        <section class="panel-heading">
+            <div class="warning-area">
+                @Html.HiddenFor(model => model.Id)
+                @Html.ValidationSummary(true)
+            </div>
+        </section>
+        <div style="margin-left:15px;">
+            <h1>
+                <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Index", "Tram",new { all = false })">
+                    <i class="fa fa-list"></i> &nbsp; Danh sách trạm
+                </a>
+            </h1>
+        </div>
+
+        <div class="col-sm-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Thông tin trạm</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Đơn vị quản lý:</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDonVi, "Chọn đơn vị ...", new { @class = "form-control mb-md", @id = "drlDonViId", @name = "drlDonViId" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Phòng ban:</label>
+                        <div class="col-sm-8" id="divPhongBan">
+                            @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPhongBan" })
+                            @Html.ValidationMessageFor(m => m.PhongBanId)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Tên trạm</label>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(x => x.Ten, new { @class = "form-control", id = "txtName" })
+                            @Html.ValidationMessageFor(m => m.Ten)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Số điện thoại liên hệ
+                        </label>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(x => x.SDT, new { @class = "form-control", id = "txtSDT" })
+                            @Html.ValidationMessageFor(m => m.SDT)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Mô tả
+                        </label>
+                        <div class="col-sm-8">
+                            @Html.TextAreaFor(x => x.MoTa, new { @class = "form-control", id = "txtWebsite", rows = "3" })
+                            @Html.ValidationMessageFor(m => m.MoTa)
+                        </div>
+                    </div>
+                    <div class="form-actions" style="text-align:right">
+                        <button class="btn btn-primary" type="submit">Đồng ý</button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "Tram")">
+                            <span>Hủy bỏ</span>
+                        </a>
+                    </div>
+                </div>
+                
+            </section>
+        </div>
+    </div>
+}

@@ -1,0 +1,58 @@
+﻿
+
+
+<div id="modal-add-comment" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Thêm Bình Luận</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:30px; color:red; margin-top:-25px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <div class="clear"></div>
+                    <form role="form" id="frmMaintainanceComment">
+                        <div class="row">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                        </div>
+
+                        <div class="col-md-12" id="listComments" style="max-height:350px; overflow:auto; margin-bottom:30px; text-overflow:ellipsis">
+
+                        </div>
+
+                        <div class="form-group row">
+                            <input type="hidden" id="hidId" value="0" />
+                            <input type="hidden" id="hidNDId" value="0" />
+                            <div class="col-sm-12">
+                                <textarea type="text" rows="3" name="txtContent" class="form-control" id="txtContent" placeholder="Nhập bình luận..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="margin-top:30px">
+                            <div class="col-sm-offset-1 col-sm-11">
+                                <button type="button" id="btnSendComment" class="btn btn-primary float-right" style="margin-right:15px"><i class="fa fa-paper-plane-o" style="margin-right:6px"></i>Gửi Bình Luận</button>
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="comment-template" type="x-tmpl-mustache">
+
+    <div class="col-md-12 row" style="background-color:whitesmoke; border-radius:50px; margin-bottom:10px; padding:0px">
+        <div class="col-md-2" style="padding:5px 10px 5px 30px">
+            <img class="col-md-12" src="{{Image}}" style="width:60px; height:60px; border-radius:30px; object-fit:scale-down; padding:0px" />
+        </div>
+        <div class="col-sm-10" style="padding:0px" title="{{Title}}">
+            <label class="col-sm-6 col-form-label" style="font-size:15px; color:#f54848; font-weight:bold; text-align:left; padding:0px; padding-top:10px">{{FullName}}: {{HuyChot}}</label>
+            <label class="col-sm-5 col-form-label" style="font-size:12px; text-align:right; padding:10px 5px 0px 0px">{{Date}}</label>
+            <label class="col-sm-12 col-form-label" style="font-size:12px; color:#2b49cc; font-weight:bold; text-align:left; padding-top:5px; padding-left:15px">{{{Content}}}</label>
+        </div>
+    </div>
+
+</script>
+
+

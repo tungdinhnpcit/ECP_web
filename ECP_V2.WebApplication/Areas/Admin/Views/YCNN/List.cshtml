@@ -1,0 +1,369 @@
+﻿
+<script type="text/javascript">
+    $(function () {
+        $('a.delete').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+
+        });
+    });
+</script>
+
+<div class="table-responsive">
+    <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+        <thead>
+            <tr>
+                <th>
+                    Số TT
+                </th>
+                <th style="min-width:150px;width:150px;max-width:150px">
+                    Tên thiết bị
+                </th>
+                <th>
+                    Người, đơn vị quản lý vận hành thiết bị
+                </th>
+                <th>
+                    Nhãn hiệu
+                </th>
+                <th>
+                    Nơi chế tạo
+                </th>
+                <th>
+                    Năm chế tạo
+                </th>
+                <th>
+                    Số chế tạo
+                </th>
+                <th>
+                    Số đăng ký
+                </th>
+                <th>
+                    Năm đưa vào sử dụng
+                </th>
+                <th>
+                    Tải trọng, áp lực Thiết kế  (Tấn, bar)
+                </th>
+                <th>
+                    Tải trọng, áp lực cho phép làm việc (Tấn, bar)
+                </th>
+                <th>
+                    Ngày khám nghiệm gần nhất
+                </th>
+                <th>
+                    Ngày khám nghiệm sắp tới
+                </th>
+                <th>
+                    Đơn vị kiểm định
+                </th>
+                <th>
+                    Tình trạng hiện tại của thiết bị
+                </th>
+                <th>
+                    Hồ sơ thiết bị
+                </th>
+                <th style="min-width:150px;width:150px;max-width:150px">
+                    Ghi chú
+                </th>
+                <th style="min-width:110px;width:110px;max-width:110px">
+                    Thao tác
+                </th>
+            </tr>
+            <tr>
+                <th style="text-align:center">
+                    1
+                </th>
+                <th style="text-align:center">
+                    2
+                </th>
+                <th style="text-align:center">
+                    3
+                </th>
+                <th style="text-align:center">
+                    4
+                </th>
+                <th style="text-align:center">
+                    5
+                </th>
+                <th style="text-align:center">
+                    6
+                </th>
+                <th style="text-align:center">
+                    7
+                </th>
+                <th style="text-align:center">
+                    8
+                </th>
+                <th style="text-align:center">
+                    9
+                </th>
+                <th style="text-align:center">
+                    10
+                </th>
+                <th style="text-align:center">
+                    11
+                </th>
+                <th style="text-align:center">
+                    12
+                </th>
+                <th style="text-align:center">
+                    13
+                </th>
+                <th style="text-align:center">
+                    14
+                </th>
+                <th style="text-align:center">
+                    15
+                </th>
+                <th style="text-align:center">
+                    16
+                </th>
+                <th style="text-align:center">
+                    17
+                </th>
+                <th style="text-align:center">
+                    18
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="HetHan">
+                <td style="text-align:center">1</td>
+                <td>Thang máy</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/06/2018</td>
+                <td>21/06/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr class="HetHan">
+                <td style="text-align:center">2</td>
+                <td>Xe nâng</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/06/2018</td>
+                <td>21/06/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr> 
+            <tr class="SapHetHan">
+                <td style="text-align:center">3</td>
+                <td>Cần trục</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/08/2018</td>
+                <td>21/08/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr class="SapHetHan">
+                <td style="text-align:center">4</td>
+                <td>Cầu trục</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/08/2018</td>
+                <td>21/08/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">5</td>
+                <td>Pa lăng</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/09/2018</td>
+                <td>21/09/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">6</td>
+                <td>Tời</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/09/2018</td>
+                <td>21/09/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">7</td>
+                <td>Tó</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/09/2018</td>
+                <td>21/09/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Bình chịu áp lực</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/09/2018</td>
+                <td>21/09/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">9</td>
+                <td>Bình chịu áp lực</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>21/09/2018</td>
+                <td>21/09/2019</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a id="SoTheoDoi_1" onclick="sotheodoi(this)" title="Sổ theo dõi" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="rightcountload hide">
+
+    <ol class="breadcrumbs" style="padding-right:20px">
+        <li><a href="#"><span style="color: #fff; font-weight: bold;">Tất cả: 9</span></a></li>
+        <li><a href="#"><span style="color: #ac2925; font-weight: bold;">Hết hạn: 2</span></a></li>
+        <li><a href="#"><span style="color: #F6BB42; font-weight: bold;">Sắp hết hạn: 2</span></a></li>
+        <li><a href="#"><span style="color: white; font-weight: bold;">Chưa đến hạn: 5</span></a></li>
+    </ol>
+
+</div>
+<script>
+    $(".rightcount").html($(".rightcountload").html());
+</script>

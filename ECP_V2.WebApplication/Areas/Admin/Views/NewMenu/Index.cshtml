@@ -1,0 +1,122 @@
+﻿
+@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "Quản lý thông tin menu";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@section ScriptSignalR{
+    <script src="~/Scripts/AdminJS/twbs-pagination/jquery.twbsPagination.js"></script>
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+
+    <script src="~/Content/admin/menu/index.js"></script>
+    <script>
+        var menuObj = new menuController();
+        menuObj.initialize();
+    </script>
+}
+
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> <span>Quản lý Menu</span>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-4">
+                    </div>
+                    <div class="col-sm-12 col-md-8">
+                        <div class="col-sm-9 col-md-9">
+                            <div class="input-group mb-md">
+                                <input type="text" id="txtKeyword" class="form-control" placeholder="Tìm kiếm...">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" id="btnSearch">Tìm kiếm</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3">
+                            <button type="button" class="btn btn-success" id="btnCreate">Thêm mới</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr class="gradeX">
+                                    <th style="width:5% ;text-align:center">STT</th>
+                                    <th style="width:10%">Mã Code</th>
+                                    <th style="width:25%">Tên hiển thị</th>
+                                    <th style="width:30%">Mô tả</th>
+                                    <th style="width:10%">Cấp bậc</th>
+                                    <th style="width:10%">Thứ tự</th>
+                                    <th style="width:10%; text-align:center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-content"></tbody>
+                            <tfoot>
+                                <tr class="gradeX">
+                                    <th style="width:5% ;text-align:center">STT</th>
+                                    <th style="width:10%">Mã Code</th>
+                                    <th style="width:25%">Tên hiển thị</th>
+                                    <th style="width:30%">Mô tả</th>
+                                    <th style="width:10%">Cấp bậc</th>
+                                    <th style="width:10%">Thứ tự</th>
+                                    <th style="width:10%; text-align:center">Thao tác</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <!--Pagination-->
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="dataTables_info" id="datatable-checkbox_info" role="status" aria-live="polite">
+                                    <select id="ddlShowPage">
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="50" selected="selected">50</option>
+                                        <option value="300">300</option>
+                                        <option value="500">500</option>
+                                    </select>
+                                    <span class="item-per-page">
+                                        bản ghi/trang.
+                                    </span>
+                                    Tổng số bản ghi: <strong id="lblTotalRecords"></strong>
+                                </div>
+                            </div><div class="col-sm-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="datatable-checkbox_paginate">
+                                    <ul id="paginationUL"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script id="table-template" type="x-tmpl-mustache">
+    <tr class="gradeA">
+        <td style="text-align:center">{{STT}}</td>
+        <td>{{Code}}</td>
+        <td>{{Text}}</td>
+        <td>{{Description}}</td>
+        <td>{{Level}}</td>
+        <td>{{ThuTu}}</td>
+        <th scope="row" style="text-align:center">
+            <a href="#" class="btn  btn-sm btn-edit" data-id="{{Id}}" title="Sửa" style="font-size:18px"><i class="fa fa-pencil"></i></a>
+            <a href="#" class="btn  btn-sm btn-delete" data-id="{{Id}}" title="Xóa" style="font-size:18px"><i class="fa fa-trash"></i></a>
+        </th>
+    </tr>
+</script>
+
+@Html.Partial("_AddEditModal")

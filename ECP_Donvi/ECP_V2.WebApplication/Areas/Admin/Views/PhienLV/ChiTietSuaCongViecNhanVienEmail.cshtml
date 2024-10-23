@@ -1,0 +1,48 @@
+﻿@model ECP_V2.Business.Repository.PhienLVModel
+
+<style>
+    p {
+        font-family: Tahoma;
+        font-size: 12px;
+    }
+</style>
+
+<div style="width: 100%;">
+    <h2 style="font-family: Tahoma; color: #000; font-weight: bold;">Hệ thống ECP thông báo công việc đã cập nhật</h2>
+</div>
+
+<p style="color: #f00;">
+    Thay đổi (nếu có), lý do thay đổi: <b>@Model.LyDoThayDoi</b>
+</p>
+<p>
+    Nội dung công việc: <b>@Model.NoiDung</b>
+</p>
+<p>
+    Đơn vị làm công việc: <b>@Model.TenPhongBan</b>
+</p>
+<p>
+    Địa điểm (vị trí) công tác: <b>@Model.DiaDiem</b>
+</p>
+<p>
+    Thời gian công tác: <b><span>@string.Format("{0:hh\\:mm}", Model.GioBd) -</span> <span>@string.Format("{0:hh\\:mm}", Model.GioKt)</span></b>
+</p>
+<p>
+    Người duyệt, chức danh; ngày duyệt phương án, số PA: <b>@Model.NguoiDuyet_SoPa</b>
+</p>
+<p>
+    Người chỉ huy trực tiếp: <b>@Model.NguoiChiHuy</b>
+</p>
+<p>
+    Người giám sát ATĐ: <b>@Model.GiamSatVien</b>
+</p>
+<p>
+    Người kiểm soát đơn vị công tác: <b>@Model.NguoiKiemSoat</b>
+</p>
+<p>
+    Người kiểm tra PCT; PTT; LCT: <b>@Model.NguoiKiemTraPhieu</b>
+</p>
+<p>
+    Lãnh đạo đơn vị trực ban kiểm soát: <b>@Model.LanhDaoTrucBan</b>
+</p>
+
+<div style="margin: 20px 0 10px 0;"><a href="@String.Format("{0}://{1}/Admin/PhienLV/ChiTietPhienLV/{2}", Request.Url.Scheme, Request.Url.Authority, Model.Id)" target="_blank" style="padding: 10px 15px; font-size: 12px; font-family: Tahoma; background: #ff6a00; color: #fff; border-radius: 5px; text-decoration: none">Xem chi tiết công việc</a></div>

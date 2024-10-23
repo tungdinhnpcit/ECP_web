@@ -1,0 +1,157 @@
+﻿@using System.Globalization
+@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "Báo cáo kết quả triển khai tháng hành động về ATVSLĐ";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var year = DateTime.Now.Year;
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+@section ScriptSignalR{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+    <script src="~/Content/admin/atvs_KetQua/index.js"></script>
+    <script>
+        var kqObj = new kqController();
+        kqObj.initialize();
+    </script>
+}
+
+<style>
+    .listRolesName table thead th {
+        padding-left: 8px;
+        padding-right: 8px !important;
+    }
+
+    .nd-isNPC {
+        background-color: antiquewhite !important
+    }
+</style>
+
+<input type="hidden" id="hidKyBaoCao" value="0" />
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks" style="margin-right:20px"></span>Báo cáo kết quả triển khai tháng hành động về ATVSLĐ
+                <span id="lblChuyenNPC" style="margin:0px 20px"></span>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline row">
+                    <div class="col-sm-12 col-md-4">
+                        <span>Chọn đơn vị</span>
+                        <br />
+                        <select class="form-control" id="ddlDonVi" style="height:38px">
+                            @*@try
+                                {
+                                    @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                                }
+                                catch { }*@
+                            <option value="@donVi.Id">@donVi.TenDonVi</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-4">
+                        <div class="col-md-4 col-sm-6">
+                            <span>Chọn năm: &nbsp;</span>
+                            <br />
+                            <select class="form-control" id="ddlYear" style="height:38px">
+                                @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 4; i--)
+                                {
+                                    <option value="@i" @(i == DateTime.Now.Year ? " selected='selected'" : "")>Năm @i</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4" style="padding-top: 10px">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" id="btnExport" style="height:38px; float:right; margin-left:15px"><i class="fa fa-file-excel-o" aria-hidden="true" style="margin-right:5px"></i>Xuất báo cáo</button>
+                            @if (User.IsInRole("DuyetNPC"))
+                            {
+                                <button type="button" class="btn btn-success" id="btnChuyenNPC" style="height:38px; float:right; margin-left:15px"><i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="margin-right:5px"></i>Chuyển Tổng công ty</button>
+                            }
+
+                            @*<button type="button" class="btn btn-primary" id="btn-add-nd" style="height:38px; float:right; margin-left:15px">Thêm bản ghi</button>*@
+                            @*@if (User.IsInRole("Admin"))
+                                {
+                                    <button type="button" class="btn btn-danger" id="btnHuyChuyenNPC" style="height:38px; float:right;display:none; margin-left:15px">Hủy chuyển NPC</button>
+                                }*@
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover dataTables-example" id="table-hl">
+                            <thead>
+                                <tr class="gradeX" style="font-weight:100; font-size:15px">
+                                    <th style="width:5%; text-align:center; vertical-align:middle">STT</th>
+                                    <th style="width:40%; text-align:center; vertical-align:middle">Nội dung</th>
+                                    <th style="width:15%; text-align:center; vertical-align:middle">Đơn vị tính</th>
+                                    <th style="width:10%; text-align:center; vertical-align:middle">Số lượng</th>
+                                    <th style="width:20%; text-align:center; vertical-align:middle">Ghi chú</th>
+                                    <th style="width:10%; text-align:center; vertical-align:middle">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-content">
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script id="template-kh" type="x-tmpl-mustache">
+    <tr class="gradeA hl-item {{IsNPC}}" style="{{Style}}" data-id="{{Id}}" data-dmid="{{DMID}}">
+        <td class="hl-stt" style="text-align:center">{{HLSTT}}</td>
+        <td class="hl-ten" style="text-align:left">{{HLTEN}}</td>
+        <td class="hl-donvitinh" style="text-align:center">{{HLDVT}}</td>
+        <td class="hl-soluong" style="text-align:center">{{HLSL}}</td>
+        <td class="hl-ghichu" style="text-align:left">{{HLGC}}</td>
+        <td class="nd-function" style="text-align: center">
+            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+            {
+                <a href="#" class="btn btn-sm btn-edit-hl" title="Sửa" style="font-size:18px;{{hidden}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-save-hl" title="Lưu" style="font-size:18px; display: none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-hl" title="Hủy" style="font-size: 18px; display: none"><i class="fa fa-ban"></i></a>
+            }
+            else
+            {
+            }
+
+        </td>
+    </tr>
+</script>
+
+
+<script id="template-edit-hl" type="x-tmpl-mustache">
+    <tr class="gradeA ndvs add-ndvs" data-id="{{Id}}" data-dmid="{{DMID}}">
+        <td class="hl-stt" style="text-align:center">{{HLSTT}}</td>
+        <td class="hl-ten" style="text-align:left">{{HLTEN}}</td>
+        <td class="hl-donvitinh" style="text-align:center">{{HLDVT}}</td>
+        <td class="hl-soluong" style="text-align:center"><input type="number" value="{{HLSL}}" class="txt-hl-soluong form-control" placeholder="" /></td>
+        <td class="hl-ghichu" style="text-align:left"><textarea rows="1" value="{{HLGC}}" class="txt-hl-ghichu form-control" placeholder=""></textarea></td>
+
+        <td class="nd-function" style="text-align:center">
+            <a href="#" class="btn btn-sm btn-save-hl" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-cancel-hl" title="Hủy" data-id="{{Id}}" style="font-size: 18px"><i class="fa fa-ban"></i></a>
+        </td>
+    </tr>
+</script>

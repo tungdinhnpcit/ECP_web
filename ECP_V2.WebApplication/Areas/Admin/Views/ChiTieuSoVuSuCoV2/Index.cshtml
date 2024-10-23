@@ -1,0 +1,790 @@
+﻿@{
+    ViewBag.Title = "Chỉ tiêu về số vụ sự cố trung, hạ áp";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> CHỈ TIÊU VỀ SỐ VỤ SỰ CỐ TRUNG, HẠ ÁP NĂM @string.Format("{0:yyyy}", DateTime.Now)
+            </div>
+            <div class="panel-title fulltable hide" style="position: absolute; top: 17px; right: 20px; cursor:pointer">
+                <span class="glyphicon glyphicon-fullscreen"></span>
+            </div>
+            <div class="panel-title nonetable hide" style="position: fixed; top: 0px; right: 18px; z-index: 99999999; cursor: pointer; color: #fff;">
+                <span class="glyphicon glyphicon-resize-small" style="background: red; display: block; height: 32px; width: 32px; padding: 6px;"></span>
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div id="msgNotification" style="width:100%;text-align:center;border:1px solid #ecedf0;padding:10px;margin-bottom:10px;display:none">
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    <div id="NotificationBox2" class="@TempData["NotificationCSS"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification"])
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox1" class="@TempData["NotificationCSS3"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification3"])
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox3" class="@TempData["NotificationCSS2"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification2"])
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline" style="">
+                    <div style="position:relative;float:right;right:10px">
+                        <span>Năm: </span>
+                        <input id="Date" type="text" style="width:80px;margin-right:10px">
+                        @if (User.IsInRole("ChiTieuCapCongTy"))
+                        {
+                            <button href="#modalAnimSaveAll" class="btn btn-primary saveall">Lưu</button>
+                        }
+                    </div>
+                </div>
+                <div id="table" style="padding:5px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAnimSaveAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn lưu tất cả ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="SaveAll()" id="modal-confirm">Có</button>
+                    <button onclick="ModalDismiss()" class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimLockAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn khóa tất cả ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="Khoa(false)" id="modal-confirm">Có</button>
+                    <button onclick="ModalDismiss()" class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimUnLockAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn mở khóa tất cả ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="Khoa(true)" id="modal-confirm">Có</button>
+                    <button onclick="ModalDismiss()" class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+
+
+<script>
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        const d = new Date();
+        let year = d.getFullYear();
+
+        $("#Date").datepicker({
+            dateFormat: 'yyyy'
+        }).val(year);
+
+        //$("#Date").kendoDatePicker({
+        //    start: "decade",
+        //    depth: "decade",
+        //    format: "yyyy",
+        //    value: new Date(),
+        //    change: onChange,
+        //});
+
+        $('button.saveall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+        });
+
+        Paging();
+    });
+
+    function loading1(name, overlay) {
+        $('.body').append('<div id="overlay"></div><div id="preloader" style="height: 40px;">' + name + '..</div>');
+        if (overlay == 1) {
+            $('#overlay').css('opacity', 0.4).fadeIn(400, function () { $('#preloader').fadeIn(400); });
+            return false;
+        }
+        $('#preloader').fadeIn();
+    }
+
+    function unloading1() {
+        $('#preloader').fadeOut(400, function () { $('#overlay').fadeOut(); $(this).remove(); })
+    }
+
+    function onChange() {
+        Paging();
+    }
+
+    function Paging() {
+
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+
+        var scriptUrl = "/Admin/ChiTieuSoVuSuCoV2/List";
+        $.ajax({
+            type: "GET",
+            url: scriptUrl,
+            dataType: 'html',
+            async: true,
+            data: {
+                Date: $("#Date").val()
+            },
+            success: function (data) {
+                $('#table').html(data);
+
+                unloading1();
+            }
+        });
+
+    }
+
+    function SaveAll() {
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+        $.magnificPopup.close();
+
+        var tong = 0;
+        $('input[name="txtinputChiTieuNam"]').map(function () {
+            tong = tong + parseInt(this.value);
+            return this.value;
+        }).get();
+
+        var tongkh = 0;
+        $('input[name="txtinputChiTieuKHNam"]').map(function () {
+            tongkh = tongkh + parseInt(this.value);
+            return this.value;
+        }).get();
+
+        var nhap = $('#hidNPCChiTieuNam').val();
+        var nhapkh = $('#hidNPCChiTieuNamKH').val();
+        if (parseInt(tong) > parseInt(nhap) || parseInt(tongkh) > parseInt(nhapkh)) {
+            unloading1();
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch năm lớn hơn số lượng kế hoạch năm do Tổng công ty giao !',
+                type: 'error'
+            });
+            return;
+        }
+
+        if (parseInt(tong) == parseInt(nhap) || parseInt(tongkh) == parseInt(nhapkh) ) {
+            SetSave();
+        }
+        else {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch năm của đơn vị nhỏ hơn số lượng kế hoạch năm do tổng công ty giao, bạn có chắc muốn lưu !',
+                type: 'error',
+                confirm: {
+                    confirm: true
+                },
+                buttons: {
+                    closer: false,
+                    sticker: false
+                },
+            }).get().on('pnotify.confirm', function () {
+
+                SetSave();
+            }).on('pnotify.cancel', function () {
+
+                unloading1();
+
+            });
+
+        }
+    }
+
+    function SetSave() {
+
+        var valIdT1 = $('input[name="hidIdT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT2 = $('input[name="hidIdT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT3 = $('input[name="hidIdT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT4 = $('input[name="hidIdT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT5 = $('input[name="hidIdT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT6 = $('input[name="hidIdT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT7 = $('input[name="hidIdT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT8 = $('input[name="hidIdT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT9 = $('input[name="hidIdT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT10 = $('input[name="hidIdT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT11 = $('input[name="hidIdT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT12 = $('input[name="hidIdT12"]').map(function () {
+            return this.value;
+        }).get();
+
+        var idMaDV = $('input[name="hidMaDV"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valChiTieuT1 = $('input[name="txtinputChiTieuT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT2 = $('input[name="txtinputChiTieuT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT3 = $('input[name="txtinputChiTieuT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT4 = $('input[name="txtinputChiTieuT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT5 = $('input[name="txtinputChiTieuT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT6 = $('input[name="txtinputChiTieuT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT7 = $('input[name="txtinputChiTieuT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT8 = $('input[name="txtinputChiTieuT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT9 = $('input[name="txtinputChiTieuT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT10 = $('input[name="txtinputChiTieuT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT11 = $('input[name="txtinputChiTieuT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuT12 = $('input[name="txtinputChiTieuT12"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuNam = $('input[name="txtinputChiTieuNam"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valChiTieuKHT1 = $('input[name="txtinputChiTieuKHT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT2 = $('input[name="txtinputChiTieuKHT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT3 = $('input[name="txtinputChiTieuKHT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT4 = $('input[name="txtinputChiTieuKHT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT5 = $('input[name="txtinputChiTieuKHT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT6 = $('input[name="txtinputChiTieuKHT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT7 = $('input[name="txtinputChiTieuKHT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT8 = $('input[name="txtinputChiTieuKHT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT9 = $('input[name="txtinputChiTieuKHT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT10 = $('input[name="txtinputChiTieuKHT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT11 = $('input[name="txtinputChiTieuKHT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHT12 = $('input[name="txtinputChiTieuKHT12"]').map(function () {
+            return this.value;
+        }).get();
+        var valChiTieuKHNam = $('input[name="txtinputChiTieuKHNam"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valIdKHT1 = $('input[name="hidIdKHT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT2 = $('input[name="hidIdKHT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT3 = $('input[name="hidIdKHT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT4 = $('input[name="hidIdKHT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT5 = $('input[name="hidIdKHT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT6 = $('input[name="hidIdKHT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT7 = $('input[name="hidIdKHT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT8 = $('input[name="hidIdKHT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT9 = $('input[name="hidIdKHT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT10 = $('input[name="hidIdKHT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT11 = $('input[name="hidIdKHT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdKHT12 = $('input[name="hidIdKHT12"]').map(function () {
+            return this.value;
+        }).get();
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/ChiTieuSoVuSuCoV2/Save",
+            dataType: "json",
+            data: {
+                Date: $("#Date").val(),
+                MaDV: idMaDV,
+                IdT1: valIdT1,
+                IdT2: valIdT2,
+                IdT3: valIdT3,
+                IdT4: valIdT4,
+                IdT5: valIdT5,
+                IdT6: valIdT6,
+                IdT7: valIdT7,
+                IdT8: valIdT8,
+                IdT9: valIdT9,
+                IdT10: valIdT10,
+                IdT11: valIdT11,
+                IdT12: valIdT12,
+
+                ChiTieuT1: valChiTieuT1,
+                ChiTieuT2: valChiTieuT2,
+                ChiTieuT3: valChiTieuT3,
+                ChiTieuT4: valChiTieuT4,
+                ChiTieuT5: valChiTieuT5,
+                ChiTieuT6: valChiTieuT6,
+                ChiTieuT7: valChiTieuT7,
+                ChiTieuT8: valChiTieuT8,
+                ChiTieuT9: valChiTieuT9,
+                ChiTieuT10: valChiTieuT10,
+                ChiTieuT11: valChiTieuT11,
+                ChiTieuT12: valChiTieuT12,
+                ChiTieuNam: valChiTieuNam,
+
+                ChiTieuKHT1: valChiTieuKHT1,
+                ChiTieuKHT2: valChiTieuKHT2,
+                ChiTieuKHT3: valChiTieuKHT3,
+                ChiTieuKHT4: valChiTieuKHT4,
+                ChiTieuKHT5: valChiTieuKHT5,
+                ChiTieuKHT6: valChiTieuKHT6,
+                ChiTieuKHT7: valChiTieuKHT7,
+                ChiTieuKHT8: valChiTieuKHT8,
+                ChiTieuKHT9: valChiTieuKHT9,
+                ChiTieuKHT10: valChiTieuKHT10,
+                ChiTieuKHT11: valChiTieuKHT11,
+                ChiTieuKHT12: valChiTieuKHT12,
+                ChiTieuKHNam: valChiTieuKHNam,
+
+                IdKHT1: valIdKHT1,
+                IdKHT2: valIdKHT2,
+                IdKHT3: valIdKHT3,
+                IdKHT4: valIdKHT4,
+                IdKHT5: valIdKHT5,
+                IdKHT6: valIdKHT6,
+                IdKHT7: valIdKHT7,
+                IdKHT8: valIdKHT8,
+                IdKHT9: valIdKHT9,
+                IdKHT10: valIdKHT10,
+                IdKHT11: valIdKHT11,
+                IdKHT12: valIdKHT12,
+            },
+            success: function (json) {
+                if (json.type == "success") {
+                    unloading1();
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: 'Lưu dữ liệu thành công',
+                        type: 'success'
+                    });
+                    Paging();
+                }
+                else {
+                    unloading1();
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: 'Có lỗi xảy ra khi lưu bản ghi: ' + json.mess,
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                unloading1();
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi lưu bản ghi',
+                    type: 'error'
+                });
+            }
+        });
+    }
+
+    function ModalDismiss() {
+        $.magnificPopup.close();
+    }
+
+    function Khoa(value) {
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+        $.magnificPopup.close();
+        var valIdT1 = $('input[name="hidIdT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT2 = $('input[name="hidIdT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT3 = $('input[name="hidIdT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT4 = $('input[name="hidIdT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT5 = $('input[name="hidIdT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT6 = $('input[name="hidIdT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT7 = $('input[name="hidIdT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT8 = $('input[name="hidIdT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT9 = $('input[name="hidIdT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT10 = $('input[name="hidIdT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT11 = $('input[name="hidIdT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valIdT12 = $('input[name="hidIdT12"]').map(function () {
+            return this.value;
+        }).get();
+
+        var idMaDV = $('input[name="hidMaDV"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valSoVuSauMTT1 = $('input[name="hidSoVuSauMTT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT2 = $('input[name="hidSoVuSauMTT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT3 = $('input[name="hidSoVuSauMTT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT4 = $('input[name="hidSoVuSauMTT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT5 = $('input[name="hidSoVuSauMTT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT6 = $('input[name="hidSoVuSauMTT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT7 = $('input[name="hidSoVuSauMTT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT8 = $('input[name="hidSoVuSauMTT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT9 = $('input[name="hidSoVuSauMTT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT10 = $('input[name="hidSoVuSauMTT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT11 = $('input[name="hidSoVuSauMTT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuSauMTT12 = $('input[name="hidSoVuSauMTT12"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valSoVuTruocMTT1 = $('input[name="hidSoVuTruocMTT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT2 = $('input[name="hidSoVuTruocMTT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT3 = $('input[name="hidSoVuTruocMTT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT4 = $('input[name="hidSoVuTruocMTT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT5 = $('input[name="hidSoVuTruocMTT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT6 = $('input[name="hidSoVuTruocMTT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT7 = $('input[name="hidSoVuTruocMTT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT8 = $('input[name="hidSoVuTruocMTT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT9 = $('input[name="hidSoVuTruocMTT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT10 = $('input[name="hidSoVuTruocMTT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT11 = $('input[name="hidSoVuTruocMTT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valSoVuTruocMTT12 = $('input[name="hidSoVuTruocMTT12"]').map(function () {
+            return this.value;
+        }).get();
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/ChiTieuSoVuSuCoV2/Khoa",
+            dataType: "json",
+            data: {
+                IsOpen: value,
+                Date: $("#Date").val(),
+                MaDV: idMaDV,
+                IdT1: valIdT1,
+                IdT2: valIdT2,
+                IdT3: valIdT3,
+                IdT4: valIdT4,
+                IdT5: valIdT5,
+                IdT6: valIdT6,
+                IdT7: valIdT7,
+                IdT8: valIdT8,
+                IdT9: valIdT9,
+                IdT10: valIdT10,
+                IdT11: valIdT11,
+                IdT12: valIdT12,
+                SoVuSauMTT1: valSoVuSauMTT1,
+                SoVuSauMTT2: valSoVuSauMTT2,
+                SoVuSauMTT3: valSoVuSauMTT3,
+                SoVuSauMTT4: valSoVuSauMTT4,
+                SoVuSauMTT5: valSoVuSauMTT5,
+                SoVuSauMTT6: valSoVuSauMTT6,
+                SoVuSauMTT7: valSoVuSauMTT7,
+                SoVuSauMTT8: valSoVuSauMTT8,
+                SoVuSauMTT9: valSoVuSauMTT9,
+                SoVuSauMTT10: valSoVuSauMTT10,
+                SoVuSauMTT11: valSoVuSauMTT11,
+                SoVuSauMTT12: valSoVuSauMTT12,
+
+                SoVuTruocMTT1: valSoVuTruocMTT1,
+                SoVuTruocMTT2: valSoVuTruocMTT2,
+                SoVuTruocMTT3: valSoVuTruocMTT3,
+                SoVuTruocMTT4: valSoVuTruocMTT4,
+                SoVuTruocMTT5: valSoVuTruocMTT5,
+                SoVuTruocMTT6: valSoVuTruocMTT6,
+                SoVuTruocMTT7: valSoVuTruocMTT7,
+                SoVuTruocMTT8: valSoVuTruocMTT8,
+                SoVuTruocMTT9: valSoVuTruocMTT9,
+                SoVuTruocMTT10: valSoVuTruocMTT10,
+                SoVuTruocMTT11: valSoVuTruocMTT11,
+                SoVuTruocMTT12: valSoVuTruocMTT12,
+            },
+            success: function (json) {
+                if (json.type == "success") {
+                    unloading1();
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'success'
+                    });
+                    Paging();
+                }
+                else {
+                    unloading1();
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                unloading1();
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi lưu bản ghi',
+                    type: 'error'
+                });
+            }
+        });
+
+    }
+
+    function updatetotalnam() {
+        var tong = 0;
+        $('input[name="txtinputChiTieuNam"]').map(function () {
+            tong = tong + parseInt(this.value);
+            return this.value;
+        }).get();
+        $("#lblTongChiTieuNam").html(tong);
+
+        var nhap = $('#hidNPCChiTieuNam').val();
+
+        if (parseInt(tong) > parseInt(nhap)) {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch năm lớn hơn số lượng kế hoạch năm do Tổng công ty giao !',
+                type: 'error'
+            });
+            return;
+        }
+    }
+
+    function updatetotalkhnam() {
+        var tong = 0;
+        $('input[name="txtinputChiTieuKHNam"]').map(function () {
+            tong = tong + parseInt(this.value);
+            return this.value;
+        }).get();
+        $("#lblTongChiTieuNamKH").html(tong);
+
+        var nhap = $('#hidNPCChiTieuNamKH').val();
+
+        if (parseInt(tong) > parseInt(nhap)) {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch năm lớn hơn số lượng kế hoạch năm do Tổng công ty giao !',
+                type: 'error'
+            });
+            return;
+        }
+    }
+
+</script>
+

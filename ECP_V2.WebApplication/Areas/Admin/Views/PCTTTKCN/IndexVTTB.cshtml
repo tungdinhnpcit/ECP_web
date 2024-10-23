@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Danh mục VTTB dự phòng PCTT&TKCN";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<style>
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content-body {
+        padding: 5px;
+    }
+</style>
+<div class="head" id="ndContent">
+    <h1>
+        <a href="#modalAnimThem" class="mb-xs mt-xs mr-xs btn btn-primary add" style="cursor:pointer">
+            <i class="fa fa-plus"></i> &nbsp; Thêm 
+        </a>
+        <a href="#modalAnimImportKH" id="ImportKH" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel
+        </a>
+        
+
+        <a href="~/DocumentFiles/Danh mục VTTB phục vụ PCTT&TKCN.doc" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;width:105px;height:28px;line-height:0; float: right;">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Export
+        </a>
+    </h1>
+    <div class="clear">
+    </div>
+</div>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <div class="panel-actions">
+                    <div id="datatable-default_filter" class="dataTables_filter" style="margin-right: 10px; float: right;">
+                        <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                               onkeyup="txtSearch_onkeyup(event,this)" />
+                    </div>
+                </div>
+                <span class="glyphicon glyphicon-tasks"></span> Danh mục VTTB dự phòng PCTT&TKCN
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    @Html.Hidden("NotificationAutoHide", TempData["NotificationAutoHide"])
+                    <div id="NotificationBox" class="@TempData["NotificationCSS"]" style="display: none">
+                        @Html.Raw(@TempData["Notification"])
+                    </div>
+                }
+                
+            </div>
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row show-grid" style="margin-bottom:10px">
+                    <div class="col-md-2">
+                        <span>Từ ngày: &nbsp;</span>
+                        <input id="GioBd" type="text" placeholder="Từ ngày...">
+                    </div>
+                    <div class="col-md-2" id="content-denngay">
+                        <span>Đến ngày: &nbsp;</span>
+                        <input id="GioKt" type="text" placeholder="Đến ngày...">
+                    </div>
+                </div>
+                <div class="row show-grid">
+                    <div class="listRolesName list" style="margin-top: 5px;">
+                        @{Html.RenderAction("ListVTTB", "PCTTTKCN", new
+                            {
+
+                            });}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa bản ghi này ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimThem" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thêm VTTB dự phòng PCTT&TKCN</h2>
+        </header>
+        <div class="panel-body" style="padding:0">
+            <div class="modal-wrapper">
+
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="" id="modal-confirm">Lưu</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        var start = $("#GioBd").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+        }).data("kendoDatePicker").value(new Date(new Date().getFullYear(),0, 1));
+
+        var end = $("#GioKt").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+            change: end_chage
+        }).data("kendoDatePicker").value(new Date(new Date().getFullYear(), 11, 31));
+
+        $('a.add').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+
+            ThemPCTTTKCN();
+
+        });
+
+    });
+
+    function DeleteModalConfirm() {
+        $.magnificPopup.close();
+    }
+
+    function end_chage() {
+
+    }
+
+    function ThemPCTTTKCN() {
+
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        $.ajax({
+            type: "GET",
+            url: '/Admin/PCTTTKCN/CreateVTTB',
+            success: function (json) {
+
+                $('#modalAnimThem .modal-wrapper').html('');
+                $('#modalAnimThem .modal-wrapper').html(json);
+               
+
+                unloading();
+            }
+        });
+
+    }
+
+</script>
+

@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Đăng ký sử dụng camera";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<h4 id="divtitle"></h4>
+
+<link href="~/Scripts/select2.css" rel="stylesheet" />
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+
+
+<div style="margin: 3px;">
+    <div style="display:inline">
+        <label class="input-group-text" for="inputGroupSelect01">Chọn đơn vị</label>
+    </div>
+    <select class="custom-select" id="cbodonvi"></select>
+
+
+    <a style="padding:4px;" onclick="dkcamera.loaddata()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Tìm kiếm</a>
+    <a style="padding:4px;" onclick="dkcamera.add()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Thêm</a>
+</div>
+
+<div>
+    <table id="tbldkcamera" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+        <thead>
+            <tr>
+                <th style="width: 10%">Đơn vị</th>
+                <th style="width: 10%">Serial</th>
+                <th style="width: 10%">Tên</th>
+                <th style="width: 10%">Thao tác</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+    <script src="~/Scripts/select2.js"></script>
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>    
+    <script src="~/Scripts/KTGS/js/dkcamera.js?v=1"></script>
+}
+<style>
+    select {
+        display: inline !important;
+    }
+
+    .body-content {
+        background-color: #ffffff;
+    }
+
+    .imgthump {
+        height: 128px;
+        width: 128px;
+        padding: 2px;
+        background-color: #cecece;
+    }
+</style>
+
+

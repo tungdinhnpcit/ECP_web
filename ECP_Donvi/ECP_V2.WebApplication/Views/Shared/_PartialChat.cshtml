@@ -1,0 +1,55 @@
+﻿<aside id="sidebar-right" style="top:110px;background: #1d2127;width:300px" class="sidebar-right">
+    <div class="nano">
+        <div class="nano-content">
+            <div class="sidebar-widget widget-friends" style="margin: 10px;">
+                <h6>Bạn bè</h6>
+                <ul id="tablefriend" style="overflow-y:scroll;overflow-x:hidden"></ul>
+                <form class="form-horizontal">
+                    <div class="form-group has-feedback">
+                        <input style="margin-left:5px" id="txtSearchFriend" onkeyup="txtSearchFriend_onkeyup(event,this)" class="form-control" type="text" placeholder="Tìm kiếm">
+                        <span style="top:2px;right: 0;" class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</aside>
+
+
+
+<script>
+    $(function () {
+        $('#tablefriend').height($(window).height() - 187);
+        $(window).resize(function () {
+            $('#tablefriend').height($(this).height() - 187);
+        });
+
+        PagingFreind('');
+    });
+
+    function PagingFreind(filter) {
+
+        $.ajax({
+            dataType: "html",
+            type: "Get",
+            async: true,
+            url: "/Chat/ListFriend",
+            data: {
+                filter: filter
+            },
+            success: function (data) {
+                $('#tablefriend').html(data);
+
+            },
+            error: function () {
+
+            }
+        });
+
+    }
+
+    function txtSearchFriend_onkeyup(e, el) {
+
+        PagingFreind(el.value);
+    }
+</script>

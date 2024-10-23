@@ -1,0 +1,89 @@
+﻿
+@model ECP_V2.Common.Helpers.PagingV2.PageData<ECP_V2.Business.Repository.AspNetUserHistoryViewModel>
+
+<script type="text/javascript">
+    var pageSize = $('#drlPageSize').val();
+    var currentPage = 1;
+    var currentSearh = $('#txtSearch').val();
+    //var curentSort = $("#btnSortName").data("sort");
+
+    function pagelength_change(el) {
+        GetList(1, el.value, $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), $('#txtSearch').val());
+    }
+
+    function loading(name, overlay) {
+
+        $('#ndContent').append('<div id="overlay"></div><div id="preloader" style="height: 40px;">' + name + '..</div>');
+
+        if (overlay == 1) {
+            $('#overlay').css('opacity', 0.4).fadeIn(400, function () { $('#preloader').fadeIn(400); });
+            return false;
+        }
+        $('#preloader').fadeIn();
+    }
+    function unloading() {
+        $('#preloader').fadeOut(400, function () { $('#overlay').fadeOut(); $(this).remove(); })
+    }
+
+</script>
+
+
+
+@if (Model.Data.Count() > 0)
+{
+    <div class="table-responsive">
+        <table cellspacing="0" id="dataTable" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info" style="width: 100%;">
+            <thead>
+                <tr>
+                    <td>
+                        STT
+                    </td>
+                    <th>
+                        Thời Gian
+                    </th>
+                    <th>
+                        Tài khoản
+                    </th>
+                    <th>
+                        Trạng Thái
+                    </th>
+                    <th>
+                        Địa chỉ IP
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data)
+                {
+                    <tr>
+                        <td>
+                            <span class="Spanid" style="display: none;">@item.Id</span>
+                            <span class="spanName">
+                                @(Model.Data.IndexOf(item) + 1)
+                            </span>
+                        </td>
+                        <td>
+                            @item.ThoiGianTao
+                        </td>
+                        <td>
+                            @item.TaiKhoan
+                        </td>
+                        <td>
+                            @item.TrangThai
+                        </td>
+                        <td>
+                            @item.IP
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerV2", Model.Page)
+}
+else
+{
+    <h2 class="text-danger text-center">
+        Chưa có dữ liệu!
+    </h2>
+}

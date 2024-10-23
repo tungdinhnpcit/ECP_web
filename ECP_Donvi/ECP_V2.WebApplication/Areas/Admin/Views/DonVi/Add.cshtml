@@ -1,0 +1,147 @@
+﻿@using ECP_V2.Common.Helpers
+
+@model ECP_V2.WebApplication.Models.DonViModel
+@{
+    ViewBag.Title = "Thêm đơn vị";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        HttpMethod = "post",
+        OnComplete = "CompleteAjaxRequest"
+    };
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<script type="text/javascript">
+
+    function CompleteAjaxRequest(obj) {
+        
+        var returnObj = eval('(' + obj.responseText + ')');
+
+        if (returnObj.Status == "success") {            
+            if (returnObj.Message != null) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Thêm thành công đơn vị',
+                    type: 'success'
+                });           
+                window.location.href = returnObj.RedirectUrl;
+            }
+            else if (returnObj.RedirectUrl != null) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Thêm thành công đơn vị',
+                    type: 'success'
+                });
+                window.location.href = returnObj.RedirectUrl;
+            }
+        } else {
+            new PNotify({
+                title: 'Thông báo lỗi!',
+                text: 'Không thêm được đơn vị: ' + returnObj.Message,
+                type: 'error'
+            });
+        }
+
+        return false;
+    };
+
+</script>
+<h1>
+    <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Index", "DonVi")">
+        <i class="fa fa-list"></i> &nbsp; Danh sách đơn vị
+    </a>
+</h1>
+<div class="row-fluid">
+    <div class="span12">      
+        <div class="row">
+            @using (Ajax.BeginForm("Add", "DonVi", null, ajaxOpts, new { enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+            {
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="warning-area">
+                            @Html.ValidationSummary(true)                            
+                        </div>                        
+                    </header>
+                    <div class="panel-body">
+                        @*<div class="form-group">
+                            <label class="col-sm-4 control-label">Mã đơn vị:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(model => model.Id, new { @class = "form-control", id = "txtDonViId" })
+                                @Html.ValidationMessageFor(m => m.Id)
+                            </div>
+                        </div>*@
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Chọn đơn vị cấp trên:</label>
+                            <div class="col-sm-8">
+                                @Html.DropDownList("DviCha", (IEnumerable<SelectListItem>)ViewBag.ListDviCha, "Chọn đơn vị ...", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.DviCha)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Mã đơn vị:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.Id, new { @class = "form-control", id = "txtMaDonVi" })
+                                @Html.ValidationMessageFor(m => m.Id)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Tên đơn vị:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.TenDonVi, new { @class = "form-control",id="txtTenDonVi" })
+                                @Html.ValidationMessageFor(m => m.TenDonVi)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Tên viết tắt:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.TenVietTat, new { @class = "form-control", id = "txtTenVietTa" })
+                                @Html.ValidationMessageFor(m => m.TenVietTat)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Điện thoại:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.SDT, new { @class = "form-control", id = "txtSDT" })
+                                @Html.ValidationMessageFor(m => m.SDT)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Mô tả:</label>
+                            <div class="col-sm-8">
+                                @Html.TextAreaFor(x => x.MoTa, new { @class = "form-control", id = "txtMoTa" })
+                                @Html.ValidationMessageFor(m => m.MoTa)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Vị trí:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.ViTri, new { @class = "form-control", id = "txtViTri" })
+                                @Html.ValidationMessageFor(m => m.ViTri)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Loại phiếu:</label>
+                            <div class="col-sm-8">
+                                @Html.DropDownList("MaLP", (IEnumerable<SelectListItem>)ViewBag.LoaiPhieu, "Chọn loại phiếu ...", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.MaLP)
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <label class="col-sm-4 control-label">Kiểu đơn vị:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.KieuDvi, new { @class = "form-control", id = "txtKieuDvi" })
+                                @Html.ValidationMessageFor(m => m.KieuDvi)
+                            </div>
+                        </div>*@
+                    </div>
+                    <footer class="panel-footer">
+                        <button class="btn btn-primary" type="submit">Đồng ý</button>
+                        <a class="btn btn-default" href="@Url.Action("Index","DonVi")">
+                            <span>Hủy bỏ</span>
+                        </a>                    
+                    </footer>
+                </section>
+            }
+        </div>
+    </div>
+</div>

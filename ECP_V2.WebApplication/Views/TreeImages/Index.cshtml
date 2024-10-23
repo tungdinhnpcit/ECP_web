@@ -1,0 +1,286 @@
+﻿@model ECP_V2.WebApplication.Models.TreeImageModel
+@{
+    ViewBag.Title = "Cây thư mục ảnh theo đơn vị";
+    Layout = "~/Views/Shared/_LayoutPageFull.cshtml";
+}
+
+<section class="content-with-menu content-with-menu-has-toolbar media-gallery">
+    <div class="content-with-menu-container">
+        <div class="inner-menu-toggle">
+            <a href="#" class="inner-menu-expand" data-open="inner-menu">
+                Show Bar <i class="fa fa-chevron-right"></i>
+            </a>
+        </div>
+
+        <menu id="content-menu" class="inner-menu" role="menu">
+            <div class="nano">
+                <div class="nano-content">
+
+                    <div class="inner-menu-toggle-inside">
+                        <a href="#" class="inner-menu-collapse">
+                            <i class="fa fa-chevron-up visible-xs-inline"></i><i class="fa fa-chevron-left hidden-xs-inline"></i> Hide Bar
+                        </a>
+                        <a href="#" class="inner-menu-expand" data-open="inner-menu">
+                            Show Bar <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+
+                    <div class="inner-menu-content">
+
+                        <a class="btn btn-block btn-primary btn-md pt-sm pb-sm text-md">
+                            <i class="fa fa-upload mr-xs"></i>
+                            Tải ảnh mới
+                        </a>
+
+                        <hr class="separator" />
+
+                        <div class="sidebar-widget m-none">
+                            @*<div class="widget-header clearfix">
+                                    <h6 class="title pull-left mt-xs">Folders</h6>
+                                    <div class="pull-right">
+                                        <a href="#" class="btn btn-dark btn-sm btn-widget-act">Add Folder</a>
+                                    </div>
+                                </div>*@
+                            <div class="widget-content">
+                                @if (Model != null && Model.LstDonVi.Count > 0)
+                                {
+                                    <ul id="treeview">
+                                        @foreach (var dvi in Model.LstDonVi)
+                                        {
+                                            <li data-expanded="false" style="color:#ffffff">
+                                                <span class="k-sprite folder"></span>
+                                                <b>(@dvi.Id).</b> @dvi.TenDonVi
+                                                <ul>
+                                                    @foreach (var pban in Model.LstPhongBan.Where(p => p.MaDVi == dvi.Id))
+                                                    {
+                                                        <li data-expanded="false" style="color:#ffffff">
+                                                            <span class="k-sprite folder"></span>
+                                                            @pban.TenPhongBan
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        </div>
+
+                        <hr class="separator" />
+
+                        <div class="sidebar-widget m-none">
+                            <div class="widget-header">
+                                <h6 class="title">Nhãn thẻ</h6>
+                                <span class="widget-toggle">+</span>
+                            </div>
+                            <div class="widget-content">
+                                <ul class="mg-tags">
+                                    <li><a href="#">Ngoài hiện trường</a></li>
+                                    <li><a href="#">Tài liệu</a></li>
+                                    <li><a href="#">Phương án</a></li>
+                                    <li><a href="#">Biển báo</a></li>
+                                    <li><a href="#">Cột điện</a></li>
+                                    <li><a href="#">Đồng phục</a></li>
+                                    <li><a href="#">Trạm điện</a></li>
+                                    <li><a href="#">Máy biến áp</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </menu>
+        <div class="inner-body mg-main">
+
+            <div class="inner-toolbar clearfix">
+                <ul>
+                    <li>
+                        <a href="#" id="mgSelectAll"><i class="fa fa-check-square"></i> <span data-all-text="Select All" data-none-text="Select None">Select All</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-pencil"></i> Edit</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-trash-o"></i> Delete</a>
+                    </li>
+                    <li class="right" data-sort-source data-sort-id="media-gallery">
+                        <ul class="nav nav-pills nav-pills-primary">
+                            <li>
+                                <label>Filter:</label>
+                            </li>
+                            <li class="active">
+                                <a data-option-value="*" href="#all">All</a>
+                            </li>
+                            <li>
+                                <a data-option-value=".document" href="#document">Documents</a>
+                            </li>
+                            <li>
+                                <a data-option-value=".image" href="#image">Images</a>
+                            </li>
+                            <li>
+                                <a data-option-value=".video" href="#video">Videos</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="row mg-files" data-sort-destination data-sort-id="media-gallery">
+                <div id="ajaxDiv">
+                </div>              
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+
+    <script type="text/javascript">
+        function printData(div, item) {        
+            div.append("<br/>" + "FName: " + item.Id + ", LName: " + item.Url);
+            //$.each(item.Addresses, function (i, addr) {
+            //    printAddress(div, addr);
+            //});
+        }
+
+        function onSelect(e) {
+            //alert("Selecting: " + this.text(e.node));
+
+            //$.ajax({
+            //    type: "GET",
+            //    url: url,
+            //    data: data,
+            //    success: callback,
+            //    dataType: type
+            //});
+            //this.href
+            $("#ajaxDiv").load("/TreeImages/GetStateList", function () {
+                //$("#modelHDon").modal({
+                //    backdrop: 'static',
+                //    keyboard: true
+                //}, 'show');
+            });
+
+            //$.ajax({
+            //    method: "GET",
+            //    //contentType: "application/json; charset=utf-8",
+            //    url: "/TreeImages/GetStateList",
+            //    // Changing to true did not fix error.
+            //    //async: false,
+            //    success: function (data) {
+            //        var div = $('#ajaxDiv');
+            //        //div.html(data);
+            //        div.load(data);
+            //        //div.html("<br/> " + "Persons received from server: " + "<br/>");
+            //        //$.each(data, function (i, item) {
+            //        //    printData(div, item);
+            //        //});
+            //        //console.log(data);
+            //        //alert("ajax succeeded");
+            //    },
+            //    error: function (jqXHR, textStatus, errorThrown) { debugger; alert("ajax failed: " + textStatus); }
+            //});
+
+            //$.getJSON("/TreeImages/GetStateList", null, function (data) {
+            //    var div = $('#ajaxDiv');
+            //    div.html("<br/> " + "Persons received from server: " + "<br/>");
+            //    $.each(data, function (i, item) {
+            //        printPerson(div, item);
+            //    });
+            //    //$("#stateList").fillSelect(data);
+            //    //Console.log(data);
+            //        //var items = '<table><tr><th>Name</th><th>Address</th></tr>';
+            //        //$.each(data, function (i, country) {
+            //        //    items += "<tr><td>" + country.ContactName + "</td><td>" + country.Address + "</td></tr>";
+            //        //});
+            //        //items += "</table>";
+
+            //        //$('#rData').html(items);
+            //});
+            //$.getJSON('/Home/CustomerList/' + $('#Country').val(), function (data) {
+
+            //    var items = '<table><tr><th>Name</th><th>Address</th></tr>';
+            //    $.each(data, function (i, country) {
+            //        items += "<tr><td>" + country.ContactName + "</td><td>" + country.Address + "</td></tr>";
+            //    });
+            //    items += "</table>";
+
+            //    $('#rData').html(items);
+            //});
+        }
+
+        function onChange(e) {
+            //alert("Selection changed");
+        }
+        $(function () {
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+            $("#treeview").kendoTreeView();
+            //$(".nano").nanoScroller();
+
+            $("#treeview").kendoTreeView({
+                checkboxes: false,
+                //dataSource: [
+                //    {
+                //        text: "Furniture", expanded: true, items: [
+                //          { text: "Tables & Chairs" },
+                //          { text: "Sofas" },
+                //          { text: "Occasional Furniture" }
+                //        ]
+                //    },
+                //    {
+                //        text: "Decor", items: [
+                //          { text: "Bed Linen" },
+                //          { text: "Curtains & Blinds" },
+                //          { text: "Carpets" }
+                //        ]
+                //    },
+                //    { text: "Storage" }
+                //],
+                select: onSelect,
+                //check: onCheck,
+                change: onChange
+                //collapse: onCollapse
+                //expand: onExpand,
+                //dragAndDrop: true,
+                /* drag & drop events */
+                //dragstart: onDragStart,
+                //drag: onDrag,
+                //drop: onDrop,
+                //dragend: onDragEnd,
+                //navigate: onNavigate
+            });
+        })
+    </script>
+}
+<style>
+    #treeview .k-sprite {
+        background-image: url("../content/kendo/Default/coloricons-sprite.png");
+    }
+
+    .k-treeview span.k-in {
+        cursor: pointer;
+    }
+
+    .rootfolder {
+        background-position: 0 0;
+    }
+
+    .folder {
+        background-position: 0 -16px;
+    }
+
+    .pdf {
+        background-position: 0 -32px;
+    }
+
+    .html {
+        background-position: 0 -48px;
+    }
+
+    .image {
+        background-position: 0 -64px;
+    }
+</style>

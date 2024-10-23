@@ -1,0 +1,214 @@
+﻿@model ECP_V2.DataAccess.tblPhienLamViec
+<div style="text-align:center">
+    @if (ViewBag.PhieuCongTac != null)
+    {
+        <h3>Số phiếu: @ViewBag.PhieuCongTac.SoPhieu</h3>
+    }
+</div>
+<div class="tabs" style="margin:0">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#thongtin" data-toggle="tab"><i class="fa fa-info-circle"></i> Thông tin chi tiết</a>
+        </li>
+        <li>
+            <a href="#hinhanh" data-toggle="tab"><i class="fa fa-picture-o"></i> Hình ảnh</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="thongtin" class="tab-pane active">
+            <div class="scrollable visible-slider colored-slider" data-plugin-scrollable style="height: 350px;">
+                <div class="scrollable-content" style="padding:0">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <section class="panel">
+                                <header class="panel-heading" style="padding:6px;margin-bottom:10px">
+                                    <p class="panel-title">Cấp cho</p>
+                                </header>
+                                <div class="panel-body" style="padding:0">
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Tên đơn vị QLVH:</label>
+                                        <div class="col-md-8">
+                                            <label>
+                                            @{ 
+                                                try
+                                                {
+                                                    using (ECP_V2.DataAccess.ECP_V2Entities db = new ECP_V2.DataAccess.ECP_V2Entities())
+                                                    {
+                                                        @db.tblPhongBans.SingleOrDefault(o => o.Id == Model.PhongBanID).tblDonVi.TenDonVi.ToString();
+                                                    }
+                                                }
+                                                catch(Exception ex)
+                                                { }
+                                            }
+                                           </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Người lãnh đạo công việc:</label>
+                                        <div class="col-md-8">
+                                            <label>@Model.LanhDaoTrucBan</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Người chỉ huy trực tiếp:</label>
+                                        <div class="col-md-8">
+                                            <label>@Model.NguoiChiHuy</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Địa điểm công tác:</label>
+                                        <div class="col-md-8">
+                                            <label>@Model.DiaDiem</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Nội dung công tác:</label>
+                                        <div class="col-md-8">
+                                            <label>@Model.NoiDung</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Thời gian theo kế hoạch:</label>
+                                        <div class="col-md-8">
+                                            <label>Bắt đầu công việc: @Model.GioBd.Hour giờ @Model.GioBd.Minute phút, ngày @string.Format("{0:dd/MM/yyyy}", Model.GioBd)</label>
+                                            <label>Kết thúc công việc: @Model.GioKt.Hour giờ @Model.GioKt.Minute phút, ngày @string.Format("{0:dd/MM/yyyy}", Model.GioKt)</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Người giám sát an toàn điện:</label>
+                                        <div class="col-md-8">
+                                            <label>@Model.GiamSatVien</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="inputDefault">Người giám sát an toàn điện:</label>
+                                        <div class="col-md-8">
+                                            <label>@Model.GiamSatVien</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                        <div class="col-lg-12">
+                            <section class="panel">
+                                <header class="panel-heading" style="padding:6px;margin-bottom:10px">
+                                    <p class="panel-title">Tài liệu</p>
+                                </header>
+                                <div class="panel-body" style="padding:0">
+                                    <ul class="simple-user-list">
+                                        @if (ViewBag.TaiLieuPCT != null)
+                                        {
+                                            foreach (var item in ViewBag.TaiLieuPCT)
+                                            {
+                                                <li>
+                                                    <span class="title">@item.Ten</span>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </section>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+
+        <div id="hinhanh" class="tab-pane ">
+            <div class="scrollable visible-slider colored-slider" data-plugin-scrollable style="height: 350px;">
+                <div class="scrollable-content" style="padding:0">
+                    @*<section class="panel">
+                        <header class="panel-heading" style="padding:5px">
+                            <h2 class="panel-title">Gallery</h2>
+                        </header>
+                        <div class="panel-body">
+                            <div class="popup-gallery">
+                                <a class="pull-left mb-xs mr-xs" href="~/Content/AdminPanel/assets/images/projects/project.jpg" title="Project 1">
+                                    <div class="img-responsive">
+                                        <img src="~/Content/AdminPanel/assets/images/projects/project.jpg" width="105">
+                                    </div>
+                                </a>
+                                <a class="pull-left mb-xs mr-xs" href="~/Content/AdminPanel/assets/images/projects/project-1.jpg" title="Project 2">
+                                    <div class="img-responsive">
+                                        <img src="~/Content/AdminPanel/assets/images/projects/project-1.jpg" width="105">
+                                    </div>
+                                </a>
+                                <a class="pull-left mb-xs mr-xs" href="~/Content/AdminPanel/assets/images/projects/project-2.jpg" title="Project 3">
+                                    <div class="img-responsive">
+                                        <img src="~/Content/AdminPanel/assets/images/projects/project-2.jpg" width="105">
+                                    </div>
+                                </a>
+                                <a class="pull-left mb-xs mr-xs" href="~/Content/AdminPanel/assets/images/projects/project-3.jpg" title="Project 4">
+                                    <div class="img-responsive">
+                                        <img src="~/Content/AdminPanel/assets/images/projects/project-3.jpg" width="105">
+                                    </div>
+                                </a>
+                                <a class="pull-left mb-xs mr-xs" href="~/Content/AdminPanel/assets/images/projects/project-4.jpg" title="Project 5">
+                                    <div class="img-responsive">
+                                        <img src="~/Content/AdminPanel/assets/images/projects/project-4.jpg" width="105">
+                                    </div>
+                                </a>
+                                <a class="pull-left mb-xs mr-xs" href="~/Content/AdminPanel/assets/images/projects/project-5.jpg" title="Project 6">
+                                    <div class="img-responsive">
+                                        <img src="~/Content/AdminPanel/assets/images/projects/project-5.jpg" width="105">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        // Scrollable
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['nanoScroller'])) {
+
+                $(function () {
+                    $('[data-plugin-scrollable]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions) {
+                            opts = pluginOptions;
+                        }
+
+                        $this.themePluginScrollable(opts);
+                    });
+                });
+
+            }
+
+        }).apply(this, [jQuery]);
+
+       
+        //Gallery
+        $('.popup-gallery').magnificPopup({
+            delegate: 'a',
+            type: 'image',
+            tLoading: 'Loading image #%curr%...',
+            mainClass: 'mfp-img-mobile',
+            gallery: {
+                enabled: true,
+                navigateByImgClick: true,
+                preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
+            },
+            image: {
+                tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+            }
+        });
+
+
+    });
+</script>

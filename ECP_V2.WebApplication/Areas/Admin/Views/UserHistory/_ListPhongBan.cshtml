@@ -1,0 +1,16 @@
+﻿@if (ViewBag.ListPhongBan != null)
+{
+    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPhongBan" })
+}
+else
+{
+    <p>Phòng ban chưa được tạo</p>
+}
+
+<script>
+    $(function () {
+        $("#drlPhongBan").change(function () {
+            GetList(1, $("#drlPageSize").val(), $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), $('#txtSearch').val());
+        });
+    });
+</script>

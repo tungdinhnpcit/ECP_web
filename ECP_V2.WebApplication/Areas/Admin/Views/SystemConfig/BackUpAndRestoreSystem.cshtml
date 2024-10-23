@@ -1,0 +1,348 @@
+﻿
+@{
+    ViewBag.Title = "BackUpSystem";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<style>
+    .list-file-bak {
+        list-style-type: none;
+        border: 1px solid #e4dcdf;
+        margin-top: 10px;
+    }
+</style>
+
+<header class="page-header">
+    <h2>Sao lưu và phục hồi hệ thống</h2>
+</header>
+
+<!-- Modal Animation -->
+<div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa file dữ liệu này?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="ConfirmDeleteFile()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" onclick="DismissDeleteFile()" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa tất cả file dữ liệu này?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="ConfirmDeleteAllFile()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" onclick="DismissDeleteAllFile()" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="col-md-6">
+            <div><b>Chọn tập tin từ máy chủ: </b></div>
+            <div class="text-right">
+                <span><a href="#modalAnim" id="btnDeleteFile" class="btn btn-primary">Xóa mục chọn</a></span>
+                <span style="margin-left: 5px;"><a href="#modalAnimAll" id="btnDeleteAll" class="btn btn-primary">Xóa tất cả</a></span>
+            </div>
+
+            <div class="list-files">
+                @{Html.RenderAction("ListFile", "SystemConfig");}
+            </div>
+
+            <div class="text-center" style="margin-top: 10px;">
+                <a href="javascript:;" id="btnDownloadBackUp" class="btn btn-primary">Tải file chọn về máy</a>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div><b>Thao tác: </b></div>
+            <div>
+                <span>Tải tập tin từ máy khách: </span>
+                <span><input type="file" name="txtFileBackUp" id="txtFileBackUp" class="form-control" /></span>
+
+                <div class="text-center" style="margin-top: 10px;">
+                    <span><a href="javascript:;" class="btn btn-primary" id="btnBackUp">Sao lưu</a></span>
+                    <span><a href="javascript:;" class="btn btn-primary" id="btnRestore">Phục hồi</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section JavaScriptOnePgae {
+
+    <script>
+        $(document).ready(function () {
+
+            $('#btnBackUp').click(function () {
+                $.ajax({
+                    url: '/Admin/SystemConfig/BackUpSystem',
+                    type: 'POST',
+                    data: JSON.stringify({
+
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Sao lưu dữ liệu thành công',
+                                type: 'success'
+                            });
+
+                            getListFile();
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Sao lưu dữ liệu không thành công',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Sao lưu dữ liệu không thành công',
+                            type: 'error'
+                        });
+                    }
+                });
+            });
+
+            $('#btnRestore').click(function () {
+
+                var formData = new FormData();
+                formData.append('file', $('input[type=file]')[0].files[0]); 
+
+                $.ajax({
+                    url: '/Admin/SystemConfig/RestoreSystem',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Khôi phục dữ liệu thành công',
+                                type: 'success'
+                            });
+
+                            getListFile();
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Khôi phục dữ liệu không thành công',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Khôi phục dữ liệu không thành công',
+                            type: 'error'
+                        });
+                    }
+                });
+            });
+
+            $('#btnDownloadBackUp').click(function () {
+
+                var url = $('input[name="fileBackUp"]:checked').val();
+
+                if (typeof(url) !== "undefined") {
+                    window.location = url;
+                } else {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Chọn file dữ liệu để tải về',
+                        type: 'error'
+                    });
+                }
+                
+            });
+
+            $('#btnDeleteFile').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            $('#btnDeleteAll').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+        });
+
+        function ConfirmDeleteAllFile() {
+
+            $.ajax({
+                url: '/Admin/SystemConfig/DeleteAllFile',
+                type: 'POST',
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Xóa file dữ liệu thành công',
+                            type: 'success'
+                        });
+
+                        getListFile();
+
+                    } else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Xóa file dữ liệu không thành công',
+                            type: 'error'
+                        });
+                    }
+                },
+                error: function (e) {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Xóa file dữ liệu không thành công',
+                        type: 'error'
+                    });
+                }
+            });
+
+            $.magnificPopup.close();
+        }
+
+        function DismissDeleteAllFile() {
+            $.magnificPopup.close();
+        }
+
+        function ConfirmDeleteFile() {
+
+            var url = $('input[name="fileBackUp"]:checked').val();
+
+            if (typeof (url) !== "undefined") {
+                $.ajax({
+                    url: '/Admin/SystemConfig/DeleteFile',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        url: url
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa file dữ liệu thành công',
+                                type: 'success'
+                            });
+
+                            getListFile();
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa file dữ liệu không thành công',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Xóa file dữ liệu không thành công',
+                            type: 'error'
+                        });
+                    }
+                });
+            } else {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chọn file dữ liệu để xóa',
+                    type: 'error'
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        function DismissDeleteFile() {
+            $.magnificPopup.close();
+        }
+
+        function getListFile() {
+            $.ajax({
+                url: '/Admin/SystemConfig/ListFile',
+                type: 'GET',
+                contentType: 'html',
+                success: function (data) {
+                    $('.list-files').html(data);
+                },
+                error: function (e) {
+
+                }
+            });
+        }
+
+    </script>
+}
+
+
+

@@ -1,0 +1,238 @@
+﻿@model ECP_V2.Common.Helpers.PagingV2.PageData<ECP_V2.Business.Repository.pccc_ThietBiPCCCModel>
+@{
+    <script type="text/javascript">
+        $(function () {
+            $('a.delete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).attr("id").split("_")[1];
+            });
+
+            $('a.edit').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                SuaCCDC($(this).attr("id").split("_")[1]);
+
+            });
+
+            //$('.prev').on('click', function (e) {
+            //    e.preventDefault();
+            //    Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+            //});
+
+            //$('.page-number').on('click', function (e) {
+            //    e.preventDefault();
+            //    var page = parseInt($(this).html());
+            //    Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            //});
+
+            //$('.next').on('click', function (e) {
+            //    e.preventDefault();
+            //    var page = parseInt($("#btnLast").data("sum"));
+            //    Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            //});
+
+
+        });
+    </script>
+
+    <div class="table-responsive">
+        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th style="text-align:center;padding-left:5px;padding-right:5px">
+                        <div class="checkbox-custom" style="padding-left:0">
+                            <input id="dtGridPhienLVcheckAll" type="checkbox" onclick="checkall(this)" class="checkAll">
+                            <label for="dtGridPhienLVcheckAll"></label>
+                        </div>
+                    </th>
+                    <th>
+                        TT
+                    </th>
+                    <th>
+                        Tên PCCC an toàn
+                    </th>
+                    <th>
+                        Mã hiệu
+                    </th>
+                    <th>
+                        Hãng sản xuất
+                    </th>
+                    <th>
+                        Nước sản xuất
+                    </th>
+                    <th>
+                        Năm sản xuất
+                    </th>
+                    <th>
+                        Ngày đưa vào sử dụng
+                    </th>
+                    <th>
+                        Trạng thái PCCC
+                    </th>
+                    <th>
+                        Ngày kiểm định gần nhất
+                    </th>
+                    <th>
+                        Hạn kiểm định
+                    </th>
+                    <th>
+                        Ngày kiểm định tiếp theo
+                    </th>
+                    <th>
+                        Tập thể/ cá nhân quản lý
+                    </th>
+                    <th>
+                        Ghi chú
+                    </th>
+                    <th>
+                        Người tạo
+                    </th>
+                    <th>
+                        Ngày tạo
+                    </th>
+                    <th>
+                        Người sửa
+                    </th>
+                    <th>
+                        Ngày sửa
+                    </th>
+                    <th>
+                        Thao tác
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (1)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (2)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (3)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (4)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (5)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (6)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (7)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (8)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (9)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (10)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (11)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (12)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (13)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (14)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (15)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (16)
+                    </th>
+                    <th style="font-style:italic;font-weight:normal;text-align:center">
+                        (17)
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data)
+                {
+                    <tr class="@(item.TrangThai == 1 ? "HetHan" : (item.TrangThai == 3 ? "SapHetHan30" : (item.TrangThai == 2 ? "SapHetHan15" : "ChuaDenHan")))">
+                        <td style="min-width:30px;max-width:30px;width:30px;text-align:center">
+                            <div class="checkbox-custom" style="margin-left:-3px">
+                                <input id="@item.ID" value="@item.ID" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
+                                <label for="@item.ID"></label>
+                            </div>
+                        </td>
+                        <td style="text-align:center">@(Model.Data.IndexOf(item) + 1)</td>
+                        <td>@item.TenThietBi</td>
+                        <td>@item.MaHieu</td>
+                        <td>@item.TenHangSX</td>
+                        <td>@item.TenNuocSX</td>
+                        <td>@item.NamSX</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgayDuaVaoSuDung)</td>
+                        <td>@item.TenTT</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgayKiemTra)</td>
+                        <td>@item.HanKiemDinh tháng</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgayKiemTraTiepTheo)</td>
+                        <td>@item.TenPB</td>
+                        <td>@item.GhiChu</td>
+                        <td>@item.NguoiTao</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgayTao)</td>
+                        <td>@item.NguoiSua</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgaySua)</td>
+
+                        <td>
+                            <a id="Edit_@item.ID" href="#modalAnimSua" title="Sửa" class="on-default edit-row edit"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a id="Delete_@item.ID" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                            }
+                            <a target="_blank" href="/Admin/PCCC/SoKiemDinh?id=@item.ID" title="Sổ kiểm định"><i class="fa fa-book" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerV2", Model.Page)
+    <div class="rightcountload hide">
+
+        <ol class="breadcrumbs" style="padding-right:20px">
+            <li><a style="cursor:pointer" onclick="TrangThai_OnClick('')"><span style="color: #fff; font-weight: bold;">Tất cả: @ViewBag.TatCa</span></a></li>
+            <li><a style="cursor:pointer" onclick="TrangThai_OnClick('hh')"><span style="color: #ac2925; font-weight: bold;">Hết hạn: @ViewBag.HetHan</span></a></li>
+            <li><a style="cursor:pointer" onclick="TrangThai_OnClick('shh30')"><span style="color: #F6BB42; font-weight: bold;">Đến hạn 30 ngày: @ViewBag.SapHetHan30</span></a></li>
+            <li><a style="cursor:pointer" onclick="TrangThai_OnClick('shh15')"><span style="color: #f26d30; font-weight: bold;">Đến hạn 15 ngày: @ViewBag.SapHetHan15</span></a></li>
+            <li><a style="cursor:pointer" onclick="TrangThai_OnClick('cdh')"><span style="color: #96ed95; font-weight: bold;">Chưa đến hạn: @ViewBag.ChuaDenHan</span></a></li>
+        </ol>
+
+    </div>
+    <script>
+        $(".rightcount").html($(".rightcountload").html());
+    </script>
+
+}

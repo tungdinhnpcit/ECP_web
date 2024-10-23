@@ -1,0 +1,133 @@
+﻿@model List<ECP_V2.Business.Repository.KeHoachTuanV2>
+
+<style>
+    .legendLabel {
+        padding-left: 5px;
+    }
+
+    p {
+        margin-bottom: 30px;
+    }
+</style>
+@try
+{
+
+    <div class="row">
+        <div class="col-md-1" style="">
+        </div>
+        <div class="col-md-4" style="">
+            <p style="text-align:right;font-size:26px"><strong><a style="color:#E9573F" onclick="GoToURL('','CV theo kế hoạch ()','','')">Công việc theo kế hoạch:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a style="color:#00B1E1" onclick="GoToURL('','CV bổ sung ()','','')">Công việc theo bổ sung:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a style="color:#37BC9B" onclick="GoToURL('','CV theo đột xuất ()','','')">Công việc theo đột xuất:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','')">Tổng số hình ảnh:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','')">Tổng số phiên đã kiểm tra:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','')">Tổng số công việc:</a></strong></p>
+        </div>
+        <div class="col-md-1" style="">
+            <p style="text-align:left;font-size:26px"><strong><a style="color:#E9573F" onclick="GoToURL('','CV theo kế hoạch ()','','')">@string.Format("{0:n0}", Model.Sum(o => o.KH))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="color:#00B1E1" onclick="GoToURL('','CV bổ sung ()','','')">@string.Format("{0:n0}", Model.Sum(o => o.BS))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="color:#37BC9B" onclick="GoToURL('','CV theo đột xuất ()','','')">@string.Format("{0:n0}", Model.Sum(o => o.DX))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','')">@string.Format("{0:n0}", Model.Sum(o => o.HinhAnh))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','')">@string.Format("{0:n0}", Model.Sum(o => o.PLVKiemTra))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','')">@string.Format("{0:n0}", (Model.Sum(o => o.KH) + Model.Sum(o => o.BS) + Model.Sum(o => o.DX)))</a></strong></p>
+        </div>
+        <div class="col-md-4" style="">
+            <p style="text-align:right;font-size:26px"><strong><a onclick="GoToURL('','','HT','')">Công việc hoàn thành:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a onclick="GoToURL('','','CX','')">Công việc chưa xong:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a onclick="GoToURL('','','HB','')">Công việc hủy bỏ:</a></strong></p>
+            <p style="text-align:right;font-size:26px;margin-top: -20px;"><strong><a style="cursor:default">Tổng số phiên đã kiểm tra/ Tổng số phiên còn lại sau thời điểm BC110:</a></strong></p>
+        </div>
+        <div class="col-md-2" style="">
+            <p style="text-align:left;font-size:26px"><strong><a style="" onclick="GoToURL('','','HT','')">@string.Format("{0:n0}", Model.Sum(o => o.HoanThanh))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','CX','')">@string.Format("{0:n0}", Model.Sum(o => o.ChuaXong))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','HB','')">@string.Format("{0:n0}", Model.Sum(o => o.HuyBo))</a></strong></p>
+            <p style="text-align:left;font-size:26px;margin-top: -20px;"><strong><a style="" onclick="GoToURL('','','','dkt')">@string.Format("{0:n0}", Model.Sum(o => o.PLVDaKiemTraSauBC110))</a>/<a style="" onclick="GoToURL('','','','ckt')">@string.Format("{0:n0}", Model.Sum(o => o.PLVDaKiemTraSauBC110) + Model.Sum(o => o.PLVChuaKiemTraSauBC110))</a></strong></p>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3" style="border: 1px solid #CFD9DB;height:600px">
+                <h4 style="text-align:center"><strong><a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','','')">Đơn vị: @Html.Raw(item.MaDonVi)</a></strong></h4>
+                <div id="chart-@Html.Raw(item.MaDonVi)" class="chart chart-md" style="cursor:zoom-in"></div>
+                <h4 style="text-align:center"><strong><a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','HT','')">CV hoàn thành: @string.Format("{0:n0}", item.HoanThanh)</a></strong></h4>
+                <h4 style="text-align:center"><strong><a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','CX','')">CV chưa xong: @string.Format("{0:n0}", item.ChuaXong)</a></strong></h4>
+                <h4 style="text-align:center"><strong><a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','HB','')">CV hủy bỏ: @string.Format("{0:n0}", item.HuyBo)</a></strong></h4>
+                <h4 style="text-align:center"><strong><a style="cursor:default">CV đã kiểm tra/ CV còn lại sau BC110: </a><a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','','dkt')">@string.Format("{0:n0}", item.PLVDaKiemTraSauBC110)</a>/<a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','','ckt')">@string.Format("{0:n0}", item.PLVDaKiemTraSauBC110 + item.PLVChuaKiemTraSauBC110)</a></strong></h4>
+                <h4 style="text-align:center"><strong><a onclick="GoToURL('chart-@Html.Raw(item.MaDonVi)','','','')">@item.TenDonVi</a></strong></h4>
+            </div>
+        }
+    </div>
+
+
+
+    <script>
+        (function () {
+          @foreach(var item in Model)
+          {
+            @:InitPlot('chart-@Html.Raw(item.MaDonVi)', @item.KH, @item.BS, @item.DX);
+          }
+        })();
+
+        function InitPlot(ID, data1, data2, data3) {
+        var piedata = [
+        { label: "CV theo kế hoạch ("+data1+")", data: [data1], color: '#E9573F',ID:ID },
+        { label: "CV bổ sung ("+data2+")", data: [data2], color: '#00B1E1',ID:ID },
+        { label: "CV theo đột xuất ("+data3+")", data: [data3], color: '#37BC9B',ID:ID },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+            GoToURL(obj.series.ID,obj.series.label,'','');
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+            function GoToURL(ID,lable,trangthai,BC110) {
+
+                var url = "/Admin/PhienLV/Index?&DateFrom="
+                    + $('#GioBd').val()+"&DateTo="
+                    + $('#GioKt').val()+"&MaDV="
+                    +ID+"&TinhChat="
+                    +lable+"&TrangThai="
+                    +trangthai
+                    +"&BC110="+BC110
+                ;
+
+                var win = window.open(url, '_blank');
+                win.focus();
+
+
+            }
+
+    </script>
+}
+catch (Exception ex)
+{ }
+

@@ -1,0 +1,296 @@
+﻿@model ECP_V2.WebApplication.Models.BaoCaoModel
+@{
+    ViewBag.Title = "Chi tiết báo cáo đầu giờ";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    var lstDoc = (List<ECP_V2.DataAccess.tblChiTietBaoCao>)ViewBag.lstChiTietBC;
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+    var donViCha = donViRepository.GetById(donVi.DviCha);
+}
+
+<style>
+    .pdfobject-container {
+        height: 800px;
+    }
+
+    .pdfobject {
+        border: 1px solid #666;
+    }
+</style>
+
+@section JavaScriptOnePgae {
+    <script src="~/Scripts/pdfobject.min.js"></script>
+    <script>
+
+        @if(lstDoc != null && lstDoc.Count > 0)
+        {
+            <text>
+                PDFObject.embed("@lstDoc.FirstOrDefault().UrlFile", "#file-content");
+            </text>
+        }
+        else
+        {
+            <text>
+                PDFObject.embed("", "#file-content");
+            </text>
+        }
+
+    </script>
+}
+
+<h2>
+    <a class="btn btn-primary" href="@Url.Action("Index","BaoCao")">
+        <span>Danh sách báo cáo</span>
+    </a>
+</h2>
+
+<div class="tabs">
+    <ul class="nav nav-tabs tabs-primary">
+        <li class="active">
+            <a href="#detail-report" data-toggle="tab">Chi tiết thông tin báo cáo</a>
+        </li>
+        <li>
+            <a href="#file-attachment" data-toggle="tab">Tài liệu đính kèm</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="detail-report" class="tab-pane active">
+            <section class="panel">
+                @*<header class="panel-heading">
+                        <h2 class="panel-title">Chi tiết thông tin báo cáo</h2>
+                    </header>*@
+                <div class="panel-body">
+                    <form class="form-horizontal form-bordered">
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <div class="warning-area">
+                                    @Html.ValidationSummary(true)
+                                </div>
+                            </header>
+                            <div class="panel-body" style="font-family:'Times New Roman';background-color:#FFF;font-size:15px;">
+                                <div class="row">
+                                    <div class="pull-left text-center" style="margin-left:5px;">
+
+                                        @if (donViCha != null)
+                                        {
+                                            <p>@donViCha.TenDonVi</p>
+                                        }
+
+                                        @*<p>CÔNG TY TNHH MTV</p>
+                            <p>ĐIỆN LỰC HẢI PHÒNG</p>*@
+                                        <b style="text-transform:uppercase">@Html.Raw(ViewBag.TenDonVi)</b>
+                                        <p>Số: .......... /BC-ĐL …</p>
+                                    </div>
+                                    <div class="pull-right text-center" style="margin-right:5px;">
+                                        <b>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</b>
+                                        <br />
+                                        <b style="text-decoration:solid">Độc lập – Tự do – Hạnh phúc</b>
+                                        <p>Ngày: @string.Format("{0:dd/MM/yyyy}", Model.NgayTao)</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h3 class="text-center">
+                                        <b>BÁO CÁO KIỂM SOÁT ATLĐ</b>
+                                        <br />
+                                        <b>THỰC HIỆN CÔNG TÁC TRÊN LƯỚI ĐIỆN HÀNG NGÀY</b>
+                                    </h3>
+                                </div>
+                                <div class="row" style="padding:0px 30px;">
+                                    @*<div class="row">
+                                        <b>I- Báo cáo kiểm soát, kiểm tra, giám sát ATLĐ ngày hôm trước: @Html.Raw(Model.NgayTao.Value.AddDays(-1).ToString("dd/MM/yyyy"))</b>
+                                    </div>
+                                    <div class="row">
+                                        1- Số công việc đã thực hiện:
+                                    </div>
+                                    <div class="row">
+                                        - Số lượng phương án TCTC-BPAT:
+                                        @Html.DisplayFor(p => p.So_BPTC_ATLD)
+                                    </div>
+                                    <div class="row">
+                                        - Số PTT đã thực hiện:
+                                        @Html.DisplayFor(p => p.So_PTT)
+                                    </div>
+                                    <div class="row">
+                                        - Số PCT đã thực hiện:
+                                        @Html.DisplayFor(p => p.So_PCT, new { @class = "", id = "txtSo_PCT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        Trong đó, Đơn vị khác thi công: @Html.DisplayFor(p => p.So_PCT, new { @class = "", id = "txtTenDonVi", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số LCT đã thực hiện: @Html.DisplayFor(p => p.Lenh_CT, new { @class = "", id = "txtLenh_CT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số Phiếu kiểm soát ATLĐ đã lập: @Html.DisplayFor(p => p.So_P_ATLD, new { @class = "", id = "txtSo_P_ATLD", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số Biên bản kiểm tra ATLĐ đã lập: @Html.DisplayFor(p => p.So_BB_ATLD, new { @class = "", id = "txtSo_BB_ATLD", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        2- Các tồn tại được phát hiện qua kiểm soát kiểm tra:
+                                    </div>
+                                    <div class="row">
+                                        - Số Phương án TCTC-BPAT có tồn tại:
+                                        @Html.DisplayFor(p => p.So_BPTC_ATLD_TT, new { @class = "", id = "So_BPTC_ATLD_TT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        Cụ thể: @Html.DisplayFor(p => p.So_BPTC_ATLD_TT_CT, new { @class = "form-control", @rows = "2", id = "So_BPTC_ATLD_TT_CT", @style = "width:100%;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số PTT có tồn tại: @Html.DisplayFor(p => p.So_PTT_TT, new { @class = "", id = "So_PTT_TT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        Cụ thể: @Html.DisplayFor(p => p.So_PTT_TT_CT, new { @class = "form-control", @rows = "2", id = "So_PTT_TT_CT", @style = "width:100%;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số PCT có tồn tại: @Html.DisplayFor(p => p.So_PCT_TT, new { @class = "", id = "txtSo_PCT_TT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        Cụ thể: @Html.DisplayFor(p => p.So_PCT_TT_CT, new { @class = "form-control", @rows = "2", id = "So_PCT_TT_CT", @style = "width:100%;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số LCT có tồn tại: @Html.DisplayFor(p => p.Lenh_CT_TT, new { @class = "", id = "txtLenh_CT_TT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        Cụ thể: @Html.DisplayFor(p => p.Lenh_CT_TT_CT, new { @class = "form-control", @rows = "2", id = "Lenh_CT_TT_CT", @style = "width:100%;" })
+                                    </div>
+                                    <div class="row">
+                                        - Số người lao động không tuân thủ các quy định về ATLĐ: @Html.DisplayFor(p => p.SoNguoiViPham, new { @class = "", id = "txtSoNguoiViPham", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" }) người, cụ thể:
+                                    </div>
+                                    <div class="row">
+                                        + Họ, Tên người vi phạm và nội dung vi phạm: @Html.DisplayFor(p => p.ChiTietViPham, new { @class = "form-control", @rows = "2", id = "txtChiTietViPham", @style = "width:100%;" })
+                                    </div>*@
+                                    <div class="row">
+                                        <b>
+                                            I- Báo cáo việc kiểm soát trước khi cho triển khai thực hiện công việc ngày hôm nay @Html.Raw(DateTime.Today.ToString("dd/MM/yyyy"))
+                                        </b>
+                                    </div>
+                                    <div class="row">
+                                        1. Số công việc đăng ký thực hiện theo PCT: @Html.DisplayFor(p => p.So_CV_DK_PCT, new { @class = "", id = "So_CV_DK_PCT", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        1.1. Số công việc đăng ký theo Lịch công tác tuần: @Html.DisplayFor(p => p.So_CV_DK, new { @class = "", id = "txtSo_CV_DK", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        1.2. Số công việc đăng ký bổ sung đã được duyệt (Lịch cắt điện bổ sung/ Tờ trình): @Html.DisplayFor(p => p.So_CV_BS, new { @class = "", id = "txtSo_CV_BS", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Cụ thể: @Html.DisplayFor(p => p.ChiTiet_CV_BS, new { @class = "", id = "txtChiTiet_CV_BS", @placeholder = "……………..……………………………………………………………………………....", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        1.3. Số công việc đăng ký đột xuất đã được duyệt (Lịch cắt điện đột xuất/ Tờ trình): @Html.DisplayFor(p => p.So_CV_DX, new { @class = "", id = "txtSo_CV_DX", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Cụ thể: @Html.DisplayFor(p => p.ChiTiet_CV_DX, new { @class = "", id = "txtChiTiet_CV_DX", @placeholder = "……………..……………………………………………………………………………....", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        1.4. Số công việc đã kiểm soát theo nội dung phần I của PKS-ĐVCT:
+                                    </div>
+                                    <div class="row">
+                                        1.4.1. Số công việc đủ điều kiện làm việc: @Html.DisplayFor(p => p.So_CV_DK, new { @class = "", id = "txtSo_CV_DK", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        1.4.2. Số công việc không đủ điều kiện làm việc: @Html.DisplayFor(p => p.So_CV_HB, new { @class = "", id = "txtSo_CV_HB", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Cụ thể: @Html.DisplayFor(p => p.NoiDung_CV_HB, new { @class = "", id = "txtNoiDung_CV_HB", @placeholder = "……………..……………………………………………………………………………....", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Lý do: @Html.DisplayFor(p => p.LyDo_CV_HB, new { @class = "", id = "txtLyDo_CV_HB", @placeholder = "……………..……………………………………………………………………………....", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        2. Số công việc theo LCT: @Html.DisplayFor(p => p.So_CV_DK_LC, new { @class = "", id = "So_CV_DK_LC", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        3- Số công việc xin hoãn: @Html.DisplayFor(p => p.So_CV_XH, new { @class = "", id = "So_CV_XH", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row">
+                                        - Lý do hoãn: @Html.DisplayFor(p => p.LyDo_CV_XH, new { @class = "form-control", @rows = "2", id = "LyDo_CV_HB", @style = "width:100%;" })
+                                    </div>
+                                    <div class="row">
+                                        4. Tổng số công việc triển khai thực hiện trong ngày: @Html.DisplayFor(p => p.TongSoCV, new { @class = "", id = "TongSoCV", @placeholder = ".........", @style = "border:none;width:60%;height: 25px;" })
+                                    </div>
+                                    <div class="row" style="padding:0px 30px;margin-bottom:30px;">
+                                        <p class="pull-left text-center">
+                                            <b>KTVATCT</b>
+                                            <br />
+                                            <b>KIỂM SOÁT BÁO CÁO</b>
+                                            <br />
+                                            <i>(ký, ghi rõ họ tên)	</i>
+                                        </p>
+                                        <p class="pull-right text-center">
+                                            <b>TRỰC BAN KIỂM SOÁT</b>
+                                            <br />
+                                            <b>LÃNH ĐẠO ĐƠN VỊ</b>
+                                            <br />
+                                            <i>(ký, ghi rõ họ tên)</i>
+                                        </p>
+                                    </div>
+
+                                    @*<div class="row" style="padding:0px 30px;">
+                            * Lưu ý: Báo cáo gửi về phòng An toàn Công ty (số Fax: 0313515370; Email: ktat.pchp@gmail.com)
+                            (Mẫu báo cáo kèm theo văn bản số ……./PCHP-AT ngày …../11/2015 của Công ty TNHH MTV Điện lực Hải Phòng)
+                        </div>*@
+                                </div>
+                            </div>
+                        </section>
+                        @*<section class="panel">
+                            <div class="panel-body" style="font-family:'Times New Roman';background-color:#FFF;font-size:15px;">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-md-1 control-label">File đính kèm: </label>
+                                        <div class="col-md-11">
+                                            @if (lstDoc.Count > 0)
+                                            {
+                                                <div class="fileupload fileupload-exists" data-provides="fileupload">
+                                                    <input type="hidden" value="" name="">
+                                                    <div class="input-append">
+                                                        <div class="uneditable-input">
+                                                            <i class="fa fa-file fileupload-exists"></i>
+                                                            <span class="fileupload-preview" style="line-height: 22px;">@lstDoc.FirstOrDefault().FileName@lstDoc.FirstOrDefault().FileExt</span>
+                                                        </div>
+                                                        <span class="btn btn-default btn-file">
+                                                            <a target="_blank" download href="@lstDoc.FirstOrDefault().UrlFile"> <span class="fileupload-exists">Tải file</span></a>
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <label class="control-label">Không có File đính kèm</label>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>*@
+                        <footer class="panel-footer">
+                            <a class="btn btn-primary" href="@Url.Action("Index","BaoCao")">
+                                <span>Danh sách báo cáo</span>
+                            </a>
+                        </footer>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div id="file-attachment" class="tab-pane">
+            <section class="panel">
+                @*<header class="panel-heading">
+                        <h2 class="panel-title">Tài liệu đính kèm</h2>
+                    </header>*@
+                <div class="panel-body">
+                    <div id="file-content">
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+
+

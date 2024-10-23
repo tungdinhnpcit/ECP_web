@@ -1,0 +1,105 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.tblBaoCao>
+
+@if (Model != null)
+{
+
+    int i = 0;
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+
+    <div class="table-responsive">
+        <table cellspacing="0" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tiêu đề</th>
+                    <th>Số lượng phương án TCTC-BPAT</th>
+                    <th>Số PTT đã thực hiện</th>
+                    <th>Số PCT đã thực hiện</th>
+                    <th>Số LCT đã thực hiện</th>
+                    <th>Số Phiếu kiểm soát ATLĐ đã lập</th>
+                    <th>Số Biên bản kiểm tra ATLĐ đã lập</th>
+                    <th>Số Phương án TCTC-BPAT</th>
+                    <th>Số PTT có tồn tại</th>
+                    <th>Số PCT có tồn tại</th>
+                    <th>Số LCT có tồn tại</th>
+                    <th>Số người lao động không tuân thủ các quy định về ATLĐ</th>
+                    <th>Số công việc đăng ký thực hiện theo PCT</th>
+                    <th>Số công việc đăng ký theo Lịch công tác tuần</th>
+                    <th>Số công việc đủ điều kiện làm việc</th>
+                    <th>Số công việc không đủ điều kiện làm việc</th>
+                    <th>Số công việc theo LCT</th>
+                    <th>Số công việc xin hoãn</th>
+                    <th>Lý do hoãn</th>
+                    <th>Tổng số công việc</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model.GroupBy(x => x.DonViId))
+                {
+                    var donVi = donViRepository.GetById(group.Key);
+
+                    if (donVi != null)
+                    {
+                        <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
+                            <td colspan="15">
+                                <span class="h5">@donVi.TenDonVi</span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
+                            <td colspan="15">
+                                <span class="h5"></span>
+                            </td>
+                        </tr>
+                    }
+
+
+                    foreach (var group2 in group.GroupBy(x => x.NgayTao).OrderBy(o => o.Key))
+                    {
+                        <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
+                            <td colspan="15">
+                                <span class="h5">@string.Format("{0: dd/MM/yyyy}", group2.Key)</span>
+                            </td>
+                        </tr>
+                        foreach (var item in group2)
+                        {
+                            i++;
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.TieuDe</td>
+                                <td>@item.So_BPTC_ATLD</td>
+                                <td>@item.So_PTT</td>
+                                <td>@item.So_PCT</td>
+                                <td>@item.So_P_ATLD</td>
+                                <td>@item.So_BB_ATLD</td>
+                                <td>@item.So_BPTC_ATLD_TT</td>
+                                <td>@item.So_PTT_TT</td>
+                                <td>@item.So_PCT_TT</td>
+                                <td>@item.Lenh_CT_TT</td>
+                                <td>@item.SoNguoiViPham</td>
+                                <td>@item.So_CV_DK_PCT</td>
+                                <td>@item.So_CV_DK</td>
+                                <td>@item.So_CV_BS</td>
+                                <td>@item.So_CV_DK</td>
+                                <td>@item.So_CV_HB</td>
+                                <td>@item.So_CV_DK_LC</td>
+                                <td>@item.So_CV_XH</td>
+                                <td>@item.LyDo_CV_XH</td>
+                                <td>@item.TongSoCV</td>
+                            </tr>
+                                                    }
+                                                }
+                                            }
+            </tbody>
+        </table>
+    </div>
+                                            }
+                                            else
+                                            {
+                                        <h2 class="text-danger text-center">
+                                            Chưa có dữ liệu!
+                                        </h2>
+                                    }
+

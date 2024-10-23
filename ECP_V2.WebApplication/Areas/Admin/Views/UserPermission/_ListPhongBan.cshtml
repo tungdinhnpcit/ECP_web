@@ -1,0 +1,40 @@
+﻿@if (ViewBag.ListPhongBan != null)
+{
+    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPbanAdd" })
+}
+else
+{
+    @*@Html.DropDownList(null, null, "Phòng ban chưa được tạo", new { @class = "form-control mb-md", @id = "drlPban" })*@
+    <p>Phòng ban chưa được tạo</p>
+}
+
+<script>
+    $(function(){
+        $("#drlPbanAdd").change(function () {
+
+            var selectDVi = $('#drlDviAdd').val();
+            if (selectDVi.length > 0)
+            {
+                var filter = $('#txtKeyWordAdd').val();
+                var selectPban = $('#drlPbanAdd').val();
+                var roleName = $('input[name="ChiTietQuyen"]:checked').val();
+
+                var scriptUrl = "/Admin/UserPermission/ListTaiKhoanAdd?keyword=" + filter
+                    + "&PhongBanId=" + selectPban
+                    + "&DonViId=" + selectDVi
+                    + "&roleName=" + roleName;
+
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#taikhoan-add-container").html("");
+                        $("#taikhoan-add-container").html(data);
+                    }
+                });
+            }
+        });
+    });
+</script>

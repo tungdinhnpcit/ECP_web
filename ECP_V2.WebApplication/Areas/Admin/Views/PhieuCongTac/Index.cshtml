@@ -1,0 +1,282 @@
+﻿@model ECP_V2.WebApplication.Models.NhanVienModel
+@{
+    ViewBag.Title = "Danh sách tài khoản";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+
+<div class="head" id="ndContent">
+    @*<h1>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Add", "TaiKhoan")">
+            <i class="fa fa-plus"></i> &nbsp; Thêm tài khoản
+        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("InitAccount", "TaiKhoan")">
+                <i class="fa fa-user-secret"></i> &nbsp; Khởi tạo dữ liệu
+            </a>
+        }
+
+        @*<a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("ImportData", "TaiKhoan")">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel
+        </a>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Export", "TaiKhoan")">
+            <i class="fa fa-cloud-download"></i> &nbsp; Xuất danh sách
+        </a>
+    </h1>*@
+    <!-- Modal Animation -->
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+@*id="LoadingOverlayApi" data-loading-overlay*@
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách phiếu công tác
+            </div>
+        </div>
+        <div class="panel-body pn">
+            
+            <!-- Modal Animation -->
+            <div id="modalAnimSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Nhập số phiếu</h2>
+                    </header>
+                    <div class="panel-body">
+                        <div class="modal-wrapper">
+                            @*<div class="modal-icon">
+                                <i class="fa fa-te"></i>
+                            </div>*@
+                            <div class="modal-text">
+                                <input type="text" name="txtSoPhieu" id="txtSoPhieu" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary modal-confirm" id="modal-confirm">Cập nhật</button>
+                                <button class="btn btn-default modal-dismiss" id="modal-dismiss">Hủy bỏ</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+
+            <div id="modalAnimDongPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Nhập số phiếu</h2>
+                    </header>
+                    <div class="panel-body">
+                        <div class="modal-wrapper">
+                            <div class="modal-icon">
+                                <i class="fa fa-info"></i>
+                            </div>
+                            <div class="modal-text">
+                                <h3>Bạn có muốn đóng phiếu công tác này?</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary modal-confirm" id="modal-confirm">Cập nhật</button>
+                                <button class="btn btn-default modal-dismiss" id="modal-dismiss">Hủy bỏ</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig"); }
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="input-group mb-md">
+                            <input class="form-control" type="text" placeholder="Nhập nội dung phiếu công tác" value="@ViewBag.CurrentFilter" id="txtSearch">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" id="btnSearch">Tìm kiếm</button>
+                            </span>
+                        </div>
+                        @*<div id="datatable-default_filter" class="dataTables_filter">
+                           <label>                                
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" />
+                            </label>
+                        </div>*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <section class="panel">
+                            <header class="panel-heading">                              
+                                <h2 class="panel-title">Tìm theo điều kiện</h2>
+                            </header>
+                            <div class="panel-body">
+                                <form method="get" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Chọn loại phiếu:</label>
+                                        <div class="col-sm-6">
+                                            @*@Html.DropDownListFor(c => c.DonViId, Model.ListDonVi, "Chọn đơn vị ...", new { @class = "form-control mb-md" , @id= "drlDvi",@name= "drlDvi" })*@
+                                            @Html.DropDownList("MaLP", (IEnumerable<SelectListItem>)ViewBag.LoaiPhieu, "Chọn loại phiếu ...", new { @class = "form-control mb-md", @id = "drlLoaiPhieu", @name = "drlLoaiPhieu" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Chọn trạng thái:</label>
+                                        <div class="col-sm-6">
+                                            @*@Html.DropDownListFor(c => c.PhongBanId, Model.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPban",@name = "drlPban" })*@
+                                            @Html.DropDownList("MaTT", (IEnumerable<SelectListItem>)ViewBag.TrangThaiPhieu, "Chọn trạng thái ...", new { @class = "form-control mb-md", @id = "drlTrangThai" })
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group">
+                                        <label class="col-sm-3 control-label">Chọn nhóm quyền</label>
+                                        <div class="col-sm-6">
+                                            @Html.DropDownListFor(c => c.RoleId, Model.ListRole, new { @class = "form-control mb-md", @id = "drlRole" })
+                                            @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.ListRole, "Chọn quyền ...", new { @class = "form-control mb-md", @id = "drlRole" })
+                                        </div>
+                                    </div>*@                                                                                                   
+                                </form>
+                            </div>
+                        </section>                  
+                    </div>
+                </div>               
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "PhieuCongTac", new { page = 1, pageSize = (Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) : 10, sortOrder = "", filter = "", DonViId = ViewBag.DonViID });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section JavaScriptOnePgae{
+    @*<script type="text/javascript">
+                    window.onerror = function (msg, url, line) {
+                       alert("Message : " + msg );
+                       alert("url : " + url );
+                       alert("Line number : " + line );
+                    }
+        </script>*@
+    <script type="text/javascript">
+        $(function () {
+            var pageSize = 10;
+
+            $('#txtSearch').keypress(function (e) {
+                if (e.which == 13) {
+                    search();
+                    e.preventDefault();
+                }
+            });
+
+            $("#drlPageSize").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                var textSelected = optionSelected.text();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = '';
+                var donViId = '@ViewBag.DonViID';
+                var scriptUrl = "/Admin/PhieuCongTac/List?page=" + page + "&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&filter=" + currentSearh + "&MaLoaiPhieu=" + ($('#drlLoaiPhieu').val() || 0) + "&MaTrangThai=" + ($('#drlTrangThai').val() || 0) + "&DonViId=" + donViId;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            });
+
+            //$("#drlDvi").change(function () {
+            //    var selectDVi = $('#drlDvi').val();
+            //    var urlGetPban = "/Admin/TaiKhoan/ListPBanByIdDvi?id=" + selectDVi;
+            //    $.ajax({
+            //        url: urlGetPban,
+            //        type: 'get',
+            //        dataType: 'html',
+            //        async: false,
+            //        success: function (data) {
+            //            $("#divPban").html(data);
+            //            search();
+            //        },
+            //        error: function () {
+            //            alert("Có lỗi xảy ra!");
+            //        }
+            //    });
+            //});
+
+            //$("#drlRole").change(function () {
+            //    search();
+            //});
+
+            function search() {
+                var pageS = $("#drlPageSize").find("option:selected")
+                pageSize = pageS.val();
+                var page = 1;
+                if ($(".page-number-Current").html() != null)
+                    page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = '';
+                var donViId = '@ViewBag.DonViID';
+                var scriptUrl = "/Admin/PhieuCongTac/List?page=" + page + "&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&filter=" + currentSearh + "&MaLoaiPhieu=" + ($('#drlLoaiPhieu').val() || 0) + "&MaTrangThai=" + ($('#drlTrangThai').val() || 0) + "&DonViId=" + donViId;
+
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            }
+
+            $("#drlLoaiPhieu").change(function () {
+                search();
+            });
+
+            $("#drlTrangThai").change(function () {
+                search();
+            });
+
+            $("#btnSearch").click(function () {
+                search();
+            });
+        });
+    </script>
+}

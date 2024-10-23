@@ -1,0 +1,808 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2677432B-A595-42A5-BEB9-15DDB48963C9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ECP_V2.DataAccess</RootNamespace>
+    <AssemblyName>ECP_V2.DataAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AspNetRole.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUser.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserClaim.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserHistory.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserLogin.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Asset.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="atvs_DanhMuc.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="atvs_KeHoach.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="atvs_KetQua.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BBAN_KSAT_HTRUONG.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BBAN_KSAT_VITRI.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BB_KSAT_VITRI_CONGC_SDUNG.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="bcbs_ChiTieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="bcbs_LichSu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="bcbs_NoiDung.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="bcbs_TonThat.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CAM.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CAM_PHIENLV.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CCDC_TrangThai.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="chatTinNhan.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="cthl_AnhThe.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="cthl_KetQuaThi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="cthl_LoaiKyThi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="C__MigrationHistory.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DMUC_RRO.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="d_LoaiCongViec.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="d_NhomLoaiCongViec.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ECP_Model.Context.cs">
+      <DependentUpon>ECP_Model.Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ECP_Model.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ECP_Model.Designer.cs">
+      <DependentUpon>ECP_Model.edmx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="FacilitySite.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_KeHoachTuan1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_KeHoachTuan_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Get_KeHoachTuan_Result1.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HangSanXuat.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hlat_CapDienAp.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hlat_CongTrinh.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hlat_PhaDat.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hlat_TaiNan.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HLENH_ATOAN.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HLENH_ATOAN_CTIET.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KiemSoatDienThoai.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KTDK_LOAIKTR.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KTDK_NHOMKTR.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KTDK_PCKT.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KTDK_PHIENLV.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KTDK_TBI_LOAI.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KTDK_XLTT.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LoaiThietBi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Log.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Menu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MenuMaster.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MenuOfRole.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Message.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NhomThietBi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_GetPhienLV_ByID1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_GetPhienLV_ByID2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_GetPhienLV_ByID_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_Get_KeHoachTuan1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_Get_KeHoachTuan2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_Get_KeHoachTuan_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchImage1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchImage2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchImage_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienByRole1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienByRole2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienByRole_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienNotInRole1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienNotInRole2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienNotInRoleTypeFunction1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienNotInRoleTypeFunction2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienNotInRoleTypeFunction_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchNhanVienNotInRole_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchPhienLV1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchPhienLV2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_AdvancedSearchPhienLV_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_ExportPhienLV1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_ExportPhienLV2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NPC_sp_ExportPhienLV_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NuocSanXuat.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pccc_LoaiThietBi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pccc_NhomThietBi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pccc_SoTheoDoiPCCC.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pccc_SoTheoDoiPCCC_TaiLieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pccc_ThietBiPCCC.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pccc_TrangThai.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PhieuLamViec_Images.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PhieuLamViec_Images_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pkg_at_dm_nhomktra_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pkg_get_asset_by_teamid_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pkg_get_dsphancong_bymadvql_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pkg_get_dsphancong_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pkg_get_loai_ktras_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_LichSuCapSoPhieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_LichSuCapSoPhieu_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_LoaiPhieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PLV_PAN_TCONG.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_PhieuCongTac.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_PhieuCongTac_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_PhieuCongTac_Sign.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_PhieuCT_NhanVien.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_PhieuCT_NhanVien_his.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_SoPhieuHienTai.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_SoPhieuHienTai_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_TaiLieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_TaiLieu_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_ThuocTinhPhien.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_TinhChatPhien.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_TrangThaiPhien.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plv_TrangThaiPhieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QLY_RRO.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_ChiTieuSoVuSuCo.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_ChiTieuSuCoTHASauMT.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_DonViTinh.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_KHGiaoTGXLSCTHA.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_KienNghiMienTru.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_KienNghiMienTru_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_KienNghiMienTru_TaiLieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_KienNghiMienTru_TaiLieu_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_LoaiPhanTu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_LoaiSuCo.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_MaHieuVatTu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_NhaSanXuat.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_PhanTuDien.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_SucoKhoachNnhan.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_SuCoPTD.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_SuCoPTD_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_TaiLieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_TaiLieu_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_TaiNanSuCo.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_TaiNanSuCo_DonVi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_TaiNanSuCo_DonVi_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_TaiNanSuCo_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sc_ThietBiSuCo.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SoTheoDoiCCDCAT.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SoTheoDoiCCDCAT_TaiLieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhienLVNew1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhienLVNew2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhienLVNew_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhieuCongTac1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhieuCongTac_His1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhieuCongTac_His_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_AdvancedSearchPhieuCongTac_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_Comment_getallbyPhienLVID1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_Comment_getallbyPhienLVID2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_Comment_getallbyPhienLVID_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_ExportPhienLV1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_ExportPhienLV2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition3_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition4_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams3_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams4_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_PCT_AdvancedSearchPhienLVNew_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_PhienLamViec_getbyId1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_PhienLamViec_getbyId2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_PhienLamViec_getbyId_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_plv_PhieuCongTac_getByID1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_plv_PhieuCongTac_getByID2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_plv_PhieuCongTac_getByID_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_plv_TaiLieu_getallbyPhieuID1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_plv_TaiLieu_getallbyPhieuID2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_plv_TaiLieu_getallbyPhieuID_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_TongHopBaoCaoCuoiNgayPhienLV1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_TongHopBaoCaoCuoiNgayPhienLV2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_TongHopBaoCaoCuoiNgayPhienLV_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SystemConfig.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="S_THANG_LVIEC.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBaoCao.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBaoCaoCuoiNgay.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblBienBanKiemTra.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChiTietBaoCao.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblChiTietBaoCaoCuoiNgay.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblComment.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblComment_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblComment_Image.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblComment_Image_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDevice.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDevice2.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDonVi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblGroupImage.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblImage.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblImage_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblKTG.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLichLamViec.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLoaiBaoCao.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblNhanVien.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_ChinhSua.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_ChinhSua_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_NhatKy.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_NhatKy_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_TheoDoi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_TheoDoi_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_ThuocTinh.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhienLamViec_ThuocTinh_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPhongBan.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTag.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTagImageUser.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblTram.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblVaiTroPhienLamViec.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_NhanVien_PhienLamViec.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_NhanVien_PhienLamViec_His.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbnn_LoaiThietBi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbnn_NhomThietBi.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbnn_SoTheoDoiTBNN.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbnn_SoTheoDoiTBNN_TaiLieu.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbnn_ThietBiNghiemNgat.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbnn_TrangThai.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ThietBiATLD.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TongHopBaoCaoCuoiNgay1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TongHopBaoCaoCuoiNgay_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TongHopBaoCaoDauGio1_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TongHopBaoCaoDauGioV21_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TongHopBaoCaoDauGioV2_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TongHopBaoCaoDauGio_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_get_dscamera_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_get_dvql_Result.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vsld_QuanTrac.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vs_Comment.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vs_DanhMucLoaiVeSinh.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vs_HinhAnh.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vs_KyBaoCao.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vs_NoiDungVeSinh.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XMLwithOpenXML.cs">
+      <DependentUpon>ECP_Model.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="ECP_Model.edmx.diagram">
+      <DependentUpon>ECP_Model.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="ECP_Model.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ECP_Model.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ECP_Model.Context.tt">
+      <DependentUpon>ECP_Model.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ECP_Model.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ECP_Model.edmx.sql" />
+    <Content Include="ECP_Model.tt">
+      <DependentUpon>ECP_Model.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ECP_Model.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

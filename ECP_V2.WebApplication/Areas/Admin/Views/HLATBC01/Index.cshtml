@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">*@
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<!-- Core jquery-->
+@*<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>*@
+<script src="~/Scripts/HluAt/hluat_report.js"></script>
+<script src="~/Scripts/DataTables/dataTables.jqueryui.min.js"></script>
+<script> 
+
+    $(document).ready(function () {
+        $('#cboNhansu').select2({
+            closeOnSelect: false
+        });
+        //Load danh mục:
+        LoadDonvi();
+        LoadNhansu();        
+
+        let height = $(window).height() - 640;
+        $('#tblKquaThi').DataTable({
+            scrollY: 200,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+    })
+</script>
+
+<style>
+    .input-date {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+    }
+
+    hr {
+        display: block;
+        margin-top: 5px;
+        border-style: solid;
+        border-top-width: 1px;
+    }
+    .modal-header {
+        background: #3c40c6;
+        color: white;
+    }
+
+    .modal-header .close {
+        margin-top: -20px;
+    }
+
+    table.dataTable tbody tr.selected {
+        background-color: #113ce6 !important;
+        color: white;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {        
+        padding: 0.5em 0.1em;
+        margin-left:0px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    .dt-body-left{
+        color:blue;
+    }
+</style>
+
+<div class="container-fruid ms-auto">
+    <h3><i class="fa fa-list"> BC01 - Báo cáo chi tiết kết quả huấn luyện</i></h3>
+    <div class="row">
+        <!-- Post content-->
+        <div class="col-lg-5">
+            <select class="form-control form-control-sm" id="cboDonvi">
+            </select>
+        </div>
+        <div class="col-lg-5">
+            <select class="form-control form-control-sm" id="cboNhansu">
+            </select>
+        </div>
+
+        <div class="col-lg-2">
+            <button id="cmdView" class="btn btn-primary">
+                <i class="fa fa-refresh"></i> Xem
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="padding-top:5px;">
+        <h3>Hồ sơ cá nhân</h3>
+        <div class="card">
+            <div class="form-group row">
+                <label for="donvi" class="col-sm-2 col-form-label">Đơn vị:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="donvi" style="font-weight:bold;" value="" />
+                </div>
+                <label for="hovaten" class="col-sm-2 col-form-label">Họ và tên:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="hovaten" style="font-weight:bold;" value="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="chucvu" class="col-sm-2 col-form-label">Chức vụ:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="chucvu" style="font-weight:bold;" value="" />
+                </div>
+                <label for="cccd" class="col-sm-2 col-form-label">Số CCCD:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="cccd" style="font-weight:bold;" value="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="namsinh" class="col-sm-2 col-form-label">Năm sinh:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="namsinh" style="font-weight:bold;" value="" />
+                </div>
+                <label for="gioitinh" class="col-sm-2 col-form-label">Giới tính:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="gioitinh" style="font-weight:bold;" value="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="nhomantoan" class="col-sm-2 col-form-label">Nhóm An toàn:</label>
+                <div class="col-sm-4">
+                    <label type="label" class="form-control-plaintext"
+                           id="nhomantoan" style="font-weight:bold;" value=""></label>
+                </div>
+                <label for="chucdanh" class="col-sm-2 col-form-label">Chức danh ATĐ:</label>
+                <div class="col-sm-4">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="chucdanh" style="font-weight:bold;" value="" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="bacat" class="col-sm-2 col-form-label">Bậc AT:</label>
+                <div class="col-sm-10">
+                    <label type="text" readonly class="form-control-plaintext"
+                           id="bacat" style="font-weight:bold;" value="" />
+                </div>
+            </div>
+        </div>
+        <h3>Kết quả huấn luyện</h3>
+        <div class="row">
+            <table id="tblKquaThi" class="table cell-border compact stripe select" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Nhóm huấn luyện</th>
+                        <th>Năm</th>
+                        <th>Lý thuyết</th>
+                        <th>Thực hành</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#cboDonvi').on('change', function (e) {
+        //Load();()
+        LoadNhansu();
+    //$('#cboNhansu').on('change', function (e) {
+    //    //LoadDsNhomTheoLoaiDaotao();
+    });
+
+    $('#cmdView').click(function (e) {
+        LoadDsKquaThi();
+    });
+      
+</script>

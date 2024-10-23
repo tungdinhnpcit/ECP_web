@@ -1,0 +1,568 @@
+﻿@model ECP_V2.DataAccess.tblPhienLamViec
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<link href="~/Content/jQuery.FileUpload/css/jquery.fileupload-ui.css" rel="stylesheet" />
+<link href="~/Content/jQuery.FileUpload/css/jquery.fileupload.css" rel="stylesheet" />
+
+<noscript><link href="~/Content/jQuery.FileUpload/css/jquery.fileupload-noscript.css" rel="stylesheet" /></noscript>
+<noscript><link href="~/Content/jQuery.FileUpload/css/jquery.fileupload-ui-noscript.css" rel="stylesheet" /></noscript>
+
+<style>
+    .list-images {
+        margin-top: 30px;
+    }
+</style>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Tải ảnh phiên làm việc
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+
+                    <div class="col-md-4">
+                        <p>Công việc: <b>@Model.NoiDung</b></p>
+                        <p>Địa điểm: <b>@Model.DiaDiem</b></p>
+                        <p>Thời gian: <b>@Model.GioBd.ToString("HH:mm dd/MM/yyyy") - @Model.GioKt.ToString("HH:mm dd/MM/yyyy")</b></p>
+                    </div>
+                    <div class="col-md-8">
+                        <a href="/Admin/PhienLV/Index" class="btn btn-primary">Danh sách phiên làm việc</a>
+                    </div>
+                    
+                </div>
+                <div class="listRolesName list">
+                    <form id="fileupload">
+                        <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                        <div class="row fileupload-buttonbar">
+                            <div class="col-lg-7">
+                                <select name="groupImages" id="groupImages">
+                                    <option value="0">Chọn loại nhóm hình ảnh</option>
+                                    @if (ViewBag.GroupImages != null)
+                                    {
+                                        var group = (IEnumerable<ECP_V2.DataAccess.tblGroupImage>)ViewBag.GroupImages;
+
+                                        foreach (var item in group)
+                                        {
+                                            <option value="@item.Id">@item.NoiDung</option>
+                                        }
+                                    }
+                                </select>
+                                <!-- The fileinput-button span is used to style the file input field as button -->
+                                <span class="btn btn-success fileinput-button">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span>Thêm ảnh...</span>
+                                    <input type="file" name="files" id="imageFiles" multiple accept="image/*">
+                                </span>
+                                <button type="button" class="btn btn-primary start" id="btnUploadAll">
+                                    <i class="glyphicon glyphicon-upload"></i>
+                                    <span>Tải lên</span>
+                                </button>
+                                <button type="button" class="btn btn-warning cancel" id="btnCancelAll">
+                                    <i class="glyphicon glyphicon-ban-circle"></i>
+                                    <span>Hủy bỏ</span>
+                                </button>
+                                @*<button type="button" class="btn btn-danger delete">
+                        <i class="glyphicon glyphicon-trash"></i>
+                        <span>Delete</span>
+                    </button>*@
+                                @*<input type="checkbox" class="toggle">*@
+                                <!-- The global file processing state -->
+                                <span class="fileupload-process"></span>
+                            </div>
+                            @*<!-- The global progress state -->
+                <div class="col-lg-5 fileupload-progress fade">
+                    <!-- The global progress bar -->
+                    <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                    </div>
+                    <!-- The extended global progress state -->
+                    <div class="progress-extended">&nbsp;</div>
+                </div>*@
+                        </div>
+                        <!-- The table listing the files available for upload/download -->
+                        <div class="list-images">
+                            <table role="presentation" class="table table-striped">
+                                <tbody class="files"></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section JavaScriptOnePgae {
+        
+<script src="~/Scripts/jQuery.FileUpload/vendor/jquery.ui.widget.js"></script>
+@*<script src="~/Scripts/jQuery.FileUpload/tmpl.min.js"></script>*@
+<script src="~/Scripts/jQuery.FileUpload/load-image.all.min.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/canvas-to-blob.min.js"></script>
+@*<script src="~/Scripts/blueimp-gallery2/js/jquery.blueimp-gallery.min.js"></script>*@
+<script src="~/Scripts/jQuery.FileUpload/jquery.iframe-transport.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload-process.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload-image.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload-audio.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload-video.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload-validate.js"></script>
+<script src="~/Scripts/jQuery.FileUpload/jquery.fileupload-ui.js"></script>
+<!--[if (gte IE 8)&(lt IE 10)]>
+<script src="~/Scripts/jQuery.FileUpload/cors/jquery.xdr-transport.js"></script>
+<![endif]-->
+
+
+    <script>
+        var longitude = 0;
+        var latitude = 0;
+        window.onload = function () {
+            if (navigator.geolocation) {
+                // Call getCurrentPosition with success and failure callbacks
+                navigator.geolocation.getCurrentPosition(success, fail);
+            }
+            else {
+                alert("Sorry, your browser does not support geolocation services.");
+            }
+        }
+        function success(position) {
+            longitude = position.coords.longitude;
+            latitude = position.coords.latitude;
+        }
+
+        function fail() {
+            // Could not obtain location
+        }
+        $(function () {
+            'use strict';
+
+            //// Initialize the jQuery File Upload widget:
+            //$('#fileupload').fileupload({
+            //    // Uncomment the following to send cross-domain cookies:
+            //    //xhrFields: {withCredentials: true},
+            //    url: 'server/php/'
+            //});
+
+            //// Enable iframe cross-domain access via redirect option:
+            //$('#fileupload').fileupload(
+            //    'option',
+            //    'redirect',
+            //    window.location.href.replace(
+            //        /\/[^\/]*$/,
+            //        '/cors/result.html?%s'
+            //    )
+            //);
+
+            //if (window.location.hostname === 'blueimp.github.io') {
+            //    // Demo settings:
+            //    $('#fileupload').fileupload('option', {
+            //        url: '//jquery-file-upload.appspot.com/',
+            //        // Enable image resizing, except for Android and Opera,
+            //        // which actually support image resizing, but fail to
+            //        // send Blob objects via XHR requests:
+            //        disableImageResize: /Android(?!.*Chrome)|Opera/
+            //            .test(window.navigator.userAgent),
+            //        maxFileSize: 999000,
+            //        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
+            //    });
+            //    // Upload server status check for browsers with CORS support:
+            //    if ($.support.cors) {
+            //        $.ajax({
+            //            url: '//jquery-file-upload.appspot.com/',
+            //            type: 'HEAD'
+            //        }).fail(function () {
+            //            $('<div class="alert alert-danger"/>')
+            //                .text('Upload server currently unavailable - ' +
+            //                new Date())
+            //                .appendTo('#fileupload');
+            //        });
+            //    }
+            //} else {
+            //    // Load existing files:
+            //    $('#fileupload').addClass('fileupload-processing');
+            //    $.ajax({
+            //        // Uncomment the following to send cross-domain cookies:
+            //        //xhrFields: {withCredentials: true},
+            //        url: $('#fileupload').fileupload('option', 'url'),
+            //        dataType: 'json',
+            //        context: $('#fileupload')[0]
+            //    }).always(function () {
+            //        $(this).removeClass('fileupload-processing');
+            //    }).done(function (result) {
+            //        $(this).fileupload('option', 'done')
+            //            .call(this, $.Event('done'), { result: result });
+            //    });
+            //}
+
+            $('html').addClass('sidebar-left-collapsed');
+
+            var filesArray = [];
+            var id = '@Model.Id';
+
+            $('#imageFiles').change(function () {
+                
+                filesArray = [];
+                $('#btnUploadAll').prop('disabled', false);
+                $('#btnCancelAll').prop('disabled', false);
+                $('.list-images .files').html('');
+
+                if ($(this).get(0).files.length > 0) {
+
+                    $('#fileupload').addClass('fileupload-processing');
+
+                    var formData = new FormData();
+
+                    $.each($(this).get(0).files, function (i, file) {
+                        formData.append('files', file);
+                        filesArray.push(file);
+                    });
+
+                    formData.append('id', id);
+
+                    readURL(this);
+
+                    $('#fileupload').removeClass('fileupload-processing');
+
+                    //$.ajax({
+                    //    type: 'POST',
+                    //    url: '/UploadImagePhienLV/ListFileUpload',
+                    //    data: formData,
+                    //    cache: false,
+                    //    contentType: false,
+                    //    processData: false,
+                    //    success: function (data) {
+                    //        if (data) {
+                    //            $('.list-images').html(data.responseText);
+                    //            $('#fileupload').removeClass('fileupload-processing');
+                    //        } else {
+                    //            $('.list-images').html('');
+                    //            $('#imageFiles').val('');
+                    //            $('#fileupload').removeClass('fileupload-processing');
+                    //        }
+                    //    },
+                    //    error: function () {
+                    //        $('.list-images').html('');
+                    //        $('#imageFiles').val('');
+                    //        $('#fileupload').removeClass('fileupload-processing');
+                    //    }
+                    //});
+
+                }
+            });
+
+            $('.list-images').on('click', '.template-upload #btnUploadIndividual', function () {
+
+                var name = $(this).data('name');
+                var group = $('#groupImages').val();
+                var row = $(this).closest('tr');
+                var error = $(this).closest('tr').find('.error');
+                var bar = $(this).closest('tr').find('.progress-bar');
+                var $this = $(this);
+                $this.prop('disabled', true);
+
+                if (name != '') {
+
+                    var formData = new FormData();
+
+                    for (var i = 0; i < filesArray.length; i++) {
+                        if (filesArray[i].name === name) {
+                            formData.append('file', filesArray[i]);
+                            filesArray.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    formData.append('id', id);
+                    formData.append('group', group);
+
+                    if (parseInt(group) > 0) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/UploadImagePhienLV/UploadImage',
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            success: function (data) {
+                                if (data.success) {
+
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: 'Tải ảnh thành công',
+                                        type: 'success'
+                                    });
+
+                                    bar.css('width', '100%');
+
+                                    row.replaceWith(data.responseText);
+                                } else {
+                                    error.html('Không thể tải ảnh này');
+
+                                    $this.prop('disabled', false);
+                                }
+                            },
+                            error: function (e) {
+                                error.html('Không thể kết nối đến Server');
+                                $this.prop('disabled', false);
+                            }
+                        });
+                    } else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Chọn loại nhóm ảnh cần tải',
+                            type: 'error'
+                        });
+                        $this.prop('disabled', false);
+                    }
+                }
+            });
+
+            $('.list-images').on('click', '.template-upload #btnCancelUploadIndividual', function () {
+
+                var name = $(this).data("name");
+
+                for (var i = 0; i < filesArray.length; i++) {
+                    if (filesArray[i].name === name) {
+                        filesArray.splice(i, 1);
+                        break;
+                    }
+                }
+
+                if (filesArray.length > 0) {
+                    $('#imageFiles').get(0).files = new FileList(filesArray);
+                } else {
+                    $('.list-images .files').html('');
+                    $('#imageFiles').val('');
+                }
+            });
+
+            $('#btnUploadAll').click(function () {
+
+                var $this = $(this);
+                var group = $('#groupImages').val();
+
+                if (parseInt(group) == 0) {
+
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Chọn loại nhóm ảnh cần tải',
+                        type: 'error'
+                    });
+
+                    return false;
+                }
+                
+                
+                $this.prop('disabled', true);
+
+                if ($('#imageFiles').get(0).files.length > 0) {
+                    var formData = new FormData();
+
+                    $.each($('#imageFiles').get(0).files, function (i, file) {
+                        formData.append('files', file);
+                        filesArray.push(file);
+                    });
+
+                    formData.append('id', id);
+                    formData.append('group', group);
+                    formData.append('kinhDo', longitude);
+                    formData.append('viDo', latitude);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/UploadImagePhienLV/UploadImages',
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            if (data.success) {
+                                
+                                $('.progress-bar').css('width', '100%');
+
+                                $('.template-upload #btnUploadIndividual').hide()
+                                $('.template-upload #btnCancelUploadIndividual').hide()
+                                $('#btnCancelAll').prop('disabled', true);
+
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Tải ảnh thành công',
+                                    type: 'success'
+                                });
+
+                                resetInputFile();
+
+                                $('.list-images .files').html(data.responseText);
+
+                            } else {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Tải ảnh không thành công',
+                                    type: 'error'
+                                });
+
+                                $this.prop('disabled', false);
+                            }
+                        },
+                        error: function () {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Tải ảnh không thành công',
+                                type: 'error'
+                            });
+
+                            $this.prop('disabled', false);
+                        }
+                    });
+
+                } else {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Chọn ảnh cần tải lên',
+                        type: 'error'
+                    });
+
+                    $this.prop('disabled', false);
+                }
+            });
+
+            $('#btnCancelAll').click(function () {
+                resetInputFile();
+            });
+
+            $('.list-images').on('click', '#btnDeleteImage', function () {
+                var imageId = $(this).data('img');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/UploadImagePhienLV/DeleteImage',
+                    data: JSON.stringify({
+                        imgId: imageId
+                    }),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.success) {
+                            
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa ảnh thành công',
+                                type: 'success'
+                            });
+
+                            var row = $('.list-images .files').find('tr[data-img="' + data.responseText + '"]');
+                            row.remove();
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa ảnh không thành công',
+                                type: 'error'
+                            });
+
+                        }
+                    },
+                    error: function () {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Xóa ảnh không thành công',
+                            type: 'error'
+                        });
+
+                    }
+                });
+
+            });
+
+            function readURL(fileInput) {
+               
+                var files = fileInput.files;
+                for (var i = 0; i < files.length; i++) {
+
+                    var file = files[i];
+                    var reader = new FileReader();
+
+                    reader.fileName = file.name;
+                    reader.size = file.size;
+
+                    reader.onload = function (e) {
+
+                        var html = '<tr class="template-upload fade in">' +
+                            '<td>' +
+                            '<span class="preview"><img src="' + e.target.result + '" width="80" height="45" /></span>' +
+                            '</td>' +
+                            '<td>' +
+                            '<p class="name">' + e.target.fileName + '</p>' +
+                            '<strong class="error text-danger"></strong>' +
+                            '</td>' +
+                            '<td>' +
+                            '<p class="size">' + e.target.size + ' Bytes</p>' +
+                            '<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>' +
+                            '</td>' +
+                            '<td>' +
+
+                            //'<button type="button" class="btn btn-primary start" id="btnUploadIndividual" data-name="' + e.target.fileName + '">' +
+                            //'<i class="glyphicon glyphicon-upload"></i>' +
+                            //'<span>Tải lên</span>' +
+                            //'</button>' +
+
+                            '<button type="button" class="btn btn-warning cancel" id="btnCancelUploadIndividual" data-name="' + e.target.fileName + '">' +
+                            '<i class="glyphicon glyphicon-ban-circle"></i>' +
+                            '<span>Hủy bỏ</span>' +
+                            '</button>' +
+
+                            '</td>' +
+                            '</tr>';
+
+                        $('.list-images .files').append(html);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function resetInputFile() {
+                $('#imageFiles').replaceWith($('#imageFiles').val('').clone(true));
+                filesArray = [];
+                $('#btnUploadAll').prop('disabled', false);
+                $('#btnCancelAll').prop('disabled', false);
+                $('.list-images .files').html('');
+            }
+
+        });
+
+        
+
+
+        class FileList {
+            constructor(...items) {
+                // flatten rest parameter
+                items = [].concat(...items);
+                // check if every element of array is an instance of `File`
+                if (items.length && !items.every(file => file instanceof File)) {
+                    throw new TypeError("expected argument to FileList is File or array of File objects");
+                }
+                // use `ClipboardEvent("").clipboardData` for Firefox, which returns `null` at Chromium
+                // we just need the `DataTransfer` instance referenced by `.clipboardData`
+                const dt = new ClipboardEvent("").clipboardData || new DataTransfer();
+                // add `File` objects to `DataTransfer` `.items`
+                for (let file of items) {
+                    dt.items.add(file)
+                }
+                return dt.files;
+            }
+        }
+
+    </script>
+
+
+}

@@ -1,0 +1,18 @@
+﻿@if (ViewBag.ListPhongBan != null)
+{
+    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPhongBanAll" })
+}
+else
+{
+    @*@Html.DropDownList(null, null, "Phòng ban chưa được tạo", new { @class = "form-control mb-md", @id = "drlPban" })*@
+    <p>Phòng ban chưa được tạo</p>
+}
+
+<script>
+    $(function(){
+        $("#drlPhongBanAll").change(function () {
+            var pageSize = $('#drlPageSizeTaiKhoan').val();
+            GetList(1, pageSize, '', '', $('input[name="ChiTietQuyen"]:checked').val(), $('#drlPhongBanAll').val(), $('#drlDonViAll').val());
+        });
+    });
+</script>

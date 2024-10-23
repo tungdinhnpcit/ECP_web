@@ -1,0 +1,48 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+    //Layout = "_Layout";
+}
+
+<div class="alert alert-info fade in nomargin">
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+    <h4>Thông báo lỗi!</h4>
+    <p>Chúng tôi rất tiếc vì sự cố này. Vui lòng liên hệ với Quản trị viên để nhận được hỗ trợ tốt nhất! Xin cảm ơn!</p>
+    <p>
+        @{
+            if (Request.IsLocal)
+            {
+                if (Model != null && Model.Exception != null)
+                {
+                    <h3>
+                        Thông số lỗi: @Model.Exception.Message
+                    </h3>
+                    <h3>
+                        Tại dòng: @Model.Exception.StackTrace
+                    </h3>
+                }
+                else
+                {
+                    <h3>
+                        Không tìm thấy lỗi!
+                    </h3>
+                }
+            }
+            else
+            {
+                <h4>
+                    Lỗi đã được gửi tới quản trị viên!
+                </h4>
+            }
+
+            <br />
+            <a class="btn btn-default" href="@Url.Action("Login", "Account", new { area = "" })">
+                <span>Đăng nhập lại hệ thống</span>
+            </a>
+        }
+    </p>
+</div>
+
+
+

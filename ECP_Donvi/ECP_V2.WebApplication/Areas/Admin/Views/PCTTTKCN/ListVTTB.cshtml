@@ -1,0 +1,243 @@
+﻿
+<script type="text/javascript">
+    $(function () {
+        $('a.delete').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+
+        });
+    });
+</script>
+
+<div class="table-responsive">
+    <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+        <thead>
+            <tr>
+                <th>
+                    TT
+                </th>
+                <th>
+                    Tên, quy cách
+                </th>
+                <th>
+                    Đơn vị tính
+                </th>
+                <th>
+                    Số lượng
+                </th>
+                <th>
+                    Nơi để
+                </th>
+                <th>
+                    Ghi chú
+                </th>
+                <th>
+                    Thao tác
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:center">1</td>
+                <td>Dây dẫn AC 240</td>
+                <td>Kg</td>
+                <td>500</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_1" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_1" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">2</td>
+                <td>Dây dẫn XLPE A95</td>
+                <td>Kg</td>
+                <td>1200</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_2" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_2" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">3</td>
+                <td>Dây dẫn XLPE A70</td>
+                <td>Kg</td>
+                <td>1400</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_3" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_3" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">4</td>
+                <td>Ghíp A 120</td>
+                <td>Bộ</td>
+                <td>350</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_4" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_4" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">5</td>
+                <td>Ghíp M 50</td>
+                <td>Bộ</td>
+                <td>350</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_5" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_5" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">6</td>
+                <td>ống nối CO-AC 185</td>
+                <td>Ống</td>
+                <td>30</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_6" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_6" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">7</td>
+                <td>ống nối CO-AC 120</td>
+                <td>ống</td>
+                <td>30</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_7" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_7" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>ống nối CO-AC 95</td>
+                <td>ống</td>
+                <td>30</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_8" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_8" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Đầu cốt A 120</td>
+                <td>Cái</td>
+                <td>84</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_9" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_9" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Tó 3 chân – 6 m</td>
+                <td>Bộ</td>
+                <td>14</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_10" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_10" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Néo và móng néo</td>
+                <td>Bộ</td>
+                <td>50</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_11" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_11" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Cọc sắt L65x65x2,5 m</td>
+                <td>Cọc</td>
+                <td>50</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_12" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_12" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Cọc sắt L70x70x1,5 m</td>
+                <td>Cọc</td>
+                <td>50</td>
+                <td>Kho C.ty và các ĐL</td>
+                <td></td>
+                <td>
+                    <a id="Edit_13" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_13" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Cột CL-10</td>
+                <td>Cột</td>
+                <td>10</td>
+                <td>Kho Công ty</td>
+                <td></td>
+                <td>
+                    <a id="Edit_14" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_14" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Cột CL-12</td>
+                <td>Cột</td>
+                <td>10</td>
+                <td>Kho Công ty</td>
+                <td></td>
+                <td>
+                    <a id="Edit_15" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_15" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8</td>
+                <td>Cột CL-14</td>
+                <td>Cột</td>
+                <td>10</td>
+                <td>Kho Công ty</td>
+                <td></td>
+                <td>
+                    <a id="Edit_16" onclick="edit(this)" title="Sửa" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                    <a id="Delete_16" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

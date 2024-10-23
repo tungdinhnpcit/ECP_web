@@ -1,0 +1,150 @@
+﻿@model ECP_V2.DataAccess.tblPhienLamViec
+
+<div class="tabs" style="margin:0">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#thongtin" data-toggle="tab"><i class="fa fa-info-circle"></i> Thông tin</a>
+        </li>
+        <li>
+            <a href="#nhanxet" onclick="CommnetTabScroll()" data-toggle="tab"><i class="fa fa-comments-o"></i> Nhận xét</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="thongtin" class="tab-pane active">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Ngày Tạo</label>
+                <div class="col-sm-9">
+                    @string.Format("{0:dd/MM/yyyy HH:mm:ss}", @Model.NgayTao)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Người Tạo</label>
+                <div class="col-sm-9">
+                    @Model.NguoiTao
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Ngày Sửa</label>
+                <div class="col-sm-9">
+                    @string.Format("{0:dd/MM/yyyy HH:mm:ss}", @Model.NgaySua)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Người Sửa</label>
+                <div class="col-sm-9">
+                    @Model.NguoiSua
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Trạng thái</label>
+                
+                    @if (Model.TrangThai == 1)
+                    {
+                        <div class="col-sm-9" style="color: blue; font-weight: bold;">
+                            Vừa tạo
+                        </div>
+                    }
+                    else if (Model.TrangThai == 2)
+                    {
+                        <div class="col-sm-9" style="color: black; font-weight: bold;">
+                            Đã duyệt
+                        </div>
+                    }
+                    else if (Model.TrangThai == 3)
+                    {
+                        <div class="col-sm-9">
+                            Đã xong
+                        </div>
+                    }
+                    @*else if (Model.TrangThai == 4)
+                    {
+                        <div class="col-sm-9" style="color: #ffcc00; font-weight: bold;">
+                            Chuyển NPC
+                        </div>
+                    }*@
+                    else if(Model.TrangThai == 5)
+                    {
+                        <div class="col-sm-9">
+                            Chuyển hoàn
+                        </div>
+                    }
+                    else if (Model.TrangThai == 6)
+                    {
+                        <div class="col-sm-9">
+                            Đã xóa
+                        </div>
+                    }
+                    else if (Model.TrangThai == 7)
+                    {
+                        <div class="col-sm-9">
+                            Hủy bỏ
+                        </div>
+                    }
+
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Ngày Duyệt</label>
+                <div class="col-sm-9">
+                    @string.Format("{0:dd/MM/yyyy HH:mm:ss}", @Model.NgayDuyet)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Người Duyệt</label>
+                <div class="col-sm-9">
+                    @Model.NguoiDuyet
+                </div>
+            </div>
+        </div>
+        <div id="nhanxet" class="tab-pane">
+            <div class="scrollable visible-slider colored-slider" data-plugin-scrollable style="height: 350px;">
+                <div class="scrollable-content">
+                    <ul class="simple-user-list">
+                        @if (ViewBag.lstComment != null)
+                        {
+                            foreach (var item in ViewBag.lstComment)
+                            {
+                                <li>
+                                    <span class="title">@item.Username      @string.Format("{0:dd/MM/yyyy}",item.CreateTime)</span>
+                                    <span style="font-size:1.5rem" class="message truncate">@item.CommentContent</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        // Scrollable
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['nanoScroller'])) {
+
+                $(function () {
+                    $('[data-plugin-scrollable]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions) {
+                            opts = pluginOptions;
+                        }
+
+                        $this.themePluginScrollable(opts);
+                    });
+                });
+
+            }
+
+        }).apply(this, [jQuery]);
+
+
+    });
+</script>

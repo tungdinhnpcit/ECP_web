@@ -1,0 +1,8 @@
+﻿@model byte[]
+
+<div class="signature-pad">
+    <canvas class="panel panel-default"></canvas>
+    <button type="button" class="btn btn-default btn-sm btn-clear-canvas">Xóa làm lại</button>
+    <button type="button" class="btn btn-default btn-sm btn-save">Tải ảnh chữ ký</button>
+    @Html.HiddenFor(model => model, ViewData["htmlAttributes"])
+</div>

@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "Duyệt biên bản khảo sát hiện trường";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<input type="text" value="@Session["UrlKTGS"]" id="UrlKTGS" style="display:none">
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["PhongBanId"]" id="PhongBanId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["HoTen"]" id="HoTen" style="display:none">
+
+<div class="panel-heading br-b-n">
+    <div class="panel-title hidden-xs">
+        <div class="panel-actions">
+            <select class="form-control" style="width:160px;" id="drtrangthai" onchange="listbbks.changecbo()">
+                <option value="CHUA_DUYET" selected="selected">Chưa duyệt</option>
+                <option value="DA_DUYET">Đã duyệt</option>
+            </select>
+        </div>
+        <span class="glyphicon glyphicon-tasks"></span> Danh sách biên bản khảo sát hiện trường
+    </div>
+
+    <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" onclick="listbbks.DuyetBB()">
+        <i class="fa fa-check-circle"></i> &nbsp; Duyệt
+    </a>
+</div>
+
+<table id="tbllistbbks" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+    <thead>
+        <tr>
+            <th style="width: 30%">Tên biên bản</th>
+            <th style="width: 20%">Tình trạng</th>
+            <th style="width: 10%">Người lập</th>
+            <th style="width: 10%">Ngày lập</th>
+            <th style="width: 10%">Người duyệt</th>
+        <th style="width: 10%">Ngày duyệt</th>
+            <th style="width: 10%">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+@section scripts2 {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+    
+    @*nghiệp vụ*@
+    <script src="~/Scripts/bienbankhaosat/js/service.js"></script>
+    <script src="~/Scripts/bienbankhaosat/js/util.js"></script>    
+    <script src="~/Scripts/bienbankhaosat/js/listbbks.js"></script>
+    
+}
+

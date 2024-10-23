@@ -1,0 +1,265 @@
+﻿
+
+@{
+    ViewBag.Title = "Quản Lý Lịch sử Truy Cập Hệ Thống";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    var today = DateTime.Now;
+    var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+}
+<style>
+    span.k-datepicker, span.k-timepicker, span.k-datetimepicker, span.k-colorpicker, span.k-numerictextbox, span.k-combobox, span.k-dropdown {
+        background: none;
+    }
+</style>
+
+@*id="LoadingOverlayApi" data-loading-overlay*@
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh Sách Quản Lý Lịch Sử Truy Cập Hệ Thống
+                <a class="mb-xs mt-xs mr-xs btn btn-primary" id="btnExportToExcel" style="float: right; position: relative; top: -10px;" href="javascript:;">
+                    <i class="fa fa-plus"></i> &nbsp; Xuất Excel Chi tiết
+                </a>
+                <a class="mb-xs mt-xs mr-xs btn btn-primary" id="btnExportTongHop" style="float: right; position: relative; top: -10px;" href="javascript:;">
+                    <i class="fa fa-plus"></i> &nbsp; Xuất Excel Báo cáo tổng hợp
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Tìm theo điều kiện</h2>
+                    </header>
+                    <div class="panel-body">
+                        <form method="get" class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Chọn Loại Trạng Thái:</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlTrangThai" name="TrangThai" class="form-control mb-md">
+                                        <option value="">Chọn Trạng thái</option>
+                                        <option value="Đăng Nhập">Đăng Nhập</option>
+                                        <option value="Đăng Xuất">Đăng Xuất</option>
+                                        <option value="Đăng Nhập Trên Điện Thoại">Đăng Nhập Trên Điện Thoại</option>
+                                        @*<option value="Nhớ Tài Khoản">Nhớ Tài Khoản</option>*@
+                                    </select>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-3">
+                        @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDonVi, "Chọn đơn vị ...", new { @class = "form-control mb-md", @id = "drlDonViId" })
+                    </div>
+                    <div class="col-sm-12 col-md-3" id="divPban">
+                        @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPhongBan" })
+                    </div>
+                </div>
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-3">
+                        @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig"); }
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div>
+                            <label>
+                                <input class="form-control" id="GioBd" type="text" placeholder="Thời gian bắt đầu">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3" id="content-denngay">
+                        <div>
+                            <label>
+                                <input class="form-control" id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div>
+                            <label>
+                                <input class="form-control" type="text" placeholder="Nhập tên Tài khoản" value="@ViewBag.CurrentFilter" id="txtSearch">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "UserHistory", new
+                        {
+                            page = 1,
+                            pageSize = (Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) : 10,
+                            filter = "",
+                            beginDate = string.Format("{0:dd/MM/yyyy}", firstDayOfMonth),
+                            endDate = string.Format("{0:dd/MM/yyyy}", lastDayOfMonth),
+                            DonViId = Session["DonViID"].ToString()
+                        });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script>
+        $(document).ready(function () {
+            $('html').addClass('sidebar-left-collapsed');
+
+            var tuNgay = '@string.Format("{0:dd/MM/yyyy}",firstDayOfMonth)';
+            var start = $("#GioBd").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker").value(tuNgay);
+
+            var denNgay = '@string.Format("{0:dd/MM/yyyy}",lastDayOfMonth)';
+            var end = $("#GioKt").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker").value(denNgay);
+
+            var pageSize = $("#drlPageSize").val();
+
+            $("#drlPageSize").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var currentSearh = $('#txtSearch').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), currentSearh);
+
+            });
+            $("#ddlTrangThai").change(function () {
+                var optionSelected = $("#drlPageSize");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), currentSearh);
+            });
+            $("#btnSearch").off().on('click', function (e) {
+                e.preventDefault();
+                var optionSelected = $("#drlPageSize");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), currentSearh);
+            })
+            $('#txtSearch').keyup(function (e) {
+                e.preventDefault();
+                var optionSelected = $("#drlPageSize");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), currentSearh);
+            })
+            $("#GioBd").change(function (e) {
+                e.preventDefault();
+                var optionSelected = $("#drlPageSize");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var currentSearh = $('#txtSearch').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), currentSearh);
+            });
+            $("#GioKt").change(function (e) {
+                e.preventDefault();
+                var optionSelected = $("#drlPageSize");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var currentSearh = $('#txtSearch').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), currentSearh);
+            })
+            $("#ddlTrangThai").change(function () {
+                var optionSelected = $("#drlPageSize");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var trangThai = $('#ddlTrangThai').val();
+                GetList(1, pageSize, $("#GioBd").val(), $("#GioKt").val(), trangThai, currentSearh);
+            });
+            $('#btnExportToExcel').bind('click', function () {
+                $.UnifiedExportFile({
+                    action: "/Admin/UserHistory/ExportUserHistory",
+                    data: {
+                        beginDate: $("#GioBd").val(),
+                        endDate: $("#GioKt").val(),
+                        trangThai: $('#ddlTrangThai').val(),
+                        filter: $('#txtSearch').val(),
+                        PhongBanId: $("#drlPhongBan").val(),
+                        DonViId: $("#drlDonViId").val()
+                    },
+                    downloadType: 'Progress',
+                    ajaxLoadingSelector: '#loading'
+                });
+            });
+            $('#btnExportTongHop').bind('click', function () {
+                $.UnifiedExportFile({
+                    action: "/Admin/UserHistory/ExportUserHistoryTongHop",
+                    data: {
+                        beginDate: $("#GioBd").val(),
+                        endDate: $("#GioKt").val(),
+                        trangThai: $('#ddlTrangThai').val(),
+                        filter: $('#txtSearch').val(),
+                        PhongBanId: $("#drlPhongBan").val(),
+                        DonViId: $("#drlDonViId").val()
+                    },
+                    downloadType: 'Progress',
+                    ajaxLoadingSelector: '#loading'
+                });
+            });
+
+            $("#drlDonViId").change(function () {
+                var selectDVi = $('#drlDonViId').val();
+                var urlGetPban = "/Admin/UserHistory/ListPBanByIdDvi?id=" + selectDVi;
+                $.ajax({
+                    url: urlGetPban,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#divPban").html(data);
+
+                        GetList(1, $("#drlPageSize").val(), $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), $('#txtSearch').val());
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra!");
+                    }
+                });
+            });
+
+            $("#drlPhongBan").change(function () {
+                 GetList(1, $("#drlPageSize").val(), $("#GioBd").val(), $("#GioKt").val(), $('#ddlTrangThai').val(), $('#txtSearch').val());
+            });
+
+
+        })
+
+        function GetList(page, pageSize, beginDate, endDate, trangThai, filter) {
+            var scriptUrl = "/Admin/UserHistory/List?page=" + page
+                + "&pageSize=" + pageSize
+                + "&beginDate=" + beginDate
+                + "&endDate=" + endDate
+                + "&trangThai=" + trangThai
+                + "&filter=" + filter
+                + "&PhongBanId=" + $("#drlPhongBan").val()
+                + "&DonViId=" + $("#drlDonViId").val()
+
+            $.ajax({
+                url: scriptUrl,
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,360 @@
+﻿@{
+    ViewBag.Title = "KH giao số thời gian XLSC trung, hạ áp trung bình (phút/sự cố) theo tháng";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> KH giao số thời gian XLSC trung, hạ áp trung bình (phút/sự cố) theo tháng năm @string.Format("{0:yyyy}", DateTime.Now)
+            </div>
+            <div class="panel-title fulltable hide" style="position: absolute; top: 17px; right: 20px; cursor:pointer">
+                <span class="glyphicon glyphicon-fullscreen"></span>
+            </div>
+            <div class="panel-title nonetable hide" style="position: fixed; top: 0px; right: 18px; z-index: 99999999; cursor: pointer; color: #fff;">
+                <span class="glyphicon glyphicon-resize-small" style="background: red; display: block; height: 32px; width: 32px; padding: 6px;"></span>
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div id="msgNotification" style="width:100%;text-align:center;border:1px solid #ecedf0;padding:10px;margin-bottom:10px;display:none">
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    <div id="NotificationBox2" class="@TempData["NotificationCSS"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification"])
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox1" class="@TempData["NotificationCSS3"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification3"])
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox3" class="@TempData["NotificationCSS2"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification2"])
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline" style="">
+                    <div style="position:relative;float:right;right:10px">
+                        <span>Năm: </span>
+                        <input id="Date" type="text" style="width:80px;margin-right:10px">
+                        @if (User.IsInRole("ChiTieuCapCongTy") || User.IsInRole("ChiTieuCapDonVi"))
+                        {
+                            <button id="btnSave" href="#modalAnimSaveAll" class="btn btn-primary saveall">Lưu</button>
+                        }
+                    </div>
+                </div>
+                <div id="table" style="padding:5px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAnimSaveAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn lưu tất cả ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="SaveAll()" id="modal-confirm">Có</button>
+                    <button onclick="ModalDismiss()" class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+
+<script>
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        $("#Date").kendoDatePicker({
+            start: "decade",
+            depth: "decade",
+            format: "yyyy",
+            value: new Date(),
+            change: onChange,
+        });
+
+        $('button.saveall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+        });
+
+        Paging();
+    });
+
+    function loading1(name, overlay) {
+        $('.body').append('<div id="overlay"></div><div id="preloader" style="height: 40px;">' + name + '..</div>');
+        if (overlay == 1) {
+            $('#overlay').css('opacity', 0.4).fadeIn(400, function () { $('#preloader').fadeIn(400); });
+            return false;
+        }
+        $('#preloader').fadeIn();
+    }
+
+    function unloading1() {
+        $('#preloader').fadeOut(400, function () { $('#overlay').fadeOut(); $(this).remove(); })
+    }
+
+    function onChange() {
+        Paging();
+    }
+
+    function Paging() {
+
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+
+        var scriptUrl = "/Admin/ChiTieuSoVuSuCoV2/ListDonViThoiGian";
+        $.ajax({
+            type: "GET",
+            url: scriptUrl,
+            dataType: 'html',
+            async: true,
+            data: {
+                Date: $("#Date").val()
+            },
+            success: function (data) {
+                $('#table').html(data);
+
+                unloading1();
+            }
+        });
+
+    }
+
+    function SaveAll() {
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+        $.magnificPopup.close();
+
+        SetSave();
+
+        //var tong = 0;
+        //var valNam = $('input[name="txtinputSuatNam"]').map(function () {
+        //    tong = tong + parseInt(this.value);
+        //    return this.value;
+        //}).get();
+
+        //var nhap = $('#hidNPCChiTieuNam').val();
+
+        //if (parseInt(tong) > parseInt(nhap)) {
+        //    unloading1();
+        //    new PNotify({
+        //        title: 'Cảnh báo',
+        //        text: 'Tổng số lượng kế hoạch năm lớn hơn số lượng kế hoạch năm do Tổng công ty giao !',
+        //        type: 'error'
+        //    });
+        //    return;
+        //}
+
+        //if (parseInt(tong) == parseInt(nhap)) {
+        //    SetSave();
+        //}
+        //else {
+        //    new PNotify({
+        //        title: 'Cảnh báo',
+        //        text: 'Tổng số lượng kế hoạch năm của đơn vị nhỏ hơn số lượng kế hoạch năm do tổng công ty giao, bạn có chắc muốn lưu !',
+        //        type: 'error',
+        //        confirm: {
+        //            confirm: true
+        //        },
+        //        buttons: {
+        //            closer: false,
+        //            sticker: false
+        //        },
+        //    }).get().on('pnotify.confirm', function () {
+
+        //        SetSave();
+        //    }).on('pnotify.cancel', function () {
+
+        //        unloading1();
+
+        //    });
+
+        //}
+
+    }
+
+    function SetSave() {
+
+        var valId = $('input[name="hidId"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valTBN = $('input[name="txtinputTBN"]').map(function () {
+            return this.value;
+        }).get();
+
+        var valT1 = $('input[name="txtinputT1"]').map(function () {
+            return this.value;
+        }).get();
+        var valT2 = $('input[name="txtinputT2"]').map(function () {
+            return this.value;
+        }).get();
+        var valT3 = $('input[name="txtinputT3"]').map(function () {
+            return this.value;
+        }).get();
+        var valT4 = $('input[name="txtinputT4"]').map(function () {
+            return this.value;
+        }).get();
+        var valT5 = $('input[name="txtinputT5"]').map(function () {
+            return this.value;
+        }).get();
+        var valT6 = $('input[name="txtinputT6"]').map(function () {
+            return this.value;
+        }).get();
+        var valT7 = $('input[name="txtinputT7"]').map(function () {
+            return this.value;
+        }).get();
+        var valT8 = $('input[name="txtinputT8"]').map(function () {
+            return this.value;
+        }).get();
+        var valT9 = $('input[name="txtinputT9"]').map(function () {
+            return this.value;
+        }).get();
+        var valT10 = $('input[name="txtinputT10"]').map(function () {
+            return this.value;
+        }).get();
+        var valT11 = $('input[name="txtinputT11"]').map(function () {
+            return this.value;
+        }).get();
+        var valT12 = $('input[name="txtinputT12"]').map(function () {
+            return this.value;
+        }).get();
+
+        var idMaDV = $('input[name="hidMaDV"]').map(function () {
+            return this.value;
+        }).get();
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/ChiTieuSoVuSuCoV2/SaveDonViThoiGian",
+            dataType: "json",
+            data: {
+                Date: $("#Date").val(),
+                MaDV: idMaDV,
+                Id: valId,
+                TBN: valTBN,
+                T1: valT1,
+                T2: valT2,
+                T3: valT3,
+                T4: valT4,
+                T5: valT5,
+                T6: valT6,
+                T7: valT7,
+                T8: valT8,
+                T9: valT9,
+                T10: valT10,
+                T11: valT11,
+                T12: valT12
+            },
+            success: function (json) {
+                if (json.type == "success") {
+                    unloading1();
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: 'Lưu dữ liệu thành công',
+                        type: 'success'
+                    });
+                    Paging();
+                }
+                else {
+                    unloading1();
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: 'Có lỗi xảy ra khi lưu bản ghi: ' + json.mess,
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                unloading1();
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi lưu bản ghi',
+                    type: 'error'
+                });
+            }
+        });
+    }
+
+    function ModalDismiss() {
+        $.magnificPopup.close();
+    }
+
+    function updatetotal() {
+        //var tong = 0;
+        //var valNam = $('input[name="txtinputSuatNam"]').map(function () {
+        //    tong = tong + parseInt(this.value);
+        //    return this.value;
+        //}).get();
+        //$("#lblTongChiTieuNam").html(tong);
+
+        //var nhap = $('#hidNPCChiTieuNam').val();
+
+        //if (parseInt(tong) > parseInt(nhap)) {
+        //    new PNotify({
+        //        title: 'Cảnh báo',
+        //        text: 'Tổng số lượng kế hoạch năm lớn hơn số lượng kế hoạch năm do Tổng công ty giao !',
+        //        type: 'error'
+        //    });
+        //    return;
+        //}
+    }
+
+</script>
+

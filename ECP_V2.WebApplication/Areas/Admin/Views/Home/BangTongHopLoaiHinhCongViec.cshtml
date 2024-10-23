@@ -1,0 +1,156 @@
+﻿
+@{
+    ViewBag.Title = "Bnagr tổng hợp các loại hình công việc";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<link href="~/Content/Loader/jquery.loader.css" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+
+<script type="text/javascript">
+
+     $(function () {
+
+        //var tuNgay = kendo.toString(kendo.parseDate('@DateTime.Now', 'dd/MM/yyyy'), 'dd/MM/yyyy');
+        //$("#BTHCV_GioBd").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //    //change: date_chage
+        //});
+
+         $("#BTHCV_GioBd").datepicker({
+             dateFormat: 'dd/mm/yy',
+             //change: date_chage
+         });
+
+        //var denNgay = kendo.toString(kendo.parseDate('@DateTime.Now', 'dd/MM/yyyy'), 'dd/MM/yyyy');
+        //$("#BTHCV_GioKt").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //    //change: date_chage
+        //});
+
+         $("#BTHCV_GioKt").datepicker({
+             dateFormat: 'dd/mm/yy',
+             //change: date_chage
+         });
+
+        Paging();
+    });
+
+    function date_chage() {
+        Paging();
+    }
+
+    function Paging() {
+        $('#BTHCV_table').html('<p style="text-align: center;font-weight: bold;height:100px;font-size:15px">Đang tải dữ liệu</p>');
+        var url = '/Admin/PhienLV/ListBangTongHopLoaiHinhCongViec';
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'html',
+            async: true,
+            data: {
+                DateFrom: $("#BTHCV_GioBd").val(),
+                DateTo: $("#BTHCV_GioKt").val(),
+                DonViId:'@Session["DonViID"].ToString()'
+            },
+            success: function (html) {
+                $('#BTHCV_table').html(html);
+
+            },
+            error: function (e) {
+
+            }
+        })
+    }
+
+    function ExpandCollapseRow(elementClass, obj) {
+        if ($(obj).attr("rowhide") != "1") {
+            $(obj).attr("rowhide", "1");
+            $(obj).find(".btn").removeClass("fa-compress");
+            $(obj).find(".btn").addClass("fa-expand");
+            $(obj).attr("title", "Mở rộng ra");
+
+            $("." + elementClass).hide();
+        } else {
+            $(obj).attr("rowhide", "0");
+            $(obj).find(".btn").addClass("fa-compress");
+            $(obj).find(".btn").removeClass("fa-expand");
+            $(obj).attr("title", "Thu gọn lại");
+
+            $("." + elementClass).show();
+        }
+    }
+
+
+    function In()
+    {
+        var printContents = document.getElementById("BTHCV_table").innerHTML;
+        //var originalContents = document.body.innerHTML;
+        //document.body.innerHTML = printContents;
+        //window.print();
+        //document.body.innerHTML = originalContents;
+
+        var frame1 = $('<iframe style="display:none" />');
+        frame1[0].name = "frame1";
+        //frame1.css({ "position": "absolute", "top": "-1000000px" });
+        $("body").append(frame1);
+        var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+        frameDoc.document.open();
+        //Create a new HTML document.
+        frameDoc.document.write('<html><head><title>Bảng tổng hợp các loại hình công việc</title>');
+        frameDoc.document.write('</head><body>');
+        //Append the external CSS file.
+        frameDoc.document.write('<link href="/Content/Bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />');
+        //frameDoc.document.write('<link href="/assets/admin/css/components.css" rel="stylesheet" type="text/css" />');
+
+
+        //Append the DIV contents.
+        frameDoc.document.write(printContents);
+        frameDoc.document.write('</body></html>');
+        frameDoc.document.close();
+        setTimeout(function () {
+            window.frames["frame1"].focus();
+            window.frames["frame1"].print();
+            frame1.remove();
+        }, 500);
+    }
+
+</script>
+
+<div class="block-fluid" style="margin-top:40px">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n" style="height:50px">
+            <div class="panel-title hidden-xs" style="margin-top:-5px">
+                <div class="pull-left">
+                    <span class="glyphicon glyphicon-tasks"></span> BẢNG TỔNG HỢP CÁC LOẠI HÌNH CÔNG VIỆC
+                </div>
+                <div class="pull-right">
+                    <button onclick="In()" class="btn btn-sm" data-toggle="tooltip" data-placement="top" data-title="In" data-original-title="" title=""><i class="fa fa-print"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-md-2">
+                        <span>Từ ngày: &nbsp;</span>
+                        <input id="BTHCV_GioBd" type="text" placeholder="Thời gian bắt đầu">
+                    </div>
+                    <div class="col-md-2">
+                        <span>Đến ngày: </span>
+                        <input id="BTHCV_GioKt" type="text" placeholder="Thời gian kết thúc">
+                    </div>
+                    <div class="col-md-2">
+                        <a onclick="date_chage()" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                    </div>
+                </div>
+                <div id="BTHCV_table" class="table-responsive">
+                    <p style="text-align: center;font-weight: bold;height:100px;font-size:15px">Đang tải dữ liệu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

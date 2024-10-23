@@ -1,0 +1,796 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.DonViChiTieuThoiGianSuCoViewModels
+
+<div class="row">
+    <div class="block-fluid">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n">
+                <div class="panel-title hidden-xs">
+                    <span class="glyphicon glyphicon-tasks"></span> @Model.TEN_DVIQLY
+                </div>
+            </div>
+            <div class="panel-body pn">
+                <div class="table-responsive">
+                    <table cellspacing="0" id="dtGridHLLDCA" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle" class="text-center"></th>
+                                <th style="vertical-align:middle" class="text-center">T1</th>
+                                <th style="vertical-align:middle" class="text-center">T2</th>
+                                <th style="vertical-align:middle" class="text-center">T3</th>
+                                <th style="vertical-align:middle" class="text-center">T4</th>
+                                <th style="vertical-align:middle" class="text-center">T5</th>
+                                <th style="vertical-align:middle" class="text-center">T6</th>
+                                <th style="vertical-align:middle" class="text-center">T7</th>
+                                <th style="vertical-align:middle" class="text-center">T8</th>
+                                <th style="vertical-align:middle" class="text-center">T9</th>
+                                <th style="vertical-align:middle" class="text-center">T10</th>
+                                <th style="vertical-align:middle" class="text-center">T11</th>
+                                <th style="vertical-align:middle" class="text-center">T12</th>
+                                <th style="vertical-align:middle" class="text-center">Năm @(Model.Nam == 0 ? DateTime.Now.Year : Model.Nam)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="text-align:center">
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    Kế hoạch<br />phút/vụ ban đầu
+                                    <input type="hidden" name="hidMaDV" value="@Model.MA_DVIQLY" />
+                                    <input type="hidden" name="hidId" value="@Model.Id" />
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang1 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT1.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT1" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang1.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang1.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang2 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT2.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT2" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang2.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang2.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang3 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT3.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT3" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang3.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang3.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang4 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT4.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT4" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang4.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang4.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang5 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT5.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT5" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang5.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang5.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang6 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT6.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT6" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang6.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang6.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang7 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT7.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT7" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang7.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang7.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang8 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT8.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT8" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang8.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang8.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang9 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT9.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT9" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang9.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang9.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang10 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT10.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT10" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang10.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang10.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang11 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT11.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT11" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang11.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang11.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang12 == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT12.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT12" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang12.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang12.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.TrungBinhNam == null)
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenNam.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputTBN" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.TrungBinhNam.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenNam.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenNam.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.TrungBinhNam.GetValueOrDefault())</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    Kế hoạch<br />phút/vụ sau điều chỉnh
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang1 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang1DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT1.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT1" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang1DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang2 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang2DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT2.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT2" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang2DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang3 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang3DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT3.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT3" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang3DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang4 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang4DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT4.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT4" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang4DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang5 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang5DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT5.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT5" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang5DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang6 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang6DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT6.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT6" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang6DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang7 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang7DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT7.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT7" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang7DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang8 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang8DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT8.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT8" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang8DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang9 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang9DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT9.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT9" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang9DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang10 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang10DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT10.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT10" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang10DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang11 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang11DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT11.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT11" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang11DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.Thang12 == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.Thang12DC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenT12.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputT12" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.Thang12DC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @if (Model.TrungBinhNam == null)
+                                    {
+                                        <p>@string.Format("{0:#,0.##}", Model.TrungBinhNamDC.GetValueOrDefault())</p>
+                                    }
+                                    else
+                                    {
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input @(Model.IsOpenNam.GetValueOrDefault() ? "" : "disabled") onkeyup="updatetotal()" name="txtinputTBN" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@Model.TrungBinhNamDC.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button @(Model.IsOpenNam.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button @(Model.IsOpenNam.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    Thực hiện<br />phút/vụ
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT1
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT2
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT3
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT4
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT5
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT6
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT7
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT8
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT9
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT10
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT11
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THT12
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.THTBN
+                                </td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    Kế hoạch<br />phút ban đầu
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT1
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT2
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT3
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT4
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT5
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT6
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT7
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT8
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT9
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT10
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT11
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT12
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @string.Format("{0:#,0.##}", Model.TGTBN)
+                                </td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    Kế hoạch<br />phút sau điều chỉnh
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT1DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT2DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT3DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT4DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT5DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT6DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT7DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT8DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT9DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT10DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT11DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @Model.TGT12DC
+                                </td>
+                                <td style="vertical-align:middle;font-weight:bold">
+                                    @string.Format("{0:#,0.##}", Model.TGTBNDC)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Spinner
+    (function ($) {
+
+        'use strict';
+
+        if ($.isFunction($.fn['spinner'])) {
+
+            $(function () {
+                $('[data-plugin-spinner]').each(function () {
+                    var $this = $(this),
+                        opts = {};
+
+                    var pluginOptions = $this.data('plugin-options');
+                    if (pluginOptions)
+                        opts = pluginOptions;
+
+                    $this.themePluginSpinner(opts);
+                });
+            });
+
+        }
+
+        $('[data-plugin-spinner]').on('change', function () {
+            updatetotal();
+        });
+
+
+        updatetotal();
+
+    }).apply(this, [jQuery]);
+
+    $(function () {
+        @if((Model.TrungBinhNam??0)==0)
+        {
+            @:$("#btnSave").css("display","none");
+        }
+    });
+</script>
+

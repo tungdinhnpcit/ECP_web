@@ -1,0 +1,79 @@
+﻿@model ECP_V2.WebApplication.Models.NhanVienModel
+@{
+    ViewBag.Title = "Trang chủ cho nhóm quyền quản lý cấp đội";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<h2>Trang chủ cho nhóm quyền quản lý cấp đội</h2>
+<br />
+@*@Html.Partial("~/Views/Shared/_PartialQuickMenu.cshtml")*@
+@Html.Action("GetQuickMenu", "Home")
+
+@*@Html.Partial("_PartialChuKySo", Model)*@
+
+<br />
+@*<div id="divBangTongHopLoaiHinhCongViec">
+    <div class="block-fluid" style="margin-top:40px">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n" style="height:50px">
+                <div class="panel-title hidden-xs" style="margin-top:-5px">
+                    <div class="pull-left">
+                        <span class="glyphicon glyphicon-tasks"></span> BẢNG TỔNG HỢP CÁC LOẠI HÌNH CÔNG VIỆC
+                    </div>
+                    <div class="pull-right">
+                        <button onclick="In()" class="btn btn-sm" data-toggle="tooltip" data-placement="top" data-title="In" data-original-title="" title=""><i class="fa fa-print"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body pn">
+                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <div class="row datatables-header form-inline">
+                        <div class="col-md-2">
+                            <span>Từ ngày: &nbsp;</span>
+                            <input id="BTHCV_GioBd" type="text" placeholder="Thời gian bắt đầu">
+                        </div>
+                        <div class="col-md-2" id="content-denngay">
+                            <span>Đến ngày: </span>
+                            <input id="BTHCV_GioKt" type="text" placeholder="Thời gian kết thúc">
+                        </div>
+                    </div>
+                    <div id="BTHCV_table" class="table-responsive">
+                        <p style="text-align: center;font-weight: bold;height:100px;font-size:15px">Đang tải dữ liệu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />*@
+
+<script>
+
+    $(function () {
+        //LoadBangTongHopLoaiHinhCongViec();
+    });
+
+    function ReLoadKeHoachTuan() {
+        $.ajax({
+            url: '/Admin/PhienLV/ReLoadKeHoachTuan',
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $("#divMainKeHoachTuan").html(data);
+            }
+        });
+    }
+
+    //function LoadBangTongHopLoaiHinhCongViec() {
+    //    $.ajax({
+    //        url: '/Admin/PhienLV/BangTongHopLoaiHinhCongViec',
+    //        type: 'GET',
+    //        dataType: 'html',
+    //        async: true,
+    //        success: function (data) {
+    //            $("#divBangTongHopLoaiHinhCongViec").html(data);
+    //        }
+    //    });
+    //}
+</script>

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.tblImage>
+@if (Model != null && Model.Count() > 0)
+{
+    ECP_V2.WebApplication.Helpers.FilesHelper fileh = new ECP_V2.WebApplication.Helpers.FilesHelper();
+    string urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE"];
+    int index = -1;
+    foreach (var item in Model)
+    {
+        if (!fileh.URLExists(urlImg + "/Files" + item.Url))
+        {
+            if (urlImg == System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE2"])
+            {
+                urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE"];
+            }
+            else
+            {
+                urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE2"];
+            }
+
+            //if (!fileh.URLExists(urlImg + "/Files" + item.Url))
+            //{
+            //    if (urlImg == System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE3"])
+            //    {
+            //        urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE2"];
+            //    }
+            //    else
+            //    {
+            //        urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE3"];
+            //    }
+            //}
+        }
+        string groupName = "Chưa xác định";
+        if (item.GroupId == 1)
+        {
+            groupName = "Số phương án thực hiện";
+        }
+        else if (item.GroupId == 2)
+        {
+            groupName = "Lực lượng lao động";
+        }
+        else if (item.GroupId == 3)
+        {
+            groupName = "Các biện pháp kiểm tra an toàn";
+        }
+        else if (item.GroupId == 4)
+        {
+            groupName = "Tổng kết phiên làm việc";
+        }
+        index++;
+        <div id="gr_@item.Id" style="background:#000 url(@Html.Raw(@urlImg+"/Files" + item.Url)) no-repeat center center;background-size:100%;" class="gallery-item eacitem slide-item ">
+            <span class="playvideo" style="display:none">
+            </span>
+            <span class="gallery-item-group">
+                @(groupName)
+            </span>
+            <span class="gallery-item-show slide-item-@(index) @(item.isVideo == 1 ? "gallery-item-play" : "")" data-index="@(index)" data-image="@Html.Raw(@urlImg + "/Files" + item.Url.Replace("_w240", "_w960"))" data-isvideo="@(item.isVideo)" data-video="/Files/AnyOne/@(item.VideoPath)">
+
+            </span>
+            <span class="gallery-item-des">
+                @(item.Note)
+                @if (User.IsInRole("Admin"))
+                {
+                    <a style="width:20px;padding-left:95px; cursor:pointer;border:none;font-size:20px;color:white;text-decoration:none" class="glyphicon glyphicon-trash delete" onclick="DeleteImage(@item.Id)"></a>
+                }
+            </span>
+        </div>
+    }
+}
+else
+{
+    <p class="nodata">Không có dữ liệu.</p>
+}
+<div class="load-listinfo" style="display:none!important" data-sum="@(ViewBag.Sum)" data-quantity="@(ViewBag.Quantity)" data-page="@(ViewBag.Page)"></div>
+<script>
+    try {
+        console.log("pagging");
+        CreatePagging();
+    } catch (e) {
+
+    }
+</script>

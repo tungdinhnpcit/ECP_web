@@ -1,0 +1,2210 @@
+﻿@{
+    ViewBag.Title = "Quản Lý Phiên Làm Việc";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+
+<div class="head" id="ndContent">
+    <!-- Modal Animation -->
+    <div id="modalAnimDetail" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">
+                    Chi Tiết Phiên Làm Việc
+                    <span><a href="#" target="_blank" style="float: right; font-size: 13px;" class="btn btn-primary chi-tiet-phien-lv">Xem chi tiết</a></span>
+                </h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper">
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-default modal-dismiss" onclick="ModalDismissDetail()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <!-- Modal Animation -->
+    <div id="modalAnimUpdateVuaTao" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn cập nhật trạng thái phiên làm việc này thành vừa tạo ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="UpdateVuaTaoModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="UpdateVuaTaoModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <!-- Modal Animation -->
+    @*<div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Thông báo</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="modal-wrapper">
+                        <div class="modal-text">
+                            <div class="col-md-4">
+                                Số phiếu/lệnh công tác
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="txtUpdateSoPhieuCT" placeholder="Nhập số phiếu/lệnh công tác" maxlength="50" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-primary modal-confirm" onclick="UpdateSoPhieuModalConfirm()" id="modal-confirm">Có</button>
+                            <button class="btn btn-default modal-dismiss" onclick="UpdateSoPhieuModalDismiss()" id="modal-dismiss">Không</button>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </div>*@
+    <div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style="max-width: 1200px; height: 750px;margin: 5px auto;">
+        <section class="panel" style="width:100%; height:100%">
+            <header class="panel-heading">
+                <h2 class="panel-title">CẬP NHẬT: PHIẾU/LỆNH CÔNG TÁC</h2>
+                <button class="btn btn-default modal-dismiss" onclick="ClosePhieuCongTac()" id="modal-dismiss" style="position: absolute; right: 10px; top: 10px; font-size: 14px; font-weight: bold;">x</button>
+            </header>
+            <div class="panel-body" style="width:100%; height:100%; padding:5px 0 0 0">
+                <div class="modal-wrapper" style="width:100%; height:100%; padding:0">
+                    <iframe id="phieucongtacwords" src="" width="100%" height="100%" style="background:url(/Content/Customs/loading-blue.gif) no-repeat center center; border:none;"></iframe>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="modalAnimDetailPCT" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Chi Tiết Phiếu Công Tác</h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper">
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-default modal-dismiss" onclick="ModalDismissDetail()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimComment" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thêm Nhận Xét</h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper">
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ModalConfirmComment(this)" id="modal-confirm">Lưu</button>
+                        <button class="btn btn-default modal-dismiss" onclick="ModalDismissComment()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimDuyet" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn duyệt phiên làm việc này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DuyetModalConfirm()" id="modal-confirm"><span class="fa fa-check-circle" style="color: #fff;"></span> Duyệt</button>
+                        <button class="btn btn-danger modal-confirm" onclick="ChuyenHoanModalConfirm()" id="modal-confirm"><span class="fa fa-mail-forward" style="color: #fff;"></span> Chuyển hoàn</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DuyetModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimDeleteMultiple" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa những phiên làm việc này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DeleteMultipleModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DeleteMultipleModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimNPC" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn duyệt phiên làm việc NPC ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="NPCModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="NPCModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimDuyetAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn duyệt phiên làm việc này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DuyetAllModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DuyetAllModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimGuiNPCAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn chuyển phiên làm việc NPC ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="GuiNPCAllModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="GuiNPCAllModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimTongHop" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-info-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3 style="text-align: center; font-size: 18px;"></h3>
+                        @*<div style="margin-bottom:15px;margin-top:5px" class="input-group">
+                                <span>Ngày tổng hợp : &nbsp;</span>
+                                <input id="txtNgayTongHop" name="txtNgayTongHop" type="text" placeholder="Ngày Bổ Sung">
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        @*<button class="btn btn-primary modal-confirm" onclick="ModalConfirmTongHop()">Có</button>*@
+                        <button class="btn btn-default modal-dismiss" onclick="ModalDismissTongHop()">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimTongHopAlert" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h4></h4>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ModalConfirmTongHopAlert()">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="ModalDismissTongHopAlert()">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <!-- Modal Animation -->
+    <div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa phiên làm việc này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DeleteModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <!---Modal view Camera-->
+    <!--Modal view file ký số-->
+    <div id="modalViewKyso" class="white-popup-block mfp-content mfp-hide">
+        <section class="panel">
+            <div class="row" style="margin-top:-15px;">
+                <button class="btn btn-primary" onclick="onViewSign(-1)" id="btnBack"><i class="fa fa-backward"></i></button>
+                <button class="btn btn-primary" onclick="onViewSign(1)" id="btnForward"><i class="fa fa-forward"></i></button>
+                <button class="btn btn-danger modal-dismiss" style="float:right;" onclick="GuiNPCAllModalDismiss()" id="modal-dismiss"><i class="fa fa-times"></i> Đóng</button>
+            </div>
+
+            <div class="panel-body" style="height:800px !important;">
+                <div id="contentKyso" class="modal-wrapper" style="position: relative; padding: 25px 0; height: 100%; margin: -35px;">
+
+                </div>
+            </div>
+            <div>
+                <input type="hidden" id="numberFile" />
+            </div>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <div class="panel-actions">
+                    <a href="~/Admin/Report/Index" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;width:105px;height:28px;line-height:0; float: right;" id="export_tuan_cty">
+                        <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo
+                    </a>
+                    @if (donVi != null)
+                    {
+                        if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                        {
+
+                        }
+                        else
+                        {
+                            if (User.IsInRole("Manager"))
+                            {
+                                <a href="#modalAnimTongHop" id="btnTongHopBaoCaoCuoiNgay" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer; float: right; width: 230px; height: 28px; line-height:0;">
+                                    <i class="fa fa-file-excel-o"></i> &nbsp; Tổng hợp báo cáo cuối ngày
+                                </a>
+                            }
+                        }
+                    }
+                    <a href="#modalAnimTongHopAlert" id="btnTongHopBaoCaoCuoiNgayAlert" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer; float: right; width: 230px; height: 28px; line-height:0; display: none;">
+                    </a>
+                    <div id="datatable-default_filter" class="dataTables_filter" style="margin-right: 10px; float: right;margin-left:10px">
+                        <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                               onkeyup="txtSearch_onkeyup(event,this)" />
+                    </div>
+                    <select class="form-control" style="width:140px;" onchange="loaibieudo_change(this)" id="drlLoaiBieuDo">
+                        <option value="DS" selected="selected">Kiểu danh sách</option>
+                        <option value="BD">Kiểu bản đồ</option>
+                    </select>
+                </div>
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách phiên làm việc
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    @Html.Hidden("NotificationAutoHide", TempData["NotificationAutoHide"])
+                    <div id="NotificationBox" class="@TempData["NotificationCSS"]" style="display: none">
+                        @Html.Raw(@TempData["Notification"])
+                    </div>
+                }
+            </div>
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row show-grid">
+                    <div class="col-md-4">
+                        <span>Đơn Vị: &nbsp;</span>
+                        <select class="form-control" id="cmbDonViID" onchange="donvi_change(this)">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <span>Phòng Ban : &nbsp;</span>
+                        @if (Session["DonViID"].ToString() == "PA")
+                        {
+                            <select style="width:166px" class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                        }
+                        else
+                        {
+                            @*if (User.IsInRole("Leader"))
+                                {
+                                    var phongBanRepository = new ECP_V2.Business.Repository.PhongBanRepository();
+                                    var phongBan = phongBanRepository.GetById(Session["PhongBanId"].ToString());
+
+                                    if (phongBan != null)
+                                    {
+                                        <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)">
+                                            <option value="@phongBan.Id">@phongBan.TenPhongBan</option>
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                                    }
+                                }
+                                else
+                                {
+
+                                }*@
+
+                            <select style="width:166px" class="form-control" id="cmbPhongBan" onchange="phongban_change(this)">
+                                <option value="">Chọn phòng ban</option>
+                                @try
+                                {
+                                    @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                                }
+                                catch { }
+                            </select>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        <span>TC Phiên : &nbsp;</span>
+                        <select class="form-control" id="cmbTCPhien" onchange="tcphien_change(this)">
+                            <option value="0">Tất cả</option>
+                            @*<option value="CÔNG VIỆC THEO ĐĂNG KÝ KẾ HOẠCH">CÔNG VIỆC THEO ĐĂNG KÝ KẾ HOẠCH</option>
+                                <option value="CÔNG VIỆC THEO ĐĂNG KÝ BỔ SUNG">CÔNG VIỆC THEO ĐĂNG KÝ BỔ SUNG</option>*@
+                            @if (ViewBag.ListTCPhien != null)
+                            {
+                                var listTCPhien = (List<ECP_V2.DataAccess.plv_TinhChatPhien>)ViewBag.ListTCPhien;
+
+                                foreach (var item in listTCPhien)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <hr class="mt-md mb-md">
+                <div class="row show-grid">
+                    <div class="col-md-2">
+                        <span>Từ ngày: &nbsp;</span>
+                        <input id="GioBd" type="text" placeholder="Thời gian bắt đầu">
+                    </div>
+                    <div class="col-md-2" id="content-denngay">
+                        <span>Đến ngày: </span>
+                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                    </div>
+                    <div class="col-md-2" style="margin-left:10px">
+                        <span>Phiếu ký: &nbsp;</span>
+                        <br />
+                        <select class="form-control" id="cmdPhieuKy" @*onchange="cmbDuyetNPC_change(this)"*@>
+                            <option value="-1">Tất cả</option>
+                            <option value="0">Hoàn thiện phiếu ký</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <span> &nbsp; Cắt điện: &nbsp;</span>
+                        <select class="form-control" id="cmbTTPhienCatDien" onchange="ttphiencatdien_change(this)">
+                            <option value="0">Tất cả</option>
+                            @if (ViewBag.ThuocTinhPhienCatDien != null)
+                            {
+                                var list = (List<ECP_V2.DataAccess.plv_ThuocTinhPhien>)ViewBag.ThuocTinhPhienCatDien;
+
+                                foreach (var item in list)
+                                {
+                                    <option value="@item.Id">@item.TenThuocTinh</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <span> &nbsp; Tiếp địa: &nbsp;</span>
+                        <select class="form-control" id="cmbTTPhienTiepDia" onchange="ttphientiepdia_change(this)">
+                            <option value="0">Tất cả</option>
+                            @if (ViewBag.ThuocTinhPhienTiepDia != null)
+                            {
+                                var list = (List<ECP_V2.DataAccess.plv_ThuocTinhPhien>)ViewBag.ThuocTinhPhienTiepDia;
+
+                                foreach (var item in list)
+                                {
+                                    <option value="@item.Id">@item.TenThuocTinh</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <span> &nbsp; Khác: &nbsp;</span>
+                        <select class="form-control" id="cmbTTPhienKhac" onchange="ttphienkhac_change(this)">
+                            <option value="0">Tất cả</option>
+                            @if (ViewBag.ThuocTinhPhien5 != null)
+                            {
+                                var list = (List<ECP_V2.DataAccess.plv_ThuocTinhPhien>)ViewBag.ThuocTinhPhien5;
+
+                                foreach (var item in list)
+                                {
+                                    <option value="@item.Id">@item.TenThuocTinh</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+                <hr class="mt-md mb-md">
+                @*<div class="row show-grid">
+                        <div class="col-md-6">
+                            @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig"); }
+
+                            <input type="checkbox" name="txtChuyenNPC" id="txtChuyenNPC" /> Công việc chuyển NPC
+
+                        </div>
+
+                    </div>*@
+                @*<hr class="mt-md mb-md">*@
+                @if (User.IsInRole("DuyetViec"))
+                {
+                    <div class="row show-grid">
+                        <div class="col-md-2">
+                            <span>Trạng thái: &nbsp;</span>
+                            <br />
+                            <select class="form-control" id="cmbTTPhien" onchange="ttphien_change(this)">
+                                <option value="0">Tất cả</option>
+                                @if (ViewBag.ListTTPhien != null)
+                                {
+                                    var listTTPhien = (List<ECP_V2.DataAccess.plv_TrangThaiPhien>)ViewBag.ListTTPhien;
+
+                                    foreach (var item in listTTPhien)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <span>Duyệt NPC: &nbsp;</span>
+                            <br />
+                            <select class="form-control" id="cmbDuyetNPC" @*onchange="cmbDuyetNPC_change(this)"*@>
+                                <option value="-1">Tất cả</option>
+                                <option value="0">Chưa chuyển NPC</option>
+                                <option value="1">Đã chuyển NPC</option>
+                            </select>
+                        </div>
+                        @if (donVi != null)
+                        {
+                            if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                            {
+
+                            }
+                            else
+                            {
+                                <div class="col-md-2">
+                                    <a href="#modalAnimDuyetAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
+                                        <i class="fa fa-check-circle"></i> &nbsp; Duyệt lịch làm việc
+                                    </a>
+                                </div>
+                            }
+                        }
+
+                        @if (User.IsInRole("DuyetNPC"))
+                        {
+                            <div class="col-md-2">
+                                <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                                    <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
+                                </a>
+                            </div>
+                        }
+                        <div class="col-md-2">
+                            <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
+                                <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
+                            </a>
+                        </div>
+                    </div>
+                    @*<div class="col-md-2">
+                            <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
+                                <i class="fa fa-sen-circle"></i> &nbsp; Gửi công việc NPC
+                            </a>
+                        </div>*@
+                    @*<div class="col-md-2">
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                        <div class="col-md-2">
+                        </div>*@
+
+                    @*<div class="col-md-6" style="float: right;">
+                            <div id="datatable-default_filter" class="dataTables_filter">
+                                <label>
+                                    <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                           onkeyup="txtSearch_onkeyup(event,this)" />
+                                </label>
+                            </div>
+                        </div>*@
+
+                }
+                else
+                {
+                    <div class="row show-grid">
+                        @if (User.IsInRole("Manager") || User.IsInRole("Leader") || User.IsInRole("Admin") || User.IsInRole("Master") || User.IsInRole("AdminDonVi"))
+                        {
+                            <div class="col-md-2">
+                                <span>Trạng thái: &nbsp;</span>
+                                <br />
+                                <select class="form-control" id="cmbTTPhien" onchange="ttphien_change(this)">
+                                    <option value="0">Tất cả</option>
+                                    @if (ViewBag.ListTTPhien != null)
+                                    {
+                                        var listTTPhien = (List<ECP_V2.DataAccess.plv_TrangThaiPhien>)ViewBag.ListTTPhien;
+
+                                        foreach (var item in listTTPhien)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <span>Duyệt NPC: &nbsp;</span>
+                                <br />
+                                <select class="form-control" id="cmbDuyetNPC" @*onchange="cmbDuyetNPC_change(this)"*@>
+                                    <option value="-1">Tất cả</option>
+                                    <option value="0">Chưa chuyển NPC</option>
+                                    <option value="1">Đã chuyển NPC</option>
+                                </select>
+                            </div>
+
+                        }
+                        @if (User.IsInRole("DuyetNPC"))
+                        {
+                            <div class="col-md-2">
+                                <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                                    <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
+                                </a>
+                            </div>
+                        }
+
+                        <div class="col-md-2">
+                            <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                                <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
+                            </a>
+                        </div>
+                        @*<hr class="mt-md mb-md">*@
+
+                    </div>
+                }
+                @*<div class="row show-grid" style="text-align">
+                    <div class="col-md-4" style="float: right;">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                    </div>*@
+
+                <div class="listRolesName list" style="margin-top: 5px;">
+                    @{Html.RenderAction("List", "PhienLV", new
+                        {
+                            page = 1,
+                            pageSize = @*(Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) :*@ /**/
+                            /**/
+                            /**/
+                            /**/
+                            /**/
+                            500,
+                          filter = "",
+                          tcphien = ViewBag.TinhChat,
+                          catdien = 0,
+                          tiepdia = 0,
+                          khac = 0,
+                          DateFrom = ViewBag.TuNgay,
+                          DateTo = ViewBag.DenNgay,
+                          DonViId = (ViewBag.DonViID != null) ? ViewBag.DonViID : Session["DonViID"].ToString(),
+                          ttPhien = 0,
+                          chuyenNPC = -1,
+                          phieuky = -1
+                      });}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalAnimKetThuc" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn kết thúc công việc này ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="KetThucModalConfirm()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+<div id="scrollbottom" style="overflow-x: scroll; overflow-y: hidden; height: 20px; width: 300px; position: fixed; bottom: 0px; right: 55px; background-color: #9E9E9E; border-radius: 6px; border: 1px solid #9E9E9E;">
+    <div id="scrollbottomcontent" style="height:23px; width:600px"></div>
+</div>
+<script>
+    $("#scrollbottom").scroll(function () {
+        var getRet = ($(this).scrollLeft() / 302) * 100;
+        yourFunction(getRet);
+    });
+
+    function yourFunction(retag) {
+        try {
+            $(".table-responsive").scrollLeft((6000 / 100) * retag);
+        } catch (e) {
+
+        }
+    }
+</script>
+<style>
+
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content-body {
+        padding: 5px;
+    }
+</style>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script type="text/javascript">
+
+        var IdDetail = 0, IdDuyet = 0,IdKetThuc=0;
+        var IdDelete = 0;
+        var IdUpdateVuaTao = 0;
+        var IdUpdateSoPhieu = 0;
+        var NoiDungDelete = 0;
+        var IdSign = 0;
+
+        $(function () {
+
+            $.datepicker.setDefaults({
+
+                buttonImageOnly: true,
+                //buttonImage: "calendar.gif",
+                regional: "vn",
+                dateFormat: 'dd/MM/yyyy'
+            });
+
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+            var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+
+            ////var tuNgay = kendo.toString(kendo.parseDate('@(ViewBag.TuNgay!=null?ViewBag.TuNgay:DateTime.Now)', 'dd/MM/yyyy'), 'dd/MM/yyyy');
+            var start = $("#GioBd").datepicker({
+                dateFormat: 'dd/mm/yy'
+            }).val(yNgay);
+
+            ////var denNgay = kendo.toString(kendo.parseDate('@(ViewBag.DenNgay!=null?ViewBag.DenNgay:DateTime.Now)', 'dd/MM/yyyy'), 'dd/MM/yyyy');
+            //var end = $("#GioKt").kendoDatePicker({
+            //    format: 'dd/MM/yyyy',
+            //    change: end_chage
+            //}).data("kendoDatePicker").value(denNgay);
+
+            //var dNgay = ViewBag.DenNgay!=null?ViewBag.DenNgay:DateTime.Now;
+
+            @*var denNgay = moment('@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)').format('dd/MM/yyyy');
+            alert('@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)');*@
+
+            var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
+
+            var end = $("#GioKt").datepicker({
+                dateFormat: 'dd/mm/yy',
+                onSelect: function () {
+                    end_chage();
+                }
+            }).val(xNgay);
+
+            //khai bao Popup cho nut duyet
+            $('#DuyetAll').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            $('#DuyetNPC').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            $('#XoaDanhSach').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            $('a#btnTongHopBaoCaoCuoiNgay').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                ModalConfirmTongHop();
+            });
+            //Tạm rào để test ko dùng kendo
+            //$("#txtNgayTongHop").kendoDatePicker({
+            //    format: 'dd/MM/yyyy',
+            //    value: new Date()
+            //}).data("kendoDatePicker");
+
+            var dNgay = '@(DateTime.Now)'.split(' ')[0];
+
+            $("#txtNgayTongHop").datepicker({
+                dateFormat: 'dd/mm/yy'
+            }).val(dNgay);
+
+            $('a#btnTongHopBaoCaoCuoiNgayAlert').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            $('#cmbDuyetNPC').change(function () {
+                Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $(this).val());
+            });
+
+            @if(ViewBag.DonViID != null)
+            {
+                <text>
+            var dvElement = document.getElementById('cmbDonViID');
+            $('#cmbDonViID').val('@ViewBag.DonViID');
+            donvi_change(dvElement);
+                </text>
+
+            }
+
+            $("#cmbTCPhien option[value='@Html.Raw(ViewBag.TinhChat)']").attr("selected", true);
+            $('#cmbTCPhien').trigger("chosen:updated");
+            $("#cmbTCPhien").val('@Html.Raw(ViewBag.TinhChat)').change();
+
+        });
+
+        function loaibieudo_change(el) {
+            Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+        }
+
+        function end_chage() {
+            Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+        }
+
+        function donvi_change(el) {
+
+            LoadPhongBanByDonVi(el.value);
+
+                Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), el.value, $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+        }
+
+        function tcphien_change(el) {
+
+            Paging(1, 500, $('#txtSearch').val(), el.value, $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+        }
+
+        function ttphien_change(el) {
+
+                Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+        }
+
+        function ttphiencatdien_change(el) {
+
+            Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), el.value, $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+        }
+
+        function ttphientiepdia_change(el) {
+                Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), el.value, $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+        }
+
+        function ttphienkhac_change(el) {
+
+            Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), el.value, $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+        }
+
+        function Paging(page, pageSize, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, chuyenNPC, phieuky) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+            var ttPhien = 0;
+            var cbTTPhienSelect = $('#cmbTTPhien').val();
+            var userRoleDuyet = '@(Request.IsAuthenticated && User.IsInRole("DuyetViec")) ? "true" : "false")';
+            if (userRoleDuyet && cbTTPhienSelect != "") {
+                ttPhien = cbTTPhienSelect;
+            }
+            else {
+
+                ttPhien = 0;
+            }
+
+            if (typeof (ttPhien) === 'undefined') {
+                ttPhien = 0;
+            }
+
+            var scriptUrl = "/Admin/PhienLV/List";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    page: page,
+                    pageSize: pageSize,
+                    filter: filter,
+                    tcphien: tcphien,
+                    catdien: catdien,
+                    tiepdia: tiepdia,
+                    khac: khac,
+                    DateFrom: DateFrom,
+                    DateTo: DateTo,
+                    DonViId: DonViId,
+                    PhongBanId: PhongBanId,
+                    ttPhien: ttPhien,
+                    chuyenNPC: chuyenNPC,
+                    phieuky: phieuky,
+                    LoaiBieuDo: $('#drlLoaiBieuDo').val()
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    $("#drlPageSize").val(pageSize);
+                    $("#txtSearch").val(filter);
+
+                    unloading();
+                }
+            });
+        }
+
+
+        function pagelength_change(el) {
+
+            Paging(1, el.value, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val(), $('#cmdPhieuky').val());
+
+        }
+
+        function txtSearch_onKeyPress(e, el) {
+            var key;
+            if (window.event)
+                key = window.event.keyCode;     //IE
+            else
+                key = e.which;     //firefox
+
+            if (key == 13) {
+
+                Paging(1, 500, el.value, $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+            }
+        }
+
+        function txtSearch_onkeyup(e, el) {
+            if (el.value == '') {
+                Paging(1, 500, el.value, $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+            }
+        }
+
+        function ModalDismissDetail() {
+            $.magnificPopup.close();
+        }
+
+        function ModalDismissComment() {
+            $.magnificPopup.close();
+        }
+
+        function ExportBSModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DuyetModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DeleteMultipleModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function NPCModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DuyetAllModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function GuiNPCAllModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DetailPhienLv(PhienLvId) {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/Admin/PhienLV/DetailPhienLv?Id=' + PhienLvId,
+                success: function (json) {
+
+                    $('#modalAnimDetail .modal-wrapper').html('');
+                    $('#modalAnimDetail .modal-wrapper').html(json);
+                    $('a.chi-tiet-phien-lv').prop('href', '/Admin/PhienLV/ChiTietPhienLV/' + PhienLvId);
+
+                    unloading();
+                }
+            });
+
+        }
+
+
+        function DetailPhieuCongTac(PhienLvId) {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/Admin/PhienLV/DetailPhieuCongTac?Id=' + PhienLvId,
+                success: function (json) {
+
+                    $('#modalAnimDetailPCT .modal-wrapper').html('');
+                    $('#modalAnimDetailPCT .modal-wrapper').html(json);
+
+                    unloading();
+                }
+            });
+
+        }
+
+        function AddComment(PhienLvId) {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/Admin/PhienLV/AddComment?Id=' + PhienLvId,
+                success: function (json) {
+
+                    $('#modalAnimComment .modal-wrapper').html('');
+                    $('#modalAnimComment .modal-wrapper').html(json);
+
+                    $.validator.unobtrusive.parse($('#AddComment'));
+                    $('#AddComment').submit(function () {
+                        // inside event callbacks 'this' is the DOM element so we first
+                        // wrap it in a jQuery object and then invoke ajaxSubmit
+                        if ($(this).valid())
+                            $(this).ajaxSubmit(options4);
+
+                        // !!! Important !!!
+                        // always return false to prevent standard browser submit and page navigation
+                        return false;
+                    });
+
+                    unloading();
+                }
+            });
+
+        }
+        var options4 = {
+            // target element(s) to be updated with server response
+            beforeSubmit: showRequest4,  // pre-submit callback
+            success: showResponse4,  // post-submit callback
+            dataType: 'json',
+            resetForm: false
+        };
+        function showRequest4(formData, jqForm, options) {
+            loading("Đang xử lý...", 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            return true;
+        }
+
+        function showResponse4(responseText, statusText, xhr, $form) {
+            if (responseText == "") {
+
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Thêm nhận xét thành công',
+                    type: 'success'
+                });
+
+                //thoat commen
+                $.magnificPopup.close();
+            }
+            else {
+
+                new PNotify({
+                    title: 'Có lỗi xảy ra khi thêm nhận xét!',
+                    text: 'Lỗi : ' + responseText,
+                    type: 'error'
+                });
+            }
+
+            unloading();
+            //Paging(parseInt($("#btnLast").data("sum")),$("#drlPageSize").val(), $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+
+        }
+
+        function ModalConfirmComment(el) {
+            $("#AddComment").submit();
+        }
+
+        function LoadPhongBanByDonVi(DonViId) {
+
+            $.ajax({
+                url: "/Admin/PhienLV/CmbPhongBan",
+                data: {
+                    DonViId: DonViId
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+
+                    $('#cmbPhongBan').html("");
+                    $('#cmbPhongBan').html(data);
+
+                }
+            });
+        }
+
+        function phongban_change(el) {
+
+            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), el.value, $('#cmbDuyetNPC').val());
+
+        }
+
+
+
+        function DuyetModalConfirm() {
+
+            if (IdDuyet != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/DuyetPhienLv',
+                    data:
+                    {
+                        "Id": IdDuyet
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data.success) {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+
+                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không thể duyệt phiên làm việc này',
+                            type: 'error'
+                        });
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        };
+
+        function ChuyenHoanModalConfirm() {
+
+            if (IdDuyet != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/ChuyenHoanPhienLv',
+                    data:
+                    {
+                        "Id": IdDuyet
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data.success) {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+
+                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không thể duyệt phiên làm việc này',
+                            type: 'error'
+                        });
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        };
+
+
+        function NPCModalConfirm() {
+
+            if (IdDuyet != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/GuiNPCPhienLv',
+                    data:
+                    {
+                        "Id": IdDuyet
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data.success) {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+
+                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không thể duyệt phiên làm việc này',
+                            type: 'error'
+                        });
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        };
+
+        function DuyetAllModalConfirm() {
+
+            var items = document.getElementsByClassName('chkbox');
+
+
+            if (items.length == 0) {
+                alert("Vui lòng chọn phiện làm việc !");
+
+            }
+            else if (items.length > 0) {
+                loading('Đang xử lý...', 1);
+                var listId = [];
+
+                for (i = 0; i < items.length; i++) {
+                    if (items[i].checked) {
+                        listId.push(items[i].value);
+                        //sleep(200);
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/DuyetAllPhienLv',
+                    data: JSON.stringify({
+                        "listId": listId
+                    }),
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data != null) {
+
+                            if (data.success) {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: data.responseText,
+                                    type: 'success'
+                                });
+                            } else {
+
+                                if (data.isDuyet == null) {
+
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: data.responseText,
+                                        type: 'error'
+                                    });
+                                }
+                                else {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: data.responseText,
+                                        type: 'warning'
+                                    });
+                                }
+                            }
+
+                            Paging(/*parseInt($(".page-number-Current").html())*/ 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Duyệt phiên làm việc không thành công',
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+
+            }
+            $.magnificPopup.close();
+
+        }
+
+        function DeleteMultipleModalConfirm() {
+
+            var items = document.getElementsByClassName('chkbox');
+
+
+            if (items.length == 0) {
+                alert("Vui lòng chọn phiện làm việc !");
+
+            }
+            else if (items.length > 0) {
+                loading('Đang xử lý...', 1);
+                var listId = [];
+
+                for (i = 0; i < items.length; i++) {
+                    if (items[i].checked) {
+                        listId.push(items[i].value);
+                        //sleep(200);
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/DeleteMultiple',
+                    data: JSON.stringify({
+                        "listId": listId
+                    }),
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data != null) {
+
+                            $.each(data, function (index, item) {
+
+                                if (item.success) {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: item.responseText,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: 'Lỗi : ' + item.responseText,
+                                        type: 'error'
+                                    });
+                                }
+
+                            });
+
+                            Paging(/*parseInt($(".page-number-Current").html())*/ 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa phiên làm việc không thành công',
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+
+            }
+            $.magnificPopup.close();
+
+        }
+
+        function GuiNPCAllModalConfirm() {
+
+            var items = document.getElementsByClassName('chkbox');
+
+
+            if (items.length == 0) {
+                alert("Vui lòng chọn phiện làm việc !");
+
+            }
+            else if (items.length > 0) {
+
+                loading('Đang xử lý...', 1);
+
+                var listId = [];
+
+                for (i = 0; i < items.length; i++) {
+                    if (items[i].checked) {
+                        listId.push(items[i].value);
+                        //sleep(200);
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/GuiListNPCPhienLv',
+                    data: JSON.stringify({
+                        "listId": listId
+                    }),
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data != null) {
+
+                            $.each(data, function (index, item) {
+
+                                if (item.success) {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: item.responseText,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: 'Lỗi : ' + item.responseText,
+                                        type: 'error'
+                                    });
+                                }
+                            });
+
+                            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Duyệt phiên làm việc NPC không thành công',
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+
+            }
+            $.magnificPopup.close();
+        }
+
+
+        function checkall(obj) {
+
+            var items = document.getElementsByClassName("chkbox");
+
+            if ($.trim(obj.text) == "Chọn tất cả") //Đã được chọn
+            {
+                for (i = 0; i < items.length; i++) {
+                    if (!items[i].disabled) {
+                        items[i].checked = true;
+                    }
+                }
+
+
+                obj.text = "Bỏ chọn tất cả";
+            }
+            else { //Checkbox chưa được chọn
+                for (i = 0; i < items.length; i++)
+                    if (!items[i].disabled) {
+                        items[i].checked = false;
+                    }
+
+
+                obj.text = "Chọn tất cả";
+            }
+
+        }
+
+        function DeleteModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DeleteModalConfirm() {
+
+            if (IdDelete != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/DeletePhienLv',
+                    data:
+                    {
+                        "Id": IdDelete,
+                        "NoiDung": NoiDungDelete
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data == "") {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa phiên làm việc thành công',
+                                type: 'success'
+                            });
+
+                            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+                        }
+
+
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+
+        function UpdateVuaTaoModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function UpdateVuaTaoModalConfirm() {
+            if (IdUpdateVuaTao != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/CapNhatTrangThaiVuaTao',
+                    data:
+                    {
+                        "Id": IdUpdateVuaTao
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data.success) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+
+                            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        function UpdateSoPhieuModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function ClosePhieuCongTac() {
+            $("#phieucongtacwords").attr("src", "");
+            $.magnificPopup.close();
+        }
+
+        function UpdateSoPhieuModalConfirm() {
+
+            var soPhieu = $('#txtUpdateSoPhieuCT').val();
+
+            if (soPhieu == '' || parseInt(soPhieu) <= 0) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Số phiếu không được để trống và lớn hơn 0',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (soPhieu.length > 50) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Số phiếu không được quá 50 ký tự',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            $.magnificPopup.close();
+
+            //if (IdUpdateSoPhieu != "") {
+
+            //    loading('Đang xử lý...', 1);
+
+            //    $.ajax({
+            //        type: "GET",
+            //        contentType: "application/json; charset=utf-8",
+            //        url: '/Admin/PhienLV/CapNhatSoPhieuPhienLV',
+            //        data:
+            //        {
+            //            Id: IdUpdateSoPhieu,
+            //            SoPhieu: soPhieu
+            //        },
+            //        dataType: "json",
+            //        beforeSend: function () {//alert(id);
+            //        },
+            //        success: function (data) {
+            //            unloading();
+            //            if (data.success) {
+            //                new PNotify({
+            //                    title: 'Thông báo!',
+            //                    text: data.responseText,
+            //                    type: 'success'
+            //                });
+
+            //                Paging(1, 200, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+            //                $('#txtUpdateSoPhieuCT').val('');
+            //            }
+            //            else {
+            //                new PNotify({
+            //                    title: 'Thông báo!',
+            //                    text: 'Lỗi : ' + data.responseText,
+            //                    type: 'error'
+            //                });
+
+            //                $('#txtUpdateSoPhieuCT').val('');
+            //            }
+            //        },
+            //        error: function (e) {
+            //            unloading();
+            //            new PNotify({
+            //                title: 'Thông báo!',
+            //                text: 'Đã có lỗi xảy ra',
+            //                type: 'error'
+            //            });
+
+            //            $('#txtUpdateSoPhieuCT').val('');
+            //        }
+            //    });
+            //}
+
+
+
+        }
+
+        function ModalConfirmTongHop() {
+
+            //var ngayTongHop = $('#txtNgayTongHop').val();
+
+            var ngayTongHop = '@DateTime.Now.ToString("dd/MM/yyyy")';
+
+            if (ngayTongHop == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chọn ngày tổng hợp báo cáo',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            var scriptUrl = "/BaoCaoCuoiNgayCongTy/ValidateBaoCaoCuoiNgayTongHopPhienLV?ngayTongHop=" + ngayTongHop;
+            $.ajax({
+                url: scriptUrl,
+                type: 'GET',
+                dataType: 'json',
+                beforeSend: function () {
+                    //$.magnificPopup.close();
+                    loading('Đang xử lý...', 1);
+                },
+                success: function (data) {
+                    if (data.success == 1) {
+                        $('#modalAnimTongHop .modal-text h3').html('Hiện phần báo cáo cuối ngày đã được chương trình tự động thực hiện từ 15h -> 15h30 chiều hàng ngày. Để cập nhật báo cáo này bạn nhấn vào đường dẫn dưới đây.<br /><a href="' + data.url + '" style="color: blue;">Báo cáo cuối ngày ' + ngayTongHop + '</a>');
+                        //setTimeout(function () { $('a#btnTongHopBaoCaoCuoiNgayAlert').click(); }, 500);
+                        unloading();
+                    } else {
+                        $('#modalAnimTongHop .modal-text h3').html('Hiện phần báo cáo cuối ngày đã được chương trình tự động thực hiện từ 15h -> 15h30 chiều hàng ngày. Để cập nhật báo cáo này bạn nhấn vào đường dẫn dưới đây.<br /><span style="color: #f00;">(Chưa có dữ liệu báo cáo cuối ngày ' + ngayTongHop + ')</span>');
+                        //setTimeout(function () { $('a#btnTongHopBaoCaoCuoiNgayAlert').click(); }, 500);
+                        unloading();
+                    }
+                        //else if (data.success == -1) {
+                    //    new PNotify({
+                    //        title: 'Thông báo!',
+                    //        text: data.responseText,
+                    //        type: 'error'
+                    //    });
+                    //    unloading();
+                    //}
+                    //else if (data.success == 0) {
+                    //    $.ajax({
+                    //        url: "/BaoCaoCuoiNgayCongTy/TongHopPhienLV?ngayTongHop=" + ngayTongHop,
+                    //        type: 'GET',
+                    //        dataType: 'json',
+                    //        success: function (data) {
+                    //            if (data.success) {
+                    //                new PNotify({
+                    //                    title: 'Thông báo!',
+                    //                    text: 'Tổng hợp báo cáo thành công',
+                    //                    type: 'success'
+                    //                });
+                    //                unloading();
+                    //                window.location.href = '/BaoCaoCuoiNgayCongTy/Detail/' + data.id;
+                    //            } else {
+                    //                new PNotify({
+                    //                    title: 'Thông báo!',
+                    //                    text: 'Tổng hợp báo cáo không thành công',
+                    //                    type: 'error'
+                    //                });
+
+                    //                unloading();
+                    //            }
+                    //        },
+                    //        error: function () {
+                    //            new PNotify({
+                    //                title: 'Thông báo!',
+                    //                text: 'Không tổng hợp được báo cáo',
+                    //                type: 'error'
+                    //            });
+
+                    //            unloading();
+                    //        }
+                    //    });
+                    //}
+                },
+                error: function () {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Không tổng hợp được báo cáo',
+                        type: 'error'
+                    });
+
+                    unloading();
+                }
+            });
+        }
+
+        function ModalDismissTongHop() {
+            $.magnificPopup.close();
+        }
+
+        function ModalConfirmTongHopAlert() {
+
+            var ngayTongHop = $('#txtNgayTongHop').val();
+
+            if (ngayTongHop == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chọn ngày tổng hợp báo cáo',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            var scriptUrl = "/BaoCaoCuoiNgayCongTy/TongHopPhienLV?ngayTongHop=" + ngayTongHop;
+            $.ajax({
+                url: scriptUrl,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        $.magnificPopup.close();
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Tổng hợp báo cáo thành công',
+                            type: 'success'
+                        });
+
+                        window.location.href = '/BaoCaoCuoiNgayCongTy/Detail/' + data.id;
+                    } else {
+                        $.magnificPopup.close();
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Tổng hợp báo cáo không thành công',
+                            type: 'error'
+                        });
+                    }
+                },
+                error: function () {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Không tổng hợp được báo cáo',
+                        type: 'error'
+                    });
+                }
+            });
+
+            $.magnificPopup.close();
+        }
+
+        function ModalDismissTongHopAlert() {
+            $.magnificPopup.close();
+        }
+
+        function KetThucModalConfirm() {
+
+            if (IdKetThuc != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/KetThucPhienLv',
+                    data:
+                    {
+                        "Id": IdKetThuc
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data == "") {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Kết thúc phiên làm việc thành công',
+                                type: 'success'
+                            });
+
+                            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+                        }
+
+
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+       //View file ký sô
+        function Base64ToBytes(base64) {
+            var s = window.atob(base64);
+            var bytes = new Uint8Array(s.length);
+            for (var i = 0; i < s.length; i++) {
+                bytes[i] = s.charCodeAt(i);
+            }
+            return bytes;
+        };
+
+        function ViewFileSign(id) {
+
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: '/Admin/PhienLV/ViewFileSign',
+                data:
+                {
+                    "Id": id
+                },
+                dataType: "json",
+                beforeSend: function () {//alert(id);
+                },
+                success: function (data) {
+
+                    $("#contentKyso").empty();
+                    if (data == "") {
+
+                    }
+                    else {
+                        var arrdata = data.split(' | ');
+                        $('#numberFile').val(arrdata.length);
+                        var objbuilder = '';
+                        for (let i = 0; i < arrdata.length; i++) {
+                            if (i == 0) {
+                                objbuilder += ('<object width="100%" id="obj' + i + '" height="100%" data = "data:application/pdf;base64,');
+                            } else {
+                                objbuilder += ('<object width="100%" id="obj' + i + '" style="display:none;" height="100%" data = "data:application/pdf;base64,');
+                            }
+
+                            objbuilder += (arrdata[i]);
+                            objbuilder += ('" type="application/pdf" class="internal">');
+                            objbuilder += ('<embed src="data:application/pdf;base64,');
+                            objbuilder += (arrdata[i]);
+                            objbuilder += ('" type="application/pdf"  />');
+                            objbuilder += ('</object>');
+                        }
+
+                        $("#contentKyso").append(objbuilder);
+
+                    }
+
+                }
+
+            });
+        }
+
+        ///Hàm gọi link Camera để hiển thị trên iframe
+        var pathCam = "";
+        function LoadLinkCamera(PhienId) {
+
+            $.ajax({
+                url: "/Admin/PhienLV/GetLinkCameraAsync",
+                data: {
+                    Id: PhienId
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    const obj = JSON.parse(data);
+                    document.getElementById('ifCamera').src = obj.responseText;
+                    $("#lbPhien").empty();
+                    $("#lbPhien").append(" Phiên:" + PhienId);
+                    $("#idphien").val(PhienId);
+                }
+            });
+        }
+
+        //Add camera to phienId
+        function ModalSaveCamera(PhienId, CameraId) {
+            var table = $('#tblCamera').DataTable();
+
+            //tblSelect.row.add({ AssetDesc: '1', DonViId: '2', DoiId: '3', AssetId: '4', TypeId: '5', Id: '6', x: '1' });
+            //tblSelect.draw();
+            //var data = table.rows().data();
+            var cameraid = "";
+            var phienid = $("#idphien").val();
+            table.$('input[type="checkbox"]').each(function () {
+                // If checkbox is checked
+                if (this.checked) {
+                    cameraid = $(this).val();
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/PhienLV/addCameraToPhien',
+                dataType: 'json',
+                data: JSON.stringify({ Id: phienid, CameraId: cameraid}),
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.success) {
+                        alert('Cập nhật thành công!');
+                        var magnificPopup = $.magnificPopup.instance;
+                        // save instance in magnificPopup variable
+                        magnificPopup.close();
+                    }
+                },
+                error: function (ex) {
+                    alert('Không thể thêm Camera cho Phiên');
+                }
+            })
+        }
+
+        function LoadDsCamera() {
+            $.ajax({
+                url: "/Admin/PhienLV/GetDsCamera",
+                type: 'GET',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $('#tblCamera').dataTable().fnClearTable();
+                    if (response.length > 0) {
+                        var table = $('#tblCamera').DataTable({
+                            "language": {
+                                "lengthMenu": "Hiển thị _MENU_ dòng mỗi trang",
+                                "zeroRecords": "Không có dữ liệu",
+                                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                                "infoEmpty": "",
+                                "paginate": {
+                                    "next": ">>",
+                                    "previous": "<<"
+                                },
+                                search: "",
+                                searchPlaceholder: "Tìm kiếm...",
+                                "processing": "ĐANG XỮ LÝ..."
+                            },
+                            "destroy": true,
+                            "data": response,
+                            "columns": [{ 'data': 'CamId' },{ 'data': 'CamId' },
+                            { 'data': 'CamDesc' },
+                            ],
+                            "columnDefs": [{
+                                'targets': 0,
+                                'searchable': false,
+                                'orderable': false,
+                                'className': 'td-body-center',
+                                'render': function (data, type, full, meta) {
+                                    return '<input type="checkbox" name="id[]" value="' + full.CamId + '">';
+                                }
+                            }]
+                        });
+                    }
+                }
+            })
+        }
+
+    </script>
+    <script src="~/Scripts/KTGS/js/util_camera.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/camera.js?v=13"></script>
+
+}

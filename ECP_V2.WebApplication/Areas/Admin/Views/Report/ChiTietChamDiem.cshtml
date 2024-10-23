@@ -1,0 +1,47 @@
+﻿@model ECP_V2.WebApplication.Models.KetQuaChamDiemModel
+
+@if (Model != null)
+{
+    <div class="modal-wrapper" style="padding:0 18px">
+        <p>Ban thực hiện: <strong>@(Model.TenPhongBan)</strong></p>
+        <p>Thời gian: <strong>@(Model.NgayCham.ToString("dd/MM/yyyy"))</strong></p>
+        <p>Số điểm trừ: <strong>@(Model.SoDiem)</strong></p>
+        <p>Số lần vi phạm: <strong>@(Model.SoLan)</strong></p>
+        <p>Tên vi phạm: <strong>@(Model.TenTieuChi)</strong></p>
+
+        @*<p class="anhvipham">
+            <a href="~/Images/AnhViPhamDemo/vipham1.jpg" target="_blank">
+                <img src="~/Images/AnhViPhamDemo/vipham1.jpg" />
+            </a>
+            <a href="~/Images/AnhViPhamDemo/vipham2.jpg" target="_blank">
+                <img src="~/Images/AnhViPhamDemo/vipham2.jpg" />
+            </a>
+            <a href="~/Images/AnhViPhamDemo/vipham3.jpg" target="_blank">
+                <img src="~/Images/AnhViPhamDemo/vipham3.jpg" />
+            </a>
+        </p>*@
+    </div>
+
+}
+else
+{
+    @*<div class="modal-wrapper" style="padding:0 18px">
+        <p>Ban thực hiện: <strong>Ban An Toàn</strong></p>
+        <p>Thời gian: <strong>09:15 16/09/2019</strong></p>
+        <p>Số điểm trừ: <strong>5</strong></p>
+        <p>Tên vi phạm: <strong>Vi phạm quy định chế độ báo cáo định kỳ và đột xuất về công tác quản lý kỹ thuật vận hành</strong></p>
+        <p>Mô tả: <strong>Vi phạm quy định chế độ báo cáo định kỳ và đột xuất về công tác quản lý kỹ thuật vận hành</strong></p>
+        <p class="anhvipham">
+            <a href="~/Images/AnhViPhamDemo/vipham1.jpg" target="_blank">
+                <img src="~/Images/AnhViPhamDemo/vipham1.jpg" />
+            </a>
+            <a href="~/Images/AnhViPhamDemo/vipham2.jpg" target="_blank">
+                <img src="~/Images/AnhViPhamDemo/vipham2.jpg" />
+            </a>
+            <a href="~/Images/AnhViPhamDemo/vipham3.jpg" target="_blank">
+                <img src="~/Images/AnhViPhamDemo/vipham3.jpg" />
+            </a>
+        </p>
+    </div>*@
+    <center>Không có thông tin.</center>
+}

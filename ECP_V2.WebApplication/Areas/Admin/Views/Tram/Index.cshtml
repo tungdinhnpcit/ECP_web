@@ -1,0 +1,213 @@
+﻿@{
+    ViewBag.Title = "Danh sách trạm";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+
+<div class="head" id="ndContent">
+    <h1>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Add", "Tram")">
+            <i class="fa fa-plus"></i> &nbsp; Thêm trạm
+        </a>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("ImportData", "Tram")">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel
+        </a>
+    </h1>
+    <!-- Modal Animation -->
+
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DeleteModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách trạm
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig"); }
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="input-group mb-md">
+                            <input class="form-control" type="text" placeholder="Nhập tên trạm" value="@ViewBag.CurrentFilter" id="txtSearch">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" id="btnSearch">Tìm kiếm</button>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <h2 class="panel-title">Tìm theo điều kiện</h2>
+                            </header>
+                            <div class="panel-body">
+                                <form method="get" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Chọn đơn vị:</label>
+                                        <div class="col-sm-6">
+                                            @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDonVi, new { @class = "form-control mb-md", @id = "drlDonViId", @name = "drlDonViId" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Chọn phòng ban:</label>
+                                        <div class="col-sm-6">
+                                            <div id="divPban">
+
+                                                @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, new { @class = "form-control mb-md", @id = "drlPhongBan" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "Tram", new
+                        {
+                            page = 1,
+                            pageSize = (Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) : 10,
+                            filter = "",
+                            PhongBanId = Session["PhongBanId"].ToString()
+                        });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section JavaScriptOnePgae{
+
+    <script type="text/javascript">
+        $(function () {
+            var IdItem = 0;
+            var pageSize = $("#drlPageSize").val();
+
+            $('#txtSearch').keypress(function (e) {
+                if (e.which == 13) {
+                    search();
+                    e.preventDefault();
+                }
+            });
+
+            $("#drlPhongBan").change(function () {
+                search();
+            });
+
+            $("#drlPageSize").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                var textSelected = optionSelected.text();
+                pageSize = valueSelected;
+                var page = parseInt($(".pagination li.active").find("a").html());
+                var currentSearh = $('#txtSearch').val();
+                var selectDVi = $('#drlDonViId').val();
+                var selectPban = $('#drlPhongBan').val();
+                var scriptUrl = "/Admin/Tram/List?page=1&pageSize=" + pageSize + "&currentFilter=" + currentSearh + "&PhongBanId=" + selectPban + "&DonViId=" + selectDVi;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            });
+
+            $("#drlDonViId").change(function () {
+                var selectDVi = $('#drlDonViId').val();
+                var urlGetPban = "/Admin/Tram/ListPBanByIdDvi?id=" + selectDVi;
+                $.ajax({
+                    url: urlGetPban,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#divPban").html(data);
+                        $("#drlPhongBan").change(function () {
+                            search();
+                        });
+                        //search();
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra!");
+                    }
+                });
+            });
+
+            function search() {
+                var pageS = $("#drlPageSize").find("option:selected")
+                var selectPban = $('#drlPhongBan').val();
+                pageSize = pageS.val();
+                var page = 1;
+                if ($(".pagination li.active").find("a").html() != null)
+                    page = parseInt($(".pagination li.active").find("a").html());
+                var currentSearh = $('#txtSearch').val();
+
+                var scriptUrl = "/Admin/Tram/List?page=" + page + "&pageSize=" + pageSize + "&currentFilter=" + currentSearh + "&PhongBanId=" + selectPban;
+
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            }
+
+            $("#btnSearch").click(function () {
+                search();
+            });
+
+        });
+
+        function pagelength_change() {
+        }
+
+
+
+    </script>
+}

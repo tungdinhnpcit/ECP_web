@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "THONGKE_LD";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<h4 id="divtitle"></h4>
+
+
+<link href="~/Scripts/select2.css" rel="stylesheet" />
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+
+
+<div style="margin: 3px;">
+    <div style="display:inline">
+        <label class="input-group-text" for="inputGroupSelect01">Chọn đơn vị</label>
+    </div>
+    <select class="custom-select" id="cbodonvi"></select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Năm</label>
+    </div>
+    <select class="custom-select" id="cbonam">
+        <option selected value="2021">2021</option>
+        <option value="2022">2022</option>
+    </select>
+
+
+    <a style="padding:4px;" onclick="ecp_2021_giaoct.loaddata()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Tìm kiếm</a>    
+</div>
+
+<div>
+    <table id="tblgiaotk" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+        <thead>
+            <tr>
+                <th style="width: 10%">Đơn vị</th>
+                <th style="width: 10%">Định mức giao</th>
+                <th style="width: 10%">Tình hình thực hiện</th>
+                <th style="width: 10%">Thao tác</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+    <script src="~/Scripts/select2.js"></script>
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_giao_chitieu.js"></script>
+    <script src="~/Scripts/KTGS/js/ecp_2021.js"></script>
+}
+<style>
+    select {
+        display: inline !important;
+    }
+
+    .body-content {
+        background-color: #ffffff;
+    }
+
+    .imgthump {
+        height: 128px;
+        width: 128px;
+        padding: 2px;
+        background-color: #cecece;
+    }
+</style>

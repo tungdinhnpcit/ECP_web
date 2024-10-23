@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "Nhập danh sách đơn vị";
+    Layout = "~/Views/Shared/_LayoutAdminIndex.cshtml";
+}
+
+<section class="panel">
+    <header class="panel-heading">
+        <h2 class="panel-title">
+            Chọn file danh sách đơn vị.
+        </h2>
+        <p class="panel-subtitle">Chú ý định dạng file. (*.xls hoặc *.xlsx)</p>
+        <p class="text-danger text-center">
+            @if (ViewBag.Error != null)
+            {
+                @Html.Raw(ViewBag.Error)
+            }
+        </p>
+    </header>
+    <div class="panel-body form-horizontal form-bordered">
+        @using (Html.BeginForm("Upload", "DonVi", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="form-group">
+                <label class="col-md-3 control-label">
+                    Nhập danh sách
+                </label>
+                <div class="col-md-9">
+
+                    <div data-provides="fileupload" class="fileupload fileupload-new" style="margin:0px;">
+                        <input type="hidden">
+                        <div class="input-append">
+                            <div class="uneditable-input" style="width:300px;">
+                                <i class="fa fa-file fileupload-exists"></i>
+                                <span class="fileupload-preview"></span>
+                            </div>
+                            <span class="btn btn-default btn-file">
+                                <span class="fileupload-exists">Chọn lại</span>
+                                <span class="fileupload-new">Chọn file</span>
+                                <input type="file" data-allowed-file-extensions='["xls", "xlsx"]' name="uploadFile" id="uploadFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                            </span>
+                            <a data-dismiss="fileupload" class="btn btn-default fileupload-exists" href="#">Xóa</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-3">
+                    &nbsp;&nbsp;
+                    <button class="btn btn-primary" type="submit" onclick="return CheckFileName();">
+                        <i class="fa fa-upload"></i>
+                        Thêm danh sách
+                    </button>
+                    <a href="~/Content/Templates/Mau nhap lieu/Danh sach/1.0 Mau ds Khoa.xls" class="btn btn-primary">
+                        <i class="fa fa-cloud-download"></i> &nbsp;Tải danh sách mẫu
+                    </a>
+                    <a class="btn btn-default" href="@Url.Action("Index","DonVi")">
+                        <i class="fa fa-home"></i>
+                        <span>Quay lại</span>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@*<a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalWarning">Warning</a>*@
+
+<div id="modalWarning" class="modal-block modal-block-warning mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo!</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-warning"></i>
+                </div>
+                <div class="modal-text">
+                    <h4 id="lbMessage">This is a warning message.</h4>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-warning modal-dismiss">Đồng ý</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+        $('.modal-basic').magnificPopup({
+            type: 'inline',
+            preloader: false,
+            modal: true
+        });
+
+        $(document).on('click', '.modal-dismiss', function (e) {
+            e.preventDefault();
+            $.magnificPopup.close();
+        });
+    });
+
+
+    function CheckFileName() {
+
+        var fileName = $(".fileupload-preview").text();
+        if (fileName == "") {
+            $("#lbMessage").text("Chọn tệp tin Excel trước khi thêm dữ liệu!");
+            $.magnificPopup.open({
+                items: {
+                    src: '#modalWarning'
+                },
+                type: 'inline',
+                showCloseBtn: true,
+                removalDelay: 400,
+                mainClass: 'mfp-status'
+            });
+            return false;
+        }
+        else {
+            if (fileName.toLowerCase().match(/xls.*/) || fileName.toLowerCase().match(/xlsx.*/)) {
+                return true;
+            }
+            else {
+                $("#lbMessage").text("Tệp tin " + fileName + " chưa đúng định dạng. Chọn tệp excel dữ liệu!");
+                $.magnificPopup.open({
+                    items: {
+                        src: '#modalWarning'
+                    },
+                    type: 'inline',
+                    showCloseBtn: true,
+                    removalDelay: 400,
+                    mainClass: 'mfp-status'
+                });
+                //alert("Tệp tin " + fileName + " chưa đúng định dạng. Chọn tệp excel dữ liệu!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function ShowMessage(n, t) {
+        t == 1 ? $("#lblstatus").css({
+            color: "red"
+        }) : $("#lblstatus").css({
+            color: "blue"
+        });
+        $("#lblstatus").empty();
+        $("#lblstatus").append(n);
+        setTimeout(function () {
+            $("#lblstatus").empty()
+        }, 5e3)
+    }
+</script>
+

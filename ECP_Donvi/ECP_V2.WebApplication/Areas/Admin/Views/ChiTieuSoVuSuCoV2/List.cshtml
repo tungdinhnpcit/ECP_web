@@ -1,0 +1,923 @@
+﻿@model List<ECP_V2.WebApplication.Areas.Admin.Models.DonViChiTieuSuCoViewModels>
+
+<div class="row">
+    <div class="pull-left" style="margin-top:10px;padding-left:5px">
+        <h2>Chỉ tiêu năm toàn công ty: <strong id="lblTongChiTieuNam">0</strong>/@Model.FirstOrDefault().ChiTieuNamCongTy</h2>
+        <input type="hidden" id="hidNPCChiTieuNam" value="@Model.FirstOrDefault().ChiTieuNamCongTy" />
+        @if (Model.FirstOrDefault().chitieutheoloais != null && Model.FirstOrDefault().chitieutheoloais.Count > 0)
+        {
+            <h2>Chỉ tiêu năm do khách hàng toàn công ty: <strong id="lblTongChiTieuNamKH">0</strong>/@Model.FirstOrDefault().chitieutheoloais.FirstOrDefault().ChiTieuNamCongTy</h2>
+            <input type="hidden" id="hidNPCChiTieuNamKH" value="@Model.FirstOrDefault().chitieutheoloais.FirstOrDefault().ChiTieuNamCongTy" />
+        }
+    </div>
+    <div class="pull-right">
+        @*@if (User.IsInRole("ChiTieuCapCongTy"))
+            {
+                if (Model.Count > 0 && ViewBag.NPCIsOpen != null && (bool)ViewBag.NPCIsOpen)
+                {
+                    <a href="#modalAnimLockAll" class="btn btn-danger btn-sm lockall"><i style="margin-right:5px" class="fa fa-lock"></i>Khóa tất cả</a>
+                    <a href="#modalAnimUnLockAll" class="btn btn-success btn-sm no-margin unlockall"><i style="margin-right:5px" class="fa fa-unlock"></i>Mở khóa tất cả</a>
+                }
+            }*@
+    </div>
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="block-fluid">
+            <div class="panel panel-visible">
+                <div class="panel-heading br-b-n">
+                    <div class="panel-title hidden-xs">
+                        <span class="glyphicon glyphicon-tasks"></span> @item.TEN_DVIQLY
+                    </div>
+
+                </div>
+                <div class="panel-body pn">
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridHLLDCA" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th style="vertical-align:middle" class="text-center"></th>
+                                    <th style="vertical-align:middle" class="text-center">NĂM</th>
+                                    <th style="vertical-align:middle" class="text-center">T1</th>
+                                    <th style="vertical-align:middle" class="text-center">T2</th>
+                                    <th style="vertical-align:middle" class="text-center">T3</th>
+                                    <th style="vertical-align:middle" class="text-center">T4</th>
+                                    <th style="vertical-align:middle" class="text-center">T5</th>
+                                    <th style="vertical-align:middle" class="text-center">T6</th>
+                                    <th style="vertical-align:middle" class="text-center">T7</th>
+                                    <th style="vertical-align:middle" class="text-center">T8</th>
+                                    <th style="vertical-align:middle" class="text-center">T9</th>
+                                    <th style="vertical-align:middle" class="text-center">T10</th>
+                                    <th style="vertical-align:middle" class="text-center">T11</th>
+                                    <th style="vertical-align:middle" class="text-center">T12</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Kế hoạch số vụ sự cố
+                                        <input type="hidden" name="hidMaDV" value="@item.MA_DVIQLY" />
+                                        <input type="hidden" name="hidIdT1" value="@item.IdT1" />
+                                        <input type="hidden" name="hidIdT2" value="@item.IdT2" />
+                                        <input type="hidden" name="hidIdT3" value="@item.IdT3" />
+                                        <input type="hidden" name="hidIdT4" value="@item.IdT4" />
+                                        <input type="hidden" name="hidIdT5" value="@item.IdT5" />
+                                        <input type="hidden" name="hidIdT6" value="@item.IdT6" />
+                                        <input type="hidden" name="hidIdT7" value="@item.IdT7" />
+                                        <input type="hidden" name="hidIdT8" value="@item.IdT8" />
+                                        <input type="hidden" name="hidIdT9" value="@item.IdT9" />
+                                        <input type="hidden" name="hidIdT10" value="@item.IdT10" />
+                                        <input type="hidden" name="hidIdT11" value="@item.IdT11" />
+                                        <input type="hidden" name="hidIdT12" value="@item.IdT12" />
+
+                                        <input type="hidden" name="hidSoVuTruocMTT1" value="@item.SoVuTruocMTT1" />
+                                        <input type="hidden" name="hidSoVuTruocMTT2" value="@item.SoVuTruocMTT2" />
+                                        <input type="hidden" name="hidSoVuTruocMTT3" value="@item.SoVuTruocMTT3" />
+                                        <input type="hidden" name="hidSoVuTruocMTT4" value="@item.SoVuTruocMTT4" />
+                                        <input type="hidden" name="hidSoVuTruocMTT5" value="@item.SoVuTruocMTT5" />
+                                        <input type="hidden" name="hidSoVuTruocMTT6" value="@item.SoVuTruocMTT6" />
+                                        <input type="hidden" name="hidSoVuTruocMTT7" value="@item.SoVuTruocMTT7" />
+                                        <input type="hidden" name="hidSoVuTruocMTT8" value="@item.SoVuTruocMTT8" />
+                                        <input type="hidden" name="hidSoVuTruocMTT9" value="@item.SoVuTruocMTT9" />
+                                        <input type="hidden" name="hidSoVuTruocMTT10" value="@item.SoVuTruocMTT10" />
+                                        <input type="hidden" name="hidSoVuTruocMTT11" value="@item.SoVuTruocMTT11" />
+                                        <input type="hidden" name="hidSoVuTruocMTT12" value="@item.SoVuTruocMTT12" />
+
+                                        <input type="hidden" name="hidSoVuSauMTT1" value="@item.SoVuSauMTT1" />
+                                        <input type="hidden" name="hidSoVuSauMTT2" value="@item.SoVuSauMTT2" />
+                                        <input type="hidden" name="hidSoVuSauMTT3" value="@item.SoVuSauMTT3" />
+                                        <input type="hidden" name="hidSoVuSauMTT4" value="@item.SoVuSauMTT4" />
+                                        <input type="hidden" name="hidSoVuSauMTT5" value="@item.SoVuSauMTT5" />
+                                        <input type="hidden" name="hidSoVuSauMTT6" value="@item.SoVuSauMTT6" />
+                                        <input type="hidden" name="hidSoVuSauMTT7" value="@item.SoVuSauMTT7" />
+                                        <input type="hidden" name="hidSoVuSauMTT8" value="@item.SoVuSauMTT8" />
+                                        <input type="hidden" name="hidSoVuSauMTT9" value="@item.SoVuSauMTT9" />
+                                        <input type="hidden" name="hidSoVuSauMTT10" value="@item.SoVuSauMTT10" />
+                                        <input type="hidden" name="hidSoVuSauMTT11" value="@item.SoVuSauMTT11" />
+                                        <input type="hidden" name="hidSoVuSauMTT12" value="@item.SoVuSauMTT12" />
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<p>@string.Format("{0:#,0.##}", item.ChiTieuNam.GetValueOrDefault())</p>*@
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input onkeyup="updatetotalnam()" name="txtinputChiTieuNam" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuNam.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button onclick="updatetotalnam()" type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button onclick="updatetotalnam()" type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT1" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT1.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT1)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT2" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT2.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT2)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT3" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT3.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT3)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT4" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT4.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT4)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT5" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT5.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT5)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT6" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT6.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT6)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT7" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT7.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT7)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT8" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT8.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT8)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT9" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT9.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT9)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT10" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT10.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT10)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT11" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT11.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT11)</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" name="txtinputChiTieuT12" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.ChiTieuT12.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT12)</p>
+                                    </td>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Kế hoạch sau điều chỉnh
+                                    </td>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.ChiTieuT1SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT2SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT3SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT4SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT5SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT6SauDieuChuyen.GetValueOrDefault()
+                         + item.ChiTieuT7SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT8SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT9SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT10SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT11SauDieuChuyen.GetValueOrDefault() + item.ChiTieuT12SauDieuChuyen.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT1SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT2SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT3SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT4SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT5SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT6SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT7SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT8SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT9SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT10SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT11SauDieuChuyen)</p>
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        <p>@string.Format("{0:#,0.##}", item.ChiTieuT12SauDieuChuyen)</p>
+                                    </th>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Thực hiện số vụ sự cố
+                                    </td>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT1.GetValueOrDefault() + item.SoVuTruocMTT2.GetValueOrDefault() + item.SoVuTruocMTT3.GetValueOrDefault() + item.SoVuTruocMTT4.GetValueOrDefault() + item.SoVuTruocMTT5.GetValueOrDefault() + item.SoVuTruocMTT6.GetValueOrDefault()
+                                    + item.SoVuTruocMTT7.GetValueOrDefault() + item.SoVuTruocMTT8.GetValueOrDefault() + item.SoVuTruocMTT9.GetValueOrDefault() + item.SoVuTruocMTT10.GetValueOrDefault() + item.SoVuTruocMTT11.GetValueOrDefault() + item.SoVuTruocMTT12.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT1.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT2.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT3.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT4.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT5.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT6.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT7.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT8.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT9.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT10.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT11.GetValueOrDefault())
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @string.Format("{0:#,0.##}", item.SoVuTruocMTT12.GetValueOrDefault())
+                                    </th>
+                                </tr>
+
+                                @if (item.chitieutheoloais != null && item.chitieutheoloais.Count > 0)
+                                {
+                                    foreach (var l in item.chitieutheoloais)
+                                    {
+                                        <tr style="text-align:center">
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                Kế hoạch @l.Ten
+
+                                                <input type="hidden" name="hidIdKHT1" value="@l.IdT1" />
+                                                <input type="hidden" name="hidIdKHT2" value="@l.IdT2" />
+                                                <input type="hidden" name="hidIdKHT3" value="@l.IdT3" />
+                                                <input type="hidden" name="hidIdKHT4" value="@l.IdT4" />
+                                                <input type="hidden" name="hidIdKHT5" value="@l.IdT5" />
+                                                <input type="hidden" name="hidIdKHT6" value="@l.IdT6" />
+                                                <input type="hidden" name="hidIdKHT7" value="@l.IdT7" />
+                                                <input type="hidden" name="hidIdKHT8" value="@l.IdT8" />
+                                                <input type="hidden" name="hidIdKHT9" value="@l.IdT9" />
+                                                <input type="hidden" name="hidIdKHT10" value="@l.IdT10" />
+                                                <input type="hidden" name="hidIdKHT11" value="@l.IdT11" />
+                                                <input type="hidden" name="hidIdKHT12" value="@l.IdT12" />
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<p>
+                                                            @string.Format("{0:#,0.##}", l.ChiTieuT1.GetValueOrDefault() + l.ChiTieuT2.GetValueOrDefault() + l.ChiTieuT3.GetValueOrDefault() + l.ChiTieuT4.GetValueOrDefault() + l.ChiTieuT5.GetValueOrDefault() + l.ChiTieuT6.GetValueOrDefault()
+                                                    + l.ChiTieuT7.GetValueOrDefault() + l.ChiTieuT8.GetValueOrDefault() + l.ChiTieuT9.GetValueOrDefault() + l.ChiTieuT10.GetValueOrDefault() + l.ChiTieuT11.GetValueOrDefault() + l.ChiTieuT12.GetValueOrDefault())
+                                                        </p>*@
+                                                <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                    <div class="input-group input-small">
+                                                        <input onkeyup="updatetotalkhnam()" name="txtinputChiTieuKHNam" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuNam.GetValueOrDefault()">
+                                                        <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                            <button onclick="updatetotalkhnam()" type="button" class="btn spinner-up btn-xs btn-default">
+                                                                <i class="fa fa-angle-up"></i>
+                                                            </button>
+                                                            <button onclick="updatetotalkhnam()" type="button" class="btn spinner-down btn-xs btn-default">
+                                                                <i class="fa fa-angle-down"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT1" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT1.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT1.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT2" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT2.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT2.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT3" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT3.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT3.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT4" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT4.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT4.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT5" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT5.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT5.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT6" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT6.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT6.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT7" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT7.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT7.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT8" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT8.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT8.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT9" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT9.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT9.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT10" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT10.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT10.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT11" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT11.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT11.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                        <div class="input-group input-small">
+                                                            <input onkeyup="updatetotal()" name="txtinputChiTieuKHT12" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@l.ChiTieuT12.GetValueOrDefault()">
+                                                            <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                                    <i class="fa fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT12.GetValueOrDefault())</p>
+                                            </td>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                Kế hoạch @l.Ten điều chỉnh
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>
+                                                    @string.Format("{0:#,0.##}", l.ChiTieuT1SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT2SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT3SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT4SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT5SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT6SauDieuChuyen.GetValueOrDefault()
+                                            + l.ChiTieuT7SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT8SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT9SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT10SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT11SauDieuChuyen.GetValueOrDefault() + l.ChiTieuT12SauDieuChuyen.GetValueOrDefault())
+                                                </p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT1SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT2SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT3SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT4SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT5SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT6SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT7SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT8SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT9SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT10SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT11SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                <p>@string.Format("{0:#,0.##}", l.ChiTieuT12SauDieuChuyen.GetValueOrDefault())</p>
+                                            </td>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td style="vertical-align:middle;font-weight:bold">
+                                                Thực hiện @l.Ten
+                                            </td>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT1.GetValueOrDefault() + l.SoVuTruocMTT2.GetValueOrDefault() + l.SoVuTruocMTT3.GetValueOrDefault() + l.SoVuTruocMTT4.GetValueOrDefault() + l.SoVuTruocMTT5.GetValueOrDefault() + l.SoVuTruocMTT6.GetValueOrDefault()
+                                            + l.SoVuTruocMTT7.GetValueOrDefault() + l.SoVuTruocMTT8.GetValueOrDefault() + l.SoVuTruocMTT9.GetValueOrDefault() + l.SoVuTruocMTT10.GetValueOrDefault() + l.SoVuTruocMTT11.GetValueOrDefault() + l.SoVuTruocMTT12.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT1.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT2.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT3.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT4.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT5.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT6.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT7.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT8.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT9.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT10.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT11.GetValueOrDefault())
+                                            </th>
+                                            <th style="vertical-align:middle" class="text-center">
+                                                @string.Format("{0:#,0.##}", l.SoVuTruocMTT12.GetValueOrDefault())
+                                            </th>
+                                        </tr>
+                                    }
+                                }
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Trạng thái khóa
+                                    </td>
+                                    <th style="vertical-align:middle" class="text-center">
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT1.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT2.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT3.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT4.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT5.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT6.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT7.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT8.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT9.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT10.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT11.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                    <th style="vertical-align:middle" class="text-center">
+                                        @if (item.NPCIsOpenT12.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    // Spinner
+    (function ($) {
+
+        'use strict';
+
+        if ($.isFunction($.fn['spinner'])) {
+
+            $(function () {
+                $('[data-plugin-spinner]').each(function () {
+                    var $this = $(this),
+                        opts = {};
+
+                    var pluginOptions = $this.data('plugin-options');
+                    if (pluginOptions)
+                        opts = pluginOptions;
+
+                    $this.themePluginSpinner(opts);
+                });
+            });
+
+        }
+
+        //$('[data-plugin-spinner]').on('change', function () {
+        //    updatetotal();
+        //});
+
+        $('a.lockall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+        });
+
+        $('a.unlockall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+        });
+
+        updatetotalkhnam();
+        updatetotalnam();
+
+    }).apply(this, [jQuery]);
+</script>
+

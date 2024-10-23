@@ -1,0 +1,175 @@
+﻿@using System.Globalization
+@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "DANH SÁCH ĐỘI XUNG KÍCH PHÒNG CHỐNG THIÊN TAI VÀ TÌM KIẾM CỨU NẠN CÔNG TY/ ĐIỆN LỰC";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var year = DateTime.Now.Year;
+    var quarter = (DateTime.Now.Month + 2) / 3;
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+@section ScriptSignalR{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+    <script src="~/Content/admin/pctt_DoiXungKich/index.js"></script>
+    <script>
+            var dxkObj = new dxkController();
+            dxkObj.initialize();
+    </script>
+}
+
+<style>
+    .listRolesName table thead th {
+        padding-left: 8px;
+        padding-right: 8px !important;
+    }
+
+    .nd-isNPC {
+        background-color: antiquewhite !important
+    }
+</style>
+
+<input type="hidden" id="hidKyBaoCao" value="0" />
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks" style="margin-right:20px"></span>DANH SÁCH ĐỘI XUNG KÍCH PHÒNG CHỐNG THIÊN TAI VÀ TÌM KIẾM CỨU NẠN CÔNG TY/ ĐIỆN LỰC
+                <span id="lblChuyenNPC" style="margin:0px 20px"></span>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline row">
+                    <div class="col-sm-12 col-md-2">
+                        <span>Chọn năm: &nbsp;</span>
+                        <br />
+                        <select class="form-control" id="ddlYear" style="height:38px">
+                            @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 4; i--)
+                            {
+                                <option value="@i" @(i == DateTime.Now.Year ? " selected='selected'" : "")>Năm @i</option>
+                            }
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <span>Nhập từ khóa: &nbsp;</span>
+                        <br />
+                        <div class="input-group mb-md">
+                            <input type="text" id="txtKeyword" class="form-control" placeholder="Tìm kiếm...">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" id="btnSearch">Tìm kiếm</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4" style="padding-top: 10px">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" id="btnExport" style="height:38px; float:right; margin-left:15px"><i class="fa fa-file-excel-o" aria-hidden="true" style="margin-right:5px"></i>Xuất báo cáo</button>
+                            @if (User.IsInRole("DuyetNPC"))
+                            {
+                                <button type="button" class="btn btn-success" id="btnChuyenNPC" style="height:38px; float:right; margin-left:15px"><i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="margin-right:5px"></i>Chuyển Tổng công ty</button>
+                            }
+
+                            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                            {
+                                <button type="button" class="btn btn-primary" id="btn-add-dxk" style="height:38px; float:right; margin-left:15px"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-right:5px"></i>Thêm báo cáo</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-primary" id="btn-add-dxk" style="height:38px; float:right; margin-left:15px"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-right:5px"></i>Thêm báo cáo</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover dataTables-example" id="table-hl">
+                            <thead>
+                                <tr class="gradeX">
+                                    <th style="width:10%; text-align:center">STT</th>
+                                    <th style="width:20%; text-align:center">Họ tên</th>
+                                    <th style="width:25%; text-align:center">Đơn vị</th>
+                                    <th style="width:15%; text-align:center">Chức danh</th>
+                                    <th style="width:15%; text-align:center">Số điện thoại liên lạc</th>
+                                    <th style="width:15%; text-align:center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-content">
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script id="template-dxk" type="x-tmpl-mustache">
+    <tr class="gradeA pctt {{{IsNPC}}}" data-id="{{Id}}" style="height:60px;background-color:{{StatusColor}}">
+        <td class="dxk-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="dxk-hoten" style="text-align:left;width:10%; vertical-align:middle">{{HoTen}}</td>
+        <td class="dxk-donvi" style="text-align:left; vertical-align: middle" data-dvId="{{DonViId}}">{{DonVi}}</td>
+        <td class="dxk-chucdanh" style="text-align:center; vertical-align:middle">{{ChucDanh}}</td>
+        <td class="dxk-sdt" style="text-align:center;width:10%; vertical-align:middle">{{SoDienThoai}}</td>
+        <td class="dxk-function" style="text-align:center; vertical-align:middle">
+            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+            {
+                <a href="#" class="btn btn-sm btn-edit-dxk" title="Sửa" style="font-size:18px;{{hidden}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-delete-dxk" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hidden}}"><i class="fa fa-trash"></i></a>
+                <a href="#" class="btn btn-sm btn-save-dxk" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-dxk" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+            }
+            else
+            {
+                <a href="#" class="btn btn-sm btn-edit-dxk" title="Sửa" style="font-size:18px;{{hidden}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-delete-dxk" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hidden}}"><i class="fa fa-trash"></i></a>
+                <a href="#" class="btn btn-sm btn-save-dxk" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-dxk" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+            }
+        </td>
+    </tr>
+</script>
+
+<script id="template-add-dxk" type="x-tmpl-mustache">
+    <tr class="gradeA pctt add-pctt" data-id="{{Id}}">
+        <td class="dxk-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="dxk-hoten" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{HoTen}}" class="txt-dxk-hoten form-control" placeholder="">{{HoTen}}</textarea></td>
+        <td class="dxk-donvi" style="text-align:left; vertical-align: middle" data-dvId="{{DonViId}}"><textarea rows="1" value="{{DonVi}}" class="txt-dxk-donvi form-control" placeholder="">{{DonVi}}</textarea></td>
+        <td class="dxk-chucdanh" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{ChucDanh}}" class="txt-dxk-chucdanh form-control" placeholder="">{{ChucDanh}}</textarea></td>
+        <td class="dxk-sdt" style="text-align:left; vertical-align: middle"><input type="number" value="{{SDT}}" class="txt-dxk-sdt form-control" placeholder="" /></td>
+
+        <td class="nd-function" style="text-align:center;width:10%; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-dxk" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-delete-add-dxk" title="Xóa" style="font-size: 18px"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+</script>
+
+<script id="template-edit-dxk" type="x-tmpl-mustache">
+    <tr class="gradeA pctt add-pctt" data-id="{{Id}}">
+        <td class="dxk-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="dxk-hoten" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{HoTen}}" class="txt-dxk-hoten form-control" placeholder="">{{HoTen}}</textarea></td>
+        <td class="dxk-donvi" style="text-align:left; vertical-align: middle" data-dvId="{{DonViId}}"><textarea rows="1" value="{{DonVi}}" class="txt-dxk-donvi form-control" placeholder="">{{DonVi}}</textarea></td>
+        <td class="dxk-chucdanh" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{ChucDanh}}" class="txt-dxk-chucdanh form-control" placeholder="">{{ChucDanh}}</textarea></td>
+        <td class="dxk-sdt" style="text-align:left; vertical-align: middle"><input type="number" value="{{SDT}}" class="txt-dxk-sdt form-control" placeholder="" /></td>
+
+        <td class="nd-function" style="text-align:center;width:10%; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-dxk" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-cancel-dxk" title="Hủy" data-id="{{Id}}" style="font-size: 18px"><i class="fa fa-ban"></i></a>
+        </td>
+    </tr>
+</script>

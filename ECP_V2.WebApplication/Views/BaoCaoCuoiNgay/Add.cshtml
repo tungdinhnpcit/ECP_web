@@ -1,0 +1,428 @@
+﻿@using ECP_V2.Common.Helpers
+
+@model ECP_V2.WebApplication.Models.BaoCaoCuoiNgayModel
+@{
+    ViewBag.Title = "Lập báo cáo cuối ngày";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(donviId);
+    var donViCha = donViRepository.GetById(donVi.DviCha);
+}
+
+<script src="~/Scripts/validation/jquery.form.min.js"></script>
+<script src="~/Scripts/validation/jquery.validate.min.js"></script>
+<script src="~/Scripts/validation/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        $('.numeric-only').keypress(function (e) {
+            var verified = (e.which == 8 || e.which == undefined || e.which == 0) ? null : String.fromCharCode(e.which).match(/[^0-9]/);
+            if (verified) { e.preventDefault(); }
+        });
+
+        $.validator.unobtrusive.parse($('#frmAdd'));
+        $('#frmAdd').submit(function () {
+            // inside event callbacks 'this' is the DOM element so we first
+            // wrap it in a jQuery object and then invoke ajaxSubmit
+            if ($(this).valid()) {
+                //for (instance in CKEDITOR.instances) {
+                //    CKEDITOR.instances[instance].updateElement();
+                //}
+
+                $('#btnAddbaoCao').prop('disabled', true);
+
+                $(this).ajaxSubmit(options);
+            }
+
+            // !!! Important !!!
+            // always return false to prevent standard browser submit and page navigation
+            return false;
+        });
+
+        var x = 0;
+        $('.classSum').bind('input', function () {
+
+            var kh = 0;
+            var bs = 0;
+            var dx = 0;
+            var ct = 0;
+
+            if ($('#So_CV_KH').val() != '' && parseInt($('#So_CV_KH').val()) > 0) {
+                kh = parseInt($('#So_CV_KH').val());
+            }
+
+            if ($('#So_CV_BS').val() != '' && parseInt($('#So_CV_BS').val()) > 0) {
+                bs = parseInt($('#So_CV_BS').val());
+            }
+
+            if ($('#So_CV_DX').val() != '' && parseInt($('#So_CV_DX').val()) > 0) {
+                dx = parseInt($('#So_CV_DX').val());
+            }
+
+            if ($('#txtLenh_CT').val() != '' && parseInt($('#txtLenh_CT').val()) > 0) {
+                ct = parseInt($('#txtLenh_CT').val());
+            }
+
+            if (kh == 0 && bs == 0 && ct == 0 && dx == 0) {
+                $("#lbTongSoCviec").text('');
+            }
+            else {
+
+                if (kh + bs + dx - ct > 0) {
+                    $("#lbTongSoCviec").text(kh + bs + dx - ct);
+                } else {
+                    $("#lbTongSoCviec").text('0');
+                }
+            }
+
+            //if ($(this).val() == '') {
+            //    x = 0;
+            //    $("#lbTongSoCviec").text('');
+            //}
+            //else {
+            //    //x = +x + +$(this).val();
+            //    $("#lbTongSoCviec").text(x);
+            //}
+        });
+
+        $('#Kq_Cv_KetThuc').bind('input', function () {
+            $("#lbSoCviecKT").text($(this).val());
+        });
+        $('#Tong_PCT').bind('input', function () {
+            $("#lbSoTong_PCT").text($(this).val());
+        });
+        $('#Tong_LCT').bind('input', function () {
+            $("#lbSoTong_LCT").text($(this).val());
+        });
+        $('#Tong_PTT').bind('input', function () {
+            $("#lbSoTong_PTT").text($(this).val());
+        });
+    });
+    var options = {
+        // target element(s) to be updated with server response
+        beforeSubmit: showRequest,  // pre-submit callback
+        success: showResponse,  // post-submit callback
+        dataType: 'json',
+        resetForm: false
+    };
+
+    function showRequest(formData, jqForm, options) {
+        return true;
+    }
+
+    function showResponse(responseText, statusText, xhr, $form) {
+        //alert(responseText + " " + statusText);
+        var tmp = responseText;
+        if (tmp == "Thêm bản ghi thành công!") {
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Thêm thành công báo cáo',
+                type: 'success'
+            });
+
+            window.location.href = '@Url.Action("Index","BaoCaoCuoiNgay")';
+        }
+        else {
+            new PNotify({
+                title: 'Thông báo lỗi!',
+                text: 'Không thêm được báo cáo: ' + responseText,
+                type: 'error'
+            });
+
+            $('#btnAddbaoCao').prop('disabled', false);
+        }
+
+    }
+</script>
+<style>
+    input:focus {
+        border: transparent;
+    }
+
+
+    *:focus {
+        outline: 0;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    input[type="text"] {
+        color: blue;
+    }
+</style>
+
+@using (Html.BeginForm("Add", "BaoCaoCuoiNgay", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal form-bordered", role = "form", id = "frmAdd" }))
+{
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="warning-area">
+                @Html.ValidationSummary(true)
+            </div>
+        </header>
+        <div class="panel-body" style="font-family:'Times New Roman';background-color:#FFF;font-size:15px;">
+            <div class="row">
+                <div class="pull-left text-center" style="margin-left:5px;">
+
+
+
+                    @*<p>CÔNG TY TNHH MTV</p>
+                        <p>ĐIỆN LỰC HẢI PHÒNG</p>*@
+
+                    @if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+                    {
+                        if (donViCha != null)
+                        {
+                            <p>@donViCha.TenDonVi</p>
+                        }
+
+                        <b style="text-decoration: underline">PHÒNG AN TOÀN</b>
+                    }
+                    else
+                    {
+                        if (donViCha != null)
+                        {
+                            <p>@donViCha.TenDonVi</p>
+                        }
+
+                        <b style="text-decoration: underline">@donVi.TenDonVi</b>
+                    }
+
+                    @*<b style="text-decoration: underline">Đơn vị: @Html.Raw(ViewBag.TenDonVi)</b>*@
+
+                </div>
+                <div class="pull-right text-center" style="margin-right:5px;">
+                    <b>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</b>
+                    <br />
+                    <b style="text-decoration:solid;text-decoration: underline">Độc lập – Tự do – Hạnh phúc</b>
+                    <br />
+                    <p>.............., ngày @Html.Raw(DateTime.Today.ToString("dd")) tháng @Html.Raw(DateTime.Today.ToString("MM")) năm @Html.Raw(DateTime.Today.ToString("yyyy"))</p>
+                </div>
+            </div>
+            <div class="row">
+                <h3 class="text-center">
+                    <b>BÁO CÁO</b>
+                    <br />
+                    <b style="line-height:2">Kiểm tra kiểm soát công việc ngày</b>
+                    <br />
+
+                    @if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+                    {
+                        <b style="line-height:2;font-weight:normal">Kính gửi: Trưởng ban an toàn Tổng Công ty điện lực miền Bắc</b>
+                        <br />
+                        <b style="line-height:2;font-weight:normal">Thực hiện công điện số 110/CĐ-EVN<i>NPC</i>-AT ngày 05/12/2016 của Tổng Công ty điện lực miền Bắc. Phòng An toàn @donVi.TenDonVi báo cáo Trưởng ban như sau:</b>
+                    }
+                    else
+                    {
+                        <b style="line-height:2;font-weight:normal">Kính gửi: Trưởng phòng an toàn @(donViCha != null ? donViCha.TenDonVi : "")</b>
+                        <br />
+                        <b style="line-height:2;font-weight:normal">Thực hiện công điện số 110/CĐ-EVN<i>NPC</i>-AT ngày 05/12/2016 của Tổng Công ty điện lực miền Bắc. Phòng An toàn @donVi.TenDonVi báo cáo Trưởng phòng như sau:</b>
+                    }
+
+                </h3>
+            </div>
+            <div class="row" style="padding:0px 30px;">
+                <div class="row">
+                    <b>I/. Kết quả kiểm tra kiểm soát của đơn vị: (Điện lực, Phân xưởng...)</b>
+                </div>
+                <div class="row">
+                    - Tổng số công việc thực hiện tại đơn vị là: <label id="lbTongSoCviec" style="color:green;font-size:18px;font-weight:bold;">...</label>
+                    Phiên làm việc, trong đó:
+                </div>
+                <div class="row">
+                    + Số công việc theo kế hoạch tuần đã đăng ký:
+                    @Html.TextBoxFor(p => p.So_CV_KH, new { @class = "numeric-only classSum", id = "So_CV_KH", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    + Số công việc bổ sung ngày:
+                    @Html.TextBoxFor(p => p.So_CV_BS, new { @class = "numeric-only classSum", id = "So_CV_BS", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    + Số công việc đột xuất ngày:
+                    @Html.TextBoxFor(p => p.So_CV_DX, new { @class = "numeric-only classSum", id = "So_CV_DX", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    + Số công việc hủy bỏ, không thực hiện theo kế hoạch đã đăng ký: @Html.TextBoxFor(p => p.So_CV_Ko_KH, new { @class = "numeric-only classSum", id = "txtLenh_CT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    - Tổng số PTT phát ra: @Html.TextBoxFor(p => p.Tong_PTT, new { @class = "numeric-only", id = "Tong_PTT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    , số PTT được kiểm tra, kiểm soát:
+                    <label id="lbSoTong_PTT"></label>
+                </div>
+                <div class="row">
+                    - Tổng số PCT phát ra:
+                    @Html.TextBoxFor(p => p.Tong_PCT, new { @class = "numeric-only", id = "Tong_PCT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    , số PCT được kiểm tra, kiểm soát:
+                    <label id="lbSoTong_PCT"></label>
+                </div>
+                <div class="row">
+                    - Tổng số LCT phát ra:
+                    @Html.TextBoxFor(p => p.Tong_LCT, new { @class = "numeric-only", id = "Tong_LCT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    , số LCT được kiểm tra, kiểm soát:
+                    <label id="lbSoTong_LCT"></label>
+                </div>
+                <div class="row">
+                    - Số phiên làm việc đã gửi ảnh lên phần mềm quản lý ATLĐ:
+                    @Html.TextBoxFor(p => p.So_Dvi_GuiAnh, new { @class = "numeric-only", id = "So_Dvi_GuiAnh", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" }) /
+                    @Html.TextBoxFor(p => p.So_Dvi_ChuaGuiAnh, new { @class = "numeric-only", id = "So_Dvi_ChuaGuiAnh", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" }) /
+                    @Html.TextBoxFor(p => p.Tong_So_PhienLV, new { @class = "numeric-only", id = "Tong_So_PhienLV", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+
+                <div class="row">
+                    - Số phiên làm việc cập nhật thêm ảnh của ngày hôm trước:
+                    @Html.TextBoxFor(p => p.So_Dvi_GuiThemAnh, new { @class = "numeric-only", id = "So_Dvi_GuiThemAnh", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" }) /
+                    @Html.TextBoxFor(p => p.Tong_So_PhienLV_ChuaGuiAnh_NgayHomTruoc, new { @class = "numeric-only", id = "Tong_So_PhienLV_ChuaGuiAnh_NgayHomTruoc", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    @if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+                    {
+                        @Html.Raw("- Phòng An toàn Công ty:")
+                    }
+                    else
+                    {
+                        @Html.Raw("- Phòng An toàn Điện lực:")
+                    }
+                </div>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;Kết quả kiểm tra trực tiếp tại đơn vị: @Html.TextBoxFor(p => p.So_Dvi_Ktra, new { @class = "numeric-only", id = "So_Dvi_Ktra", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                @*<div class="row">
+                        @Html.TextAreaFor(p => p.ChiTietDviKtra, new { @rows = 5, id = "ChiTietDviKtra", @placeholder = ".........", @style = "border:none;width:30%;" })
+                    </div>
+                    <div class="row">
+                        Kết quả:
+                    </div>*@
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;+ Lập  @Html.TextBoxFor(p => p.Kq_SoBB, new { @class = "numeric-only", id = "Kq_SoBB", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    biên bản
+                </div>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;+ Kiểm tra @Html.TextBoxFor(p => p.Kq_KiemTra, new { @class = "numeric-only", id = "Kq_KiemTra", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    PATCTC và BPAT, có @Html.TextBoxFor(p => p.Kq_Cv_KoDat, new { @class = "numeric-only", id = "Kq_Cv_KoDat", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    PATCTC và BPAT không đạt yêu cầu, phương án xử lý.
+                </div>
+                @*<div class="row">
+                        - Công tác kiểm tra, kiểm soát của lãnh đạo đơn vị và KTVATCT được thực hiện tốt/không tốt
+                    </div>
+                    <div class="row">
+                        , có &nbsp;&nbsp;&nbsp;
+                        @Html.TextBoxFor(p => p.Kq_Cv_KetThuc, new { @class = "numeric-only", id = "Kq_Cv_KetThuc", @placeholder = "..............", @style = "border:none;width:5%;height: 25px;" })
+                        / <label id="lbSoCviecKT"></label>
+                        công việc đã kết thúc.
+                    </div>
+                    <div class="row">
+                        II/. Những vi phạm,  tồn tại qua một ngày làm việc:
+                    </div>
+                    <div class="row">
+                        - @Html.TextAreaFor(p => p.ViPham, new {@rows = 5, id = "ViPham", @placeholder = ".........", @style = "border:none;width:30%;" })
+                    </div>
+                    <div class="row">
+                        III/. Những đề nghị,  tồn tại qua một ngày làm việc:
+                    </div>
+                    <div class="row">
+                        - @Html.TextAreaFor(p => p.DeNghi, new { @rows = 5, id = "DeNghi", @placeholder = ".........", @style = "border:none;width:30%;" })
+                    </div>*@
+
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;Kết quả kiểm tra, kiểm soát qua điện thoại:
+
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">TT</th>
+                                    <th style="text-align: center;">Họ Và Tên</th>
+                                    <th style="text-align: center;">Chức vụ</th>
+                                    <th style="text-align: center;">Đơn vị</th>
+                                    <th style="text-align: center;">Tồn tại, ý kiến đề xuất</th>
+                                    
+                                </tr>
+                            </thead>
+
+                            <tr id="cap-quan-ly-dien-luc">
+                                <td colspan="4">
+                                    Cấp quản lý Điện lực &nbsp;&nbsp; <a href="javascript:;" class="btn btn-primary" id="btnCapQuanLyDienLuc" data-tr="#cap-quan-ly-dien-luc"><i class="fa fa-plus"></i> Thêm</a>
+                                </td>
+
+                                <td></td>
+                            </tr>
+
+                            <tr id="cap-chi-huy-truc-tiep">
+                                <td colspan="4">
+                                    Cấp quản lý Điện lực &nbsp;&nbsp; <a href="javascript:;" class="btn btn-primary" id="btnCapChiHuyTrucTiep" data-tr="#cap-chi-huy-truc-tiep"><i class="fa fa-plus"></i> Thêm</a>
+                                </td>
+
+                                <td></td>
+                            </tr>
+
+
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="padding:0px 30px;margin-bottom:30px;">
+                    <p class="pull-left">
+                        <b>Nơi nhận:</b>
+                        <br />
+                        <b style="font-weight:normal">- Như trên (báo cáo);</b>
+                        <br />
+                        <b style="font-weight:normal">- Giám đốc, các PGĐ;</b>
+                        <br />
+                        <b style="font-weight:normal">- Lưu KH-KT-AT.</b>
+                    </p>
+                    <p class="pull-right text-center">
+                        <b>TRƯỞNG ĐƠN VỊ</b>
+                        <br />
+                        <br />
+                        @Html.TextBoxFor(p => p.TruongDonVi, new { @class = "", id = "txtTruongDonVi", @placeholder = "..............", @style = "border:none;width:5%;height: 25px;" })
+                        <br />
+                        <br />
+                        <i>(Đã ký)</i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-body" style="font-family:'Times New Roman';background-color:#FFF;font-size:15px;">
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-md-1 control-label">File đính kèm</label>
+                    <div class="col-md-11">
+                        @*<input name="uploadFile" id="uploadFile" type="file" />*@
+                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                            <div class="input-append">
+                                <div class="uneditable-input">
+                                    <i class="fa fa-file fileupload-exists"></i>
+                                    <span class="fileupload-preview"></span>
+                                </div>
+                                <span class="btn btn-default btn-file">
+                                    <span class="fileupload-exists">Thay đổi</span>
+                                    <span class="fileupload-new">Chọn file</span>
+                                    <input name="uploadFile" id="uploadFile" type="file" />
+                                </span>
+                                @*<a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="panel-footer">
+        <button class="btn btn-primary" type="submit" id="btnAddbaoCao">Đồng ý</button>
+        <a class="btn btn-default" href="@Url.Action("Index","BaoCaoCuoiNgay")">
+            <span>Hủy bỏ</span>
+        </a>
+    </footer>
+}
+
+
+

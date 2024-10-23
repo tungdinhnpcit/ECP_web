@@ -1,0 +1,358 @@
+﻿
+@{
+    ViewBag.Title = "Quản Lý Phiên Làm Việc";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<h3>Danh sách phiên làm việc</h3>
+
+<section class="panel">
+    @*<header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="panel-action panel-action-toggle" data-panel-toggle=""></a>
+            <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss=""></a>
+        </div>       
+    </header>*@
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <span style="margin-left: 12px;">Đơn Vị: &nbsp;</span>
+                <select class="form-control" id="cmbDonViID" style="margin-left:0px" onchange="donvi_change(this)">
+                    @try
+                    {
+                        @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                    }
+                    catch { }
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span>Phòng Ban: &nbsp;</span>
+                <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <span>TC Phiên: &nbsp;</span>
+                <select class="form-control" id="cmbTCPhien" onchange="tcphien_change(this)">
+                    <option value="0">Tất cả</option>
+                    @if (ViewBag.ListTCPhien != null)
+                    {
+                        var listTCPhien = (List<ECP_V2.DataAccess.plv_TinhChatPhien>)ViewBag.ListTCPhien;
+
+                        foreach (var item in listTCPhien)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+                <div class="form-group">
+                    <label class="control-label" for="inputDefault">Từ ngày</label>
+                    <div class="col-sm-12">                        
+                        <input id="GioBd" style="width:100%" type="text" placeholder="Thời gian bắt đầu">
+                    </div>
+                </div>               
+            </div>
+            <div class="col-sm-12 col-md-3">                
+                <div class="form-group">
+                    <label class="control-label" for="inputDefault">Đến ngày</label>
+                    <div class="col-sm-12"s>
+                        <input id="GioKt" type="text"  style="width:100%" placeholder="Thời gian kết thúc">
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-12 col-md-3">
+                <span> &nbsp; Cắt điện: &nbsp;</span>
+
+                <select class="form-control" id="cmbTTPhienCatDien" onchange="ttphiencatdien_change(this)">
+                    <option value="0">Tất cả</option>
+
+                    @if (ViewBag.ThuocTinhPhienCatDien != null)
+                    {
+                        var list = (List<ECP_V2.DataAccess.plv_ThuocTinhPhien>)ViewBag.ThuocTinhPhienCatDien;
+
+                        foreach (var item in list)
+                        {
+                            <option value="@item.Id">@item.TenThuocTinh</option>
+                        }
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+                <span> &nbsp; Tiếp địa: &nbsp;</span>
+
+                <select class="form-control" id="cmbTTPhienTiepDia" onchange="ttphientiepdia_change(this)">
+                    <option value="0">Tất cả</option>
+
+                    @if (ViewBag.ThuocTinhPhienTiepDia != null)
+                    {
+                        var list = (List<ECP_V2.DataAccess.plv_ThuocTinhPhien>)ViewBag.ThuocTinhPhienTiepDia;
+
+                        foreach (var item in list)
+                        {
+                            <option value="@item.Id">@item.TenThuocTinh</option>
+                        }
+                    }
+
+                </select>
+
+            </div>
+            <div class="col-sm-12 col-md-3">
+                <span> &nbsp; Khác: &nbsp;</span>
+
+                <select class="form-control" id="cmbTTPhienKhac" onchange="ttphienkhac_change(this)">
+                    <option value="0">Tất cả</option>
+
+                    @if (ViewBag.ThuocTinhPhien5 != null)
+                    {
+                        var list = (List<ECP_V2.DataAccess.plv_ThuocTinhPhien>)ViewBag.ThuocTinhPhien5;
+
+                        foreach (var item in list)
+                        {
+                            <option value="@item.Id">@item.TenThuocTinh</option>
+                        }
+                    }
+
+                </select>
+
+            </div>
+        </div>
+
+        <br />
+        <div id="datatable-editable_wrapper" class="dataTables_wrapper no-footer">
+            <div class="row datatables-header form-inline">
+                <div class="col-sm-12 col-md-6">                    
+                   @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig", new { area = "Admin" }); }
+                </div>
+                <div class="col-sm-12 col-md-6">                    
+                    <div id="datatable-default_filter" class="dataTables_filter">
+                        <label>
+                            <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                   onkeyup="txtSearch_onkeyup(event,this)" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="listRolesName list">
+                @{Html.RenderAction("List", "UploadPLviec", new { page = 1, pageSize = 10, filter = "", tcphien = 0, catdien = 0, tiepdia = 0, khac = 0, chuyenNPC = 0 });}
+            </div>          
+        </div>
+    </div>
+</section>
+
+@section JavaScriptOnePgae{
+
+    <script type="text/javascript">
+
+        var IdDetail = 0;
+
+        $(function () {
+            $('html').addClass('sidebar-left-collapsed');
+            if ($('#cmbDonViID').val() != "")
+            {
+                LoadPhongBanByDonVi($('#cmbDonViID').val());
+            }
+            
+            var start = $("#GioBd").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            var end = $("#GioKt").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                change: end_chage
+            }).data("kendoDatePicker");
+        });
+
+        function end_chage() {
+            Paging(1, 10, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function donvi_change(el) {
+
+            LoadPhongBanByDonVi(el.value);
+
+            Paging(1, 10, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), el.value, $('#cmbPhongBan').val(), 0);
+        }
+
+        function tcphien_change(el) {
+            Paging(1, 10, $("#txtSearch").val(), el.value, $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function ttphiencatdien_change(el) {
+            Paging(1, 10, $('#txtSearch').val(), $('#cmbTCPhien').val(), el.value, $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function ttphientiepdia_change(el) {
+            Paging(1, 10, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), el.value, $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function ttphienkhac_change(el) {
+            Paging(1, 10, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), el.value, $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function Paging(page, pageSize, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, chuyenNPC) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/UploadPLviec/List";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    page: page,
+                    pageSize: pageSize,
+                    filter: filter,
+                    tcphien: tcphien,
+                    catdien: catdien,
+                    tiepdia: tiepdia,
+                    khac: khac,
+                    DateFrom: DateFrom,
+                    DateTo: DateTo,
+                    DonViId: DonViId,
+                    PhongBanId: PhongBanId,
+                    chuyenNPC: chuyenNPC
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    $("#drlPageSize").val(pageSize);
+                    $("#txtSearch").val(filter);
+
+                    unloading();
+                }
+            });
+        }
+
+
+        function pagelength_change(el) {
+            Paging(1, el.value, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function txtSearch_onKeyPress(e, el) {
+            var key;
+            if (window.event)
+                key = window.event.keyCode;     //IE
+            else
+                key = e.which;     //firefox
+
+            if (key == 13) {
+                Paging(1, 10, el.value, $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+            }
+        }
+
+        function txtSearch_onkeyup(e, el) {
+            if (el.value == '')
+                Paging(1, 10, el.value, $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), 0);
+        }
+
+        function ModalDismissDetail() {
+            $.magnificPopup.close();
+        }
+
+        function ModalDismissComment() {
+            $.magnificPopup.close();
+        }
+
+        function DetailPhienLv(PhienLvId) {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/Admin/PhienLV/DetailPhienLv?Id=' + PhienLvId,
+                success: function (json) {
+
+                    $('#modalAnimDetail .modal-wrapper').html('');
+                    $('#modalAnimDetail .modal-wrapper').html(json);
+
+                    unloading();
+                }
+            });
+        }
+
+        var options4 = {
+            // target element(s) to be updated with server response
+            beforeSubmit: showRequest4,  // pre-submit callback
+            success: showResponse4,  // post-submit callback
+            dataType: 'json',
+            resetForm: false
+        };
+        function showRequest4(formData, jqForm, options) {
+            loading("Đang xử lý...", 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            return true;
+        }
+
+        function showResponse4(responseText, statusText, xhr, $form) {
+            if (responseText == "") {
+
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Thêm nhận xét thành công',
+                    type: 'success'
+                });
+
+                //thoat commen
+                $.magnificPopup.close();
+            }
+            else {
+
+                new PNotify({
+                    title: 'Có lỗi xảy ra khi thêm nhận xét!',
+                    text: 'Lỗi : ' + responseText,
+                    type: 'error'
+                });
+            }
+
+            unloading();
+
+        }
+
+
+        function LoadPhongBanByDonVi(DonViId) {
+
+            $.ajax({
+                url: "/UploadPLviec/CmbPhongBan",
+                data: {
+                    DonViId: DonViId
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {                    
+                    $('#cmbPhongBan').html("");
+                    $('#cmbPhongBan').html(data);
+                }
+            });
+        }
+
+        function phongban_change(el) {
+            Paging(1, 10, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), el.value, 0);
+        }
+
+    </script>
+}
+

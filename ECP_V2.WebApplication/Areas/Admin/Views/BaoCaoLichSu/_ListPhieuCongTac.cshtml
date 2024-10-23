@@ -1,0 +1,796 @@
+﻿@model ECP_V2.Common.Helpers.PageData<ECP_V2.Business.Repository.PhienLVModel>
+@{
+    int i = 0;
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            //$('.page-number').on('click', function (e) {
+            //    e.preventDefault();
+            //    var page = parseInt($(this).html());
+            //    Paging(page, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val());
+            //});
+
+            //$('.prev').on('click', function (e) {
+            //    e.preventDefault();
+            //    Paging(1, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val());
+            //});
+
+            //$('.next').on('click', function (e) {
+            //    e.preventDefault();
+            //    var page = parseInt($("#btnLast").data("sum"));
+            //    Paging(page, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val());
+            //});
+
+            //khai bao Popup cho nut xoa du lieu
+            $('a.detail').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDetail = $(this).attr("id").split("_")[1];
+                DetailPhienLv(IdDetail);
+
+            });
+
+            $('a.detailPCT').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDetail = $(this).attr("id").split("_")[1];
+                DetailPhieuCongTac(IdDetail);
+
+            });
+
+            $('a.updateSoPhieu').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                IdPLV = $(this).attr("id").split("_")[1];
+                IdPCT = $(this).attr("id").split("_")[2];
+                console.log("IdPLV " + IdPLV + " IdPCT " + IdPCT);
+                $("#phieucongtacwords").attr("src", "/Admin/PhienLV/PhieuCongTac?phieucongtacid=" + IdPCT + "&phienlvid=" + IdPLV);
+            });
+
+            //khai bao Popup cho nut them comment
+            $('a.comment').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDetail = $(this).attr("id").split("_")[1];
+                AddComment(IdDetail);
+
+            });
+
+            //khai bao Popup cho nut duyet
+            $('a.Duyet').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDuyet = $(this).attr("id").split("_")[1];
+            });
+
+            //khai bao Popup cho nut xoa du lieu
+            $('a.delete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDelete = $(this).attr("id").split("_")[1];
+                NoiDungDelete = $(this).closest('tr').find('#spanNoiDung_' + IdDelete).html();
+
+            });
+
+            $('a.updateVuaTao').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdUpdateVuaTao = $(this).attr("id").split("_")[1];
+            });
+
+            $('a.CapSoPhieuLenh').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                //IdPLV = $(this).attr("id").split("_")[1];
+                IdPCT = $(this).attr("id").split("_")[2];
+
+            });
+
+            //$('a.nhaysophieu').magnificPopup({
+            //    type: 'inline',
+            //    fixedContentPos: false,
+            //    fixedBgPos: true,
+            //    overflowY: 'auto',
+            //    closeBtnInside: true,
+            //    preloader: false,
+            //    midClick: true,
+            //    removalDelay: 300,
+            //    mainClass: 'my-mfp-zoom-in',
+            //    modal: true
+            //}).click(function () {
+
+            //    $("#spintTongSoPhieuNhay").val(1);
+            //    $("#inputLoaiPCT").val($(this).attr("id").split("_")[1]);
+
+            //});
+
+            $('a.ChonSoPhieuLenh').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                //IdPLV = $(this).attr("id").split("_")[1];
+                IdPCT = $(this).attr("id").split("_")[2];
+
+                $.ajax({
+                    url: "/Admin/PhienLV/CmbSoPhieuCongTac",
+                    data: {
+                        MaLP: $(this).attr("id").split("_")[3],
+                        PhieuID: $(this).attr("id").split("_")[2],
+                    },
+                    type: 'GET',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+
+                        $('#cmbChonSoPhieu').html("");
+                        $('#cmbChonSoPhieu').html(data);
+
+                    }
+                });
+
+            });
+
+        });
+
+        function nhaysophieu_onclick(el) {
+
+            $("#spintTongSoPhieuNhay").val(1);
+            $("#inputLoaiPCT").val($(el).attr("id").split("_")[1]);
+
+            $.ajax({
+                url: "/Admin/PhienLV/CmbSoPhieuHienTaiTheoTram",
+                data: {
+                    MaLP: $(el).attr("id").split("_")[1]
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+
+                    $('#cmbChonTram').html("");
+                    $('#cmbChonTram').html(data);
+
+                    $("#divChonTram").css("display", "inline");
+                }
+            });
+            $.magnificPopup.open({
+                items: {
+                    src: '#modalAnimNhaySoPhieu'
+                },
+                type: 'inline'
+            });
+        }
+
+        /**/</script>
+    <style>
+        .ChuaDuyet {
+            color: blue;
+            font-weight: bold;
+        }
+
+        .DuyetNPC {
+            color: orangered;
+            font-weight: bold;
+        }
+
+        .DaDuyet {
+            color: black;
+            font-weight: bold;
+        }
+
+        .DaXong {
+            color: #3dac0e;
+            font-weight: bold;
+        }
+
+        .ChuyenHoan {
+            color: #b200ff;
+            font-weight: bold;
+        }
+
+        .BoSung {
+            color: red;
+            font-weight: bold;
+        }
+
+        .HuyBo {
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .actions a:hover {
+            text-decoration: none;
+        }
+
+        a.comment {
+            position: relative;
+        }
+
+            a.comment span {
+                padding: 2px 4px;
+                background: #f00;
+                border-radius: 9999px;
+                color: #fff;
+                font-size: 10px;
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+        .imgDaDuyet {
+            background-image: url(/Content/images/check-128.png);
+            background-repeat: no-repeat;
+            background-position: 50% 80%;
+            background-size: 40px 40px;
+        }
+    </style>
+
+
+    if (Model.Data.Count() > 0)
+    {
+        ECP_V2.Business.Repository.PhienLVRepository phienLVRepository = new ECP_V2.Business.Repository.PhienLVRepository();
+        var commentRepository = new ECP_V2.Business.Repository.CommentRepository();
+        var donviId = Session["DonViID"].ToString();
+        var MaNV = Session["UserId"].ToString();
+        //var donVi = _dvi_ser.GetById(donviId);
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-12">
+                <div class="tabs tabs-primary">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#popular1" data-toggle="tab">Tất cả</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="popular1" class="tab-pane active">
+                            @if (Request.Browser.IsMobileDevice)
+                            {
+                                <style>
+                                    table tr td:nth-child(1) {
+                                        font-weight: bold;
+                                        padding-left: 5px;
+                                    }
+
+                                    .logo-container span {
+                                        display: none;
+                                    }
+                                </style>
+
+                                <div class="table-responsive">
+                                    @foreach (var group in Model.Data.GroupBy(x => x.NgayLamViec))
+                                    {
+                                        <div class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue; padding: 2px 5px;">
+                                            <div>
+                                                <span class="h5">@ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(group.Key)</span>
+                                            </div>
+                                        </div>
+
+                                        foreach (var group2 in group.GroupBy(x => x.TT_Phien).OrderByDescending(o => o.Key))
+                                        {
+                                            <div class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; padding: 2px 5px;">
+                                                <div>
+                                                    <span class="h5">@phienLVRepository.GetTinhChatPhienNameById(group2.Key)</span>
+                                                </div>
+                                            </div>
+
+                                            foreach (var item in group2)
+                                            {
+                                                i++;
+
+                                                var comments = ECP_V2.Business.Repository.CommentRepository.GetCommentByPienLVId(item.Id);
+
+                                                <table @*class="@(item.TrangThai != "Đã Duyệt" ? "ChuaDuyet" : "")"*@>
+                                                    <tr>
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nội dung công việc: </td>
+                                                        <td>
+                                                            <span id="spanNoiDung_@item.Id">@item.NoiDung</span>
+                                                            @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Đơn vị làm công việc: </td>
+                                                        <td>
+                                                            <span id="spanPhongBanID_@item.Id">@item.TenPhongBan</span>
+                                                            <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Địa điểm (vị trí) công tác: </td>
+                                                        <td>
+                                                            <span id="spanDiaDiem_@item.Id">@item.DiaDiem</span>
+                                                            @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Thời gian công tác: </td>
+                                                        <td>
+                                                            <span id="spanGioBd_@item.Id">@string.Format("{0:HH\\:mm}", @item.GioBd) -</span> <span id="spanGioKt_@item.Id">@string.Format("{0:HH\\:mm}", @item.GioKt)</span>
+                                                            <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Người duyệt: </td>
+                                                        <td>
+                                                            <span id="spanNguoiDuyet_SoPa_@item.Id">@item.NguoiDuyet_SoPa</span>
+                                                            @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Người chỉ huy trực tiếp: </td>
+                                                        <td>
+                                                            <span id="spanNguoiChiHuy_@item.Id">@item.NguoiChiHuy</span>
+                                                            @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Người giám sát ATĐ: </td>
+                                                        <td>
+                                                            <span id="spanGiamSatVien_@item.Id">@item.GiamSatVien</span>
+                                                            @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Người cho phép: </td>
+                                                        <td>
+                                                            <span id="spanNguoiKiemSoat_@item.Id">@item.NguoiKiemSoat</span>
+                                                            @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Người kiểm tra PCT; PTT; LCT: </td>
+                                                        <td>
+                                                            <span id="spanNguoiKiemTraPhieu_@item.Id">@item.NguoiKiemTraPhieu</span>
+                                                            @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lãnh đạo đơn vị kiểm tra kiểm soát: </td>
+                                                        <td>
+                                                            <span id="spanLanhDaoTrucBan_@item.Id">@item.LanhDaoTrucBan</span>
+                                                            @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Người cấp phiếu </td>
+                                                        <td>
+                                                            <span id="spanNguoiCapPhieu_@item.Id">@item.NguoiCapPhieu</span>
+                                                            @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Thay đổi (nếu có), lý do thay đổi: </td>
+                                                        <td>
+                                                            <span id="spanLyDoThayDoi_@item.Id">@item.LyDoThayDoi</span>
+                                                            @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Thao tác: </td>
+                                                        <td class="actions">
+
+                                                            @*@if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
+                                                                {
+                                                                    <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
+                                                                }*@
+
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                                <hr style="padding: 2px 0;" />
+                                            }
+                                        }
+                                    }
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:center;">
+                                                    <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" onclick="checkall(this)">
+                                                        Chọn tất cả
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    STT
+                                                </th>
+                                                <th>
+                                                    Nội dung công việc
+                                                </th>
+                                                <th>
+                                                    Đơn vị làm công việc
+                                                </th>
+                                                <th>
+                                                    Địa điểm (vị trí) công tác
+                                                </th>
+                                                <th>
+                                                    Thời gian công tác
+                                                </th>
+                                                <th>
+                                                    Người duyệt
+                                                </th>
+                                                <th>
+                                                    Người chỉ huy trực tiếp
+                                                </th>
+                                                <th>
+                                                    Người giám sát ATĐ
+                                                </th>
+                                                <th>
+                                                    Người cho phép
+                                                </th>
+                                                <th>
+                                                    Người kiểm tra PCT; PTT; LCT
+                                                </th>
+                                                <th>
+                                                    Lãnh đạo đơn vị kiểm tra kiểm soát
+                                                </th>
+                                                <th>
+                                                    Người cấp phiếu
+                                                </th>
+                                                <th>
+                                                    Thay đổi (nếu có), lý do thay đổi
+                                                </th>
+                                                @*<th width="100px" class="text-center" style="text-align: center;vertical-align: middle;">
+                                                    Thao tác
+                                                </th>*@
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var group in Model.Data.GroupBy(x => x.NgayLamViec))
+                                            {
+                                                <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
+                                                    <td colspan="17">
+                                                        <span class="h5">@ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(@group.Key)</span>
+                                                    </td>
+                                                </tr>
+                                                foreach (var group2 in group.GroupBy(x => x.TT_Phien).OrderByDescending(o => o.Key))
+                                                {
+                                                    <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
+                                                        <td colspan="17">
+                                                            <span class="h5">@phienLVRepository.GetTinhChatPhienNameById(group2.Key)</span>
+                                                        </td>
+                                                    </tr>
+                                                    foreach (var item in group2)
+                                                    {
+                                                        i = i + 1;
+                                                        var comments = ECP_V2.Business.Repository.CommentRepository.GetCommentByPienLVId(item.Id);
+                                                        string style = "";
+
+                                                        if (group2.Key == 1)
+                                                        {
+                                                            style = "BoSung";
+
+                                                            if (item.TrangThai == 3)
+                                                            {
+                                                                style = "DaXong";
+                                                            }
+                                                            else if (item.TrangThai == 2)
+                                                            {
+                                                                style = "DaDuyet";
+                                                            }
+                                                            else if (item.TrangThai == 5)
+                                                            {
+                                                                style = "ChuyenHoan";
+                                                            }
+                                                            else if (item.TrangThai == 7)
+                                                            {
+                                                                style = "HuyBo";
+                                                            }
+                                                            else if (item.IsChuyenNPC == true)
+                                                            {
+                                                                style = "DuyetNPC";
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (item.TrangThai == 1)
+                                                            {
+                                                                style = "ChuaDuyet";
+                                                            }
+                                                            else if (item.TrangThai == 2 && !string.IsNullOrEmpty(item.SoPhieu))
+                                                            {
+                                                                style = "DaDuyet";
+                                                            }
+                                                            else if (item.TrangThai == 3)
+                                                            {
+                                                                style = "DaXong";
+                                                            }
+                                                            else if (item.TrangThai == 5)
+                                                            {
+                                                                style = "ChuyenHoan";
+                                                            }
+                                                            else if (item.TrangThai == 7)
+                                                            {
+                                                                style = "HuyBo";
+                                                            }
+                                                            else if (item.IsChuyenNPC == true)
+                                                            {
+                                                                style = "DuyetNPC";
+                                                            }
+
+                                                        }
+
+                                                        <tr class="@style">
+                                                            @if (item.TrangThai != 7 && item.TrangThai != 5)
+                                                            {
+                                                                <td class="text-center @(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")" style="text-align:center;">
+                                                                    <input type="checkbox" class="chkbox" id="ckh_@item.IdPhieuCongTac" value="@item.IdPhieuCongTac" />
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="@(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")"></td>
+                                                            }
+                                                            <td>
+
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">STT: @i</span>
+                                                                <br />
+                                                                <span data-idphieu="@item.MaPCT" class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">
+                                                                    @(item.MaLP == 1 ? "Số phiếu CT" : "Số lệnh CT"):
+                                                                </span>
+
+                                                                <span class="itemphienlvid" style="font-size:14px; color:#000"><b style="color:@(item.MaLP == 1 ? "green" : "blue")"> @item.SoPhieu</b></span>
+                                                                <br />
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Phiên: @item.Id</span>
+                                                                <br />
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Mã CRM</span>
+                                                                <br />
+                                                                <a target="_blank" href="~/Content/MauNhapLieu/phiếu giao nhiệm vụ.pdf" style="cursor:pointer"><span class="itemphienlvid" style="font-size:14px; color:#000; font-weight:normal"><b style="color:green">@item.MaYeuCauCRM</b></span></a>
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Ngày CN</span>
+                                                                <br />
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">@(string.Format("{0:dd/MM/yyyy HH:mm}", item.NgayCNPCT))</span>
+                                                                <br />
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Người CN</span>
+                                                                <br />
+                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">@item.NguoiCNPCT</span>
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanNoiDung_@item.Id">
+                                                                    @item.NoiDung
+                                                                </span>
+                                                                @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanPhongBanID_@item.Id">
+                                                                    @item.TenPhongBan
+                                                                </span>
+                                                                <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanDiaDiem_@item.Id">
+                                                                    @item.DiaDiem
+                                                                </span>
+                                                                @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanGioBd_@item.Id">
+                                                                    @string.Format("{0:HH\\:mm}", @item.GioBd) -
+                                                                </span> <span id="spanGioKt_@item.Id">
+                                                                    @string.Format("{0:HH\\:mm}", @item.GioKt)
+                                                                </span>
+
+
+                                                                <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanNguoiDuyet_SoPa_@item.Id">
+                                                                    @item.NguoiDuyet_SoPa
+                                                                </span>
+                                                                @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanNguoiChiHuy_@item.Id">
+                                                                    @item.NguoiChiHuy
+                                                                </span>
+                                                                @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanGiamSatVien_@item.Id">
+                                                                    @item.GiamSatVien
+                                                                </span>
+                                                                @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanNguoiKiemSoat_@item.Id">
+                                                                    @item.NguoiKiemSoat
+                                                                </span>
+                                                                @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanNguoiKiemTraPhieu_@item.Id">
+                                                                    @item.NguoiKiemTraPhieu
+                                                                </span>
+                                                                @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanLanhDaoTrucBan_@item.Id">
+                                                                    @item.LanhDaoTrucBan
+                                                                </span>
+                                                                @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanNguoiCapPhieu_@item.Id">
+                                                                    @item.NguoiCapPhieu
+                                                                </span>
+                                                                @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
+                                                            </td>
+                                                            <td>
+                                                                <span id="spanLyDoThayDoi_@item.Id">
+                                                                    @item.LyDoThayDoi
+                                                                </span>
+                                                                @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
+                                                            </td>
+
+                                                            @*<td class="actions" style="width:10%">
+
+                                                                <a id="UpdateSoPhieu_@(item.Id)_@(item.MaPCT)" href="#modalAnimUpdateSoPhieu" title="Cập nhật phiếu công tác" class="on-default updateSoPhieu"><i class="fa fa-bookmark" style="font-size: 25px; cursor: pointer"></i></a>
+                                                                @if (User.IsInRole("DuyetViec"))
+                                                                {
+                                                                    if (item.NguoiDuyetPCT == null)
+                                                                    {
+                                                                        <a href="#modalAnimDuyet" id="Duyet_@item.MaPCT" title="Duyệt phiếu/lệnh công tác" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>
+                                                                    }
+                                                                }
+                                                                @if (User.IsInRole("NguoiCapSoPhieu") && string.IsNullOrEmpty(item.SoPhieu) && !string.IsNullOrEmpty(item.NguoiDuyetPCT))
+                                                                {
+                                                                    <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)" href="#modalAnimCapSoPhieuLenh" title="Cấp số phiếu/lệnh công tác" class="on-default CapSoPhieuLenh"><i class="fa fa-paypal" style="font-size: 25px; cursor: pointer"></i></a>
+                                                                    <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)_@(item.MaLP)" href="#modalAnimChonSoPhieu" title="Chọn số phiếu/lệnh công tác" class="on-default ChonSoPhieuLenh"><i class="fa fa-hand-o-up" style="font-size: 25px; cursor: pointer"></i></a>
+                                                                }
+                                                            </td>*@
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    }
+    else
+    {
+        <h2 class="text-danger text-center">
+            Vui lòng chọn đủ các điều kiện lọc !
+        </h2>
+    }
+    <div class="rightcountload hide">
+        @if (ViewBag.PhienLVTong != null)
+        {
+            <ol class="breadcrumbs" style="padding-right:20px">
+                @if (User.IsInRole("NguoiCapSoPhieu"))
+                {
+                    <li><a href="#modalAnimNhaySoPhieu" onclick="nhaysophieu_onclick(this)" id="nhaysophieu_1" class="nhaysophieu"><span style="color: #fff;">Số PCT hiện tại: <strong style="color: greenyellow">@ViewBag.PCTHienTai</strong></span></a></li>
+                    <li><a href="#modalAnimNhaySoPhieu" onclick="nhaysophieu_onclick(this)" id="nhaysophieu_2" class="nhaysophieu"><span style="color: #fff;">Số LCT hiện tại: <strong style="color: greenyellow">@ViewBag.LCTHienTai</strong></span></a></li>
+                }
+                else
+                {
+                    <li><span style="color: #fff;">Số PCT hiện tại: <strong style="color: greenyellow">@ViewBag.PCTHienTai</strong></span></li>
+                    <li><span style="color: #fff;">Số LCT hiện tại: <strong style="color: greenyellow">@ViewBag.LCTHienTai</strong></span></li>
+                }
+
+                <li><span style="color: #fff; font-weight: bold;">Tất cả: @(ViewBag.PhienLVTong)</span></li>
+                @if ((int)ViewBag.PhienLVTong > 0)
+                {
+                    <li><span style="color: #4cff00; font-weight: bold;">Đã xong: @(ViewBag.PhienLVDaXong)</span></li>
+                    <li><span style="color: #00ffdc; font-weight: bold;">Đã duyệt: @(ViewBag.PhienLVDaDuyet)</span></li>
+                    <li><span style="color: #0088cc; font-weight: bold;">Chưa duyệt: @(ViewBag.PhienLVChuaDuyet)</span></li>
+                    <li><span style="color: #e46306; font-weight: bold;">Hủy bỏ: @ViewBag.PhienLVHuyBo</span></li>
+                }
+            </ol>
+        }
+    </div>
+    <script>
+        $(".rightcount").html($(".rightcountload").html());
+    </script>
+
+}
+

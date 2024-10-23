@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    //Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<link href="~/Content/Loader/jquery.loader.css" rel="stylesheet" />
+<style type="text/css">
+    .hero-unit {
+        position: relative;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+    });
+
+</script>
+
+@model IEnumerable<ECP_V2.Business.Repository.NewMenuViewModel>
+
+<div class="row">
+    @if (Model != null)
+    {
+
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+                <h2 class="panel-title">
+                    <span class="glyphicon glyphicon-tasks" style="margin-right:5px;"></span>
+                    Danh sách chức năng phân hệ: @ViewBag.Parent.Text
+                </h2>
+            </header>
+            <div class="panel-body" style="background-color:whitesmoke">
+                @foreach (var item in Model)
+                {
+                <div class="col-md-12 col-lg-4 col-xl-4">
+                    <section class="panel panel-featured-left panel-featured-primary">
+                        <div class="panel-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <a href="@item.Url">
+                                        <div class="summary-icon bg-primary">
+                                            <i class="@item.Class"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <a href="@item.Url">
+                                            <h4 class="title">@item.Text</h4>
+                                            <div class="info">
+                                                <strong class="amount">@item.Description</strong>
+                                                @*<span class="text-primary">(14 unread)</span>*@
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="@item.Url">(xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                }
+            </div>
+        </section>
+    }
+</div>
+

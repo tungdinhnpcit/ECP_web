@@ -1,0 +1,43 @@
+﻿@model ECP_V2.Common.Helpers.Page
+
+    <div class="row datatables-footer">
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_info" style="font-size: 14px;" id="datatable-tabletools_info" role="status" aria-live="polite">
+                Hiển thị từ
+                <b>@((Model.CurrentPage - 1) * Model.RecordsPerPage + 1)</b>
+                đến
+                <b>@(((Model.CurrentPage * Model.RecordsPerPage) > Model.TotalRecords ? Model.TotalRecords : (Model.CurrentPage * Model.RecordsPerPage)))</b>
+                trong tổng số
+                <b>
+                    @(Model.TotalRecords)
+                    <b class="text-primary">@(Model.RecordsName)</b>
+                </b>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_paginate paging_bs_normal" id="datatable-tabletools_paginate">
+                <ul class="pagination">
+                    <li class="prev">
+                        <a href="javascript:void(0);" id="btnFirst">
+                            <span class="fa fa-chevron-left"></span>
+                        </a>
+                    </li>
+                    @for (int m = 1; m <= Model.NumberOfPages; m++)
+                    {
+                        if (m == Model.CurrentPage)
+                        {
+                            <li> <a href="javascript:void(0);" tabindex="0" class="paginate_active page-number-Current">@m</a></li>
+                        }
+                        else
+                        {
+                            <li> <a class="paginate_button page-number" href="javascript:void(0);" tabindex="0">@m</a></li>
+                        }
+                    }
+                    <li class="next"><a id="btnLast" href="javascript:void(0);" data-sum="@Model.NumberOfPages"><span class="fa fa-chevron-right"></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+

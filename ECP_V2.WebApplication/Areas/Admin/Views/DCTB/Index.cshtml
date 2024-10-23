@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<style>
+    .borders div {
+        border-right: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+</style>
+<script src="~/Scripts/QLTA/ifrqlta.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        getLinkChangeAsset();  
+        var iFrame = document.getElementById("ifrReport");
+
+        var hWindow = $(window).height();
+        iFrame.height = hWindow - 110;
+    });
+
+</script>
+
+<div>
+    <iframe id="ifrReport" style="position:absolute;top:0;left:0;right:0;width:100%;"></iframe>
+</div>
+
+<script>
+
+    //function resizeIFrameToFitContent(iFrame) {
+
+    //    iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
+    //    iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+    //}
+
+    window.addEventListener('DOMContentLoaded', function(e) {
+
+        var iFrame = document.getElementById("ifrReport");
+        iFrame.width = iFrame.contentWindow.document.body.scrollWidth;
+        iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+        //resizeIFrameToFitContent(iFrame);
+
+        //// or, to resize all iframes:
+        //var iframes = document.querySelectorAll("iframe");
+        //for( var i = 0; i < iframes.length; i++) {
+        //    resizeIFrameToFitContent( iframes[i] );
+        //}
+    } );
+
+</script>

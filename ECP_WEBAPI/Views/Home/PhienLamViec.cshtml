@@ -1,0 +1,46 @@
+﻿@section Scripts {
+    @Scripts.Render("~/bundles/app")
+}
+
+@{
+    ViewBag.Title = "PhienLamViec";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <h1>Phiên làm việc</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Danh sách phiên làm việc</h2>
+            </div>
+            <div class="panel-body">
+                <ul class="list-unstyled" data-bind="foreach: phienlvs">
+                    <li>
+                        <strong><span data-bind="text: Id"></span></strong>: 
+                        <span data-bind="text: NoiDung"></span>
+                        <span data-bind="text: DiaDiem"></span>
+                        @*<span data-bind="text: NgayLamViec"></span>
+                        <span data-bind="text: GioBd"></span>
+                        <span data-bind="text: GioKt"></span>*@
+                        <small><a href="#">Chi tiết</a></small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="alert alert-danger" data-bind="visible: error"><p data-bind="text: error"></p></div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- TODO: Book details -->
+    </div>
+
+    <div class="col-md-4">
+        <!-- TODO: Add new book -->
+    </div>
+</div>
+

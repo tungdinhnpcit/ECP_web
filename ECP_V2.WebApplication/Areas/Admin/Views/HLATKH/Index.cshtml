@@ -1,0 +1,610 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">*@
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<!-- Core jquery-->
+@*<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>*@
+<script src="~/Scripts/HluAt/hluat_kh.js"></script>
+@*<script src="~/Scripts/HluAt/hluyen_antoan.js"></script>*@
+<script src="~/Scripts/DataTables/dataTables.jqueryui.min.js"></script>
+<script>
+    $(function () {
+        var yNgay = '@(DateTime.Now.AddMonths(-1))'.split(' ')[0];
+        var start = $("#dpTungay").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        var dNgay = '@(DateTime.Now)'.split(' ')[0];
+
+
+        var enddate = $("#dpDenngay").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(dNgay);
+
+        //set tungay default
+
+        $("#n1").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(dNgay);
+    });
+
+    $(document).ready(function () {
+        //Load danh mục:
+        LoadLoaiHinhDT();
+        LoadStatusPlan();
+        //LoadDsOrg();
+
+        let height = $(window).height() - 640;
+
+        $('#tblPlan').DataTable({
+            scrollY: 200,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }, { 'orderable': false, "target": 2 }]
+        });
+
+        $('#tblOrgAdd').DataTable({
+            select: {
+                style: 'single'
+            },
+            "paging": false,
+            "bFilter": false, //hide Search bar
+            "bInfo": false, // hide showing entries
+        });
+
+        $('#tblPerson').DataTable({
+            scrollY: height,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+
+        $('#tblStudentPlan').DataTable({
+            scrollY: height,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+
+        ///Khởi tạo table
+        var tblSelect = $('#tblPersonSelect').DataTable({
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            }, "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }, { "width": "20px", "targets": 0 }]
+        });
+
+
+    })
+</script>
+
+<style>
+    .input-date {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+    }
+
+    hr {
+        display: block;
+        margin-top: 5px;
+        border-style: solid;
+        border-top-width: 1px;
+    }
+
+    .modal-header {
+        background: #3c40c6;
+        color: white;
+    }
+
+    .modal-header .close {
+        margin-top: -20px;
+    }
+
+    table.dataTable tbody tr.selected {
+        background-color: #f6e58d !important;
+        color: black;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.5em 0.1em;
+        margin-left: 0px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        margin-left: 0em !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    .dt-body-left {
+        color: blue;
+    }
+
+    .container-fluid {
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-top: -30px;
+    }
+</style>
+
+<div class="container-fruid ms-auto">
+    <h4><i class="fa fa-adjust"> Huấn luyện an toàn >> Lập kế hoạch huấn luyện.</i></h4>
+    <div class="row">
+        <!-- Post content-->
+        <div class="col-lg-2">
+            <input type="text" id="dpTungay" class="input-date" />
+        </div>
+        <div class="col-lg-2">
+            <input type="text" id="dpDenngay" class="input-date" />
+        </div>
+        <div class="col-lg-2">
+            <select class="form-control form-control-sm" id="cboLhinhDt">
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <select class="form-control form-control-sm" id="cboNhomDt">
+                <option value="">--Nhóm đào tạo--</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2">
+            <select class="form-control form-control-sm" id="cboStatusPlan">
+                <option value="">--Trạng thái lớp học--</option>
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <button id="cmdView" class="btn btn-primary">
+                <i class="fa fa-refresh"></i> Xem
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="margin-top:-20px;">
+        <div class="col-lg-3">
+            <button id="cmdAddPlan" class="btn btn-success">
+                <i class="fa fa-plus"></i> Thêm mới kế hoạch
+            </button>
+            <div>
+                <input type="hidden" id="ttNut"/>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top:5px;">
+        <table id="tblPlan" class="table cell-border compact stripe select" style="width:100%">
+            <thead style="background-color: #3742fa; color:white;">
+                <tr>
+                    <th></th>
+                    <th>Kế hoạch</th>
+                    <th>Loại/Nhóm</th>
+                    <th>Số học viên</th>
+                    <th>TG bắt đầu</th>
+                    <th>TG kết thúc</th>
+                    <th style="width:60px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <table id="tblStudentPlan" class="table cell-border compact stripe select" style="width:100%">
+            <thead style="background-color: #3742fa; color:white;">
+                <tr>
+                    <th></th>
+                    <th>Đơn vị</th>
+                    <th>Nhân sự</th>
+                    <th>Chức danh</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--Modal add Class-->
+<div class="modal fade" id="mdAddPlan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-adjust"></i> Chi tiết Kế hoạch</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:red;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="mdDonviDtao">Đơn vị đào tạo</label>
+                        <select class="form-control form-control-sm" id="mdDonviDtao">
+                            <option>-- Đơn vị đào tạo --</option>
+                            <option value="TTH">Tự thực hiện</option>
+                            <option value="CDN">Cao đẳng Nghề điện</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="mdKhBatdau">Ngày bắt đầu</label>
+                        <input type="text" class="form-control" id="mdKhBatdau" placeholder="KH bắt đầu">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="mdKhKthuc">Ngày kết thúc  </label>
+                        <input type="text" class="form-control" id="mdKhKthuc" placeholder="KH kết thúc">
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="mdKhoach">Mô tả kế hoạch</label>
+                        <input type="text" class="form-control" id="mdKhoach" placeholder="Mô tả">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="mdLoaiDtao">Loại đào tạo</label>
+                        <select class="form-control form-control-sm" id="mdLoaiDtao">
+                            <option>-- Chọn loại hình đào tạo --</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="mdNhomhl">Nhóm huấn luyện</label>
+                        <select class="form-control form-control-sm" id="mdNhomhl">
+                            <option>-- Chọn nhóm huấn luyện --</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div style="display:none" id="listFile" class="card">
+                            <table id="tblListFile" class="table display" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:10px;"></th>
+                                        <th>Tên file</th>
+                                        <th style="width:60px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="file_upload form-group col-md-8">
+                            <label for="f1" class="form-label" style="font-weight:bold;">Tài liệu đính kèm:</label>
+                            <input id="f1" name="file[]" type="file"
+                                   class="file" data-show-upload="false"
+                                   data-show-caption="true">
+                        </div>
+                        @*<div class="form-group col-md-7 form-inline">
+                                <label for="n1" class="form-label">Ngày ký</label>
+                                <input id="n1" type="text" class="form-control" />
+                            </div>*@
+                    </div>
+                </div>
+                @*<div class="row">
+                        <div id='file_tools' class="form-group col-md-12">
+                            <img src='~/Images/ImageDesign/add_file.png' id='add_file' title='Thêm file mới' />
+                            <img src="~/Images/ImageDesign/xoa_icon.png" id="del_file" title="Delete" />
+                        </div>
+                    </div>*@
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <table id="tblOrgAdd" class="table cell-border compact stripe" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th style="text-align:center;">Đơn vị</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div style="font-weight:bold;text-align:center;">Danh sách nhân sự</div>
+                            <table id="tblPerson" class="table cell-border compact stripe" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align:center;">Nhân sự</th>
+                                        <th style="text-align:center;">Chức danh</th>
+                                        <th style="text-align:center;">Khoá HL gần nhất</th>
+                                        <th>
+                                            <input type="checkbox" name="select_all" value="0" id="person-select-org">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-1 border">
+                            <div class="row" style="padding-top:20px;text-align:center;">
+                                <button class="btn btn-primary" id="btnNext">>></button>
+                            </div>
+
+                            <div class="row" style="padding-top:10px; text-align:center;">
+                                <button class="btn btn-primary" id="btnPrev"><<</button>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div style="font-weight:bold;text-align:center;">Danh sách học viên</div>
+                            <table id="tblPersonSelect" class="table cell-border compact stripe" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center;width:20px;padding-left:20px;">
+                                            <input type="checkbox" name="person_select_all" value="0" id="person-select-all">
+                                        </th>
+                                        <th></th>
+                                        <th style="text-align:center;">Đơn vị</th>
+                                        <th style="text-align:center;">Nhân sự</th>
+                                        <th style="text-align:center;">Tình trạng tham gia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="OnSavePlan()">Ghi</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal confirm Xoá-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel" aria-hidden="true" id="confirmDel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Xác nhận</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title">Bạn có chắc muốn xoá kế hoạch <label id="lbMessage" style="color:red;font-weight:initial"></label> ?</h4>
+                <input type="hidden" id="txtPlanId" />
+                <input type="hidden" id="txtPlanName" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="delPlan()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#cboLhinhDt').on('change', function (e) {
+        LoadNhomDt();
+    });
+
+    $('#mdLoaiDtao').on('change', function (e) {
+        let groupselected = $('#mdLoaiDtao').val();
+        LoadDsNhomTheoLoaiDtaoKH(groupselected, "");
+    });
+
+    $('#cmdView').click(function (e) {
+        LoadDsPlan();
+    });
+
+    $('#cmdAddPlan').click(function (e) {
+        //Gọi hàm clear
+        clearFromAddPlan();
+        $('#ttNut').val('ADD');
+        LoadDmLDaotaoKH("ALL");
+        LoadDsOrgModal();
+        //LoadDsNhomTheoLoaiDtaoKH();
+
+        //set ngày
+        var yNgay = '@(DateTime.Now.AddMonths(-1))'.split(' ')[0];
+        $("#mdKhBatdau").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        $("#mdKhKthuc").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        $('#mdAddPlan').modal('show');
+    });
+
+    $('#tblOrgAdd tbody').on('click', 'tr', function () {
+        var table = $('#tblOrgAdd').DataTable();
+
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            LoadDsNhansuKHAddByOrg();
+        }
+    });
+
+    $('#person-select-org').on('click', function () {
+        var table = $('#tblPerson').DataTable();
+        // Get all rows with search applied
+        var rows = table.rows().nodes();
+        // Check/uncheck checkboxes for all rows in the table
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    });
+
+    $('#person-select-all').on('click', function () {
+        var table = $('#tblPersonSelect').DataTable();
+        // Get all rows with search applied
+        var rows = table.rows().nodes();
+        // Check/uncheck checkboxes for all rows in the table
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    });
+
+    //Xư lý nút đẩy dữ liệu
+    $("#btnNext").click(function (e) {
+
+        var tblSelect = $('#tblPersonSelect').DataTable();
+        var tblPerson = $('#tblPerson').DataTable();
+        var data = tblPerson.rows().data();
+        //let icheck = false;
+        //let xTbl = 0;
+
+        var t = $('#tblOrgAdd').DataTable();
+        var dvql = t.row('.selected').data()['madvql'];
+        //$('input[name="select_all"]').attr('checked', false);
+
+        let ccnut = tblSelect.rows().data().count();
+        let ttnut = $('#ttNut').val();
+        tblPerson.$('input[type="checkbox"]').each(function () {
+            // If checkbox is checked
+            if (this.checked) {
+                var valCheck = $(this).val();
+
+                data.each(function (value, index) {
+                    if (valCheck === value.nsid.toString()) {
+                        if (ccnut > 0 && ttnut == "EDIT") {
+                            let objAdd = {
+                                x: '<input type="checkbox" name="x[]" value="' + value.nsid + '" style="width:20px;text-align:center;"/>',
+                                nsid: value.nsid,
+                                orgid: dvql,
+                                tenkhaisinh: value.tenkhaisinh,
+                                chucdanh: "",
+                                email: "",
+                                kqua: "",
+                                phongban: "",
+                                quequan: null,
+                                sdt: null,
+                                tinhtrang: null
+                            }
+                            tblSelect.row.add(objAdd).draw(false);
+                        } else {
+                            tblSelect.row.add(['<input type="checkbox" name="x[]" value="' + value.nsid + '" style="width:20px;text-align:center;"/>', value.nsid, dvql, value.tenkhaisinh, ""]).draw(false);
+                        }
+
+                    }
+                });
+            }
+        });
+    });
+
+    //Gỡ khỏi danh sách lựa chọn
+    $('#btnPrev').on('click', function () {
+        var table = $('#tblPersonSelect').DataTable();
+        var data = table.rows().data();
+        let arrId = [];
+        table.$('input[type="checkbox"]').each(function () {
+            // If checkbox is checked
+            if (this.checked) {
+                var valCheck = $(this).val();
+                data.each(function (value, index) {
+                    if (table.rows().length > 0) {
+                        if (valCheck === value["nsid"].toString()) {
+                            arrId.push(index);
+                            //table.row(index).remove().draw(false);
+                        }
+                    } else {
+                        if (valCheck === value[1].toString()) {
+                            //table.row(index).remove().draw(false);
+                            arrId.push(index);
+                        }
+                    }
+
+                });
+            }
+        });
+
+        for (i = 0; i < arrId.length; i++) {
+            table.row(arrId[i] - i).remove().draw(false);
+        }
+    });
+
+    $('#tblPlan tbody').on('click', 'tr', function () {
+        var table = $('#tblPlan').DataTable();
+
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            //Load danh sách nhân sự của lớp học.
+            LoadDsPersonByPlan(table.rows('.selected').data()[0]["planid"]);
+        }
+    });
+</script>

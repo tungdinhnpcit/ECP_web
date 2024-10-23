@@ -1,0 +1,162 @@
+﻿@using ECP_V2.Common.Helpers
+@model ECP_V2.WebApplication.Models.MenuModel
+@{
+    ViewBag.Title = "Cập nhật Menu";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        HttpMethod = "post",
+        OnComplete = "CompleteAjaxRequest"
+    };
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<script type="text/javascript">
+    function CompleteAjaxRequest(obj) {
+
+        var returnObj = eval('(' + obj.responseText + ')');
+
+        if (returnObj.Status == "success") {
+            if (returnObj.Message != null) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Sửa thành công Menu',
+                    type: 'success'
+                });
+                window.location.href = returnObj.RedirectUrl;
+            }
+            else if (returnObj.RedirectUrl != null) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Sửa thành công Menu',
+                    type: 'success'
+                });
+                window.location.href = returnObj.RedirectUrl;
+            }
+        } else {
+            new PNotify({
+                title: 'Thông báo lỗi!',
+                text: 'Không thêm được Menu: ' + returnObj.Message,
+                type: 'error'
+            });
+        }
+
+        return false;
+    };
+</script>
+
+
+<div class="row-fluid">
+    <h1>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Index", "Menu")">
+            <i class="fa fa-list"></i> &nbsp; Danh sách menu
+        </a>
+    </h1>
+    <div class="span12">
+        <div class="row">
+            @using (Ajax.BeginForm("UpdateMenu", "Menu", null, ajaxOpts, new { enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+            {
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="warning-area">
+                            @Html.ValidationSummary(true)
+                        </div>
+                    </header>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-5">                           
+                                @Html.HiddenFor(model => model.MenuId)
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Tên Menu:</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(x => x.MenuText, new { @class = "form-control", id = "txtMenuName" })
+                                        @Html.ValidationMessageFor(m => m.MenuText)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Menu Code:</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(x => x.MenuCode, new { @class = "form-control", id = "txtMenuCode" })
+                                        @Html.ValidationMessageFor(m => m.MenuCode)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Diễn giải:</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextAreaFor(x => x.Description, new { @class = "form-control", id = "txtMenuCode", rows = "3" })
+                                        @Html.ValidationMessageFor(m => m.Description)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @*<label class="col-sm-4 control-label">.</label>*@
+                                    <div class="col-sm-8 col-sm-offset-4">
+                                        <p>
+                                            Hiển thị @Html.CheckBoxFor(m => m.IsDisplay) &nbsp;
+                                            Tin tức @Html.CheckBoxFor(m => m.IsNewLetter) &nbsp;
+                                        </p>
+                                        <p>
+                                            Hiển thị trên Menu @Html.CheckBoxFor(m => m.IsShowMenu) &nbsp;
+                                            Trang ngoài @Html.CheckBoxFor(m => m.IsFrontPage)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Chọn mục cha:</label>
+                                    <div class="col-sm-8">
+                                        @*@Html.DropDownList("MenuParentId", (IEnumerable<SelectListItem>)ViewBag.MenuParent, "Chọn mục cha ...", new { @class = "form-control" })*@
+                                        @*@Html.DropDownList("MenuParentId", (IEnumerable<SelectListItem>)ViewBag.MenuParent,new { @class = "form-control" })*@
+                                        @*@Html.DropDownListFor(m => m.MenuParentId, new SelectList(ViewBag.MenuParent, "MenuId", "MenuText"), "Chọn mục cha ...", new { @class = "form-control",@id = "MenuParentId" })*@
+                                        @Html.DropDownListFor(m => m.MenuParentId, (IEnumerable<SelectListItem>)ViewBag.MenuParent, new { @class = "form-control", @id = "MenuParentId" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Vị trí:</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(x => x.MenuOrder, new { @class = "form-control", id = "txtViTri" })
+                                        @Html.ValidationMessageFor(m => m.MenuOrder)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Chọn quyền:</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.Roles, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Dường dẫn chức năng:</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(x => x.Url, new { @class = "form-control", id = "txtMenuCode" })
+                                        @Html.ValidationMessageFor(m => m.Url)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Biểu tượng:</label>
+                                    <div class="col-sm-8">
+                                        @Html.TextBoxFor(x => x.Class, new { @class = "form-control", id = "txtMenuCode" })
+                                        @Html.ValidationMessageFor(m => m.Class)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Hiển thi theo:</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" name="RoleView">
+                                            <option @(Model.RoleView==0?"selected":"") value="0">Tất cả</option>
+                                            <option @(Model.RoleView==1?"selected":"") value="1">Cấp công ty</option>
+                                            <option @(Model.RoleView==2?"selected":"") value="2">Cấp Điện lực</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <button class="btn btn-primary" type="submit">Đồng ý</button>
+                        <a class="btn btn-default" href="@Url.Action("Index","Menu")">
+                            <span>Hủy bỏ</span>
+                        </a>
+                    </footer>
+                </section>
+            }
+        </div>
+    </div>
+</div>

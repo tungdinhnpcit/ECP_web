@@ -1,0 +1,185 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo kết quả thực hiện (BC03)";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">*@
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<!-- Core jquery-->
+@*<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>*@
+<script src="~/Scripts/HluAt/hluat_report.js"></script>
+<script src="~/Scripts/DataTables/dataTables.jqueryui.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        //Load danh mục:
+        LoadDviBc03();
+        LoadCboLdaotao();
+
+        let height = $(window).height() - 400;
+        $('#tblKqua03').DataTable({
+            scrollY: height,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+    })
+</script>
+
+<style>
+    .input-date {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+    }
+
+    hr {
+        display: block;
+        margin-top: 5px;
+        border-style: solid;
+        border-top-width: 1px;
+    }
+
+    .modal-header {
+        background: #3c40c6;
+        color: white;
+    }
+
+        .modal-header .close {
+            margin-top: -20px;
+        }
+
+    table.dataTable tbody tr.selected {
+        background-color: #113ce6 !important;
+        color: white;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.5em 0.1em;
+        margin-left: 0px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    .dt-body-left {
+        color: blue;
+    }
+</style>
+
+<div class="container-fruid ms-auto" style="margin-top:-30px;">
+    <div class="row">
+        <h3><i class="fa fa-list"> BC03 - Báo cáo kết quả thực hiện huấn luyện</i></h3>
+    </div>
+    <div class="row">
+        <!-- Post content-->
+        <div class="col-lg-3">
+            <select class="form-control form-control-sm" id="cboDvi03">
+            </select>
+        </div>
+        @*<div class="col-lg-3">
+            <select class="form-control form-control-sm" id="cboNam03">
+                <option value="2023">Năm 2023</option>
+                <option value="2024">Năm 2024</option>
+                <option value="2025">Năm 2025</option>
+                <option value="2026">Năm 2026</option>
+                <option value="2027">Năm 2027</option>
+                <option value="2028">Năm 2028</option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <select class="form-control form-control-sm" id="cboLdtao03">                
+            </select>
+        </div>*@
+        <div class="col-lg-3">
+            <button id="cmdView" class="btn btn-primary">
+                <i class="fa fa-refresh"></i> Xem
+            </button>
+            <button id="cmdExcel" class="btn btn-success" onclick="onExportExcelBc03()">
+                <i class="fa fa-file-excel-o"></i> Xuất Excel
+            </button>
+        </div>        
+    </div>
+    <hr />
+    <div class="row">
+        <table id="tblKqua03" class="table cell-border compact stripe select" style="width:100%">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="text-align:center;">STT</th>
+                    <th rowspan="2" style="text-align:center;">Công ty</th>
+                    <th rowspan="2" style="text-align:center;">Đơn vị</th>
+                    <th rowspan="2" style="text-align:center;">Phòng ban</th>
+                    <th rowspan="2" style="text-align:center;">Họ và tên</th>
+                    <th rowspan="2" style="text-align:center;">Ngày sinh</th>
+                    <th rowspan="2" style="text-align:center;">Chức danh</th>
+                    <th colspan="5" style="text-align:center;">An toàn điện</th>
+                    <th colspan="5" style="text-align:center;">An toàn VSLĐ</th>
+                    <th colspan="5" style="text-align:center;">Hotline</th>
+                </tr>
+                <tr>
+                    <th style="text-align:center;">Nhóm</th>
+                    <th style="text-align:center;">Khóa đào tạo</th>
+                    <th style="text-align:center;">Lý thuyết</th>
+                    <th style="text-align:center;">Thực hành</th>
+                    <th style="text-align:center;">Ghi chú</th>
+                    <th style="text-align:center;">Nhóm</th>
+                    <th style="text-align:center;">Khóa đào tạo</th>
+                    <th style="text-align:center;">Lý thuyết</th>
+                    <th style="text-align:center;">Thực hành</th>
+                    <th style="text-align:center;">Ghi chú</th>
+                    <th style="text-align:center;">Nhóm</th>
+                    <th style="text-align:center;">Khóa đào tạo</th>
+                    <th style="text-align:center;">Lý thuyết</th>
+                    <th style="text-align:center;">Thực hành</th>
+                    <th style="text-align:center;">Ghi chú</th>
+
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    //$('#cboDonvi').on('change', function (e) {
+    //    //Load();()
+    //    LoadNhansu();
+    //    //$('#cboNhansu').on('change', function (e) {
+    //    //    //LoadDsNhomTheoLoaiDaotao();
+    //    });
+
+        $('#cmdView').click(function (e) {
+            LoadKquaBC03();
+        });
+
+</script>

@@ -1,0 +1,1052 @@
+﻿@using ECP_V2.Common.Helpers
+@*@model ECP_V2.WebApplication.Models.NhanVienModel*@
+
+@{
+    ViewBag.Title = "ChiTiet";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    List<int> drlPageSize = new List<int>();
+
+    string pageSummary = System.Web.Configuration.WebConfigurationManager.AppSettings["PageSummary"].ToString();
+
+    try
+    {
+        drlPageSize = pageSummary.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).ToList();
+    }
+    catch
+    {
+        drlPageSize = new List<int>();
+    }
+
+    int pageSize = 0;
+    int.TryParse(Session["drlPageSize"].ToString(), out pageSize);
+    string roleId = "";
+
+    if (User.IsInRole("AdminDonVi"))
+    {
+        roleId = "AdminDonVi";
+    }
+    else
+    {
+        if (User.IsInRole("Admin"))
+        {
+            roleId = "Admin";
+        }
+        else if (User.IsInRole("Manager"))
+        {
+            roleId = "Manager";
+        }
+    }
+
+}
+
+<style>
+    ul.simple-todo-list li {
+        padding-left: 5px;
+    }
+</style>
+
+<header class="page-header">
+    <h2>Phân quyền tài khoản</h2>
+
+    @*<div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Pages</span></li>
+                <li><span>User Profile</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>*@
+</header>
+
+<!-- start: page -->
+
+<div class="row">
+    <div class="col-md-4 col-lg-3" style="padding: 0;">
+
+        <section class="panel">
+            <div class="panel-body">
+                @*<div class="thumb-info mb-md">
+                        <img src="@Model.UrlImage" class="rounded img-responsive" alt="@Model.TenNhanVien">
+                        <div class="thumb-info-title">
+                            <span class="thumb-info-inner">@Model.TenNhanVien</span>
+                            <span class="thumb-info-type">@Model.ChucVu</span>
+                        </div>
+                    </div>*@
+
+                
+
+                <div class="widget-toggle-expand mb-md">
+                    @*<div class="widget-header">
+                <h6>Profile Completion</h6>
+                <div class="widget-toggle">+</div>
+            </div>
+            <div class="widget-content-collapsed">
+                <div class="progress progress-xs light">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                        60%
+                    </div>
+                </div>
+            </div>*@
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" style="padding: 0;">Đơn vị:</label>
+                        <div class="col-sm-8" style="padding: 0;">
+                            @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDonVi, "Chọn đơn vị ...", new { @class = "form-control", id = "drlDonViAll" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" style="padding: 0;">Phòng ban:</label>
+                        <div class="col-sm-8" style="padding: 0;" id="phong-ban-all">
+                            @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban/đội ...", new { @class = "form-control", id = "drlPhongBanAll" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-toggle-expand mb-md">
+                    @*<div class="widget-header">
+                            <h6>Profile Completion</h6>
+                            <div class="widget-toggle">+</div>
+                        </div>
+                        <div class="widget-content-collapsed">
+                            <div class="progress progress-xs light">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                    60%
+                                </div>
+                            </div>
+                        </div>*@
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" style="padding: 5px 0 0 0;">Loại quyền</label>
+                        <div class="col-sm-8" style="padding: 0;">
+                            @*@Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPban, "Chọn phòng ban/đội ...", new { @class = "form-control", @disabled = "disabled" })*@
+                            <select name="RolesUser" id="txtRolesUser" class="form-control">
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <option value="1" selected>Quyền hệ thống</option>
+                                    <option value="2">Quyền chức năng</option>
+                                    <option value="3">Quyền điều hành</option>
+                                }
+                                else
+                                {
+                                    <option value="2" selected>Quyền chức năng</option>
+                                    <option value="3">Quyền điều hành</option>
+                                }
+                                
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="chitietquyen-container">
+                        @{ Html.RenderAction("ListChiTietQuyen", "UserPermission", new { typeOfRole = (User.IsInRole("Admin")) ? 1 : 2 });}
+                    </div>
+                </div>
+
+                @*<hr class="dotted short">
+
+                    <h6 class="text-muted">About</h6>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis vulputate quam. Interdum et malesuada</p>
+                    <div class="clearfix">
+                        <a class="text-uppercase text-muted pull-right" href="#">(View All)</a>
+                    </div>
+
+                    <hr class="dotted short">
+
+                    <div class="social-icons-list">
+                        <a rel="tooltip" data-placement="bottom" target="_blank" href="http://www.facebook.com" data-original-title="Facebook"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                        <a rel="tooltip" data-placement="bottom" href="http://www.twitter.com" data-original-title="Twitter"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                        <a rel="tooltip" data-placement="bottom" href="http://www.linkedin.com" data-original-title="Linkedin"><i class="fa fa-linkedin"></i><span>Linkedin</span></a>
+                    </div>*@
+
+            </div>
+        </section>
+
+    </div>
+    <div class="col-md-8 col-lg-9" style="padding: 0 0 0 10px;">
+        <section class="panel" id="danhsach-taikhoan">
+            <!-- Modal Animation -->
+            <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Thông báo</h2>
+                    </header>
+                    <div class="panel-body">
+                        <div class="modal-wrapper">
+                            <div class="modal-icon">
+                                <i class="fa fa-question-circle"></i>
+                            </div>
+                            <div class="modal-text">
+                                <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                                <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+            <div class="clear">
+            </div>
+            @*id="LoadingOverlayApi" data-loading-overlay*@
+            <div class="block-fluid">
+                <div class="panel panel-visible">
+                    <div class="panel-heading br-b-n">
+                        <div class="panel-title hidden-xs">
+                            <span class="glyphicon glyphicon-tasks" style="position: relative; top: 4px;"></span> Danh sách tài khoản
+                            <a class="mb-xs mt-xs mr-xs btn btn-primary modal-with-form" id="btnModalFormAddTaiKhoan" style="float: right; position: relative; top: -10px;" href="#formAddNhanVien">
+                                <i class="fa fa-plus"></i> &nbsp; Thêm tài khoản
+                            </a>
+
+                            <a class="mb-xs mt-xs mr-xs btn btn-primary" id="btnExportToExcel" style="float: right; position: relative; top: -10px;" href="javascript:;">
+                                <i class="fa fa-plus"></i> &nbsp; Xuất Excel
+                            </a>
+
+                            <div id="formAddNhanVien" class="modal-block modal-block-primary mfp-hide" style="max-width: 1000px;">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        <h2 class="panel-title">Thêm phân quyền tài khoản</h2>
+                                    </header>
+                                    <div class="panel-body">
+                                        <form id="demo-form" class="form-horizontal mb-lg" novalidate="novalidate">
+                                            @*<div class="form-group mt-lg">
+                                                <label class="col-sm-3 control-label">Chọn đơn vị</label>
+                                                <div class="col-sm-9">
+                                                    @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDonVi, "Chọn đơn vị ...", new { @class = "form-control mb-md", @id = "drlDviAdd", @name = "drlDvi" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Chọn phòng ban</label>
+                                                <div class="col-sm-9" id="phong-ban-container">
+                                                    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPbanAdd" })
+                                                </div>
+                                            </div>*@
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Tìm kiếm</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" name="keyword" id="txtKeyWordAdd" onkeypress="txtKeyWordAdd_onKeyPress(event, this);" onkeyup="txtKeyWordAdd_onkeyup(event, this);" class="form-control" placeholder="Nhập tên nhân viên">
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-sm-12" id="taikhoan-add-container">
+                                                    @{Html.RenderAction("ListTaiKhoanAdd", "UserPermission");}
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <footer class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-md-12 text-right">
+                                                <button class="btn btn-primary modal-confirm" id="btnAddTaiKhoanToRoles">Cập nhật</button>
+                                                <button class="btn btn-default modal-dismiss">Hủy bỏ</button>
+                                            </div>
+                                        </div>
+                                    </footer>
+                                </section>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="panel-body pn">
+                        <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                            <div class="row datatables-header form-inline">
+                                <div class="col-sm-12 col-md-6">
+                                    <select data-plugin-selectTwo class="form-control populate" style="width: 75px;" id="drlPageSizeTaiKhoan">
+                                        @foreach (var item in drlPageSize)
+                                        {
+                                            if (item == pageSize)
+                                            {
+                                                <option value="@item" selected>@item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="input-group mb-md">
+                                        <input class="form-control" type="text" placeholder="Nhập tên hoặc số điện thoại" value="" id="txtSearch" onkeyup="txtSearch_onkeyup(event, this);" onkeypress="txtSearch_onKeyPress(event, this);">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" id="btnSearch">Tìm kiếm</button>
+                                        </span>
+                                    </div>
+                                    @*<div id="datatable-default_filter" class="dataTables_filter">
+                                           <label>
+                                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" />
+                                            </label>
+                                        </div>*@
+                                </div>
+                            </div>
+
+                            <div class="listRolesName list">
+                                @{Html.RenderAction("ListTaiKhoan", "UserPermission", new { page = 1, pageSize = (pageSize > 0) ? pageSize : 10, roleId = roleId, sortOrder = "", filter = "", phongBanId = 0, donViId = "" });}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel" id="danhsach-chucnang">
+            <!-- Modal Animation -->
+            <div id="modalAnimChucNang" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Thông báo</h2>
+                    </header>
+                    <div class="panel-body">
+                        <div class="modal-wrapper">
+                            <div class="modal-icon">
+                                <i class="fa fa-question-circle"></i>
+                            </div>
+                            <div class="modal-text">
+                                <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                                <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+            <div class="clear">
+            </div>
+            @*id="LoadingOverlayApi" data-loading-overlay*@
+            <div class="block-fluid">
+                <div class="panel panel-visible">
+                    <div class="panel-heading br-b-n">
+                        <div class="panel-title hidden-xs">
+                            <span class="glyphicon glyphicon-tasks" style="position: relative; top: 4px;"></span> Danh sách chức năng
+                            <a class="mb-xs mt-xs mr-xs btn btn-primary modal-with-form" id="btnModalFromAddChucNang" style="float: right; position: relative; top: -10px;" href="#formAddChucNang">
+                                <i class="fa fa-plus"></i> &nbsp; Thêm chức năng
+                            </a>
+
+                            <div id="formAddChucNang" class="modal-block modal-block-primary mfp-hide" style="max-width: 1000px;">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        <h2 class="panel-title">Thêm chức năng tài khoản</h2>
+                                    </header>
+                                    <div class="panel-body">
+                                        <form id="demo-form" class="form-horizontal mb-lg" novalidate="novalidate">
+                                            @*<div class="form-group mt-lg">
+                                                <label class="col-sm-3 control-label">Chọn đơn vị</label>
+                                                <div class="col-sm-9">
+                                                    @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDonVi, "Chọn đơn vị ...", new { @class = "form-control mb-md", @id = "drlDviAddChucNang", @name = "drlDvi" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Chọn phòng ban</label>
+                                                <div class="col-sm-9" id="phong-ban-container">
+                                                    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPbanAddChucNang" })
+                                                </div>
+                                            </div>*@
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label">Tìm kiếm</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" name="keyword" id="txtKeyWordAddChucNang" onkeypress="txtKeyWordAddChucNang_onKeyPress(event, this);" onkeyup="txtKeyWordAddChucNang_onkeyup(event, this);" class="form-control" placeholder="Nhập tên chức năng">
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-sm-12" id="chucnang-add-container">
+                                                    @{Html.RenderAction("ListTaiKhoanAddChucNang", "UserPermission");}
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <footer class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-md-12 text-right">
+                                                <button class="btn btn-primary modal-confirm" id="btnAddChucNangToRoles">Cập nhật</button>
+                                                <button class="btn btn-default modal-dismiss">Hủy bỏ</button>
+                                            </div>
+                                        </div>
+                                    </footer>
+                                </section>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="panel-body pn">
+                        <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                            <div class="row datatables-header form-inline">
+                                <div class="col-sm-12 col-md-6">
+                                    <select data-plugin-selectTwo class="form-control populate" style="width: 75px;" id="drlPageSizeChucNang">
+                                        @foreach (var item in drlPageSize)
+                                        {
+                                            if (item == pageSize)
+                                            {
+                                                <option value="@item" selected>@item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="input-group mb-md">
+                                        <input class="form-control" type="text" placeholder="Nhập tên chức năng" value="" id="txtSearchChucNang" onkeyup="txtSearchChucNang_onkeyup(event, this);" onkeypress="txtSearchChucNang_onKeyPress(event, this);">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" id="btnSearchChucNang">Tìm kiếm</button>
+                                        </span>
+                                    </div>
+                                    @*<div id="datatable-default_filter" class="dataTables_filter">
+                                       <label>
+                                            <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" />
+                                        </label>
+                                    </div>*@
+                                </div>
+                            </div>
+
+                            <div class="listRolesName list-chucnang">
+                                @{Html.RenderAction("ListChucNang", "UserPermission", new { page = 1, pageSize = (pageSize > 0) ? pageSize : 10, roleId = roleId, sortOrder = "", filter = "" });}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+<!-- end: page -->
+
+@section JavaScriptOnePgae{
+
+@Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+
+<script type="text/javascript">
+
+        var IdDelete = 0;
+        var NoiDungDelete = 0;
+        var IdCancel = 0;
+        var typeshow = "";
+
+        $(function () {
+
+            var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+
+            ////var tuNgay = kendo.toString(kendo.parseDate('@(ViewBag.TuNgay!=null?ViewBag.TuNgay:DateTime.Now)', 'dd/MM/yyyy'), 'dd/MM/yyyy');
+            $("#GioBd").datepicker({
+                dateFormat: 'dd/mm/yy'
+            }).val(yNgay);
+
+            //var start = $("#GioBd").kendoDatePicker({
+            //    format: 'dd/MM/yyyy',
+            //}).data("kendoDatePicker");
+
+            $("#GioKt").datepicker({
+                dateFormat: 'dd/MM/yyyy',
+                change: end_chage
+            }).val(yNgay);
+
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+
+            // khai bao cho Popup
+            $('#ImportKH').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            // khai bao cho Popup
+            $('#ImportBS').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+
+            //$("#NgayBoSung").kendoDatePicker({
+            //    format: 'dd/MM/yyyy',
+            //    value:new Date()
+            //}).data("kendoDatePicker");
+
+            $("#NgayBoSung").datepicker({
+                dateFormat: 'dd/MM/yyyy',
+                change: end_chage
+            }).val(yNgay);
+
+            $("#txtRolesUser").change(function () {
+
+                loading('Đang tải dữ liệu...', 1);
+                $("#preloader").unbind("click");
+                $('#preloader').click(function () {
+                    unloading();
+                })
+
+                var value = $(this).val();
+
+                $("#chitietquyen-container").html("");
+
+                $.ajax({
+                    url: '/Admin/UserPermission/ListChiTietQuyen',
+                    data: {
+                        typeOfRole: value
+                    },
+                    type: 'GET',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#chitietquyen-container").html(data);
+                        GetList(1, $('#drlPageSizeTaiKhoan').val(), '', '', $('input[name="ChiTietQuyen"]:checked').val(), $('#drlPhongBanAll').val(), $('#drlDonViAll').val());
+                        GetListChucNang(1, $('#drlPageSizeChucNang').val(), '', $('#danhsach-chucnang #txtSearchChucNang').val(), $('input[name="ChiTietQuyen"]:checked').val());
+                        GetListChucNangAdd('', $('input[name="ChiTietQuyen"]:checked').val());
+                        unloading();
+
+                    }
+                });
+            });
+
+            $('.modal-with-form').magnificPopup({
+                type: 'inline',
+                preloader: false,
+                focus: '#name',
+                modal: true,
+
+                // When elemened is focused, some mobile browsers in some cases zoom in
+                // It looks not nice, so we disable it:
+                callbacks: {
+                    beforeOpen: function () {
+                        if ($(window).width() < 700) {
+                            this.st.focus = false;
+                        } else {
+                            this.st.focus = '#name';
+                        }
+                    }
+                }
+            });
+
+            $('#btnModalFormAddTaiKhoan').click(function () {
+                GetListTaiKhoanAdd('', $('#drlPhongBanAll').val(), $('#drlDonViAll').val(), $('input[name="ChiTietQuyen"]:checked').val());
+            });
+
+            $('#btnModalFromAddChucNang').click(function () {
+                GetListChucNangAdd('', $('input[name="ChiTietQuyen"]:checked').val());
+            });
+
+            $(document).on('click', '.modal-dismiss', function (e) {
+                e.preventDefault();
+                $.magnificPopup.close();
+            });
+
+            /*
+            Modal Confirm
+            */
+            $(document).on('click', '#btnAddTaiKhoanToRoles', function (e) {
+                e.preventDefault();
+
+
+                var arrSelected = [];
+                var roleName = $('input[name="ChiTietQuyen"]:checked').val();
+
+                $('#taikhoan-add-container input[name="selected"]:checked').each(function () {
+                    arrSelected.push($(this).val());
+                });
+
+                if (arrSelected.length > 0) {
+                    $.ajax({
+                        url: '/Admin/UserPermission/AddTaiKhoanToRole',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            roleName: roleName,
+                            listUserName: arrSelected
+                        }),
+                        success: function (data) {
+                            $.magnificPopup.close();
+
+                            var pageSize = $('#drlPageSizeTaiKhoan').val();
+
+                            GetList(1, pageSize, '', '', $('input[name="ChiTietQuyen"]:checked').val(), $('#drlPhongBanAll').val(), $('#drlDonViAll').val());
+
+                            $('#drlPbanAdd option:first-child').attr("selected", true);
+                            $('#drlDviAdd option:first-child').attr("selected", true);
+                            $('#txtKeyWordAdd').val('');
+
+                            GetListTaiKhoanAdd('', $('#drlPhongBanAll').val(), $('#drlDonViAll').val(), $('input[name="ChiTietQuyen"]:checked').val());
+
+                            new PNotify({
+                                title: 'Thành công!',
+                                text: 'Thêm phân quyền tài khoản thành công',
+                                type: 'success'
+                            });
+                        },
+                        error: function () {
+                            alert("Có lỗi xảy ra!");
+                        }
+                    });
+                }
+
+
+            });
+
+            $(document).on('click', '#btnAddChucNangToRoles', function (e) {
+                e.preventDefault();
+
+
+                var arrSelected = [];
+                var roleName = $('input[name="ChiTietQuyen"]:checked').val();
+
+                $('#chucnang-add-container input[name="selected"]:checked').each(function () {
+                    arrSelected.push($(this).val());
+                });
+
+                if (arrSelected.length > 0) {
+                    $.ajax({
+                        url: '/Admin/UserPermission/AddChucNangToRole',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            roleName: roleName,
+                            listChucNang: arrSelected
+                        }),
+                        success: function (data) {
+                            $.magnificPopup.close();
+
+                            $('#txtKeyWordAddChucNang').val('');
+                            var pageSize = $('#drlPageSizeChucNang').val();
+                            GetListChucNang(1, pageSize, '', '', $('input[name="ChiTietQuyen"]:checked').val());
+                            GetListChucNangAdd('', $('input[name="ChiTietQuyen"]:checked').val());
+
+                            new PNotify({
+                                title: 'Thành công!',
+                                text: 'Thêm chức năng thành công',
+                                type: 'success'
+                            });
+                        },
+                        error: function () {
+                            alert("Có lỗi xảy ra!");
+                        }
+                    });
+                }
+
+
+            });
+
+            $("#drlDviAdd").change(function () {
+                var selectDVi = $('#drlDviAdd').val();
+                var urlGetPban = "/Admin/UserPermission/ListPBanByIdDvi?id=" + selectDVi;
+                $.ajax({
+                    url: urlGetPban,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#phong-ban-container").html(data);
+                        search();
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra!");
+                    }
+                });
+            });
+
+            $("#drlDonViAll").change(function () {
+                var selectDVi = $('#drlDonViAll').val();
+                var urlGetPban = "/Admin/UserPermission/ListPBanByIdDviAll?id=" + selectDVi;
+                $.ajax({
+                    url: urlGetPban,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#phong-ban-all").html(data);
+                        var pageSize = $('#drlPageSizeTaiKhoan').val();
+                        GetList(1, pageSize, '', '', $('input[name="ChiTietQuyen"]:checked').val(), $('#drlPhongBanAll').val(), $('#drlDonViAll').val());
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra!");
+                    }
+                });
+            });
+
+            $('#btnExportToExcel').bind('click', function () {
+
+                var roleName = $('input[name="ChiTietQuyen"]:checked').val();
+
+                if (roleName != '') {
+                    $.UnifiedExportFile(
+                        {
+                            action: "/Admin/UserPermission/ExportUser",
+                            data: {
+                                roleName: roleName
+                            },
+                            downloadType: 'Progress',
+                            ajaxLoadingSelector: '#loading'
+                        });
+                }
+            });
+
+
+            function search() {
+                var selectDVi = $('#drlDviAdd').val();
+                var selectPban = $('#drlPbanAdd').val();
+                var currentSearh = $('#txtKeyWordAdd').val();
+                var roleName = $('input[name="ChiTietQuyen"]:checked').val();
+                var scriptUrl = "/Admin/UserPermission/ListTaiKhoanAdd?keyword=" + currentSearh + "&PhongBanId=" + selectPban + "&DonViId=" + selectDVi + "&roleName=" + roleName;
+
+                $("#taikhoan-add-container").html("");
+
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $("#taikhoan-add-container").html(data);
+                    }
+                });
+            }
+
+            $("#drlPbanAdd").change(function () {
+                search();
+            });
+
+            $("#drlPhongBanAll").change(function () {
+                var pageSize = $('#drlPageSizeTaiKhoan').val();
+                GetList(1, pageSize, '', '', $('input[name="ChiTietQuyen"]:checked').val(), $('#drlPhongBanAll').val(), $('#drlDonViAll').val());
+            });
+        });
+
+        function markAllTaiKhoanCheck(obj) {
+            var items = document.getElementsByClassName("chkboxTaiKhoan");
+
+            if ($.trim(obj.text) == "Chọn tất cả") //Đã được chọn
+            {
+                for (i = 0; i < items.length; i++) {
+                    //if (!items[i].disabled) {
+                    items[i].checked = true;
+                    //}
+                }
+
+                obj.text = "Bỏ chọn tất cả";
+            }
+            else { //Checkbox chưa được chọn
+                for (i = 0; i < items.length; i++)
+                    //if (!items[i].disabled) {
+                    items[i].checked = false;
+                //}
+
+
+                obj.text = "Chọn tất cả";
+            }
+        }
+
+        function markAllChucNangCheck(obj) {
+            var items = document.getElementsByClassName("chkboxChucNang");
+
+            if ($.trim(obj.text) == "Chọn tất cả") //Đã được chọn
+            {
+                for (i = 0; i < items.length; i++) {
+                    //if (!items[i].disabled) {
+                    items[i].checked = true;
+                    //}
+                }
+
+                obj.text = "Bỏ chọn tất cả";
+            }
+            else { //Checkbox chưa được chọn
+                for (i = 0; i < items.length; i++)
+                    //if (!items[i].disabled) {
+                    items[i].checked = false;
+                //}
+
+
+                obj.text = "Chọn tất cả";
+            }
+        }
+
+
+        function end_chage() {
+            PagingDateRange(1, 20, $('#GioBd').val(), $('#GioKt').val());
+        }
+
+        function PagingDateRange(page, pageSize, startDate, endDate) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/TaiKhoan/ListCongViecDateRanger";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    page: page,
+                    pageSize: pageSize,
+                    id: '@*@Model.Id*@',
+                    startDate: startDate,
+                    endDate: endDate
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    // TimePicker
+                    (function ($) {
+
+                        'use strict';
+
+                        if ($.isFunction($.fn['timepicker'])) {
+
+                            $(function () {
+                                $('[data-plugin-timepicker]').each(function () {
+                                    var $this = $(this),
+                                        opts = {
+                                            showMeridian: false
+                                        };
+                                    $this.themePluginTimePicker(opts);
+                                });
+                            });
+
+                        }
+
+                    }).apply(this, [jQuery]);
+
+                    unloading();
+
+                }
+            });
+        }
+
+        function Paging(type) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/TaiKhoan/ListCongViec";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    id: '@*@Model.Id*@',
+                    type: type
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    // TimePicker
+                    (function ($) {
+
+                        'use strict';
+
+                        if ($.isFunction($.fn['timepicker'])) {
+
+                            $(function () {
+                                $('[data-plugin-timepicker]').each(function () {
+                                    var $this = $(this),
+                                        opts = {
+                                            showMeridian: false
+                                        };
+                                    $this.themePluginTimePicker(opts);
+                                });
+                            });
+
+                        }
+
+                    }).apply(this, [jQuery]);
+
+                    unloading();
+
+                }
+            });
+        }
+
+        function ExpandCollapse() {
+            $('#dtGridPhienLV tbody tr:not(.group-header, .group-header-l2)').toggle();
+        }
+
+        function MoveTable(type) {
+            if (type == "Right")
+                $('.table-responsive').scrollLeft($('#dtGridPhienLV').width())
+            else
+                $('.table-responsive').scrollLeft(-$('#dtGridPhienLV').width())
+        }
+
+        function ShowWeekBack() {
+            typeshow = "TT";
+            Paging(typeshow);
+        }
+
+        function ShowWeekToday() {
+            typeshow = "";
+            Paging(typeshow);
+        }
+
+        function ShowWeekNext() {
+            typeshow = "TK";
+            Paging(typeshow);
+        }
+
+        //var currentObj = null;
+        function initMultiSelect() {
+            $('select.multiselect-add').multiselect({
+                includeSelectAllOption: true,
+                selectAllValue: 'select-all-value'
+            });
+        }
+
+        function SetSelectionPosition(forParent) {
+            console.log(forParent);
+
+            $("select.multiselect-add").html($("#" + sourceIdName).html());
+
+            $('select.multiselect-add').multiselect('destroy');
+            initMultiSelect();
+
+            $("select.multiselect-add").multiselect("clearSelection");
+
+            $(".empdata").appendTo($(forParent).find(".multiselect-wap"));
+            setTimeout(function () {
+                var attr = $(currentInputRuning).attr("dataempid");
+                console.log(attr);
+                if (typeof attr !== typeof undefined && attr !== false) {
+                    var splitValue = $(currentInputRuning).attr("dataempid");
+                    $("select.multiselect-add").val(splitValue.split(','));
+                    $("select.multiselect-add").multiselect("refresh");
+                }
+                $(".multiselect-wap .btn-group").addClass("open");
+                $(".multiselect-wap .btn-default").attr("aria-expanded", "true");
+            }, 300);
+        }
+
+        var currentInputRuning = null;
+        var sourceIdName = null;
+
+        $(document).on("focus", ".NguoiDuyet_SoPa_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiChiHuy_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".GiamSatVien_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiKiemSoat_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiKiemTraPhieu_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".LanhDaoTrucBan_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("change", ".multiselect-add", function () {
+            $(currentInputRuning).val('');
+            $(currentInputRuning).attr("dataempid", '');
+
+            var newSelect = $(this).val();
+            if (newSelect != null) {
+                var indexEmp = 0;
+                $(newSelect).each(function (eachIndex, curVal) {
+                    var textSelect = $(".multiselect-add").find("option[value = '" + curVal + "']").text();
+                    console.log(textSelect);
+                    if (indexEmp == 0) {
+                        console.log(textSelect);
+                        $(currentInputRuning).val(textSelect);
+                        $(currentInputRuning).attr("dataempid", curVal);
+                    } else {
+                        var oldValue = $(currentInputRuning).val();
+                        $(currentInputRuning).val(oldValue + ", " + textSelect);
+                        $(currentInputRuning).attr("dataempid", $(currentInputRuning).attr("dataempid") + "," + curVal);
+                    }
+                    indexEmp++;
+                });
+            }
+        });
+
+        $(document).on("click", ".fulltable", function () {
+            $(".table-responsive").addClass("wap-scroll");
+            $("body").addClass("body-scoll-none");
+            $(".nonetable").removeClass("hide");
+            $(this).addClass("hide");
+        });
+
+        $(document).on("click", ".nonetable", function () {
+            $(".table-responsive").removeClass("wap-scroll");
+            $("body").removeClass("body-scoll-none");
+            $(".fulltable").removeClass("hide");
+            $(this).addClass("hide");
+        });
+</script>
+}
+

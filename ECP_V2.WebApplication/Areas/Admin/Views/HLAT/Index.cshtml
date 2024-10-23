@@ -1,0 +1,1198 @@
+﻿
+@{
+    ViewBag.Title = "Lớp huấn luyện An toàn";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">*@
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<!-- Core jquery-->
+@*<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>*@
+<script src="~/Scripts/HluAt/hluyen_antoan.js"></script>
+<script src="~/Scripts/DataTables/dataTables.jqueryui.min.js"></script>
+<script>
+    $(function () {
+        var yNgay = '@(DateTime.Now.AddMonths(-1))'.split(' ')[0];
+
+        var start = $("#dpTungay").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        var dNgay = '@(DateTime.Now)'.split(' ')[0];
+
+
+        var enddate = $("#dpDenngay").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(dNgay);
+
+        //set tungay default
+
+        $("#n1").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(dNgay);
+    });
+
+    $(document).ready(function () {
+        //Load danh mục:
+        LoadTypeEdu();
+        LoadStatusClass();
+        //LoadDsOrg();
+
+        let height = $(window).height() - 640;
+        $('#tblClass').DataTable({
+            scrollY: 200,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+
+        $('#tblStudentClass').DataTable({
+            scrollY: height,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+
+        //Khởi tạo table kết quả
+        $('#tblResultUpdate').DataTable({            
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+
+        });
+
+
+
+        $('#tblPerson').DataTable({            
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 5, orderable:false
+            }]
+        });
+
+        //$('#tblOrg').DataTable({
+        //    select: {
+        //        style: 'single'
+        //    },
+        //    "paging": false,
+        //    "bFilter": false, //hide Search bar
+        //    "bInfo": false, // hide showing entries
+        //});
+
+        $('#tblOrgAdd').DataTable({
+            select: {
+                style: 'single'
+            },
+            "paging": false,
+            "bFilter": false, //hide Search bar
+            "bInfo": false, // hide showing entries
+        });
+        
+        ///Khởi tạo table file bài thi
+        $('#tblListFileResult').DataTable({
+            "language": {
+                "zeroRecords": "Không có dữ liệu",
+                "infoEmpty": "",
+            },
+            scrollY:'100px',
+            "paging": false,
+            "bFilter": false, //hide Search bar
+            "bInfo": false, // hide showing entries
+        });
+
+        $('#cboNhansu').select2();
+
+    });
+
+</script>
+
+<style>
+    .input-date {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+    }
+
+    hr {
+        display: block;
+        margin-top: 5px;
+        border-style: solid;
+        border-top-width: 1px;
+    }
+
+    .modal-header {
+        background: #3c40c6;
+        color: white;
+    }
+
+        .modal-header .close {
+            margin-top: -20px;
+        }
+
+    table.dataTable tbody tr.selected {
+        background-color: #4bcffa !important;
+        color: white;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.5em 0.1em;
+        margin-left: 0px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0em;
+        }
+
+    .dt-body-left {
+        color: blue;
+    }
+
+    .container-fluid {
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-top: -30px;
+    }
+</style>
+
+<div class="container-fruid ms-auto">
+    <h4><i class="fa fa-mortar-board"> Huấn luyện an toàn >> Lớp huấn luyện.</i></h4>
+    <div class="row">
+        <!-- Post content-->
+        <div class="col-lg-2">
+            <input type="text" id="dpTungay" class="input-date" />
+        </div>
+        <div class="col-lg-2">
+            <input type="text" id="dpDenngay" class="input-date" />
+        </div>
+        <div class="col-lg-2">
+            <select class="form-control form-control-sm" id="cboTypeEdu">
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <select class="form-control form-control-sm" id="cboGroupEdu">
+                <option value="ALL">--Nhóm đào tạo--</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2">
+            <select class="form-control form-control-sm" id="cboStatusClass">
+                <option value="ALL">--Trạng thái lớp học--</option>
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <button id="cmdView" class="btn btn-primary">
+                <i class="fa fa-refresh"></i> Xem
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="margin-top:-20px;">
+        <div class="col-lg-2">
+            <button id="cmdAddClass" class="btn btn-success">
+                <i class="fa fa-plus"></i> Thêm mới lớp học
+            </button>
+            <div>
+                <input type="hidden" id="ttNut" />
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top:5px;">
+        <div class="col-lg-12">
+            <table id="tblClass" class="table cell-border compact stripe select" style="width:100%">
+                <thead style="background-color: #3742fa; color:white;">
+                    <tr>
+                        <th>Tên lớp</th>
+                        <th>Loại/Nhóm</th>
+                        <th>Số học viên</th>
+                        <th>Thời gian dự kiến</th>
+                        <th>TG thực hiện</th>
+                        <th>Đạt (%)</th>
+                        <th>Tài liệu</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        @*<div class="col-lg-3">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <table id="tblOrg" class="table cell-border compact stripe" style="width:100%">
+                        <thead style="background-color: #3742fa; color:white;">
+                            <tr>
+                                <th></th>
+                                <th style="text-align:center;">Đơn vị</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>*@
+        <div class="col-lg-12">
+            <div class="card mb-2">
+                <div class="card-body">
+                    <table id="tblStudentClass" class="table cell-border compact stripe" style="width:100%">
+                        <thead style="background-color: #3742fa; color:white;">
+                            <tr>
+                                <th></th>
+                                <th>Đơn vị</th>
+                                <th>Nhân sự</th>
+                                <th>Chức danh</th>
+                                <th>Tình trạng</th>
+                                <th>Kết quả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal add Class-->
+<div class="modal fade" id="mdAddClass" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width:100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-adjust"></i> Chi tiết lớp huấn luyện</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:red;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @*<div class="form-group col-md-6">
+                            <label for="mdDonvi">Đơn vị</label>
+                            <input type="text" class="form-control" id="mdDonvi" placeholder="Đơn vị">
+                        </div>*@
+                    <div class="form-group col-md-2">
+                        <label for="mdStatus">Trạng thái:</label>
+                        <input type="hidden" id="txtStatus"/>
+                        <label id="mdStatus" style="background-color: #2848f8; color: white; border-radius: 20px; width: 100px; text-align: center;">Tạo mới</label>
+                        <button id="btnChangeStatus" class="" title="Đổi trạng thái"><i class="fa fa-refresh"></i></button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="mdDonviDtao">Đơn vị đào tạo</label>
+                        <select class="form-control form-control-sm" id="mdDonviDtao">
+                            <option>-- Đơn vị đào tạo --</option>
+                            <option value="TTH">Tự thực hiện</option>
+                            <option value="CDN">Cao đẳng Nghề điện</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="mdThBatdau">Ngày bắt đầu</label>
+                        <input type="text" class="form-control" id="mdThBatdau" placeholder="TH bắt đầu">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="mdThKthuc">Ngày kết thúc</label>
+                        <input type="text" class="form-control" id="mdThKthuc" placeholder="TH kết thúc">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="mdLoaiLop">Lớp</label>
+                        <input type="text" class="form-control" id="mdLoaiLop" placeholder="Loại lớp">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="mdMaHieu">Mã hiệu</label>
+                        <input type="text" class="form-control" id="mdMaHieu" placeholder="Mã hiệu">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="mdKhoach">Kế hoạch</label>
+                        <select class="form-control form-control-sm" id="mdKhoach">
+                            <option value="ALL">-- Tất cả --</option>
+                            <option value="KH">Kế hoạch</option>
+                            <option value="KKH">Không có kế hoạch</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="mdLoaiDtao">Loại đào tạo</label>
+                        <select class="form-control form-control-sm" id="mdLoaiDtao">
+                            <option value="">-- Chọn loại hình đào tạo --</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="mdNhomhl">Nhóm huấn luyện</label>
+                        <select class="form-control form-control-sm" id="mdNhomhl">
+                            <option value="">-- Chọn nhóm huấn luyện --</option>
+                        </select>
+                    </div>
+                </div>
+
+                @*<div class="row">
+                        <div class="form-group col-md-3" style="display:none">
+                            <label for="mdKhBatdau">Kế hoạch</label>
+                            <input type="text" class="form-control" id="mdKhBatdau" placeholder="KH bắt đầu">
+                        </div>
+                        <div class="form-group col-md-3" style="display:none">
+                            <label for="mdKhKthuc">.  </label>
+                            <input type="text" class="form-control" id="mdKhKthuc" placeholder="KH kết thúc">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="mdThBatdau">Thực hiện</label>
+                            <input type="text" class="form-control" id="mdThBatdau" placeholder="TH bắt đầu">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="mdThKthuc">.  </label>
+                            <input type="text" class="form-control" id="mdThKthuc" placeholder="TH kết thúc">
+                        </div>
+                    </div>*@
+                <div class="row">
+                    <h5>Tài liệu đính kèm:</h5>
+                    <div class="form-group col-md-12">
+                        <div style="display:none" id="listFile" class="card">
+                            <table id="tblListFile" class="table display" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:10px;"></th>
+                                        <th>Tên file</th>
+                                        <th style="width:80px;">Ngày ký</th>
+                                        <th style="width:50px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="file_upload form-group col-md-5">
+                        @*<label for="f1" class="form-label" style="font-weight:bold;">Tài liệu đính kèm:</label>*@
+                        <input id="f1" name="file[]" type="file"
+                               class="file" data-show-upload="false"
+                               data-show-caption="true">
+                    </div>
+                    <div class="form-group col-md-7 form-inline">
+                        <label for="n1" class="form-label">Ngày ký</label>
+                        <input id="n1" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div id='file_tools' class="form-group col-md-12">
+                        <img src='~/Images/ImageDesign/add_file.png' id='add_file' title='Thêm file mới' />
+                        <img src="~/Images/ImageDesign/xoa_icon.png" id="del_file" title="Delete" />
+                    </div>
+                </div>
+                <div class="card" style="box-shadow: 4px 2px 2px 4px rgb(225, 224, 224); ">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <table id="tblOrgAdd" class="table cell-border compact stripe"
+                                   style="width: 100%; background-color: #a4a4f2; color: #0f0d0d;">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th style="text-align:center;">Đơn vị</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4" style="background-color: aliceblue;">
+                            <div style="font-weight: bold; text-align: center; background-color: #3498db;color:white;">Danh sách nhân sự</div>
+                            <table id="tblPerson" class="table cell-border compact stripe" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align:center;">Nhân sự</th>
+                                        <th style="text-align:center;">Chức danh</th>
+                                        <th style="text-align:center;">Khoá HL gần nhất</th>
+                                        <th style="padding-left: 20px;">
+                                            <input type="checkbox" style="text-align:center;" name="select_all" value="0" id="person-select-org">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-1 border" style="width:50px !important;">
+                            <div class="row" style="padding-top:20px;text-align:center;">
+                                <button class="btn btn-primary" id="btnNext">>></button>
+                            </div>
+
+                            <div class="row" style="padding-top: 10px; text-align: center;">
+                                <button class="btn btn-primary" id="btnPrev"><<</button>
+                            </div>
+                        </div>
+                        <div class="col-md-5" style="background-color: aliceblue;width:45% !important;">
+                            <div style="font-weight: bold; text-align: center; background-color: #3498db;color:white;">Danh sách học viên</div>
+                            <table id="tblPersonSelect" class="table cell-border compact stripe" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center;width:20px;padding-left:20px;">
+                                            <input type="checkbox" name="person_select_all" value="0" id="person-select-all">
+                                        </th>
+                                        <th></th>
+                                        <th style="text-align:center;">Đơn vị</th>
+                                        <th style="text-align:center;">Nhân sự</th>
+                                        <th style="text-align:center;">Tình trạng tham gia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="OnSaveClass()">Ghi</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal cập nhật kết quả-->
+<div class="modal fade" id="mdAddResult" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width:100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-adjust"></i> Cập nhật kết quả huấn luyện theo lớp</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:red;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="row">
+                            <div class="form-group col-md-6 form-inline">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Đơn vị:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqDonvi" style="font-weight:bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Đơn vị đào tạo:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqDvDtao" style="font-weight:bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Lớp - Mô tả-->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Lớp:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqLop" style="font-weight:bold;"></p>
+                                        <input type="hidden" id="hdClassid" />
+                                    </div>
+                                </div>
+                                @*<label for="kqLop">Lớp</label>
+                                    <input type="text" class="form-control" id="kqLop" placeholder="">*@
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Mã hiệu:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqMahieu" style="font-weight:bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Loại đào tạo + nhóm huấn luyện-->
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Loại đào tạo:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqLoaiDtao" style="font-weight:bold;"></p>
+                                        <input type="hidden" id="categoryid" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Nhóm huấn luyện:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqNhomhl" style="font-weight:bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Ngày thực hiện:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqNgayth" style="font-weight:bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label ">Số người tham gia:</label>
+                                    <div class="col-sm-9">
+                                        <p id="kqSohvien" style="font-weight:bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        @*<label for="f1" class="form-label" style="font-weight:bold;">Tài liệu đính kèm:</label>*@
+                        <input type="hidden" id="examid" />
+                        <button type="button" title="Upload file kết quả" id="btnImgResult"
+                                class="form-control form-control-sm btn btn-primary">
+                            <i class="fa fa-upload">   Cập nhật ảnh bài thi</i>
+                        </button>
+                        <table id="tblListFileResult" class="table display" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th style="width:10px;"></th>
+                                    <th>Tên file</th>
+                                    <th style="width:80px;">Ngày ký</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <h3>Tổng hợp kết quả</h3>
+                        <!---Table kết quả-->
+                        <table id="tblResultExam" class="table cell-border compact stripe" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Đơn vị</th>
+                                    <th>Nhân sự</th>
+                                    <th style="text-align:center;">Chức danh</th>
+                                    <th style="text-align:center;">Lý thuyết</th>
+                                    <th style="text-align:center;">Thực hành</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="kqLoaithi"></label>
+                                <select class="form-control form-control-sm" id="kqLoaithi">
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="kqLanthi"></label>
+                                <select class="form-control form-control-sm" id="kqLanthi">
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4 form-inline" style="padding-top:22px;">
+                                <button type="button" title="Xem kết quả" id="btnViewKqua" class="form-control form-control-sm btn btn-dark"><i class="fa fa-refresh"></i></button>
+                                <button type="button" title="Upload kết quả theo file" id="btnUpFileKqua" class="form-control form-control-sm btn btn-primary"><i class="fa fa-file-excel-o"></i></button>
+                                <button type="button" title="Cập nhật kết quả cá nhân" id="btnAddKquaCnhan" class="form-control form-control-sm btn btn-primary"><i class="fa fa-plus-circle"></i></button>
+                                @*<button type="button" class="form-control form-control-sm btn btn-danger"><i class="fa fa-times-circle"></i></button>*@
+                                <button type="button" title="Khoá cập nhật điểm" id="btnLockPoint" class="form-control form-control-sm btn btn-warning"><i class="fa fa-lock"></i></button>
+                                <button type="button" title="Tải file mẫu" id="btnTaifile" onclick="DownloadFileTmpResult()" class="form-control form-control-sm btn btn-info"><i class="fa fa-download"></i></button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-right:-12px !important;">
+                            <table id="tblResultUpdate" class="table cell-border compact stripe" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Nhân sự</th>
+                                        <th style="text-align:center;">Chức danh</th>
+                                        <th style="text-align:center;">Điểm</th>
+                                        <th style="width:15px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="OnSaveResult()">Ghi</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--Modal confirm Xoá-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel" aria-hidden="true" id="confirmDel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Xác nhận</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title">Bạn có chắc muốn xoá lớp học <label id="lbMessage" style="color:red;font-weight:initial"></label> ?</h4>
+                <input type="hidden" id="txtClassId" />
+                <input type="hidden" id="txtClassName" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="delClass()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal upload image exam-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel"
+     aria-hidden="true" id="mdUploadImgExam">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" style="padding-top:20px;" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myUploadImgLabel">Upload ảnh bài thi</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-12">
+                    @*<input id="uploadImgExam" name="fileUpload" type="file" multiple">*@
+                    <input id="uploadImgExam" type="file" name="file" multiple><br>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="btnAccept()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!----Modal upload file kết quả-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel"
+     aria-hidden="true" id="mdUploadFileKqua">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Upload file kết quả</h4>
+            </div>
+            <div class="modal-body">
+                <div class="file_upload form-group col-md-5">
+                    <input id="uploadFile" name="file[]" type="file"
+                           class="file" data-show-upload="true"
+                           data-show-caption="true">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="updateResultExam()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!----Modal nhập điểm mới-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel"
+     aria-hidden="true" id="mdUpdatePoint">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" style="padding-top:20px;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Nhập điểm mới</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input id="txtPoint" type="number" class="form-group" min="0" max="10" style="width:100%;">
+                    <input id="txtExamid" type="hidden" />
+                    <input id="txtnsid" type="hidden" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="updatePoint()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---Modal đổi trạng thái-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel"
+     aria-hidden="true" id="mdUpdateStatus">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" style="padding-top:20px;" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="mdTitleStatus">Trạng thái mới</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <select class="form-control form-control-sm" id="cboStatusChange">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="updateStatus()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!---Modal cập nhật kết quả cá nhân-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel"
+     aria-hidden="true" id="mdUpdatePointPerson">
+    <div class="modal-dialog modal-block-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" style="padding-top:20px;" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-user"></i> Cập nhật điểm cá nhân</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div>
+                        <input type="hidden" id="txtClassIdPerson" />
+                    </div>
+                    <label class="col-sm-3 col-form-label ">Hình thức thi:</label>
+                    <div class="col-sm-9">
+                        <p id="canhanHtthi" style="font-weight:bold;"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 col-form-label ">Lần thi:</label>
+                    <div class="col-sm-9">
+                        <p id="canhanLanthi" style="font-weight:bold;"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <select class="form-control form-control-sm" id="cboNhansu">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input id="txtPointPerson" type="number" class="form-group" min="0" max="10" style="width:100%;">
+                </div>
+
+                <div class="form-group">
+                    <textarea id="txtNotePoint" rows="4" cols="50" style="width:100% !important;">
+                    </textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="saveResultPerson()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal confirm Khoá bài thi-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDel" aria-hidden="true" id="confirmLockExam">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabelLock"> <i class="fa fa-lock"></i> Xác nhận khoá cập nhật điểm</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title">Bạn có chắc muốn khoá bài thi <label id="lbMessageLock" style="color:red;font-weight:initial"></label> ?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="lockExam()">Đồng ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Không</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!----Modal Message Đã bị khoá-->
+<div class="modal fadeIn" tabindex="-1" role="dialog" aria-labelledby="confirmDel" aria-hidden="true" id="msgLockExam">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="mdLockTitle"><i class="fa fa-exclamation-triangle"></i>  Thông báo</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title" style="color:red;font-weight:initial"> Bài thi đã bị khoá, không thể cập nhật! </h4>               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#cboTypeEdu').on('change', function (e) {
+        LoadGroupEdu();
+    });
+
+    $('#mdLoaiDtao').on('change', function (e) {
+        let groupselected = $('#mdLoaiDtao').val();
+        LoadDsNhomTheoLoaiDaotao(groupselected,"");
+    });
+
+    $('#cmdView').click(function (e) {
+        LoadDsClass();
+    });
+
+    $('#cmdAddClass').click(function (e) {
+        //Gọi hàm clear
+        clearFromAddClass();
+        LoadDsOrgModal();
+        LoadDmLDaotao("");
+        $('#ttNut').val('ADD');
+        //LoadDsNhomTheoLoaiDaotao();
+        //Set trạng thái ban đầu  = 0 (Mới tạo)
+        $('#txtStatus').val('0');
+        //Clear table
+        $('tblPerson').DataTable().clear().draw();
+        $('tblPersonSelect').DataTable().clear().draw();
+
+        ///Khởi tạo table
+        $('#tblPersonSelect').DataTable({
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0, orderable: false
+            }]
+        });
+        //set ngày
+        var yNgay = '@(DateTime.Now.AddMonths(0))'.split(' ')[0];
+        @*$("#mdKhBatdau").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        $("#mdKhKthuc").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);*@
+
+        $("#mdThBatdau").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        $("#mdThKthuc").datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+
+        $('#mdAddClass').modal('show');
+    });
+
+    //function preview_file() {
+    //    var total_file = document.getElementById("fileTailieu").files.length;
+    //    for (var i = 0; i < total_file; i++) {
+    //        $('#file_preview').append("<div class='col-sm-12'><a href='#'>" + event.target.files[i].name + "</a>  <i class='fa fa-close' style='color:red;'></i></div>");
+    //    }
+    //}
+
+    var counter = 2;
+    $('#del_file').hide();
+    $('img#add_file').click(function () {
+        var yNgay = '@(DateTime.Now.AddMonths(-1))'.split(' ')[0];
+        //$('#file_tools').before('<div id="d' + counter +'" class="file_upload form-group col-md-12"><input name="file[]" type="file" id="f' + counter + '"><label for="n' + counter + '" class="form-label" id="l' + counter + '">Ngày ký</label><input id="n' + counter +'" class="form-control" type="text"></div>');
+
+        $('#file_tools').before('<div class="file_upload form-group col-md-5"><input id="f' + counter + '" name="file[]" type="file" class="file" data-show-upload="false" data-show-caption="true"></div><div class="form-group col-md-7 form-inline"><label for="n' + counter + '" style="padding-right:3px;" class="form-label" id="l' + counter + '">Ngày ký </label><input id="n' + counter + '" type="text" class="form-control" /></div>');
+        $('#del_file').fadeIn(0);
+        $("#n" + counter).datepicker({
+            dateFormat: 'dd/mm/yy',
+        }).val(yNgay);
+        counter++;
+    });
+    $('img#del_file').click(function () {
+        if (counter == 3) {
+            $('#del_file').hide();
+        }
+        counter--;
+        $('#f' + counter).remove();
+        $('#n' + counter).remove();
+        $('#l' + counter).remove();
+        $('#d' + counter).remove();
+    });
+
+    $('#tblClass tbody').on('click', 'tr', function () {
+        var table = $('#tblClass').DataTable();
+
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            //Load danh sách nhân sự của lớp học.
+            LoadDsPersonalInClass(table.rows('.selected').data()[0]["classid"]);
+        }
+    });
+
+    //$('#tblOrg tbody').on('click', 'tr', function () {
+    //    var table = $('#tblOrg').DataTable();
+
+    //    if ($(this).hasClass('selected')) {
+    //        $(this).removeClass('selected');
+    //    } else {
+    //        table.$('tr.selected').removeClass('selected');
+    //        $(this).addClass('selected');
+    //        LoadDsPersonalByOrg();
+    //    }
+    //});
+
+    $('#tblOrgAdd tbody').on('click', 'tr', function () {
+        var table = $('#tblOrgAdd').DataTable();
+
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            LoadDsPersonalByOrg();
+        }
+    });
+
+    $('#person-select-org').on('click', function () {
+        var table = $('#tblPerson').DataTable();
+        // Get all rows with search applied
+        var rows = table.rows().nodes();
+        // Check/uncheck checkboxes for all rows in the table
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    });
+
+    $('#person-select-all').on('click', function () {
+        var table = $('#tblPersonSelect').DataTable();
+        // Get all rows with search applied
+        var rows = table.rows().nodes();
+        // Check/uncheck checkboxes for all rows in the table
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    });
+
+    //Xư lý nút đẩy dữ liệu
+    $("#btnNext").click(function (e) {
+
+        var tblSelect = $('#tblPersonSelect').DataTable();
+        var tblPerson = $('#tblPerson').DataTable();
+        var data = tblPerson.rows().data();
+        //let icheck = false;
+        //let xTbl = 0;
+
+        var t = $('#tblOrgAdd').DataTable();
+        var dvql = t.row('.selected').data()['madvql'];
+
+        let ccnut = tblSelect.rows().data().count();
+        let ttnut = $('#ttNut').val();
+        //$('input[name="select_all"]').attr('checked', false);
+        tblPerson.$('input[type="checkbox"]').each(function () {
+            // If checkbox is checked
+            if (this.checked) {
+                var valCheck = $(this).val();
+
+                data.each(function (value, index) {
+                    if (valCheck === value.nsid.toString()) {
+                        if (ccnut > 0 && ttnut == "EDIT") {
+                            let objAdd = {
+                                x: '<input type="checkbox" style="width:20px;" name="x[]" value="' + value.nsid + '" class="dt-body-center" />',
+                                nsid: value.nsid,
+                                orgid: dvql,
+                                tenkhaisinh: value.tenkhaisinh,
+                                chucdanh: "",
+                                email: "",
+                                kqua: "",
+                                phongban: "",
+                                quequan: null,
+                                sdt: null,
+                                tinhtrang: null
+                            }
+                            tblSelect.row.add(objAdd).draw(false);
+                        } else {
+                            tblSelect.row.add(['<input type="checkbox" name="x[]" value="' + value.nsid + '" class="dt-body-center" />', value.nsid, dvql, value.tenkhaisinh, ""]).draw(false);
+                        }
+
+                    }
+                });
+            }
+        });
+    });
+
+    //Gỡ khỏi danh sách lựa chọn
+    $('#btnPrev').on('click', function () {
+        var table = $('#tblPersonSelect').DataTable();
+        var data = table.rows().data();
+        let arrId = [];
+        table.$('input[type="checkbox"]').each(function () {
+            // If checkbox is checked
+            if (this.checked) {
+                var valCheck = $(this).val();
+                data.each(function (value, index) {
+                    if (table.rows().length > 0) {
+                        if (valCheck === value["nsid"].toString()) {
+                            arrId.push(index);
+                            //table.row(index).remove().draw(false);
+                        }
+                    } else {
+                        if (valCheck === value[1].toString()) {
+                            //table.row(index).remove().draw(false);
+                            arrId.push(index);
+                        }
+                    }
+
+                });
+            }
+        });
+
+        for (i = 0; i < arrId.length; i++) {
+            table.row(arrId[i] - i).remove().draw(false);
+        }
+    });
+
+    //
+    $('#btnUpFileKqua').on('click', function () {
+        $('#mdUploadFileKqua').modal('show');
+    })
+    $('#btnImgResult').on('click', function () {
+        $('#mdUploadImgExam').modal('show');
+    })
+
+    $('#btnViewKqua').on('click', function () {
+        GetViewKqua();
+    })
+
+    $('#kqLoaithi').on('change', function (e) {
+        //Đổi lại thành load lần thi
+        FillCboLanThi();
+    });
+
+    $('#kqLanthi').on('change', function (e) {
+        GetViewKqua();
+    });
+
+    $('#btnLockPoint').on('click', function () {
+        $('#confirmLockExam').modal('show');
+    })
+
+    $('#btnChangeStatus').on('click', function () {
+        //Kiểm tra xem đã có classid chưa?
+        let classid = $('#txtClassId').val();
+        if (classid == '') {
+            alert('Không thể đổi trạng thái khi Chưa tạo lớp học.');
+            return;
+        }
+        LoadStatusChangeClass(classid);
+        $('#mdUpdateStatus').modal('show');
+    })
+
+    function btnAccept() {
+        addResultExam();
+        //addImgExam();
+    };
+
+    $('#btnAddKquaCnhan').on('click', function () {
+        //Set value in form
+        let classid = $('#hdClassid').val();
+        LoadCboNhansuByClassId(classid);
+        $('#canhanHtthi').text($('#kqLoaithi option:selected').text());
+        $('#canhanLanthi').text($('#kqLanthi option:selected').text());
+        //Kiểm tra xem bài thi đã được khoá chưa?
+        checkLockExam(0);        
+    });
+</script>

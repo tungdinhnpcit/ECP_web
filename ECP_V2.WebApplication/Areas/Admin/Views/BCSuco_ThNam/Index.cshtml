@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo sự cố tổng hợp xuất tuyến";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<h3><span class="fa fa-align-left"></span>  Biểu TH SC năm các ĐZ TA có từ 10 sự cố năm trước</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label for="cbodonvi">Đơn vị:</label>
+                    <select class="form-control" id="cboDonvi">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="cboLoai" id="lbLoai">Loại báo cáo:</label>
+                    <select class="form-control" id="cboLoai">
+                        <option value="1">Ngày</option>
+                        <option value="2">Tuần</option>
+                        <option value="3">Tháng</option>
+                        <option value="4">Năm</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="NgayBc" id="lbNgay">Ngày:</label>
+                    <input type="date" id="NgayBc" style="height:34px;">
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="cboWeek" id="lbWeek">Tuần:</label>
+                    <select class="form-control" id="cboWeek">
+                        <option>1</option>
+                        <option>2</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="cboThang" id="lbThang">Tháng:</label>
+                    <select class="form-control" id="cboThang">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="cboNam" id="lbNam">Năm:</label>
+                    <select class="form-control" id="cboNam">
+                        <option>2022</option>
+                        <option>2023</option>
+                        <option>2024</option>
+                        <option>2025</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group" style="padding-top:28px;">
+                    <button type="button" class="btn btn-primary" id="btnSave" onclick="sc_all.loadData();">Xem</button>
+                    <button type="button" class="btn btn-primary" id="btnExcel" onclick="sc_all.exportData();">Xuất Excel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top:10px;">
+        <div class="col-lg-12">
+            <table class="table table-bordered table-responsive table-striped" id="tblSucos">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên Lộ</th>
+                        <th>Đơn vị quản lý</th>
+                        <th>Số vụ sự cố T1</th>
+                        <th>Số vụ sự cố T2</th>
+                        <th>Số vụ sự cố T3</th>
+                        <th>Số vụ sự cố T4</th>
+                        <th>Số vụ sự cố T5</th>
+                        <th>Số vụ sự cố T6</th>
+                        <th>Số vụ sự cố T7</th>
+                        <th>Số vụ sự cố T8</th>
+                        <th>Số vụ sự cố T9</th>
+                        <th>Số vụ sự cố T10</th>
+                        <th>Số vụ sự cố T11</th>
+                        <th>Số vụ sự cố T12</th>
+                        <th>Tổng số vụ SC</th>
+                        <th>Sự cố cùng kỳ</th>
+                        <th>So sánh với cùng kỳ %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+}
+
+@section scriptsAdd {
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+    @*nghiệp vụ*@
+    <script src="~/Scripts/BCSC/sc_report_all.js"></script>
+}
+<style>
+    .borders div {
+        border-right: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+
+    tr.group,
+    tr.group:hover {
+        background-color: #74b9ff !important;
+    }
+</style>

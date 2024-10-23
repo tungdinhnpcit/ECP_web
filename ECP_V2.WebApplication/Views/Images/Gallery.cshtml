@@ -1,0 +1,844 @@
+﻿@model ECP_V2.WebApplication.Models.TreeImageModel
+@using ECP_V2.DataAccess;
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/AdminPanel/assets/vendor/magnific-popup/magnific-popup.css" />
+<link rel="stylesheet" href="~/Scripts/AdminPanel/assets/vendor/isotope/jquery.isotope.css" />
+
+
+<section class="content-with-menu content-with-menu-has-toolbar media-gallery">
+    <div class="content-with-menu-container">
+        <div class="inner-menu-toggle">
+            <a href="#" class="inner-menu-expand" data-open="inner-menu">
+                Show Bar <i class="fa fa-chevron-right"></i>
+            </a>
+        </div>
+
+        <menu id="content-menu" class="inner-menu" role="menu">
+            <div class="nano">
+                <div class="nano-content">
+
+                    <div class="inner-menu-toggle-inside">
+                        <a href="#" class="inner-menu-collapse">
+                            <i class="fa fa-chevron-up visible-xs-inline"></i><i class="fa fa-chevron-left hidden-xs-inline"></i> Hide Bar
+                        </a>
+                        <a href="#" class="inner-menu-expand" data-open="inner-menu">
+                            Show Bar <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+
+                    <div class="inner-menu-content">
+
+                        <a class="btn btn-block btn-primary btn-md pt-sm pb-sm text-md">
+                            <i class="fa fa-upload mr-xs"></i>
+                            Tải ảnh mới
+                        </a>
+
+                        <hr class="separator" />
+
+                        <div class="sidebar-widget m-none">
+                            @*<div class="widget-header clearfix">
+                                    <h6 class="title pull-left mt-xs">Folders</h6>
+                                    <div class="pull-right">
+                                        <a href="#" class="btn btn-dark btn-sm btn-widget-act">Add Folder</a>
+                                    </div>
+                                </div>*@
+                            <div class="widget-content">
+                                @if (Model != null && Model.LstDonVi.Count > 0)
+                                {
+                                    <ul id="treeview">
+                                        @foreach (var dvi in Model.LstDonVi.OrderBy(p=>p.ViTri))
+                                        {
+                                            <li data-dvi="@dvi.Id" data-pban="0" data-expanded="false" style="color:#ffffff">
+                                                <span class="k-sprite folder"></span>
+                                                @if (dvi.ViTri != 0)
+                                                {
+                                                    <b>(@dvi.ViTri).</b> @dvi.TenDonVi
+                                                }
+                                                else
+                                                {
+                                                    @dvi.TenDonVi
+                                                }
+                                                <ul>
+                                                    @foreach (var pban in Model.LstPhongBan.Where(p => p.MaDVi == dvi.Id))
+                                                    {
+                                                        <li data-pban="@pban.Id" data-dvi="@pban.MaDVi" data-expanded="false" style="color:#ffffff">
+                                                            <span class="k-sprite folder"></span>
+                                                            @pban.TenPhongBan
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        </div>
+
+                        <hr class="separator" />
+
+                        <div class="sidebar-widget m-none">
+                            <div class="widget-header">
+                                <h6 class="title">Nhãn thẻ</h6>
+                                <span class="widget-toggle">+</span>
+                            </div>
+                            <div class="widget-content">
+                                <ul class="mg-tags">
+                                    <li><a href="#">Ngoài hiện trường</a></li>
+                                    <li><a href="#">Tài liệu</a></li>
+                                    <li><a href="#">Phương án</a></li>
+                                    <li><a href="#">Biển báo</a></li>
+                                    <li><a href="#">Cột điện</a></li>
+                                    <li><a href="#">Đồng phục</a></li>
+                                    <li><a href="#">Trạm điện</a></li>
+                                    <li><a href="#">Máy biến áp</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </menu>
+        <div class="inner-body mg-main">
+
+            <div class="inner-toolbar clearfix">
+                <ul>
+                    <li>
+                        <a href="#" id="mgSelectAll" onclick="SelectAll(this)"><i class="fa fa-check-square"></i> <span data-all-text="Chọn tất cả" data-none-text="Bỏ chọn">Chọn tất cả</span></a>
+                    </li>
+                    <li>
+                        @if (User.IsInRole("Admin")|| User.IsInRole("XoaAnh"))
+                        {
+                            <a href="#" onclick="DeleteAllCheck()"><i class="fa fa-trash-o"></i> Xóa</a>
+                        }
+                    </li>
+                    <li class="right" data-sort-source data-sort-id="media-gallery">
+                        <ul class="nav nav-pills nav-pills-primary">
+                            <li>
+                                <label>Nhóm Ảnh:</label>
+                            </li>
+                            <li class="active">
+                                <a data-option-value="*">Tất cả</a>
+                            </li>
+                            <li>
+                                <a data-option-value=".image" href="#image">Hình ảnh</a>
+                            </li>
+                            <li>
+                                <a data-option-value=".video" href="#video">Videos</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom:10px">
+                @if (ViewBag.DonVi != null)
+                {
+                    List<tblDonVi> donvi = ViewBag.DonVi;
+                    <select class="donvi">
+                        @if (donvi.Count > 1)
+                        {
+                            <option value="0">Tất cả đơn vị</option>
+                        }
+                        @foreach (var item in donvi)
+                        {
+                            if (donvi.Count == 1)
+                            {
+                                <option value="@item.Id" selected>@item.TenDonVi</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.TenDonVi</option>
+                            }
+                        }
+                    </select>
+                }
+                @if (ViewBag.PhongBan != null)
+                {
+                    List<tblPhongBan> phongban = ViewBag.PhongBan;
+                    <select class="phongban">
+                        @if (phongban.Count > 1)
+                        {
+                            <option value="0" data-donvi="0">Tất cả phòng ban</option>
+                        }
+                        @foreach (var item in phongban)
+                        {
+                            if (phongban.Count == 1)
+                            {
+                                <option value="@item.Id" data-donvi="@item.MaDVi" selected>@item.TenPhongBan</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id" data-donvi="@item.MaDVi">@item.TenPhongBan</option>
+                            }
+                        }
+                    </select>
+                }
+                <select class="sapxep" id="sapxep">
+                    <option value="0">Thời gian</option>
+                    <option value="1">Phiên làm việc</option>
+                    <option value="2">Nhân viên</option>
+                    <option value="3">Đã có phiên</option>
+                    <option value="4">Chưa có phiên</option>
+                </select>
+
+                <input id="txtNgayUpAnh" name="txtNgayUpAnh" type="text">
+
+            </div>
+
+            <div class="row mg-files" data-sort-destination data-sort-id="media-gallery">
+
+            </div>
+            <div id="wait" style="text-align:center; display:none;width:150px;height:110px;border:2px dashed black;position:absolute;top:50%;left:50%;padding:5px;z-index:99999;background-color:#fff">
+                <img src='~/Content/images/loadder/demo_wait.gif' width="64" height="64" />
+                <br>
+                <p class="text-primary" style="font-size:14px;">
+                    Đang tải dữ liệu..
+                </p>                
+            </div>            
+            <div class="mypadding">
+                <div class="dataTables_paginate paging_bs_normal">
+                    <ul class="pagination">
+                        <li class="prev"><a id="btnFirst" style="cursor:pointer"><span class="fa fa-chevron-left"></span></a></li>
+                        <li class="next"><a id="btnLast" style="cursor:pointer"><span class="fa fa-chevron-right"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- start: page -->
+@*<section class="content-with-menu-has-toolbar media-gallery">
+        <div class="content-with-menu-container" style="margin-top:60px">
+        </div>
+    </section>*@
+
+<div class="spopup">
+    <div class="slideItem">
+    </div>
+    <div class="scounter noselect">
+        1/1
+    </div>
+    <div class="sbottomControl">
+        <div class="sleft noselect"><</div>
+        <div class="sright noselect">></div>
+    </div>
+    <div class="sclose noselect">
+    </div>
+</div>
+<!-- end: page -->
+
+<script src="~/Content/AdminPanel/assets/vendor/magnific-popup/magnific-popup.js"></script>
+<script src="~/Scripts/AdminPanel/assets/vendor/isotope/jquery.isotope.js"></script>
+
+<style>
+    .currentpage {
+        font-weight: bold;
+        background-color: #eeeeee !important;
+        color: black !important;
+    }
+
+    .spopup {
+        display: none;
+        background: #000;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 999990;
+    }
+
+    .slideItem {
+        position: fixed;
+        top: 0;
+        bottom: 100px;
+        left: 0;
+        right: 0;
+        z-index: 999991;
+    }
+
+    .scounter {
+        position: fixed;
+        bottom: 50px;
+        width: 100%;
+        height: 25px;
+        font-size: 16px;
+        color: #03a6ff;
+        text-align: center;
+        z-index: 99999999;
+    }
+
+    .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Chrome/Safari/Opera */
+        -khtml-user-select: none; /* Konqueror */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                          not supported by any browser */
+    }
+
+    .sbottomControl {
+        position: fixed;
+        height: 55px;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        z-index: 999991;
+    }
+
+    .sleft, .sright {
+        width: 50%;
+        height: 50px;
+        z-index: 999992;
+        font-size: 50px;
+        font-weight: bold;
+        line-height: 50px;
+        font-family: arial;
+        padding: 0;
+        color: #666;
+        cursor: pointer;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        position: absolute;
+        border: 1px solid #999;
+        background: #fff;
+        border-radius: 25px;
+        text-align: center;
+        width: 85px;
+    }
+
+    .sleft {
+        left: 50%;
+        margin-left: -90px;
+    }
+
+    .sright {
+        right: 50%;
+        margin-right: -85px;
+    }
+
+        .sleft:hover, .sright:hover {
+            color: #999;
+        }
+
+    .sclose {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 30px;
+        font-weight: bold;
+        color: #000000;
+        text-align: center;
+        cursor: pointer;
+        z-index: 999999;
+        background: url(/content/images/close_blue.png) no-repeat center center;
+        background-size: 100%;
+    }
+
+        .sclose:hover {
+            color: #808080;
+        }
+
+    .img-slide {
+        width: auto;
+        margin: 0 auto;
+        display: block;
+        max-width: 100%;
+    }
+</style>
+
+<style>
+    #treeview .k-sprite {
+        background-image: url("../content/kendo/Default/coloricons-sprite.png");
+    }
+
+    .k-treeview span.k-in {
+        cursor: pointer;
+    }
+
+    .rootfolder {
+        background-position: 0 0;
+    }
+
+    .folder {
+        background-position: 0 -16px;
+    }
+
+    .pdf {
+        background-position: 0 -32px;
+    }
+
+    .html {
+        background-position: 0 -48px;
+    }
+
+    .image {
+        background-position: 0 -64px;
+    }
+</style>
+
+@Scripts.Render("~/Content/kendo/kendo.all.min.custom.js")
+
+<script type="text/javascript">   
+
+    function onSelect(e) {
+        var data = $(e.node).data("id");
+        var dvi = $(e.node).data("dvi");
+        var pban = $(e.node).data("pban");
+        $('.mg-files').load("/Images/_GetListGallery?donviid=" + dvi + "&phongbanid=" + pban + "&phienlvid=0&ngayupanh=" + $('#txtNgayUpAnh').val() + "&sort=" + $(".sapxep").val() + "&page=" + $(".load-listinfo").attr("data-page") + "&quantity=" + $(".load-listinfo").attr("data-quantity"));
+        $('select.donvi').val(dvi);
+        console.log(data);
+    };
+
+    function onChange(e) {
+        //alert("Selection changed");
+    }
+
+    var serviceRoot = "https://demos.telerik.com/kendo-ui/service";
+    homogeneous = new kendo.data.HierarchicalDataSource({
+        transport: {
+            read: {
+                url: serviceRoot + "/Employees",
+                dataType: "jsonp"
+            }
+        },
+        schema: {
+            model: {
+                id: "EmployeeId",
+                hasChildren: "HasEmployees"
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        $(document).ajaxStart(function () {
+            $("#wait").css("display", "block");
+        });
+        $(document).ajaxComplete(function () {
+            $("#wait").css("display", "none");
+        });    
+    });
+
+    (function ($) {
+
+        //$(document).ajaxStart(function () {
+        //    $("#wait").css("display", "block");
+        //});
+        //$(document).ajaxComplete(function () {
+        //    $("#wait").css("display", "none");
+        //});
+
+        $('html').addClass('sidebar-left-collapsed');
+
+        $("#treeview").kendoTreeView({
+            checkboxes: false,
+            // dataSource: homogeneous,
+            dataTextField: "FullName",
+
+            //dataSource: [
+            //    {
+            //        text: "Furniture", expanded: true, items: [
+            //          { text: "Tables & Chairs" },
+            //          { text: "Sofas" },
+            //          { text: "Occasional Furniture" }
+            //        ]
+            //    },
+            //    {
+            //        text: "Decor", items: [
+            //          { text: "Bed Linen" },
+            //          { text: "Curtains & Blinds" },
+            //          { text: "Carpets" }
+            //        ]
+            //    },
+            //    { text: "Storage" }
+            //],
+            select: onSelect,
+            //check: onCheck,
+            change: onChange
+            //collapse: onCollapse
+            //expand: onExpand,
+            //dragAndDrop: true,
+            /* drag & drop events */
+            //dragstart: onDragStart,
+            //drag: onDrag,
+            //drop: onDrop,
+            //dragend: onDragEnd,
+            //navigate: onNavigate
+        }).data("kendoTreeView");
+
+        /*
+        Isotope: Sort Thumbnails
+        */
+        $("[data-sort-source]").each(function () {
+
+            var source = $(this);
+            var destination = $("[data-sort-destination][data-sort-id=" + $(this).attr("data-sort-id") + "]");
+
+            if (destination.get(0)) {
+
+                $(window).load(function () {
+
+                    destination.isotope({
+                        itemSelector: ".isotope-item",
+                        layoutMode: 'fitRows'
+                    });
+
+                    $(window).on('sidebar-left-toggle inner-menu-toggle', function () {
+                        destination.isotope();
+                    });
+
+                    source.find("a[data-option-value]").click(function (e) {
+
+                        e.preventDefault();
+
+                        var $this = $(this),
+                            filter = $this.attr("data-option-value");
+
+                        source.find(".active").removeClass("active");
+                        $this.closest("li").addClass("active");
+
+                        destination.isotope({
+                            filter: filter
+                        });
+
+                        if (window.location.hash != "" || filter.replace(".", "") != "*") {
+                            window.location.hash = filter.replace(".", "");
+                        }
+
+                        return false;
+
+                    });
+
+                    $(window).bind("hashchange", function (e) {
+
+                        var hashFilter = "." + location.hash.replace("#", ""),
+                            hash = (hashFilter == "." || hashFilter == ".*" ? "*" : hashFilter);
+
+                        source.find(".active").removeClass("active");
+                        source.find("[data-option-value='" + hash + "']").closest("li").addClass("active");
+
+                        destination.isotope({
+                            filter: hash
+                        });
+
+                    });
+
+                    var hashFilter = "." + (location.hash.replace("#", "") || "*");
+                    var initFilterEl = source.find("a[data-option-value='" + hashFilter + "']");
+
+                    if (initFilterEl.get(0)) {
+                        source.find("[data-option-value='" + hashFilter + "']").click();
+                    } else {
+                        source.find(".active a").click();
+                    }
+
+                });
+
+            }
+
+        });
+
+        loadImages();
+
+        $("#txtNgayUpAnh").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+            value: new Date(),
+            change: txtNgayUpAnh_Change
+        }).data("kendoDatePicker");
+
+    }(jQuery));
+
+    function txtNgayUpAnh_Change() {
+        loadImages();
+    }
+
+    /*
+        Toolbar: Select All
+        */
+    function SelectAll(el) {
+
+        var $this = $(el),
+            $label = $this.find('> span');
+        $checks = $('.mg-option input[type=checkbox]');
+
+        if ($this.attr('data-all-selected')) {
+            $this.removeAttr('data-all-selected');
+            $checks.prop('checked', false).trigger('change');
+            $label.html($label.data('all-text'));
+        } else {
+            $this.attr('data-all-selected', 'true');
+            $checks.prop('checked', true).trigger('change');
+            $label.html($label.data('none-text'));
+        }
+    }
+
+    function loadImages() {
+        try {
+            var dvi = $(".donvi").val();
+            var pban = $(".phongban").val();
+            $('.mg-files').load("/Images/_GetListGallery?donviid=" + $(".donvi").val() + "&phongbanid=" + $(".phongban").val() + "&phienlvid=0&ngayupanh=" + $('#txtNgayUpAnh').val() + "&sort=" + $(".sapxep").val() + "&page=" + $(".load-listinfo").attr("data-page") + "&quantity=" + $(".load-listinfo").attr("data-quantity"));
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
+    function GetPage(strpage) {
+        var page = parseInt(strpage);
+        $(".load-listinfo").attr("data-page", page);
+        loadImages();
+    }
+    $("#btnFirst").click(function () {
+        var page = parseInt($(".load-listinfo").attr("data-page"));
+
+        if (page > 0) {
+            $(".load-listinfo").attr("data-page", page - 1);
+            loadImages();
+        }
+    });
+    $("#btnLast").click(function () {
+        var page = parseInt($(".load-listinfo").attr("data-page"));
+        var itemsum = parseInt($(".load-listinfo").attr("data-sum"));
+        var pagecount = parseInt(itemsum / 8);
+        if (pagecount * 8 < itemsum) {
+            pagecount++;
+        }
+
+        if (page < pagecount - 1) {
+            $(".load-listinfo").attr("data-page", page + 1);
+            loadImages();
+        }
+    });
+    function CreatePagging() {
+        var itemsum = parseInt($(".load-listinfo").attr("data-sum"));
+        var currentpage = parseInt($(".load-listinfo").attr("data-page")) + 1;
+
+        $(".lipage").remove();
+        var pagecount = parseInt(itemsum / 8);
+        if (pagecount * 8 < itemsum) {
+            pagecount++;
+        }
+
+        if (currentpage > pagecount) {
+            currentpage = pagecount;
+        }
+        if (currentpage < 1) {
+            currentpage = 1;
+        }
+
+        if (pagecount > 5) {
+            if (currentpage - 2 > 0 && currentpage + 2 <= pagecount) {
+                for (var i = currentpage - 2; i <= currentpage + 2; i++) {
+                    var strcurrentpage = "";
+                    if (i == currentpage) {
+                        strcurrentpage = "currentpage";
+                        $(".next").before('<li class="lipage"> <a tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                    } else {
+                        $(".next").before('<li class="lipage"> <a href="javascript:GetPage(' + (i - 1) + ');" tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                    }
+                }
+            }
+            else if (currentpage - 2 <= 0) {
+                for (var i = 1; i <= 5; i++) {
+                    var strcurrentpage = "";
+                    if (i == currentpage) {
+                        strcurrentpage = "currentpage";
+                        $(".next").before('<li class="lipage"> <a  tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                    }
+                    else {
+                        $(".next").before('<li class="lipage"> <a href="javascript:GetPage(' + (i - 1) + ');" tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                    }
+                }
+            }
+            else if (currentpage + 2 > pagecount) {
+                for (var i = pagecount - 4; i <= pagecount; i++) {
+                    var strcurrentpage = "";
+                    if (i == currentpage) {
+                        strcurrentpage = "currentpage";
+                        $(".next").before('<li class="lipage"> <a  tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                    }
+                    else {
+                        $(".next").before('<li class="lipage"> <a href="javascript:GetPage(' + (i - 1) + ');" tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                    }
+                }
+            }
+        }
+        else {
+            for (var i = 1; i <= pagecount; i++) {
+                var strcurrentpage = "";
+                if (i == currentpage) {
+                    strcurrentpage = "currentpage";
+                    $(".next").before('<li class="lipage"> <a  tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                }
+                else {
+                    $(".next").before('<li class="lipage"> <a href="javascript:GetPage(' + (i - 1) + ');" tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+                }
+            }
+        }
+
+    }
+
+    function changeDonVi(donviid) {
+        $(".phongban").val(0);
+        $(".phongban option").each(function () {
+            console.log($(this).attr("data-donvi"));
+            if (donviid == "0" || $(this).attr("data-donvi") == 0 || $(this).attr("data-donvi") == donviid) {
+                $(this).attr("style", "display:block");
+            } else {
+                $(this).attr("style", "display:none");
+            }
+        });
+    }
+    $(document).on('change', '.donvi', function () {
+        console.log($(this).val());
+        $(".load-listinfo").attr("data-page", 0);
+        changeDonVi($(this).val());
+        loadImages();
+    });
+    $(document).on('change', '.phongban', function () {
+        console.log($(this).val());
+        $(".load-listinfo").attr("data-page", 0);
+        loadImages();
+    });
+    $(document).on('change', '.sapxep', function () {
+        console.log($(this).val());
+        loadImages();
+    });
+
+
+    var slideCurrent = 0;
+    $(document).on('click', '.mg-zoom', function () {
+        var getIndex = $(this).attr("data-index");
+        slideCurrent = parseInt(getIndex);
+        $(".spopup").fadeIn(600);
+        mySlideShow(slideCurrent);
+    });
+
+    function mySlideShow(index) {
+
+        if ($(".slide-item-" + index).attr("data-isvideo") == "1") {
+            var getSrc = $(".slide-item-" + index).attr("data-image");
+            var getVideoSrc = $(".slide-item-" + index).attr("data-video");
+            $(".slideItem").html('<video width="100%" height="100%" controls="controls" autoplay> <source src="' + getVideoSrc + '" type="video/mp4"> Your browser does not support the video tag. </video>');
+            $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+        }
+        else {
+            var getSrc = $(".slide-item-" + index).attr("data-image");
+            $(".slideItem").html("<img src='" + getSrc + "' class='img-slide' />");
+            $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+        }
+    }
+
+    $(document).on('click', '.sclose', function () {
+        $(".slideItem").html('');
+        $(".spopup").fadeOut(400);
+    });
+
+    $(document).on('click', '.sright', function () {
+        if (slideCurrent == $(".mg-files .slide-item").length - 1) {
+            slideCurrent = 0;
+        }
+        else {
+            slideCurrent++;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sleft', function () {
+        if (slideCurrent == 0) {
+            slideCurrent = $(".mg-files .slide-item").length - 1;
+        } else {
+            slideCurrent--;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    function DeleteImage(idtemp) {
+        var r = confirm("Bạn có muốn xóa ảnh?");
+        if (r == true) {
+            var json = { "id": idtemp };
+            $.ajax({
+                type: "POST",
+                url: "/Images/Delete",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    $("#gr_" + idtemp).remove();
+                    showResponseX(true);
+                },
+                error: removeItemFailed
+            });
+        }
+
+    };
+
+    function removeItemFailed(request, status, error) {
+        alert(request + status + error);
+    };
+
+    function showResponseX(responseText) {
+
+        //if (responseText) {
+        //    showSuccess('Cập nhật thành công');
+        //}
+        //else
+        //    showError('Có lỗi xảy ra');
+
+        //setTimeout("hideTop()", 3000);
+        //unloading();
+    }
+
+    function DeleteAllCheck() {
+        var arr = [];
+        $('input.chkImage:checkbox:checked').each(function () {
+            arr.push($(this).val());
+        });
+
+        if (arr.length == 0) {
+            alert("Vui lòng chọn ảnh để xóa !");
+            return;
+        }
+
+        var r = confirm("Bạn có muốn xóa ảnh?");
+        if (r == true) {
+            for (i = 0; i < arr.length; i++) {
+                var json = { "id": arr[i] };
+                $.ajax({
+                    type: "POST",
+                    url: "/Images/Delete",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    dataType: "json",
+                    success: function (data) {
+                    }
+                });
+            }
+
+            //load lai trang
+            var currentpage = parseInt($(".load-listinfo").attr("data-page")) + 1;
+            if (currentpage > 0) {
+                if (arr.length == $(".mg-files .slide-item").length) {
+                    loadImages();
+                    GetPage(currentpage - 2);
+
+                }
+                else {
+                    loadImages();
+                    GetPage(currentpage - 1);
+
+                }
+
+            }
+        }
+    }
+
+</script>

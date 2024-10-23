@@ -1,0 +1,38 @@
+﻿
+@model IEnumerable<ECP_V2.WebApplication.Models.MenuModel>
+
+<ul class="nav nav-main" id="sidebar">
+    @if (Model != null)
+    {
+        //var lstMenu = (List<ECP_V2.DataAccess.MenuMaster>)Session["SidebarLeft"];
+        foreach (var menuParent in Model)
+        {
+            if (menuParent.MenuParentId == 0)
+            {
+                <li class="nav-parent">
+                    <a href="@menuParent.Url">
+                        <i class="@menuParent.Class" aria-hidden="true"></i>
+                        <span>@menuParent.MenuText.Replace(':', ' ').Trim()</span>
+                    </a>
+                    @{
+                        var subItems = Model.Where(p => p.MenuParentId == menuParent.MenuId);
+                        if (subItems.Count() > 0)
+                        {
+                            <ul class="nav nav-children">
+                                @foreach (var item in subItems)
+                                {
+                                    <li>
+                                        <a href="@item.Url">                               
+                                           @item.MenuText.Replace(':', ' ').Trim()
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+                </li>
+            }
+        }
+
+    }
+</ul>

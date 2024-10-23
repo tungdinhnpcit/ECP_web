@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách báo cáo";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+    <h1>
+        @if (!User.IsInRole("Admin"))
+        {
+            <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Add", "BaoCao")">
+                <i class="fa fa-plus"></i> &nbsp; Thêm mới báo cáo đầu giờ
+            </a>
+        }
+
+
+    </h1>
+    <!-- Modal Animation -->
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách báo cáo
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-2 col-md-2">
+                            @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig", new { area = "Admin" }); }
+                        </div>
+                        @if (ViewBag.ListDvi != null)
+                        {
+                            <div class="col-sm-10 col-md-10 pull-left">
+                                @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.ListDvi, "Chọn đơn vị ...", new { @class = "form-control populate", @id = "drlDvi" })
+                            </div>
+                        }
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "BaoCao", new { page = 1, pageSize = 10, filter = "", dviId = ViewBag.dviId });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .paginate_active {
+        background-color: #0088cc;
+    }
+</style>
+
+@section JavaScriptOnePgae{
+
+    <script type="text/javascript">
+        var page = 1;
+        var pageSize = 10;
+        var currentPage = 1;
+        var currentSearh = '';
+        var donViId = '@ViewBag.dviId';
+
+        $(function () {
+
+            $("#drlDvi option[value='@ViewBag.dviId']").attr("selected", true);
+            $('#drlDvi').trigger("chosen:updated");
+
+            $("#drlPageSize").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                pageSize = valueSelected;
+                page = parseInt($(".page-number-Current").html());
+                currentSearh = $('#txtSearch').val();
+                var scriptUrl = "/Manager/BaoCao/List?page=" + page + "&pageSize=" + pageSize + "&currentFilter=" + currentSearh + "&dviId=" + donViId;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            });
+
+            $("#drlDvi").change(function () {
+
+                var pageS = $("#drlPageSize").find("option:selected");
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                pageSize = pageS.val();
+                if ($(".page-number-Current").html() != null)
+                    page = parseInt($(".page-number-Current").html());
+                currentSearh = $('#txtSearch').val();
+                var scriptUrl = "/BaoCao/List?page=" + page + "&pageSize=" + pageSize + "&currentFilter=" + currentSearh + "&dviId=" + valueSelected;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    },
+                    error: function () {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không lấy được dữ liệu!',
+                            type: 'error'
+                        });
+                    }
+                });
+            });
+        });
+
+        function txtSearch_onKeyPress(e, el) {
+            var key;
+            if (window.event)
+                key = window.event.keyCode;     //IE
+            else
+                key = e.which;     //firefox
+
+            if (key == 13) {
+                GetList(1, pageSize, el.value, '@ViewBag.dviId');
+            }
+        }
+
+        function txtSearch_onkeyup(e, el) {
+            if (el.value == '')
+                GetList(1, pageSize, el.value, '@ViewBag.dviId');
+        }
+
+        function GetList(page, pageSize, filter, dviId) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Manager/BaoCao/List?page=" + page + "&pageSize=" + pageSize + "&currentFilter=" + filter + "&dviId=" + dviId;
+            $.ajax({
+                url: scriptUrl,
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+                    unloading();
+                }
+            });
+        }
+
+        function loading(name, overlay) {
+
+            $('#ndContent').append('<div id="overlay"></div><div id="preloader" style="height: 40px;">' + name + '..</div>');
+
+            if (overlay == 1) {
+                $('#overlay').css('opacity', 0.4).fadeIn(400, function () { $('#preloader').fadeIn(400); });
+                return false;
+            }
+            $('#preloader').fadeIn();
+        }
+
+        function unloading() {
+            $('#preloader').fadeOut(400, function () { $('#overlay').fadeOut(); $(this).remove(); })
+        }
+
+    </script>
+}

@@ -1,0 +1,22 @@
+﻿<div style="float:left;margin-left:10px;margin-top:10px">
+    <span>Từ ngày: </span>
+    <input value="@ViewBag.NgayBD" id="GioBd" type="text" style="width:110px" placeholder="Từ ngày...">
+</div>
+<div style="float:left;margin-left:10px;margin-top:10px" id="content-denngay">
+    <span>Đến ngày: </span>
+    <input value="@ViewBag.NgayKT" id="GioKt" type="text" style="width:110px" placeholder="Đến ngày...">
+</div>
+
+<script>
+    $(function () {
+        var start = $("#GioBd").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+            change: start_chage
+        }).data("kendoDatePicker");
+
+        var end = $("#GioKt").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+            change: end_chage
+        }).data("kendoDatePicker");
+    });
+</script>

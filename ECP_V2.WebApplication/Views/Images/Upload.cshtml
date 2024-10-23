@@ -1,0 +1,621 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUpload.cshtml";
+    ViewBag.NoScript = 1;
+}
+<link href="~/Content/mystyle.css" rel="stylesheet" />
+<style>
+    /*.btn-box {
+        width: 300px !important;
+        margin: 0 auto !important;
+        display: block !important;
+        float: none !important;
+    }
+
+    .btn-big {
+        width: 275px !important;
+        height: 95px !important;
+        line-height: 90px !important;
+        font-size: 23px !important;
+        font-weight: bold !important;
+        display: block !important;
+        float: none !important;
+        margin: 0 !important;
+        margin-bottom: 5px !important;
+    }*/
+
+    .content-body {
+        background: #fdfdfd !important;
+        height: 100%;
+    }
+
+    .table th, .table td {
+        border-top: 1px solid #ddd;
+        line-height: 18px;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .files .progress {
+        margin: 0 auto;
+    }
+
+    .span5 {
+        margin-left: 0px !important;
+    }
+</style>
+<form id="fileupload" action="~/Upload/UploadAnyOne.ashx" method="POST" enctype="multipart/form-data" class="form-horizontal">
+    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+    <div style="clear: both; display:none">
+        <h3>Tài khoản: @*@ViewBag.TenNhanVien*@</h3>
+        <br />
+    </div>
+    <section class="panel">
+        <div class="panel-body">
+            <div class="col-md-6 col-md-offset-3">
+                @*<button class="mb-xs mt-xs mr-xs btn btn-default btn-lg btn-block" style="height:60px;line-height:45px;" type="button">Block level button</button>*@
+                <a class="mb-xs mt-xs mr-xs btn btn-default btn-lg btn-block" style="height:60px;line-height:45px;" href="/Images/Detail?phienlvid=@ViewBag.PhienLVId">
+                    <i class="fa fa-search"></i>
+                    Xem ảnh/video đã tải: <b>@ViewBag.TenPhienLV</b>
+                </a>
+            </div>
+            <div class="col-md-6 col-md-offset-3">
+                @*<button class="mb-xs mt-xs mr-xs btn btn-default btn-lg btn-block" style="height:60px;line-height:45px;" type="button">Block level button</button>*@
+                @*<a class="mb-xs mt-xs mr-xs btn btn-default btn-lg btn-block" style="height:60px;line-height:45px;" href="/EPhienLV/Index">
+                    <i class="fa fa-home"></i>
+                    Về trang chủ
+                </a>*@
+                <a class="mb-xs mt-xs mr-xs btn btn-success btn-lg btn-block" style="height:60px;line-height:45px;" href="@Url.Action("Index","UploadPLviec")">
+                    <i class="fa fa-upload"></i>
+                    Tải ảnh theo phiên làm việc
+                </a>
+            </div>
+            <div class="col-md-6 col-md-offset-3 fileupload-buttonbar" style="clear: both">
+                <!-- <div class="span7 btn-box">-->
+                <div>
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="mb-xs mt-xs mr-xs btn btn-primary btn-lg btn-block fileinput-button" style="height:60px;line-height:45px;">
+                        <i class="fa fa-cloud-upload"></i>
+                        <span>Tải ảnh không theo phiên</span>
+                        <input type="file" name="files[]" multiple="multiple" style="border: 0; width: 100%; height: 100%;" class="multi">
+                    </span>
+                    <button type="submit" class="btn btn-primary start upload-all" style="display:none">
+                        <i class="icon-upload icon-white"></i>
+                        <span>Bắt đầu tải lên</span>
+                    </button>
+                    <button type="reset" class="btn btn-warning cancel upload-cancel" style="display:none">
+                        <i class="icon-ban-circle icon-white"></i>
+                        <span>Hủy tải</span>
+                    </button>
+                    <button style="display: none" type="button" class="btn btn-danger delete">
+                        <i class="icon-trash icon-white"></i>
+                        <span>Delete</span>
+                    </button>
+                    <input type="checkbox" class="toggle" style="display: none">
+                </div>
+                <div class="span5">
+                    <!-- The global progress bar -->
+                    <div class="progress progress-success progress-striped active fade">
+                        <div class="bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- The loading indicator is shown during image processing -->
+    <center>
+        <div class="fileupload-loading"></div>
+    </center>
+    <br>
+    <!-- The table listing the files available for upload/download -->
+    <table class="table table-striped">
+        <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+    </table>
+</form>
+<!-- modal-gallery is the modal dialog used for the image gallery -->
+<div id="modal-gallery" class="modal modal-gallery hide fade">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3 class="modal-title"></h3>
+    </div>
+    <div class="modal-body">
+        <div class="modal-image"></div>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-primary modal-next">
+            <span>Next</span>
+            <i class="icon-arrow-right icon-white"></i>
+        </a>
+        <a class="btn btn-info modal-prev">
+            <i class="icon-arrow-left icon-white"></i>
+            <span>Previous</span>
+        </a>
+        <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
+            <i class="icon-play icon-white"></i>
+            <span>Slideshow</span>
+        </a>
+        <a class="btn modal-download" target="_blank">
+            <i class="icon-download"></i>
+            <span>Download</span>
+        </a>
+    </div>
+</div>
+<div class="row">
+    <p class="groupAction" style="display:none" onclick="javascript:OpenOrClose(this, 1)">-</p>
+    <p class="groupName" style="display:none">Ảnh đã tải lên</p>
+    <div style="clear: both;"></div>
+    <div class="clsg1" style="display:none">
+        <table style="float: right">
+            <tr>
+                <td>
+                    <div id="listactive" onclick="javascript:listactive(1)">
+                        <img src="~/Content/Slide/Images/text-list.png" />
+                    </div>
+                </td>
+                <td>
+                    <div id="slideactive" onclick="javascript:slideactive(1)">
+                        <img src="~/Content/Slide/Images/image-slide.png" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div style="clear: both;"></div>
+        <div id="listimg1">
+            <div id="table" style="overflow: scroll">
+                <table id="tblImage" class="table table-hover table-nomargin table-bordered table-striped  dataTable-noheader dataTable-nofooter ">
+                    <thead>
+                        <tr>
+                            <th>
+                                Ảnh hiển thị
+                            </th>
+                            <th>
+                                Ngày tải lên
+                            </th>
+                            <th>Ghi chú</th>
+                            <th>Địa điểm</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="list-img">
+                        @*@Html.Raw(ViewBag.ListImage)*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="clear: both; height:10px"></div>
+<div id="MainContent1" style="display: none">
+    <div id="Gallery1" class="box-img">
+        @*@Html.Raw(ViewBag.SlideImage)*@
+    </div>
+</div>
+<script type="text/javascript">
+    function OpenOrClose(obj, gr) {
+        var vl = $(obj).text().trim();
+        if (vl == "+") {
+
+            $(obj).text("-");
+            $(".clsg" + gr.toString()).css("display", "block");
+        } else {
+
+            $(obj).text("+");
+            $(".clsg" + gr.toString()).css("display", "none");
+        }
+    };
+    $(document).ready(function () {
+
+    });
+</script>
+
+<link href="~/Content/Slide/Styles/styles.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/Slide/Styles/photoswipe.css" rel="stylesheet" type="text/css" />
+<script src="~/Content/Slide/Scripts/simple-inheritance.min.js" type="text/javascript"></script>
+<script src="~/Content/Slide/Scripts/code-photoswipe-1.0.11.min.js" type="text/javascript"></script>
+<!-- The template to display files available for upload -->
+<script id="template-upload" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td class="name">
+            <span class="preview"><span class="fade"></span></span>
+            <br />
+            <span>{%=o.formatFileSize(file.size)%}</span>
+            <br />
+            {% if (file.error) { %}
+            <span class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}
+        </td>
+        {% } else if (o.files.valid && !i) { %}
+        <br />
+        <span>
+            <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;"></div></div>
+        </span>
+        <br />
+        <span class="cancel">
+            <button class="btn btn-warning">
+                <i class="icon-ban-circle icon-white"></i>
+                <span>Hủy</span>
+            </button>
+        </span>
+        <span class="start">
+            {% if (!o.options.autoUpload) { %}
+            <button class="btn btn-primary">
+                <i class="icon-upload icon-white"></i>
+                <span>Tải</span>
+            </button>
+            {% } %}</td>
+            {% } else { %}
+            <span colspan="2"></span>
+            {% } %}
+            <span class="cancel">
+                {% if (!i) { %}
+                <button class="btn btn-warning">
+                    <i class="icon-ban-circle icon-white"></i>
+                    <span>Hủy</span>
+                </button>
+                {% } %}
+            </span>
+            </td>
+    </tr>
+    {% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade" id="row{%=file.fileid%}">
+        {% if (file.error) { %}
+        <td></td>
+        <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+        <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+        {% } else { %}
+        <span class="preview" style="width:2px !important">
+            {% if (file.thumbnail_url) { %}
+
+            {% } %}
+            <div>
+            </div>
+        </span>
+        <td id="updateimginfo" colspan="2" align="center">
+            <img src="{%=file.thumbnail_url%}">
+            <br />
+            <span>{%=o.formatFileSize(file.size)%}</span>
+            <div>Ghi chú:</div>
+            <div>
+                <textarea id="txtnode{%=file.fileid%}" name="txtnode{%=file.fileid%}" style="height:40px"></textarea>
+            </div>
+            <div>Địa điểm:</div>
+            <div>
+                <textarea id="txtcomment{%=file.fileid%}" name="txtcomment{%=file.fileid%}" style="height:40px"></textarea>
+            </div>
+            <div>Nhóm ảnh:</div>
+            <div>
+                <select id="slgroup{%=file.fileid %}" name="slgroup{%=file.fileid%}">
+                    <option value="5" selected>Chưa xác định</option>
+                    <option value="1">Số phương án thực hiện</option>
+                    <option value="2">Lực lượng lao động</option>
+                    <option value="3">Các biện pháp kiểm tra an toàn</option>
+                    <option value="4">Tổng kết phiên làm việc</option>
+                </select>
+            </div>
+            <div class="col-xs-offset-3 text-center col-md-offset-5" style="margin-top:5px;display:table">
+                <span class="delete">
+                    <span class="btn btn-danger" onclick="javascript:DeleteImage('{%=file.fileid%}')">
+                        <i class="icon-trash icon-white"></i>
+                        <span>Xóa</span>
+                    </span>
+                </span>
+                <span class="btn btn-success fileinput-button" onclick="javascript:SaveAllDes('{%=file.fileid%}')">
+                    <i class="icon-plus icon-white"></i>
+                    <span>Lưu</span>
+                </span>
+            </div>
+        </td>
+        {% } %}
+    </tr>
+    {% } %}
+</script>
+<div class="spopup">
+    <div class="slideItem">
+    </div>
+    <div class="scounter noselect">
+        1/1
+    </div>
+    <div class="sbottomControl">
+        <div class="sleft noselect"><</div>
+        <div class="sright noselect">></div>
+    </div>
+    <div class="sclose noselect">
+        x
+    </div>
+</div>
+<script type="text/javascript">
+    //setInterval(function () {
+    //    if ($(".files tr").length > 0) {
+    //        //$(".upload-all").attr("style", "");
+    //        //$(".upload-cancel").attr("style", "");
+    //    } else {
+    //        $(".upload-all").attr("style", "display:none;");
+    //        $(".upload-cancel").attr("style", "display:none;");
+    //    }
+    //}, 800);
+    function GetImageItem(imageId) {
+        console.log(imageId);
+        var json = { "imageId": imageId }
+        try {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Gallery/GetMyImg",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    $(".list-img").prepend(data.ListImage);
+                    $(".box-img").prepend(data.SlideImage);
+                },
+                error: removeItemFailed
+            });
+        } catch (e) {
+
+        }
+    }
+    function SaveAllDes(idtemp) {
+        var notename = "txtnode" + idtemp;
+        var commentname = "txtcomment" + idtemp;
+        var tagname = "txttag" + idtemp;
+        var slgroup = "slgroup" + idtemp;
+
+        var valuenote = $("#" + notename).val();
+        var valuecomment = $("#" + commentname).val();
+        var valuetagname = $("#" + tagname).val();
+        var valuegroup = $("#" + slgroup).val();
+
+        var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname, "groupid": valuegroup };
+        console.log(json);
+        $.ajax({
+            type: "POST",
+            url: "/Images/Update",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            dataType: "json",
+            success: function (data) {
+                UpdateInfoCompleted(1);
+                //GetImageItem(idtemp);
+            },
+            error: UpdateInfoFailed
+        });
+        $("#row" + idtemp).remove();
+        ShowTable();
+    };
+    function ShowTable() {
+
+    };
+    function UpdateInfoCompleted(results) {
+
+    };
+    function UpdateInfoFailed(request, status, error) {
+        alert("ERROR");
+    };
+    function DeleteImage(idtemp) {
+        var r = confirm("Bạn có muốn xóa ảnh?");
+        if (r == true) {
+            var json = { "id": idtemp };
+            $.ajax({
+                type: "POST",
+                url: "/Images/Delete",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data.Message);
+                    UpdateInfoCompleted(1);
+                    //$(".list-img").html(data.ListImage);
+                    //$(".box-img").html(data.SlideImage);
+                    //showResponseX(true);
+                },
+                error: removeItemFailed
+            });
+            $("#row" + idtemp).remove();
+        }
+    };
+    function ShowAllDes(idtemp) {
+        $("#txtnode" + idtemp).css("border", "1px");
+        $("#txtcomment" + idtemp).css("border", "1px");
+        $("#txttag" + idtemp).css("border", "1px");
+        $("#slgroup" + idtemp).css("border", "1px");
+
+        $("#txtnode" + idtemp).css("background", "#fff");
+        $("#txtcomment" + idtemp).css("background", "#fff");
+        $("#txttag" + idtemp).css("background", "#fff");
+        $("#slgroup" + idtemp).css("background", "#fff");
+
+        $("#btnSaveAllDes" + idtemp).css("display", "block");
+        $("#btnShowAllDes" + idtemp).css("display", "none");
+    };
+    function SaveAllDesInTable(idtemp) {
+        var notename = "txtnode" + idtemp;
+        var commentname = "txtcomment" + idtemp;
+        var tagname = "txttag" + idtemp;
+
+        var valuenote = $("#" + notename).val();
+        var valuecomment = $("#" + commentname).val();
+        var valuetagname = $("#" + tagname).val();
+        var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname };
+        $.ajax({
+            type: "POST",
+            //url: "@@Url.Action("UpdateInfo","Gallery", new { area = "" })",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            dataType: "json",
+            success: UpdateInfoCompleted,
+            error: UpdateInfoFailed
+        });
+        $("#txtnode" + idtemp).css("border", "0px");
+        $("#txtcomment" + idtemp).css("border", "0px");
+        $("#txttag" + idtemp).css("border", "0px");
+        $("#txtnode" + idtemp).css("background", "transparent");
+        $("#txtcomment" + idtemp).css("background", "transparent");
+        $("#txttag" + idtemp).css("background", "transparent");
+
+        $("#btnSaveAllDes" + idtemp).css("display", "none");
+        $("#btnShowAllDes" + idtemp).css("display", "block");
+    };
+    function removeItemCompleted(results) {
+        //alert("Xóa ảnh thành công!");
+    };
+    function removeItemFailed(request, status, error) {
+        alert("ERROR");
+    };
+    function showResponseX(responseText) {
+
+        if (responseText) {
+            showSuccess('Cập nhật thành công');
+        }
+        else
+            showError('Có lỗi xảy ra');
+
+        setTimeout("hideTop()", 3000);
+        unloading();
+    }
+    function mySlideShow(index) {
+        console.log(index);
+        var getSrc = $(".slide-item-" + index).attr("data-image");
+        $(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+        $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+    }
+
+    var slideCurrent = 0;
+    $(document).on('click', '.slide-item', function () {
+        console.log($(this).attr("data-image"));
+        var getIndex = $(this).attr("data-index");
+        slideCurrent = parseInt(getIndex);
+        $(".spopup").fadeIn(600);
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sright', function () {
+        if (slideCurrent == $(".gallery-row .slide-item").length - 1) {
+            slideCurrent = 0;
+        }
+        else {
+            slideCurrent++;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sleft', function () {
+        if (slideCurrent == 0) {
+            slideCurrent = $(".gallery-row .slide-item").length - 1;
+        } else {
+            slideCurrent--;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sclose', function () {
+        $(".spopup").fadeOut(400);
+    });
+</script>
+<script type="text/javascript">
+
+    var WIDTHBODY = $(window).width();
+
+    function setHeight() {
+        var scwidth = $(window).width();
+        if (WIDTHBODY != scwidth) {
+            WIDTHBODY = scwidth;
+            if (scwidth > 1024) {
+                $(".imgslide").css("height", "320px");
+            };
+            if (scwidth > 720 && scwidth <= 1024) {
+                $(".imgslide").css("height", "225px");
+            };
+            if (scwidth > 480 && scwidth <= 720) {
+                $(".imgslide").css("height", "150px");
+            };
+            if (scwidth <= 480) {
+                $(".imgslide").css("height", "60px");
+            };
+        }
+    };
+
+    function slideactive(gr) {
+        //ShowTable();
+        document.getElementById("listimg" + gr.toString()).style.display = "none";
+        document.getElementById("MainContent" + gr.toString()).style.display = "block";
+    };
+
+    function listactive(gr) {
+        document.getElementById("listimg" + gr.toString()).style.display = "block";
+        document.getElementById("MainContent" + gr.toString()).style.display = "none";
+    };
+
+    $(document).ready(function () {
+        $("#fileupload").change(function () {
+            console.log("upload");
+            setTimeout(function () {
+                //console.log(console.log($(this).val()));
+                //$(".upload-all").click();
+                //alert($(".template-upload").length);
+            }, 5000);
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            Code.photoSwipe('a', '#Gallery1');
+        }, false);
+
+        var scwidth = $(window).width();
+        if (scwidth > 1024) {
+            $(".imgslide").css("height", "320px");
+        };
+        if (scwidth > 720 && scwidth <= 1024) {
+            $(".imgslide").css("height", "225px");
+        };
+        if (scwidth > 480 && scwidth <= 720) {
+            $(".imgslide").css("height", "150px");
+        };
+        if (scwidth <= 480) {
+            $(".imgslide").css("height", "60px");
+        };
+        window.setInterval("setHeight()", 500);
+    });
+</script>
+<style type="text/css">
+    updateimginfo img {
+        max-width: 225px !important;
+    }
+
+    .gallery-item img, .ps-slider-item img {
+        max-width: 100% !important;
+    }
+
+    #main {
+        padding-left: 10px !important;
+    }
+
+    .groupAction {
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #f0f0f0;
+        color: #111;
+        border: 1px solid #808080;
+        padding-left: 2px;
+        padding-top: 2px;
+        padding-bottom: 4px;
+        padding-left: 7px;
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        float: left;
+        margin-top: -3px;
+    }
+
+    .clsg1 {
+        background-color: #f0f0f0;
+    }
+
+    .groupName {
+        float: left;
+        display: inline-block;
+        font-size: 16px;
+        font-weight: bold;
+        margin-left: 3px;
+    }
+</style>

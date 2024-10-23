@@ -1,0 +1,37 @@
+﻿
+
+
+<div id="modal-huy-chot" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Huỷ chốt</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:30px; color:red; margin-top:-25px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <div class="clear"></div>
+                    <form role="form" id="frmMaintainanceHuyChot">
+                        <div class="row">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                        </div>
+
+                        <div class="form-group row">
+                            <input type="hidden" id="hidId_HC" value="0" />
+                            <div class="col-sm-12">
+                                <textarea type="text" rows="3" name="txtContent_HC" class="form-control" id="txtContent_HC" placeholder="Nhập lý do..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="margin-top:30px">
+                            <div class="col-sm-offset-1 col-sm-11">
+                                <button type="button" id="btnXacNhan_HuyChot" class="btn btn-primary float-right" style="margin-right:15px"><i class="fa fa-paper-plane-o" style="margin-right:6px"></i>Xác nhận</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

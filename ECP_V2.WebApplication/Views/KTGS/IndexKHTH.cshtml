@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "IndexKHTH";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+<h4>Tình hình kiểm tra giám sát theo kế hoạch</h4>
+
+<div style="margin: 3px;">
+    <div style="display:inline">
+        <label class="input-group-text" for="inputGroupSelect01">Chọn đơn vị</label>
+    </div>
+    <select class="custom-select" id="cbodonvi">
+       
+    </select>
+
+
+    <div style="display:inline">
+        <label class="input-group-text">Tháng</label>
+    </div>
+    <select class="custom-select" id="cbothang">
+        <option selected value="1">1</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Năm</label>
+    </div>
+    <select class="custom-select" id="cbonam">
+        <option selected value="2021">2021</option>
+        <option value="2022">2022</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Có tồn tại</label>
+    </div>
+    <select class="custom-select" id="cbotontai">
+        <option selected value="-1">Tất cả</option>
+        <option value="co">Có tồn tại</option>
+        <option value="khong">Không tồn tại</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Khắc phục</label>
+    </div>
+    <select class="custom-select" id="cbokpngay">
+        <option selected value="-1">Tất cả</option>
+        <option value="kpn">Khắc phục ngay</option>
+        <option value="dkp">Đã khắc phục</option>
+        <option value="ckp">Chưa khắc phục</option>
+    </select>
+
+
+    <a onclick="ktgs_kh.loaddata()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Thông kê</a>
+    <a onclick="ktgs_kh.excel()" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o mr-5"></i>Xuất excel</a>
+</div>
+
+<div>
+
+    <table id="tblktgs_kh" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+        <thead>
+            <tr>
+                <th style="width: 10%">Đơn vị</th>
+                <th style="width: 10%">Tên nhóm</th>
+                <th style="width: 10%">Định mức giao</th>
+                <th style="width: 10%">Đã thực hiện</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_ds_ktgs.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_bb_ctiet.js"></script>
+    <script src="~/Scripts/KTGS/js/ktgs_kh.js"></script>
+}
+<style>
+    select {
+        display: inline !important;
+    }
+
+    .body-content {
+        background-color: #ffffff;
+    }
+
+    .imgthump {
+        height: 128px;
+        width: 128px;
+        padding: 2px;
+        background-color: #cecece;
+    }
+</style>
+
+

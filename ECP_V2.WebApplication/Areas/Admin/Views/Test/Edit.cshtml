@@ -1,0 +1,25 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.TestViewModel
+@{
+    Layout = null;
+}
+
+
+<div style="padding:10px">
+    @using (Html.BeginForm("Edit", "Test", FormMethod.Post, new { id = "frmEdit", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <label class="control-label" for="Name">Tên</label>
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @placeholder = "Nhập tên ..." })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+    }
+</div>
+
+

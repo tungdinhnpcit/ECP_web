@@ -1,0 +1,269 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.ThietBiNghiemNgatViewModels
+@{
+    Layout = null;
+}
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+<style>
+    select {
+        height: 40px;
+        padding: 0;
+    }
+</style>
+<div style="padding:10px">
+    @using (Html.BeginForm("Edit", "ThietBiNghiemNgat", FormMethod.Post, new { id = "frmEdit", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        <div class="row">
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Nhóm thiết bị</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.NhomThietBi != null)
+                {
+                    @Html.DropDownListFor(model => model.MaNhom, (SelectList)ViewBag.NhomThietBi, new { @class = "form-control", @style = "width:100%", @onchange = "NhomThietBi_OnChange(this)" })
+                }
+                else
+                {
+                    <select id="MaNhom" name="MaNhom" style="width:100%" onclick="NhomThietBi_OnChange(this)" class="form-control">
+                        <option value="">Chọn nhóm thiết bị</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.MaNhom)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Tên thiết bị</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.LoaiThietBi != null)
+                {
+                    @Html.DropDownListFor(model => model.MaLoai, (SelectList)ViewBag.LoaiThietBi, "Chọn tên thiết bị", new { @class = "form-control", @style = "width:100%", @onchange = "LoaiThietBi_OnChange(this)" })
+                }
+                else
+                {
+                    <select id="MaLoai" name="MaLoai" style="width:100%" onclick="LoaiThietBi_OnChange(this)" class="form-control">
+                        <option value="">Chọn tên thiết bị</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.MaLoai)
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="MaHieu">Nhãn hiệu</label>
+                @Html.TextBoxFor(model => model.MaHieu, new { @class = "form-control", @placeholder = "Nhập nhãn hiệu ..." })
+                @Html.ValidationMessageFor(model => model.MaHieu)
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="NgayDuaVaoSuDung">Ngày đưa vào sử dụng</label>
+                <div class="clearfix"></div>
+                @Html.TextBoxFor(model => model.NgayDuaVaoSuDung, new { @style = "width:100%" })
+                @Html.ValidationMessageFor(model => model.NgayDuaVaoSuDung)
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Hãng sản xuất</label>
+                <div class="clearfix"></div>
+                @Html.TextBoxFor(model => model.HangSanXuat, new { @class = "form-control", @placeholder = "Nhập hãng sản xuất ..." })
+                @Html.ValidationMessageFor(model => model.HangSanXuat)
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="MaNSX">Nước sản xuất</label>
+                <div class="clearfix"></div>
+                @Html.TextBoxFor(model => model.NuocSanXuat, new { @class = "form-control", @placeholder = "Nhập nước sản xuất ..." })
+                @Html.ValidationMessageFor(model => model.NuocSanXuat)
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="NamSX">Năm chế tạo</label>
+                <div class="clearfix"></div>
+                <div data-plugin-spinner data-plugin-options='{ "value":@DateTime.Now.Year, "min": 1900, "max": 2099 }'>
+                    <div class="input-group input-small" style="width:100%">
+                        @Html.TextBoxFor(model => model.NamSX, new { @class = "spinner-input form-control", @onClick = "this.select();", @style = "width:92%" })
+                        <div class="spinner-buttons input-group-btn btn-group-vertical" style="float:left;width:8%">
+                            <button type="button" class="btn spinner-up btn-xs btn-default">
+                                <i class="fa fa-angle-up"></i>
+                            </button>
+                            <button type="button" class="btn spinner-down btn-xs btn-default">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @Html.ValidationMessageFor(model => model.NamSX)
+            </div>
+
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-4">
+                <label class="control-label" for="inputDefault">Đơn vị quản lý</label>
+                <select class="form-control" id="DonViQuanLyId" name="DonViQuanLyId">
+                    @try
+                    {
+                        @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                    }
+                    catch { }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="inputDefault">Tập thể/ cá nhân quản lý</label>
+                <select class="form-control" id="PhongBanID" name="PhongBanID">
+                    <option value="">Chọn tập thể/ cá nhân quản lý</option>
+                    @try
+                    {
+                        @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                    }
+                    catch { }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="MaTT">Trạng thái</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.TrangThaiCCDC != null)
+                {
+                    @Html.DropDownListFor(model => model.MaTT, (SelectList)ViewBag.TrangThaiCCDC, new { @class = "selectoption", @style = "width:138%" })
+                }
+                else
+                {
+                    <select id="MaTT" name="MaTT" class="selectoption">
+                        <option value="">Chọn trạng thái</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.MaTT)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="control-label">Số chế tạo</label>
+                @Html.TextBoxFor(model => model.SoCheTao, new { @class = "form-control", @placeholder = "Nhập Số chế tạo ...", @style = "width:100%" })
+                @Html.ValidationMessageFor(model => model.SoCheTao)
+            </div>
+            <div class="col-md-4">
+                <label class="control-label">Số đăng ký</label>
+                @Html.TextBoxFor(model => model.SoDangKy, new { @class = "form-control", @placeholder = "Nhập Số đăng ký ...", @style = "width:100%" })
+                @Html.ValidationMessageFor(model => model.SoDangKy)
+            </div>
+            <div class="col-md-4">
+                <label id="lblTTTK" class="control-label">Tải trọng thiết kế (@(Model.MaNhom == 1 ? "Tấn" : "PA"))</label>
+                @Html.TextBoxFor(model => model.TaiTrongThietKe, new { @class = "form-control", @placeholder = "Nhập Tải  trọng thiết kế ...", @type = "number", @style = "width:100%" })
+                @Html.ValidationMessageFor(model => model.TaiTrongThietKe)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label id="lblTTCP" class="control-label">Tải trọng cho phép (@(Model.MaNhom == 1 ? "Tấn" : "PA"))</label>
+                @Html.TextBoxFor(model => model.TaiTrongChoPhep, new { @class = "form-control", @placeholder = "Nhập Tải trọng cho phép ...", @type = "number", @style = "width:100%" })
+                @Html.ValidationMessageFor(model => model.TaiTrongChoPhep)
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="HanKiemDinh">Hạn kiểm định</label>
+                <div class="clearfix"></div>
+                <div class="col-md-9" style="padding:0">
+                    <div data-plugin-spinner data-plugin-options='{ "min": 0, "max": 9999 }'>
+                        <div class="input-group input-small">
+                            @Html.TextBoxFor(model => model.HanKiemDinh, new { @class = "spinner-input form-control", @onClick = "this.select();", @style = "width:80%" })
+                            <div class="spinner-buttons input-group-btn btn-group-vertical" style="float:left;width:22px">
+                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                    <i class="fa fa-angle-up"></i>
+                                </button>
+                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.HanKiemDinh)
+                </div>
+                <label class="col-md-2 control-label" style="padding-right:0;margin-left:0" for="inputDefault">Tháng</label>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $(function () {
+
+        $("#NgayDuaVaoSuDung").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+        }).data("kendoDatePicker");
+
+        $("#MaLoai").select2();
+        $("#MaHSX").select2();
+        $("#MaNSX").select2();
+
+
+        // Spinner
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['spinner'])) {
+
+                $(function () {
+                    $('[data-plugin-spinner]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions)
+                            opts = pluginOptions;
+
+                        $this.themePluginSpinner(opts);
+                    });
+                });
+
+            }
+
+        }).apply(this, [jQuery]);
+
+        @if(Model.DonViQuanLyId!=null)
+        {
+          @:$("#DonViQuanLyId option[value='@Model.DonViQuanLyId']").prop("selected", true);
+        }
+
+        @if(Model.PhongBanID!=null)
+        {
+          @:$("#PhongBanID option[value='@Model.PhongBanID']").prop("selected", true);
+        }
+
+        $("#DonViQuanLyId").change(function () {
+            var urlGetPban = "/Admin/ThietBiNghiemNgat/CmbPhongBan?DonViId=" + $('#DonViQuanLyId').val();
+            $.ajax({
+                url: urlGetPban,
+                type: 'get',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $("#PhongBanID").html(data);
+                },
+                error: function () {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Không lấy được dữ liệu!',
+                        type: 'error'
+                    });
+                }
+            });
+        });
+
+    });
+
+    function ChangeCheckBoxMuaTrong() {
+        var items = document.getElementById('IsMuaTrong');
+        if (items.checked)
+            items.value = true;
+        else
+            items.value = false;
+    }
+
+    function NhomThietBi_OnChange(el) {
+        if (el.value == 1) {
+            $("#lblTTTK").text('Tải trọng thiết kế (Tấn)');
+            $("#lblTTCP").text('Tải trọng cho phép (Tấn)');
+        }
+        else if (el.value == 2) {
+            $("#lblTTTK").text('Tải trọng thiết kế (PA)');
+            $("#lblTTCP").text('Tải trọng cho phép (PA)');
+        }
+    }
+
+</script>

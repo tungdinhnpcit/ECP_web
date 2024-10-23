@@ -1,0 +1,818 @@
+﻿@{
+    ViewBag.Title = "DetailHinhAnhPhienLv";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    string urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE"];
+    ECP_V2.WebApplication.Helpers.FilesHelper fileh = new ECP_V2.WebApplication.Helpers.FilesHelper();
+}
+@{
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/vendor/magnific-popup/magnific-popup.css" />
+    <link rel="stylesheet" href="~/Scripts/AdminPanel/assets/vendor/isotope/jquery.isotope.css" />
+    <link href="~/Content/mystyle.css" rel="stylesheet" />
+
+    <style>
+        .fbphotobox img {
+            width: 330px;
+            border-radius: 5px;
+        }
+
+            .fbphotobox img:hover {
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                border: 5px solid #4AE;
+            }
+
+        .fbphotobox .isotope-item.image {
+            position: static !important;
+        }
+    </style>
+
+
+    <div class="tabs">
+        <ul class="nav nav-tabs tabs-primary">
+            <li class="active">
+                <a href="#details" data-toggle="tab">Thông tin chi tiết</a>
+            </li>
+            <li>
+                <a href="#edit" data-toggle="tab">Chỉnh sửa hình ảnh</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="details" class="tab-pane active">
+                <section class="panel">
+                    @*<header class="panel-heading">
+                            <h2 class="panel-title">Thông tin chi tiết</h2>
+                        </header>*@
+                    <div class="panel-body">
+                        <!-- start: page -->
+                        <section class="content-with-menu-has-toolbar media-gallery">
+                            <div class="content-with-menu-container">
+                                <div class="inner-toolbar clearfix" style="position: static;">
+                                    <ul>
+                                        @*<li class="left">
+                                                <a href="/Images/Detail?phienlvid=@ViewBag.PhienLvId" target="_blank" class="btn btn-primary" style="padding: 6px 12px !important; color: #fff;">Cập nhật thông tin hình ảnh</a>
+                                            </li>*@
+                                        <li class="right" data-sort-source data-sort-id="media-gallery">
+                                            <ul class="nav nav-pills nav-pills-primary">
+                                                <li>
+                                                    <label>Nhóm Ảnh:</label>
+                                                </li>
+                                                <li class="active">
+                                                    <a data-option-value="*">Tất cả</a>
+                                                </li>
+                                                <li>
+                                                    <a data-option-value=".image" href="#image">Hình ảnh</a>
+                                                </li>
+                                                <li>
+                                                    <a data-option-value=".video" href="#video">Videos</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="row mg-files" data-sort-destination data-sort-id="media-gallery">
+
+                                    @if (ViewBag.lstImages != null)
+                                    {
+                                        var userRepository = new ECP_V2.Business.Repository.NhanVienRepository();
+                                        var groupImagesRepository = new ECP_V2.Business.Repository.GroupImageRepository();
+                                        var listImages = (IEnumerable<ECP_V2.DataAccess.tblImage>)ViewBag.lstImages;
+
+                                        foreach (var group in listImages.GroupBy(x => x.GroupId).OrderBy(g => g.Key))
+                                        {
+                                            var groupImage = groupImagesRepository.GetById(group.Key);
+
+                                            if (groupImage != null)
+                                            {
+                                                <div class="col-md-12">
+                                                    <h3>@groupImage.NoiDung</h3>
+                                                </div>
+                                                <div style="clear: both;"></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-12">
+                                                    <h3>Ảnh chưa cập nhật nhóm</h3>
+                                                </div>
+                                                <div style="clear: both;"></div>
+                                            }
+                                            <div class="fbphotobox clearfix" style="position: relative;">
+                                                @foreach (var item in group)
+                                                {
+                                                    if (!fileh.URLExists(urlImg + "/Files" + item.Url))
+                                                    {
+                                                        if (urlImg == System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE2"])
+                                                        {
+                                                            urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE"];
+                                                        }
+                                                        else
+                                                        {
+                                                            urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE2"];
+                                                        }
+
+                                                        //if (!fileh.URLExists(urlImg + "/Files" + item.Url))
+                                                        //{
+                                                        //    if (urlImg == System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE3"])
+                                                        //    {
+                                                        //        urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE2"];
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        urlImg = System.Configuration.ConfigurationManager.AppSettings["URL_IMAGE3"];
+                                                        //    }
+                                                        //}
+                                                    }
+                                                    var user = userRepository.GetById(item.UserUp);
+
+                                                    if (@item.isVideo == 0)
+                                                    {
+                                                        <div class="isotope-item image col-sm-6 col-md-4 col-lg-3">
+                                                            <div class="thumbnail">
+                                                                <div class="thumb-preview">
+                                                                    @*<a class="thumb-image" href="@Html.Raw("/Files" + item.Url)">
+                                                                            <img src="@Html.Raw("/Files" + item.Url)" class="img-responsive" alt="Project">
+                                                                        </a>*@
+                                                                    <a class="thumb-image">
+                                                                        <img style="height:250px" fbphotobox-src="@Html.Raw(@urlImg+"/Files" + item.Url)"
+                                                                             src="@Html.Raw(@urlImg + "/Files" + item.Url)"
+                                                                             class="img-responsive full-width photo fbphotobox"
+                                                                             @if (item.NgayChup != null) { @Html.Raw("fbphotobox-NgayChup='" + string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayChup) + "'")  } else { @Html.Raw("fbphotobox-NgayChup=''") }
+                                                                             fbphotobox-title="@string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.NgayCapNhat)"
+                                                                             fbphotobox-note="@item.Note"
+                                                                             @if (item.Comment != null) { @Html.Raw("fbphotobox-comment='" + item.Comment + "'")  } else { @Html.Raw("fbphotobox-comment=''") }
+                                                                             fbphotobox-Id="@item.Id"
+                                                                             fbphotobox-MaCongTy="@ViewBag.MaCongTy"
+                                                                             @if (user != null) { @Html.Raw("fbphotobox-TenNhanVien='" + user.TenNhanVien + "'")  } else { @Html.Raw("fbphotobox-TenNhanVien=''") }
+                                                                             @if (user != null) { @Html.Raw("fbphotobox-SoDienThoai='" + user.SoDT + "'")  } else { @Html.Raw("fbphotobox-SoDienThoai=''") }
+                                                                             fbphotobox-KinhDo="@item.KinhDo"
+                                                                             fbphotobox-ViDo="@item.ViDo"
+                                                                             alt="" />
+                                                                    </a>
+
+                                                                </div>
+                                                                <h5 class="mg-title text-weight-semibold">@item.Note</h5>
+                                                                <div class="mg-description">
+                                                                    <small class="pull-left text-muted">@item.Comment</small>
+                                                                    <small class="pull-right text-muted">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.NgayCapNhat)</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        @*<div class="isotope-item video col-sm-6 col-md-4 col-lg-3">
+                                                                <div class="thumbnail">
+                                                                    <div class="thumb-preview">
+                                                                        <a class="thumb-image" href="~/Files/AnyOne/@item.VideoPath">
+                                                                            <video width="209" controls="controls">
+                                                                                <source src="~/Files/AnyOne/@item.VideoPath" type="video/mp4" />
+                                                                            </video>
+                                                                        </a>
+
+                                                                    </div>
+                                                                    <h5 class="mg-title text-weight-semibold">@item.Note</h5>
+                                                                    <div class="mg-description">
+                                                                        <small class="pull-left text-muted">@item.Comment</small>
+                                                                        <small class="pull-right text-muted">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.NgayCapNhat)</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>*@
+                                                    }
+                                                }
+                                            </div>
+
+                                            <div style="clear: both;"></div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+                <!-- end: page -->
+
+                <div class="fbphotobox-main-container">
+                    <div class="fbphotobox-container-left">
+                        <table class="fbphotobox-main-image-table">
+                            <tr>
+                                <td>
+                                    <div class="tag-container"><img class="fbphotobox-main-image" src="" /></div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="fbphotobox-image-stage-overlay">
+                            <div class="fbphotobox-container-left-header">
+                                <a title="Toàn màn hình" class="fbphotobox-fc-btn fbphotobox-a"></a>
+                            </div>
+                            <div data-prev-index="" class="left-arrow">
+                                <table style="height:100%">
+                                    <tr>
+                                        <td style="vertical-align:middle;">
+                                            <a class="fbphotobox-a" title="Sau"></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div data-next-index="" class="right-arrow">
+                                <table style="height:100%;">
+                                    <tr>
+                                        <td style="vertical-align:middle;">
+                                            <a class="fbphotobox-a" title="Tiếp"></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="fbphotobox-container-left-footer">
+                                <div style="margin:20px;">
+                                    <span style="font-weight:bold;">Dummy Photo Caption</span>
+                                    <span style="color:#B3B3B3;"> in </span>
+                                    <span style="font-weight:bold;">Dummy Album Name</span>
+                                </div>
+                            </div>
+                            <div class="fbphotobox-container-left-footer-bg"></div>
+                        </div>
+                    </div>
+                    <div class="fbphotobox-container-right">
+                        <div class="fbphotobox-close-btn" style="position: absolute;top: 0;z-index: 1000;right:0">
+                            <a title="Đóng" href="" style="float:right;margin:8px">
+                                <img src="~/Scripts/fbphotobox/images/close.png" style="height:10px;width:10px" />
+                            </a>
+                            <div style="clear:both"></div>
+                        </div>
+                        <div style="overflow-y: scroll;" class="fbphotobox-image-content panel-scrollable"></div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="fbphotobox-fc-main-container">
+                    <div class="fbphotobox-fc-header">
+                        <div style="float:left">
+                            @*Dummy Header*@
+                        </div>
+                        <a class="fbphotobox-fc-close-btn" href="">Đóng</a>
+                        <div style="clear:both"></div>
+                    </div>
+                    <div style="position:fixed;top:50px;right:0px;left:0px;bottom:0px;margin:auto;">
+                        <table style="width:100%;height:100%;text-align:center;">
+                            <tr>
+                                <td class="fc-left-arrow" style="width:50px;text-align:center;">
+                                    <a class="fbphotobox-a" title="Sau"></a>
+                                </td>
+                                <td class="rotateleft" style="width:50px;text-align:center;">
+                                    <a class="fbphotobox-a" title="Quay trái"></a>
+                                </td>
+                                <td>
+                                    <img class="fbphotobox-fc-main-image" src="" />
+                                </td>
+                                <td class="rotateright" style="width:50px;text-align:center;">
+                                    <a class="fbphotobox-a" title="Quay phải"></a>
+                                </td>
+                                <td class="fc-right-arrow" style="width:50px;text-align:center;">
+                                    <a class="fbphotobox-a" title="Tiếp"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="fbphotobox-fc-footer">
+                        @*Dummy Footer*@
+                        @*<a class="rotateleft" title="Quay góc trái" style="float:left;margin-right:15px">
+                                <img src="~/Scripts/fbphotobox/images/close.png" style="height:25px;width:25px" />
+                            </a>
+                            <a class="rotateright" title="Quay góc phải" style="float:left;">
+                                <img src="~/Scripts/fbphotobox/images/close.png" style="height:25px;width:25px" />
+                            </a>*@
+                        <div style="clear:both"></div>
+                    </div>
+                </div>
+                <div class="fbphotobox-overlay"></div>
+            </div>
+
+            <div id="edit" class="tab-pane">
+                <div class="block-fluid">
+                    <div class="panel panel-visible">
+                        <div class="panel-heading br-b-n">
+                            <div class="panel-title hidden-xs">
+                                <span class="glyphicon glyphicon-tasks"></span> Ảnh/Video @ViewBag.PhienLV.NoiDung
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clsg1" style="display: block;">
+                    @*<table style="float: right">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div id="listactive" onclick="javascript:listactive(1)">
+                                            <img src="/Content/Slide/Images/text-list.png">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div id="slideactive" onclick="javascript:slideactive(1)">
+                                            <img src="/Content/Slide/Images/image-slide.png">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>*@
+                    <div style="clear: both;"></div>
+                    <div id="listimg1" style="display: block;">
+                        <div id="table" style="overflow: scroll">
+                            <table id="tblImage" class="table table-hover table-nomargin table-bordered table-striped  dataTable-noheader dataTable-nofooter ">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Chức năng
+                                        </th>
+                                        <th>
+                                            Ảnh hiển thị
+                                        </th>
+                                        <th>Nhóm ảnh/video</th>
+                                        <th>Ghi chú</th>
+                                        <th>Địa điểm</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list-img">
+                                    @{Html.RenderAction("_GetListItem", "Images", new { area = "", phienlvid = ViewBag.PhienLvId, page = 0, pageSize = 20, sortOrder = "", filter = "" });}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @*<div id="MainContent1" style="display: block;">
+                            <div id="Gallery1" class="box-img">
+                                <div class="gallery-row">
+                                    @{Html.RenderAction("_GetListItem", "Images", new { area = "", phienlvid = ViewBag.PhienLvId, type = 1, page = 0, pageSize = 20, sortOrder = "", filter = "" });}
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+                <div class="spopup">
+                    <div class="slideItem">
+                    </div>
+                    <div class="scounter noselect">
+                        1/1
+                    </div>
+                    <div class="sbottomControl">
+                        <div class="sleft noselect"><</div>
+                        <div class="sright noselect">></div>
+                        <div class="rotateleft noselect"></div>
+                        <div class="rotateright noselect"></div>
+                    </div>
+                    <div class="sclose noselect">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script src="~/Content/AdminPanel/assets/vendor/magnific-popup/magnific-popup.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/isotope/jquery.isotope.js"></script>
+
+    <script type="text/javascript">
+        var rl = 0;
+        (function ($) {
+            /*
+Image Preview: Lightbox
+*/
+            //$('.thumb-preview a[href]').magnificPopup({
+            //    type: 'image',
+            //    closeOnContentClick: true,
+            //    mainClass: 'mfp-img-mobile',
+            //    image: {
+            //        verticalFit: true
+            //    }
+            //});
+
+            //$('.thumb-preview .mg-zoom').on('click.lightbox', function (ev) {
+            //    ev.preventDefault();
+            //    $(this).closest('.thumb-preview').find('a.thumb-image').triggerHandler('click');
+            //});
+            ///*
+            /*Isotope: Sort Thumbnails
+            */
+            $("[data-sort-source]").each(function () {
+
+                var source = $(this);
+                var destination = $("[data-sort-destination][data-sort-id=" + $(this).attr("data-sort-id") + "]");
+
+                if (destination.get(0)) {
+
+                    $(window).load(function () {
+
+                        destination.isotope({
+                            itemSelector: ".isotope-item",
+                            layoutMode: 'fitRows'
+                        });
+
+                        $(window).on('sidebar-left-toggle inner-menu-toggle', function () {
+                            destination.isotope();
+                        });
+
+                        source.find("a[data-option-value]").click(function (e) {
+
+                            e.preventDefault();
+
+                            var $this = $(this),
+                                filter = $this.attr("data-option-value");
+
+                            source.find(".active").removeClass("active");
+                            $this.closest("li").addClass("active");
+
+                            destination.isotope({
+                                filter: filter
+                            });
+
+                            if (window.location.hash != "" || filter.replace(".", "") != "*") {
+                                window.location.hash = filter.replace(".", "");
+                            }
+
+                            return false;
+
+                        });
+
+                        $(window).bind("hashchange", function (e) {
+
+                            var hashFilter = "." + location.hash.replace("#", ""),
+                                hash = (hashFilter == "." || hashFilter == ".*" ? "*" : hashFilter);
+
+                            source.find(".active").removeClass("active");
+                            source.find("[data-option-value='" + hash + "']").closest("li").addClass("active");
+
+                            destination.isotope({
+                                filter: hash
+                            });
+
+                        });
+
+                        var hashFilter = "." + (location.hash.replace("#", "") || "*");
+                        var initFilterEl = source.find("a[data-option-value='" + hashFilter + "']");
+
+                        if (initFilterEl.get(0)) {
+                            source.find("[data-option-value='" + hashFilter + "']").click();
+                        } else {
+                            source.find(".active a").click();
+                        }
+
+                    });
+
+                }
+
+            });
+        }(jQuery));
+
+        $(document).ready(function () {
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+
+            $(".fbphotobox img").fbPhotoBox({
+                rightWidth: 380,
+                leftBgColor: "black",
+                rightBgColor: "white",
+                footerBgColor: "black",
+                overlayBgColor: "#222",
+                containerClassName: 'fbphotobox',
+                imageClassName: 'photo',
+                onImageShow: function () {
+                    //$(".fbphotobox img").fbPhotoBox("addTags",
+                    //		[{ x: 0.3, y: 0.3, w: 0.3, h: 0.3 }]
+                    //);
+                    //$(".fbphotobox-image-content").html('<div style="font-size:16px;">' + $(this).attr("alt") + '</div>' + $(this).attr("src"));
+                }
+            });
+
+            $(document).on('click', '.rotateleft', function () {
+                rl -= 90;
+                $(".fbphotobox-fc-main-image").rotate(rl);
+            });
+
+            var rr = 0;
+            $(document).on('click', '.rotateright', function () {
+                rr += 90;
+                $(".fbphotobox-fc-main-image").rotate(rr);
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        setInterval(function () {
+            if ($(".files tr").length > 0) {
+                $(".upload-all").attr("style", "");
+                $(".upload-cancel").attr("style", "");
+            } else {
+                $(".upload-all").attr("style", "display:none;");
+                $(".upload-cancel").attr("style", "display:none;");
+            }
+        }, 800);
+        function GetImageItem(imageId) {
+            console.log(imageId);
+            var json = { "imageId": imageId }
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Gallery/GetMyImg",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    dataType: "json",
+                    success: function (data) {
+                        $(".list-img").prepend(data.ListImage);
+                        $(".box-img").prepend(data.SlideImage);
+                    },
+                    error: removeItemFailed
+                });
+            } catch (e) {
+
+            }
+        }
+        function SaveAllDesInTable(idtemp) {
+            var notename = "txtnode" + idtemp;
+            var commentname = "txtcomment" + idtemp;
+            var tagname = "txttag" + idtemp;
+            var slgroup = "slgroup" + idtemp;
+
+            var valuenote = $("#" + notename).val();
+            var valuecomment = $("#" + commentname).val();
+            var valuetagname = $("#" + tagname).val();
+            var valuegroup = $("#" + slgroup).val();
+
+            var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname, "groupid": valuegroup };
+            console.log(json);
+            $.ajax({
+                type: "POST",
+                url: "/Images/Update",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    UpdateInfoCompleted(data);
+                },
+                error: UpdateInfoFailed
+            });
+            $("#row" + idtemp).remove();
+            ShowTable();
+        };
+        function ShowTable() {
+
+        };
+        function UpdateInfoCompleted(results) {
+
+            if (results) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Cập nhật thành công',
+                    type: 'success'
+                });
+            } else {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Cập nhật không thành công',
+                    type: 'error'
+                });
+            }
+        };
+        function UpdateInfoFailed(request, status, error) {
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Cập nhật không thành công',
+                type: 'error'
+            });
+        };
+        function DeleteImage(idtemp) {
+            var r = confirm("Bạn có muốn xóa ảnh?");
+            if (r == true) {
+                var json = { "id": idtemp };
+                $.ajax({
+                    type: "POST",
+                    url: "/Images/Delete",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data.Status == 1) {
+                            $(".tr" + idtemp).remove();
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa ảnh thành công',
+                                type: 'success'
+                            });
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa ảnh không thành công',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: removeItemFailed
+                });
+                $("#row" + idtemp).remove();
+            }
+        };
+        function ShowAllDes(idtemp) {
+            $("#txtnode" + idtemp).css("border", "1px");
+            $("#txtcomment" + idtemp).css("border", "1px");
+            $("#txttag" + idtemp).css("border", "1px");
+
+            $("#txtnode" + idtemp).css("background", "#fff");
+            $("#txtcomment" + idtemp).css("background", "#fff");
+            $("#txttag" + idtemp).css("background", "#fff");
+
+            $("#btnSaveAllDes" + idtemp).css("display", "block");
+            $("#btnShowAllDes" + idtemp).css("display", "none");
+        };
+
+        function ChangeGroup(idtemp) {
+            var slgroup = "slgroup" + idtemp;
+            var valuegroup = $("#" + slgroup).val();
+            var json = { "id": idtemp, "groupid": valuegroup };
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: "/Images/UpdateGroupId",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateInfoCompleted(data);
+                    },
+                    error: UpdateInfoFailed
+                });
+            } catch (e) {
+
+            }
+        }
+
+        function SaveAllDes(idtemp) {
+            var notename = "txtnode" + idtemp;
+            var commentname = "txtcomment" + idtemp;
+            var tagname = "txttag" + idtemp;
+            var slgroup = "slgroup" + idtemp;
+
+            var valuenote = $("#" + notename).val();
+            var valuecomment = $("#" + commentname).val();
+            var valuetagname = $("#" + tagname).val();
+            var valuegroup = $("#" + slgroup).val();
+
+            var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname, "groupid": valuegroup };
+            console.log(json);
+            $.ajax({
+                type: "POST",
+                url: "/Images/Update",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: UpdateInfoCompleted,
+                error: UpdateInfoFailed
+            });
+            $("#txtnode" + idtemp).css("border", "0px");
+            $("#txtcomment" + idtemp).css("border", "0px");
+            $("#txttag" + idtemp).css("border", "0px");
+
+            $("#txtnode" + idtemp).css("background", "transparent");
+            $("#txtcomment" + idtemp).css("background", "transparent");
+            $("#txttag" + idtemp).css("background", "transparent");
+
+            $("#btnSaveAllDes" + idtemp).css("display", "none");
+            $("#btnShowAllDes" + idtemp).attr("style", "");
+        };
+        function removeItemCompleted(results) {
+            //alert("Xóa ảnh thành công!");
+        };
+        function removeItemFailed(request, status, error) {
+            alert("ERROR");
+        };
+        function showResponseX(responseText) {
+
+            if (responseText) {
+                showSuccess('Cập nhật thành công');
+            }
+            else
+                showError('Có lỗi xảy ra');
+
+            setTimeout("hideTop()", 3000);
+            unloading();
+        }
+        function mySlideShow(index) {
+            if (isNaN(index))
+                return;
+            console.log(index);
+            console.log($(".slide-item-" + index).attr("data-isvideo"));
+            if ($(".slide-item-" + index).attr("data-isvideo") == "1") {
+                var getSrc = $(".slide-item-" + index).attr("data-image");
+                var getVideoSrc = $(".slide-item-" + index).attr("data-video");
+                //$(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+                $(".slideItem").html('<video width="100%" height="100%" controls="controls" autoplay> <source src="' + getVideoSrc + '" type="video/mp4"> Your browser does not support the video tag. </video>');
+                $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+            }
+            else {
+                var getSrc = $(".slide-item-" + index).attr("data-image");
+                //$(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+                $(".slideItem").html("<img src='" + getSrc + "' id='imgcenter' class='img-slide' />");
+                $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+            }
+        }
+
+        var slideCurrent = 0;
+        $(document).on('click', '.gallery-item-show', function () {
+            console.log($(this).attr("data-image"));
+            var getIndex = $(this).attr("data-index");
+            slideCurrent = parseInt(getIndex);
+            $(".spopup").fadeIn(600);
+
+            mySlideShow(slideCurrent);
+        });
+
+        $(document).on('click', '.sright', function () {
+
+            rl = 0;
+            rr = 0;
+
+            if (slideCurrent == $(".gallery-row .slide-item").length - 1) {
+                slideCurrent = 0;
+            }
+            else {
+                slideCurrent++;
+            }
+            mySlideShow(slideCurrent);
+        });
+
+        $(document).on('click', '.sleft', function () {
+            rl = 0;
+            rr = 0;
+            if (slideCurrent == 0) {
+                slideCurrent = $(".gallery-row .slide-item").length - 1;
+            } else {
+                slideCurrent--;
+            }
+            mySlideShow(slideCurrent);
+        });
+
+        $(document).on('click', '.sclose', function () {
+            rl = 0;
+            rr = 0;
+
+            $(".slideItem").html('');
+            $(".spopup").fadeOut(400);
+        });
+        $(document).on('change', '.slgroup', function () {
+            console.log($(this).attr("data-id"));
+            ChangeGroup($(this).attr("data-id"));
+        });
+
+        var rl = 0;
+        $(document).on('click', '.rotateleft', function () {
+            rl -= 90;
+            $("#imgcenter").rotate(rl);
+        });
+
+        var rr = 0;
+        $(document).on('click', '.rotateright', function () {
+            rr += 90;
+            $("#imgcenter").rotate(rr);
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        var WIDTHBODY = $(window).width();
+
+        function setHeight() {
+            var scwidth = $(window).width();
+            if (WIDTHBODY != scwidth) {
+                WIDTHBODY = scwidth;
+                if (scwidth > 1024) {
+                    //$(".imgslide").css("height", "320px");
+                };
+                if (scwidth > 720 && scwidth <= 1024) {
+                    //$(".imgslide").css("height", "225px");
+                };
+                if (scwidth > 480 && scwidth <= 720) {
+                    //$(".imgslide").css("height", "150px");
+                };
+                if (scwidth <= 480) {
+                    //$(".imgslide").css("height", "60px");
+                };
+            }
+        };
+
+        function slideactive(gr) {
+            //ShowTable();
+            document.getElementById("listimg" + gr.toString()).style.display = "none";
+            document.getElementById("MainContent" + gr.toString()).style.display = "block";
+        };
+
+        function listactive(gr) {
+            document.getElementById("listimg" + gr.toString()).style.display = "block";
+            document.getElementById("MainContent" + gr.toString()).style.display = "none";
+        };
+
+        $(document).ready(function () {
+
+            document.addEventListener('DOMContentLoaded', function () {
+                Code.photoSwipe('a', '#Gallery1');
+            }, false);
+
+            window.setInterval("setHeight()", 500);
+        });
+    </script>
+}

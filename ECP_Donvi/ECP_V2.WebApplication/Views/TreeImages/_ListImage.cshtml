@@ -1,0 +1,158 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.tblImage>
+@if (Model != null && Model.Count() > 0)
+{
+    int index = -1;
+    foreach (var item in Model)
+    {
+        string groupName = "Chưa xác định";
+        if (item.GroupId == 1)
+        {
+            groupName = "Số phương án thực hiện";
+        }
+        else if (item.GroupId == 2)
+        {
+            groupName = "Lực lượng lao động";
+        }
+        else if (item.GroupId == 3)
+        {
+            groupName = "Các biện pháp kiểm tra an toàn";
+        }
+        else if (item.GroupId == 4)
+        {
+            groupName = "Tổng kết phiên làm việc";
+        }
+        index++;
+
+        if (@item.isVideo == 0)
+        {
+            <div id="gr_@item.Id" class="isotope-item image col-sm-6 col-md-4 col-lg-3 slide-item">
+                <div class="thumbnail">
+                    <div class="thumb-preview">
+                        <a class="thumb-image" href="~/Files/AnyOne/@item.Url">
+                            <img style="height:250px" src="~/Files/AnyOne/@item.Url" class="img-responsive" alt="Project">
+                        </a>
+                        <div class="mg-thumb-options">
+                            <div class="mg-zoom slide-item-@(index)" data-index="@(index)" data-image="/Files/AnyOne/@item.Url" data-isvideo="@(item.isVideo)" data-video="/Files/AnyOne/@item.VideoPath"><i class="fa fa-search"></i></div>
+                            <div class="mg-toolbar">
+                                <div class="mg-option checkbox-custom checkbox-inline">
+                                    <input class="chkImage" type="checkbox" id="chk_@item.Id" value="@item.Id">
+                                    <label for="file_1">Chọn</label>
+                                </div>
+                                <div class="mg-group pull-right">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a href="#" onclick="DeleteImage(@item.Id)">XÓA</a>
+                                    }
+                                    <button class="dropdown-toggle mg-toggle" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-caret-up"></i>
+                                    </button>
+                                    <ul class="dropdown-menu mg-menu" role="menu">
+                                        <li><a href="#"><i class="fa fa-download"></i> Tải ảnh</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="mg-title text-weight-semibold">@(groupName)</h5>
+                    <div class="mg-description">
+                        @*<small class="pull-left text-muted">@item.Comment</small>*@
+                        <small class="pull-right text-muted">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.NgayCapNhat)</small>
+                    </div>
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <div id="gr_@item.Id" class="isotope-item video col-sm-6 col-md-4 col-lg-3 slide-item">
+                <div class="thumbnail">
+                    <div class="thumb-preview">
+                        <a class="thumb-image" href="~/Files/AnyOne/@item.VideoPath">
+                            <video width="209" height="250" controls="controls">
+                                <source src="~/Files/AnyOne/@item.VideoPath" type="video/mp4" />
+                            </video>
+                        </a>
+                        <div class="mg-thumb-options">
+                            <div class="mg-zoom slide-item-@(index)" data-index="@(index)" data-image="/Files/AnyOne/@item.Url" data-isvideo="@(item.isVideo)" data-video="/Files/AnyOne/@item.VideoPath"><i class="fa fa-search"></i></div>
+                            <div class="mg-toolbar">
+                                <div class="mg-option checkbox-custom checkbox-inline">
+                                    <input class="chkImage" type="checkbox" id="chk_@item.Id" value="@item.Id">
+                                    <label for="file_1">Chọn</label>
+                                </div>
+                                <div class="mg-group pull-right">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a href="#" onclick="DeleteImage(@item.Id)">XÓA</a>
+                                    }
+                                    <button class="dropdown-toggle mg-toggle" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-caret-up"></i>
+                                    </button>
+                                    <ul class="dropdown-menu mg-menu" role="menu">
+                                        <li><a href="#"><i class="fa fa-download"></i> Tải video</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="mg-title text-weight-semibold">@(groupName)</h5>
+                    <div class="mg-description">
+                        @*<small class="pull-left text-muted">@item.Comment</small>*@
+                        <small class="pull-right text-muted">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.NgayCapNhat)</small>
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+}
+else
+{
+    <p class="nodata">Không có dữ liệu.</p>
+}
+<div class="load-listinfo" style="display:none!important" data-sum="@(ViewBag.Sum)" data-quantity="@(ViewBag.Quantity)" data-page="@(ViewBag.Page)"></div>
+<script>
+    try {
+        CreatePagging();
+    } catch (e) {
+
+    }
+</script>
+
+<script type="text/javascript">
+    (function ($) {
+
+
+        /*
+	Thumbnail: Select
+	*/
+        $('.mg-option input[type=checkbox]').on('change', function (ev) {
+            var wrapper = $(this).parents('.thumbnail');
+            if ($(this).is(':checked')) {
+                wrapper.addClass('thumbnail-selected');
+            } else {
+                wrapper.removeClass('thumbnail-selected');
+            }
+        });
+
+        $('.mg-option input[type=checkbox]:checked').trigger('change');
+
+        /*
+	Thumnail: Dropdown Options
+	*/
+        $('.thumbnail .mg-toggle').parent()
+            .on('show.bs.dropdown', function (ev) {
+                $(this).closest('.mg-thumb-options').css('overflow', 'visible');
+            })
+            .on('hidden.bs.dropdown', function (ev) {
+                $(this).closest('.mg-thumb-options').css('overflow', '');
+            });
+
+        $('.thumbnail').on('mouseenter', function () {
+            var toggle = $(this).find('.mg-toggle');
+            if (toggle.parent().hasClass('open')) {
+                toggle.dropdown('toggle');
+            }
+        });
+
+    }(jQuery));
+</script>

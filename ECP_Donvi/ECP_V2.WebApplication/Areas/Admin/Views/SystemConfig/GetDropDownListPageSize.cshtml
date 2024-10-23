@@ -1,0 +1,38 @@
+﻿@*@model List<int>
+
+    @if (Model != null)
+    {
+        int pageSize = 0;
+        int.TryParse(Session["drlPageSize"].ToString(), out pageSize);
+
+        <select data-plugin-selectTwo class="form-control populate" onchange="pagelength_change(this)" style="width: 75px;" id="drlPageSize">
+
+            @foreach (var item in Model)
+            {
+                if (item == pageSize)
+                {
+                    <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                    <option value="@item">@item</option>
+                }
+            }
+
+        </select>
+    }
+    else
+    {
+        <select data-plugin-selectTwo class="form-control populate" style="width: 75px;" id="drlPageSize">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+        </select>
+    }*@
+
+    <select data-plugin-selectTwo class="form-control populate" onchange="pagelength_change(this)" style="width: 75px;" id="drlPageSize">
+        <option value="10">10</option>
+        <option value="15" selected>15</option>
+    </select>

@@ -1,0 +1,217 @@
+﻿@model ECP_V2.WebApplication.Models.NhanVienModel
+@{
+    ViewBag.Title = "Trang chủ nhóm quyền quản lý đơn vị";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<link href="~/Content/Loader/jquery.loader.css" rel="stylesheet" />
+<style type="text/css">
+    .hero-unit {
+        position: relative;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        //LoadLogAuto();
+        //setInterval(function () {
+        //    LoadLogAuto();
+        //}, 300000); //5p
+
+        //LoadBangTongHopLoaiHinhCongViec();
+    });
+
+     function ReLoadKeHoachTuan() {
+        $.ajax({
+            url: '/Admin/PhienLV/ReLoadKeHoachTuan',
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $("#divMainKeHoachTuan").html(data);
+            }
+        });
+    }
+
+    //function LoadBangTongHopLoaiHinhCongViec() {
+    //    $.ajax({
+    //        url: '/Admin/PhienLV/BangTongHopLoaiHinhCongViec',
+    //        type: 'GET',
+    //        dataType: 'html',
+    //        async: true,
+    //        success: function (data) {
+    //            $("#divBangTongHopLoaiHinhCongViec").html(data);
+    //        }
+    //    });
+    //}
+
+    //function LoadLogAuto() {
+    //    $('#divlog').append('<div class="loader overlay" style="display: block;"><div class="loader-load"></div><div class="loader-overlay"></div></div>');
+    //    $.ajax({
+    //        url: "/Admin/Log/LoadLogAuto",
+    //        data: {
+    //        },
+    //        type: 'GET',
+    //        dataType: 'html',
+    //        async: false,
+    //        success: function (data) {
+    //            window.setTimeout(function () {
+    //                $('#divlog').html("");
+    //                $('#divlog').html(data);
+    //            }, 1000);
+    //        }
+    //    });
+    //}
+    /*
+    var isMomHappy = false;
+        var tt = false;
+        // Promise
+        var willIGetNewPhone = new Promise(
+            function (resolve, reject) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/TaiKhoan/CheckChuKySo',
+                    data: null,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success == true) {
+                            isMomHappy = true;
+                        }
+                        else {
+                            isMomHappy = false;
+                        }
+                    },
+                    error: function (e) {
+                        isMomHappy = null;
+                    }
+                });
+                if (isMomHappy != null) {
+                    //tt = isMomHappy;
+                    resolve(isMomHappy); // fulfilled
+                } else {
+                    var reason = new Error('mom is not happy');
+                    reject(reason); // reject
+                }
+
+            }
+        );
+    /*
+        // call our promise
+        var askMom = function () {
+            var a1 = $.ajax({
+                type: 'POST',
+                url: '/Admin/TaiKhoan/CheckChuKySo',
+                data: null,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.success == true) {
+                        isMomHappy = true;
+                    }
+                    else {
+                        isMomHappy = false;
+                    }
+                },
+                error: function (e) {
+                    isMomHappy = null;
+                }
+            }),
+                a2 = a1.then(function (data) {
+                    // .then() returns a new promise
+                    //return $.ajax({
+                    //  url: '/path/to/another/file',
+                    //  dataType: 'json',
+                    //  data: data.sessionID
+                    //});
+                });
+
+            a2.done(function (data) {
+                //console.log(data);
+                if (isMomHappy) {
+                    //ModalDismissDetail();
+                     $.magnificPopup.close();
+                } else {
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#modalAnimThem'
+                        },
+                        type: 'inline',
+                        fixedContentPos: false,
+                        fixedBgPos: true,
+                        overflowY: 'auto',
+                        closeBtnInside: true,
+                        preloader: false,
+                        midClick: true,
+                        removalDelay: 300,
+                        mainClass: 'my-mfp-zoom-in',
+                        modal: true
+                    }, 0);
+                }
+            })
+        }
+
+        askMom();
+        */
+</script>
+
+<h2>Trang chủ</h2>
+
+@Html.Partial("KeHoachTuan", false)
+<br />
+
+@*<div id="divBangTongHopLoaiHinhCongViec">
+    <div class="block-fluid" style="margin-top:40px">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n" style="height:50px">
+                <div class="panel-title hidden-xs" style="margin-top:-5px">
+                    <div class="pull-left">
+                        <span class="glyphicon glyphicon-tasks"></span> BẢNG TỔNG HỢP CÁC LOẠI HÌNH CÔNG VIỆC
+                    </div>
+                    <div class="pull-right">
+                        <button onclick="In()" class="btn btn-sm" data-toggle="tooltip" data-placement="top" data-title="In" data-original-title="" title=""><i class="fa fa-print"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body pn">
+                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <div class="row datatables-header form-inline">
+                        <div class="col-md-2">
+                            <span>Từ ngày: &nbsp;</span>
+                            <input id="BTHCV_GioBd" type="text" placeholder="Thời gian bắt đầu">
+                        </div>
+                        <div class="col-md-2" id="content-denngay">
+                            <span>Đến ngày: </span>
+                            <input id="BTHCV_GioKt" type="text" placeholder="Thời gian kết thúc">
+                        </div>
+                    </div>
+                    <div id="BTHCV_table" class="table-responsive">
+                        <p style="text-align: center;font-weight: bold;height:100px;font-size:15px">Đang tải dữ liệu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />*@
+
+@*<div id="divlog" class="hero-unit"></div>*@
+
+@Html.Partial("BDPhienLVTheoNgayTrongTuan")
+
+<br />
+@*@Html.Partial("~/Views/Shared/_PartialQuickMenu.cshtml")*@
+@Html.Action("GetQuickMenu", "Home")
+
+<br />
+<hr />
+@*@{ Html.RenderAction("GetTaiLieuDonVi", "Home", new { area = "" }); }
+    @Html.Partial("_PartialChuKySo", Model)*@

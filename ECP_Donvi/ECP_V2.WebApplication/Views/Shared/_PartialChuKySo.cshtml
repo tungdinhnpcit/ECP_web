@@ -1,0 +1,38 @@
+﻿@model ECP_V2.WebApplication.Models.NhanVienModel
+
+<div id="modalAnimThem" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        @using (Html.BeginForm("UpdateChuKySo", "TaiKhoan", FormMethod.Post, new { id = "frmChuKySo", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+        {
+            <div class="callout callout-info mb-20">
+                <p>
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.Id)
+                </p>
+            </div>
+            <header class="panel-heading">
+                <h2 class="panel-title">
+                    Thay đổi chữ ký
+                </h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper" style="padding:0;text-align:center;">
+                    <h3>Bạn chưa có chữ ký điện tử! Vui lòng ký tại ô trống dưới đây:</h3>
+                    <div style="margin-left: 100px;margin-top: 10px;">
+                        @Html.EditorFor(m => m.ChuKySo)
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        @*<button class="btn btn-primary modal-confirm" onclick="LuuChuKySo()" id="modal-confirm">Lưu</button>*@
+                        <button class="btn btn-success" onclick="FormSubmit()" type="submit">Lưu lại</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        }
+    </section>
+</div>

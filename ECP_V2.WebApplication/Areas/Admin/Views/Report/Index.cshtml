@@ -1,0 +1,505 @@
+﻿@{
+    ViewBag.Title = "Báo Cáo Tổng Hợp Công Việc";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    bool manager = false;
+    string donViId = Session["DonViID"] != null ? Session["DonViID"].ToString() : "";
+
+
+    if (User.IsInRole("Manager") && (donViId.Length == 4 || donViId.ToUpper().Equals("PH") || donViId.ToUpper().Equals("PN") || donViId.ToUpper().Equals("PM")))
+    {
+        manager = true;
+    }
+
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+    
+    $(function () {        
+        $("#datepicker").datepicker();
+    });
+</script>
+
+<div class="head" id="ndContent">
+    <div class="text-center">
+        @if (TempData["Notification"] != null)
+        {
+            @Html.Hidden("NotificationAutoHide", TempData["NotificationAutoHide"])
+            <div id="NotificationBox" class="@TempData["NotificationCSS"]" style="display: none">
+                @Html.Raw(@TempData["Notification"])
+            </div>
+        }
+    </div>
+
+    <!-- Modal Animation Export BS mau NPC-->
+    <div id="modalAnimExportBS" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Xuất Excel Bổ Sung Ngày</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-file-excel-o"></i>
+                    </div>
+                    <div class="modal-text">
+                        <div style="margin-bottom:15px;margin-top:5px" class="input-group">
+                            <span>Ngày Bổ Sung : &nbsp;</span>
+                            <input id="ExNgayBoSung" name="ExNgayBoSung" type="text" placeholder="Ngày Bổ Sung">
+                        </div>
+                        <a class="mb-xs mt-xs mr-xs btn btn-primary" id="btnexportBS" style="cursor:pointer">
+                            &nbsp; Xuất Excel
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-default modal-dismiss" onclick="ExportBSModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Modal Animation Export BS mau Cty-->
+    <div id="modalAnimExportBS_Cty" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Xuất Excel Bổ Sung Ngày Theo Mẫu Công Ty</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-file-excel-o"></i>
+                    </div>
+                    <div class="modal-text">
+                        <div style="margin-bottom:15px;margin-top:5px" class="input-group">
+                            <span>Ngày Bổ Sung : &nbsp;</span>
+                            <input id="ExNgayBoSung_Cty" name="ExNgayBoSung_Cty" type="text" placeholder="Ngày Bổ Sung">
+                        </div>
+                        <a class="mb-xs mt-xs mr-xs btn btn-primary" id="btnexportBS_Cty" style="cursor:pointer">
+                            &nbsp; Xuất Excel
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-default modal-dismiss" onclick="ExportBSModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Modal Animation Export BS mau Cty-->
+    <div id="modalAnimExport_Tuan_Cty" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Xuất Excel Bổ Sung Ngày Theo Mẫu Công Ty</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-file-excel-o"></i>
+                    </div>
+                    <div class="modal-text">
+                        <p>
+                            <strong>
+                                Mẫu báo cáo đang xây dựng. Sẽ cập nhật trong phiên bản tháng tới!
+                            </strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-default modal-dismiss" onclick="ExportBSModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabs tabs-vertical tabs-left">
+                <ul class="nav nav-tabs" style="width:13%">
+                    <li class="active">
+                        <a href="#popular1" data-toggle="tab"><i class="fa fa-file-excel-o"></i> Báo cáo phiên làm việc</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content">
+                    <div id="popular1" class="tab-pane active">
+                        <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                            <div class="row" style="margin-bottom:10px">
+                                <div class="col-md-1">
+                                    <span>Đơn Vị: &nbsp;</span>
+                                </div>
+                                <div class="col-md-11">
+                                    <select class="form-control" id="cmbDonViID" onchange="donvi_change(this)" style="margin-left:0px">
+                                        @try
+                                        {
+                                            @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                                        }
+                                        catch { }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px">
+                                <div class="col-md-1">
+                                    <span>Phòng Ban: &nbsp;</span>
+                                </div>
+                                <div class="col-md-11">
+                                    @if (Session["DonViID"].ToString() == "PA")
+                                    {
+                                        <select class="form-control" id="cmbPhongBan"></select>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-control" id="cmbPhongBan">
+                                            <option value="">Tất cả</option>
+                                            @try
+                                            {
+                                                @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                                            }
+                                            catch { }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px">
+                                <div class="col-md-1">
+                                    <span>TC Phiên: &nbsp;</span>
+                                </div>
+                                <div class="col-md-11">
+
+                                    @if (ViewBag.ListTCPhien != null)
+                                    {
+                                        var listTCPhien = (IEnumerable<ECP_V2.DataAccess.plv_TinhChatPhien>)ViewBag.ListTCPhien;
+
+                                        <select class="form-control" id="cmbTCPhien">
+                                            <option value="0">Tất cả</option>
+
+                                            @foreach (var item in listTCPhien)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+
+                                        </select>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px">
+                                <div class="col-md-1">
+                                    <span>Từ ngày: &nbsp;</span>
+                                </div>
+                                <div class="col-md-11">
+                                    <input id="GioBd" type="text" placeholder="Thời gian bắt đầu">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px">
+                                <div class="col-md-1">
+                                    <span>Đến ngày: &nbsp;</span>
+                                </div>
+                                <div class="col-md-11">
+                                    <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                                </div>
+                            </div>
+
+                            @*@if (User.IsInRole("DuyetViec"))
+                                {*@
+                            <div class="row" style="margin-bottom:10px">
+                                <div class="col-md-1">
+                                    <span>Trạng thái: &nbsp;</span>
+                                </div>
+                                <div class="col-md-11">
+
+                                    @if (ViewBag.ListTTPhien != null)
+                                    {
+                                        var listTTPhien = (IEnumerable<ECP_V2.DataAccess.plv_TrangThaiPhien>)ViewBag.ListTTPhien;
+
+                                        <select class="form-control" id="cmbTTPhien">
+                                            <option value="0">Tất cả</option>
+
+                                            @foreach (var item in listTTPhien)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+
+                                        </select>
+                                    }
+
+
+                                </div>
+                            </div>
+                            @*}*@
+
+                            @if (User.IsInRole("Admin") || manager)
+                            {
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="chart-data-selector ready" id="salesSelectorWrapper">
+                                            <h2>
+                                                <strong>
+                                                    Xuất báo cáo theo mẫu công ty
+                                                </strong>
+                                            </h2>
+                                            <div>
+                                                @*<a href="#modalAnimExport_Tuan_Cty"  class="mb-xs mt-xs mr-xs btn btn-primary"  style="cursor:pointer" id="ExportTuan_Cty">
+                                                        <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo tuần
+                                                    </a>*@
+                                                <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" id="export_tuan_cty">
+                                                    <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo tuần
+                                                </a>
+
+                                                <a href="#modalAnimExportBS_Cty" id="ExportBS_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+                                                    <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo ngày (bổ sung, thay đổi)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="chart-data-selector ready" id="salesSelectorWrapper">
+                                            <h2>
+                                                <strong>
+                                                    Xuất báo cáo theo mẫu gửi NPC
+                                                </strong>
+                                            </h2>
+                                            <div>
+                                                <a class="mb-xs mt-xs mr-xs btn btn-primary" id="export" style="cursor:pointer">
+                                                    <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo tuần
+                                                </a>
+                                                <a href="#modalAnimExportBS" id="ExportBS" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+                                                    <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo ngày (bổ sung, thay đổi)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="chart-data-selector ready" id="salesSelectorWrapper">
+                                            <h2>
+                                                <strong>
+                                                    Xuất báo cáo theo mẫu gửi công ty
+                                                </strong>
+                                            </h2>
+                                            <div>
+                                                <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" id="export_tuan_cty">
+                                                    <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo tuần
+                                                </a>
+
+                                                <a href="#modalAnimExportBS_Cty" id="ExportBS_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+                                                    <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo ngày (bổ sung, thay đổi)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+</style>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script type="text/javascript">
+        $(function () {
+            $.datepicker.setDefaults({
+                showOn: "both",
+                buttonImageOnly: true,
+                buttonImage: "calendar.gif",
+                regional: "vn"
+            });
+           
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+            
+            var start = $("#GioBd").datepicker({
+                dateFormat: 'dd/mm/yy' 
+            }).value;
+
+            var end = $("#GioKt").datepicker({
+                dateFormat: 'dd/mm/yy' 
+            }).value;
+
+            //Xuất báo cáo tuần theo mẫu NPC
+            $('#export').bind('click', function () {
+                $.UnifiedExportFile(
+                    {
+                        action: "/Admin/PhienLV/Export",
+                        data: {
+                            filter: '',
+                            tcphien: $('#cmbTCPhien').val() || 0,
+                            trangThai: $('#cmbTTPhien').val() || 0,
+                            DateFrom: $('#GioBd').val(),
+                            DateTo: $('#GioKt').val(),
+                            DonViId: $('#cmbDonViID').val() || '',
+                            PhongBanId: $('#cmbPhongBan').val() || 0,
+                            isExportExcel: true
+                        },
+                        downloadType: 'Progress',
+                        ajaxLoadingSelector: '#loading'
+                    });
+            });
+
+            //Xuất báo cáo tuần theo mẫu công ty
+            $('#export_tuan_cty').bind('click', function () {
+                $.UnifiedExportFile(
+                    {
+                        action: "/Admin/PhienLV/Export_Cty",
+                        data: {
+                            filter: '',
+                            tcphien: $('#cmbTCPhien').val() || 0,
+                            trangThai: $('#cmbTTPhien').val() || 0,
+                            DateFrom: $('#GioBd').val(),
+                            DateTo: $('#GioKt').val(),
+                            DonViId: $('#cmbDonViID').val() || '',
+                            PhongBanId: $('#cmbPhongBan').val() || 0,
+                            isExportExcel: true
+                        },
+                        downloadType: 'Progress',
+                        ajaxLoadingSelector: '#loading'
+                    });
+            });
+
+            $('#btnexportBS').bind('click', function () {
+                $.UnifiedExportFile(
+                    {
+                        action: "/Admin/PhienLV/ExportBS",
+                        data: {
+                            DateFrom: $('#ExNgayBoSung').val(),
+                            isExportExcel: true
+                        },
+                        downloadType: 'Progress',
+                        ajaxLoadingSelector: '#loading'
+                    });
+            });
+
+            //Popup lịch báo cáo tuần công ty
+            $('#ExportTuan_Cty').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            //khai bao Popup cho nut them comment
+            $('#ExportBS').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            $("#ExNgayBoSung").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                value: new Date()
+            }).data("kendoDatePicker");
+
+            //Export bổ sung theo mẫu công ty
+            $('#btnexportBS_Cty').bind('click', function () {
+                $.UnifiedExportFile(
+                    {
+                        action: "/Admin/PhienLV/ExportBS_Cty",
+                        data: {
+                            DateFrom: $('#ExNgayBoSung_Cty').val(),
+                            DonViId: $('#cmbDonViID').val() || '',
+                            PhongBanId: $('#cmbPhongBan').val() || 0,
+                            isExportExcel: true
+                        },
+                        downloadType: 'Progress',
+                        ajaxLoadingSelector: '#loading'
+                    });
+            });
+
+            //khai bao Popup cho nut them comment
+            $('#ExportBS_Cty').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            $("#ExNgayBoSung_Cty").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                value: new Date()
+            }).data("kendoDatePicker");
+
+
+        });
+
+        function donvi_change(el) {
+            LoadPhongBanByDonVi(el.value);
+        }
+        function LoadPhongBanByDonVi(DonViId) {
+
+            $.ajax({
+                url: "/Admin/PhienLV/CmbPhongBan",
+                data: {
+                    DonViId: DonViId
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+
+                    $('#cmbPhongBan').html("");
+                    $('#cmbPhongBan').html(data);
+
+                }
+            });
+        }
+
+        function ExportBSModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+
+
+    </script>
+}

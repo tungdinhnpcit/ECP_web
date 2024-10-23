@@ -1,0 +1,304 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<link href="~/Scripts/AdminPanel/assets/vendor/select2/select2.css" rel="stylesheet" />
+<link href="~/Scripts/AdminPanel/assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" rel="stylesheet" />
+
+<style>
+    .table .actions-system-config a:hover {
+        color: #333;
+    }
+
+    .table .actions-system-config a {
+        display: inline-block;
+        margin-right: 5px;
+        color: #666;
+    }
+
+    .table .actions {
+        vertical-align: middle;
+    }
+
+    .value {
+        width: 430px;
+    }
+
+</style>
+
+<header class="page-header">
+    <h2>Cấu hình hệ thống</h2>
+</header>
+
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+
+        <div class="tabs">
+            <ul class="nav nav-tabs tabs-primary">
+                <li class="active">
+                    <a href="#cauhinh1" data-toggle="tab">Cấu hình 1</a>
+                </li>
+                <li>
+                    <a href="#cauhinh2" data-toggle="tab">Cấu hình 2</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="cauhinh1" class="tab-pane active">
+                    <section class="panel">
+                        <div class="panel-body">
+                            @*@{Html.RenderAction("ListWebConfig", "SystemConfig");}*@
+
+                            @if (ViewBag.AppSettings != null)
+                            {
+                                var appSettings = (System.Collections.Specialized.NameValueCollection)ViewBag.AppSettings;
+
+                                <table class="table table-bordered table-striped mb-none" id="datatable-editable">
+                                    <thead>
+                                        <tr>
+                                            <th>Từ khóa</th>
+                                            <th>Giá trị</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var key in appSettings.AllKeys)
+                                        {
+                                            <tr class="gradeA">
+                                                <td class="key">@key</td>
+                                                <td class="value">@appSettings[key]</td>
+                                                <td class="actions">
+                                                    <a href="#" class="on-default edit-row"><i class="fa fa-pencil"></i></a>
+                                                    <a href="#" class="on-default save-row"><i class="fa fa-save"></i></a>
+                                                    @*<a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>*@
+                                                    @*<a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a>*@
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </section>
+                </div>
+                <div id="cauhinh2" class="tab-pane">
+
+                    <section class="panel">
+                        <div class="panel-body">
+                            @*@{Html.RenderAction("ListWebConfig", "SystemConfig");}*@
+
+                            @if (ViewBag.SystemConfigs != null)
+                            {
+                                var systemConfigs = (IEnumerable<ECP_V2.DataAccess.SystemConfig>)ViewBag.SystemConfigs;
+
+                                <table class="table table-bordered table-striped mb-none" id="datatable-editable">
+                                    <thead>
+                                        <tr>
+                                            <th>Từ khóa</th>
+                                            <th>Giá trị</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var item in systemConfigs)
+                                        {
+                                            <tr class="gradeA">
+                                                <td class="name">@item.Name</td>
+                                                <td class="value">@item.Value</td>
+                                                <td class="actions-system-config">
+                                                    <a href="#" class="on-default edit-row"><i class="fa fa-pencil"></i></a>
+                                                    <a href="#" class="on-default save-row"><i class="fa fa-save"></i></a>
+                                                    @*<a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>*@
+                                                    @*<a href="#" class="on-default remove-row"><i class="fa fa-trash-o"></i></a>*@
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </section>
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JavaScriptOnePgae {
+    <script>
+        $(document).ready(function () {
+        
+            $('.actions a.edit-row').click(function () {
+
+                var elementValue = $(this).parent('.actions').siblings('.value');
+
+                if (!elementValue.has('input').length) {
+                    var input = $("<input>", {
+                        val: elementValue.text(),
+                        type: "text"
+                    });
+
+                    input.addClass('form-control');
+
+                    elementValue.html(input);
+                    input.focus();
+                    input.select();
+                } else {
+                    var input = elementValue.children('input');
+                    input.focus();
+                    input.select();
+                }
+            });
+
+            $('.actions a.save-row').click(function () {
+
+                var elementValue = $(this).parent('.actions').siblings('.value');
+                var elementKey = $(this).parent('.actions').siblings('.key');
+
+                var txtValue = elementValue.children('input');
+                var txtKey = elementKey.text();
+
+                if (txtValue == null) {
+                    return false;
+                }
+
+                if (txtValue.val() == '') {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Nhập giá trị từ khóa',
+                        type: 'error'
+                    });
+                    txtValue.focus();
+
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/SystemConfig/UpdateKeyWebConfig',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        key: txtKey,
+                        value: txtValue.val()
+                    }),
+                    success: function (data) {
+                        if (data.success) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Cập nhật thành công giá trị từ khóa',
+                                type: 'success'
+                            });
+
+                            elementValue.html(data.responseText);
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Cập nhật không thành công giá trị từ khóa',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Đã xảy ra lỗi',
+                            type: 'error'
+                        });
+                    }
+                });
+
+            });
+
+            $('.actions-system-config a.edit-row').click(function () {
+
+                var elementValue = $(this).parent('.actions-system-config').siblings('.value');
+
+                if (!elementValue.has('input').length) {
+                    var input = $("<input>", {
+                        val: elementValue.text(),
+                        type: "text"
+                    });
+
+                    input.addClass('form-control');
+
+                    elementValue.html(input);
+                    input.focus();
+                    input.select();
+                } else {
+                    var input = elementValue.children('input');
+                    input.focus();
+                    input.select();
+                }
+            });
+
+            $('.actions-system-config a.save-row').click(function () {
+
+                var elementValue = $(this).parent('.actions-system-config').siblings('.value');
+                var elementName = $(this).parent('.actions-system-config').siblings('.name');
+
+                var txtValue = elementValue.children('input');
+                var txtName = elementName.text();
+
+                if (txtValue == null) {
+                    return false;
+                }
+
+                if (txtValue.val() == '') {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Nhập giá trị từ khóa',
+                        type: 'error'
+                    });
+                    txtValue.focus();
+
+                    return false;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/SystemConfig/UpdateSystemConfig',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        name: txtName,
+                        value: txtValue.val()
+                    }),
+                    success: function (data) {
+                        if (data.success) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Cập nhật thành công giá trị từ khóa',
+                                type: 'success'
+                            });
+
+                            elementValue.html(data.responseText);
+
+                        } else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Cập nhật không thành công giá trị từ khóa',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Đã xảy ra lỗi',
+                            type: 'error'
+                        });
+                    }
+                });
+
+            });
+        });
+
+    </script>
+}

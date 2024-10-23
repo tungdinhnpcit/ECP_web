@@ -1,0 +1,19 @@
+﻿@model IEnumerable<string>
+
+
+@if (Model != null)
+{
+    <ul class="list-file-bak">
+
+        @foreach (var item in Model)
+        {
+            var file = Path.GetFileName(item);
+            string url = @"/" + item.Replace(HttpContext.Current.Request.PhysicalApplicationPath, String.Empty).Replace(@"\", "/");
+
+            <li>
+                <input type="radio" name="fileBackUp" value="@url" /> @file
+            </li>
+        }
+
+    </ul>
+}

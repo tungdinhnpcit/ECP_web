@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý danh mục rủi ro";
+    Layout = "~/Views/Shared/_LayoutAdminIndex.cshtml";
+}
+<input type="text" value="@Session["DonViID"]" id="txtbaseservice"  style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["PhongBanId"]" id="PhongBanId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["HoTen"]" id="HoTen" style="display:none">
+
+
+@*<h2>Quản lý danh mục rủi ro</h2>*@
+
+<button onclick="qlrr.Addrr()">Thêm mới</button>
+
+<table id="tbldanhmuc" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+    <thead>
+        <tr>           
+            <th style="width: 10%">Tên nhóm</th>
+            <th style="width: 10%">Thao tác</th>
+        </tr>
+    </thead>
+</table>
+
+
+
+@section scripts2 {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/quanlyruiro/js/service.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/util.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/model_dm_ruiro.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/qlrr.js"></script>
+}
+

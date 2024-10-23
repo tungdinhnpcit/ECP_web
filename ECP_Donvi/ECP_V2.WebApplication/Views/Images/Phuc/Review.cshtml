@@ -1,0 +1,419 @@
+﻿@using ECP_V2.DataAccess;
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="~/Content/mystyle.css" rel="stylesheet" />
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Thư viện Ảnh/Video
+            </div>
+        </div>
+    </div>
+</div>
+<div class="select-box">
+    @if (ViewBag.DonVi != null)
+    {
+        List<tblDonVi> donvi = ViewBag.DonVi;
+        <select class="donvi">
+            @if (donvi.Count > 1)
+            {
+                <option value="0">Tất cả đơn vị</option>
+            }
+            @foreach (var item in donvi)
+            {
+                if (donvi.Count == 1)
+                {
+                    <option value="@item.Id" selected>@item.TenDonVi</option>
+                }
+                else
+                {
+                    <option value="@item.Id">@item.TenDonVi</option>
+                }
+            }
+        </select>
+    }
+    @if (ViewBag.PhongBan != null)
+    {
+        List<tblPhongBan> phongban = ViewBag.PhongBan;
+        <select class="phongban">
+            @if (phongban.Count > 1)
+            {
+                <option value="0" data-donvi="0">Tất cả phòng ban</option>
+            }
+            @foreach (var item in phongban)
+            {
+                if (phongban.Count == 1)
+                {
+                    <option value="@item.Id" data-donvi="@item.MaDVi" selected>@item.TenPhongBan</option>
+                }
+                else
+                {
+                    <option value="@item.Id" data-donvi="@item.MaDVi">@item.TenPhongBan</option>
+                }
+            }
+        </select>
+    }
+    <select class="sapxep" id="sapxep">
+        <option value="0">Thời gian</option>
+        <option value="1">Phiên làm việc</option>
+        <option value="2">Nhân viên</option>
+        <option value="3">Đã có phiên</option>
+        <option value="4">Chưa có phiên</option>
+    </select>
+
+</div>
+<div class="clsg1" style="display: block;">
+    <div id="MainContent1">
+        <div id="Gallery1" class="box-img">
+            <div class="gallery-row">
+                @*@{Html.RenderAction("_GetListReview", "Images", new { donviid = 0, page = 0, pageSize = 20, sortOrder = "", filter = "" });}*@
+            </div>
+        </div>
+    </div>
+    <div class="mypadding">
+        <div class="dataTables_paginate paging_bs_normal">
+            <ul class="pagination">
+                <li class="prev"><a id="btnFirst" href="#sapxep"><span class="fa fa-chevron-left"></span></a></li>
+                <li class="next"><a id="btnLast" href="#sapxep"><span class="fa fa-chevron-right"></span></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="spopup">
+    <div class="slideItem">
+    </div>
+    <div class="scounter noselect">
+        1/1
+    </div>
+    <div class="sbottomControl">
+        <div class="sleft noselect"><</div>
+        <div class="sright noselect">></div>
+    </div>
+    <div class="sclose noselect">
+    </div>
+</div>
+<script type="text/javascript">
+    
+    setInterval(function () {
+        if ($(".files tr").length > 0) {
+            $(".upload-all").attr("style", "");
+            $(".upload-cancel").attr("style", "");
+        } else {
+            $(".upload-all").attr("style", "display:none;");
+            $(".upload-cancel").attr("style", "display:none;");
+        }
+    }, 800);
+    function loadImages() {
+        try {
+            var dvi = $(".donvi").val();
+            $('.gallery-row').load("/Images/_GetListReview?donviid=" + $(".donvi").val() + "&phongbanid=" + $(".phongban").val() + "&phienlvid=0&sort=" + $(".sapxep").val() + "&page=" + $(".load-listinfo").attr("data-page") + "&quantity=" + $(".load-listinfo").attr("data-quantity"));
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
+    loadImages();
+
+    function GetPage(strpage) {
+        var page = parseInt(strpage);
+        $(".load-listinfo").attr("data-page", page);
+        loadImages();
+    }
+    function CreatePagging() {
+        var itemsum = parseInt($(".load-listinfo").attr("data-sum"));
+        var currentpage = parseInt($(".load-listinfo").attr("data-page")) + 1;
+        if (itemsum > 8) {
+            $(".lipage").remove();
+            var pagecount = parseInt(itemsum / 8);
+            if (pagecount * 8 < itemsum) {
+                pagecount++;
+            }
+            for (var i = pagecount; i > 0; i--) {
+                var strcurrentpage = "";
+                if (i == currentpage) {
+                    strcurrentpage = "currentpage";
+                }
+                $(".prev").after('<li class="lipage"> <a href="javascript:GetPage(' + (i - 1) + ');" tabindex="0" class="paginate_active page-number-Current ' + strcurrentpage + '">' + (i) + '</a></li>');
+            }
+        } else {
+            $(".lipage").remove();
+        }
+    }
+    function changeDonVi(donviid) {
+        $(".phongban").val(0);
+        $(".phongban option").each(function () {
+            console.log($(this).attr("data-donvi"));
+            if (donviid == "0" || $(this).attr("data-donvi") == 0 || $(this).attr("data-donvi") == donviid) {
+                $(this).attr("style", "display:block");
+            } else {
+                $(this).attr("style", "display:none");
+            }
+        });
+    }
+    $(document).on('change', '.donvi', function () {
+        console.log($(this).val());
+        $(".load-listinfo").attr("data-page", 0);
+        changeDonVi($(this).val());
+        loadImages();
+    });
+    $(document).on('change', '.phongban', function () {
+        console.log($(this).val());
+        $(".load-listinfo").attr("data-page", 0);
+        loadImages();
+    });
+    $(document).on('change', '.sapxep', function () {
+        console.log($(this).val());
+        loadImages();
+    });
+    $("#btnFirst").click(function () {
+        var page = parseInt($(".load-listinfo").attr("data-page"));
+        if (page > 0) {
+            $(".load-listinfo").attr("data-page", page - 1);
+            loadImages();
+        }
+    });
+    $("#btnLast").click(function () {
+        var page = parseInt($(".load-listinfo").attr("data-page"));
+        if (!$(".nodata").length) {
+            $(".load-listinfo").attr("data-page", page + 1);
+            loadImages();
+        } else {
+            alert("Không còn ảnh/video.");
+        }
+    });
+    function GetImageItem(imageId) {
+        console.log(imageId);
+        var json = { "imageId": imageId }
+        try {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Gallery/GetMyImg",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    $(".list-img").prepend(data.ListImage);
+                    $(".box-img").prepend(data.SlideImage);
+                },
+                error: removeItemFailed
+            });
+        } catch (e) {
+
+        }
+    }
+    function SaveAllDes(idtemp) {
+        var notename = "txtnode" + idtemp;
+        var commentname = "txtcomment" + idtemp;
+        var tagname = "txttag" + idtemp;
+
+        var valuenote = $("#" + notename).val();
+        var valuecomment = $("#" + commentname).val();
+        var valuetagname = $("#" + tagname).val();
+
+        var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname };
+        console.log(json);
+        $.ajax({
+            type: "POST",
+            url: "/",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            dataType: "json",
+            success: function (data) {
+                UpdateInfoCompleted(1);
+                GetImageItem(idtemp);
+            },
+            error: UpdateInfoFailed
+        });
+        $("#row" + idtemp).remove();
+        ShowTable();
+    };
+    function ShowTable() {
+
+    };
+    function UpdateInfoCompleted(results) {
+
+    };
+    function UpdateInfoFailed(request, status, error) {
+        alert("ERROR");
+    };
+    function DeleteImage(idtemp) {
+        var r = confirm("Bạn có muốn xóa ảnh?");
+        if (r == true) {
+            var json = { "id": idtemp };
+            $.ajax({
+                type: "POST",
+                url: "/Images/Delete",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data.Message);
+                    $("#gr_" + idtemp).remove();
+                    showResponseX(true);
+                },
+                error: removeItemFailed
+            });
+            //$("#row" + idtemp).remove();
+        }
+       
+    };
+    function ShowAllDes(idtemp) {
+        $("#txtnode" + idtemp).css("border", "1px");
+        $("#txtcomment" + idtemp).css("border", "1px");
+        $("#txttag" + idtemp).css("border", "1px");
+
+        $("#txtnode" + idtemp).css("background", "yellowgreen");
+        $("#txtcomment" + idtemp).css("background", "yellowgreen");
+        $("#txttag" + idtemp).css("background", "yellowgreen");
+
+        $("#btnSaveAllDes" + idtemp).css("display", "block");
+        $("#btnShowAllDes" + idtemp).css("display", "none");
+    };
+    function SaveAllDesInTable(idtemp) {
+        var notename = "txtnode" + idtemp;
+        var commentname = "txtcomment" + idtemp;
+        var tagname = "txttag" + idtemp;
+
+        var valuenote = $("#" + notename).val();
+        var valuecomment = $("#" + commentname).val();
+        var valuetagname = $("#" + tagname).val();
+        var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname };
+        $.ajax({
+            type: "POST",
+            url: "/Images/Update",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            dataType: "json",
+            success: UpdateInfoCompleted,
+            error: UpdateInfoFailed
+        });
+        $("#txtnode" + idtemp).css("border", "0px");
+        $("#txtcomment" + idtemp).css("border", "0px");
+        $("#txttag" + idtemp).css("border", "0px");
+        $("#txtnode" + idtemp).css("background", "transparent");
+        $("#txtcomment" + idtemp).css("background", "transparent");
+        $("#txttag" + idtemp).css("background", "transparent");
+
+        $("#btnSaveAllDes" + idtemp).css("display", "none");
+        $("#btnShowAllDes" + idtemp).attr("style", "");
+    };
+    function removeItemCompleted(results) {
+        //alert("Xóa ảnh thành công!");
+    };
+    function removeItemFailed(request, status, error) {
+        alert(request + status + error);
+    };
+    function showResponseX(responseText) {
+
+        if (responseText) {
+            showSuccess('Cập nhật thành công');
+        }
+        else
+            showError('Có lỗi xảy ra');
+
+        setTimeout("hideTop()", 3000);
+        unloading();
+    }
+
+    function mySlideShow(index) {
+        console.log(index);
+        console.log($(".slide-item-" + index).attr("data-isvideo"));
+        if ($(".slide-item-" + index).attr("data-isvideo") == "1") {
+            var getSrc = $(".slide-item-" + index).attr("data-image");
+            var getVideoSrc = $(".slide-item-" + index).attr("data-video");
+            //$(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+            $(".slideItem").html('<video width="100%" height="100%" controls="controls" autoplay> <source src="' + getVideoSrc + '" type="video/mp4"> Your browser does not support the video tag. </video>');
+            $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+        }
+        else {
+            var getSrc = $(".slide-item-" + index).attr("data-image");
+            //$(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+            $(".slideItem").html("<img src='" + getSrc + "' class='img-slide' />");
+            $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+        }
+    }
+
+    var slideCurrent = 0;
+    $(document).on('click', '.gallery-item-show', function () {
+        console.log($(this).attr("data-image"));
+        var getIndex = $(this).attr("data-index");
+        slideCurrent = parseInt(getIndex);
+        $(".spopup").fadeIn(600);
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sright', function () {
+        if (slideCurrent == $(".gallery-row .slide-item").length - 1) {
+            slideCurrent = 0;
+        }
+        else {
+            slideCurrent++;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sleft', function () {
+        if (slideCurrent == 0) {
+            slideCurrent = $(".gallery-row .slide-item").length - 1;
+        } else {
+            slideCurrent--;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sclose', function () {
+        $(".slideItem").html('');
+        $(".spopup").fadeOut(400);
+    });
+
+  
+
+
+</script>
+
+<script type="text/javascript">
+
+    var WIDTHBODY = $(window).width();
+
+    function setHeight() {
+        var scwidth = $(window).width();
+        if (WIDTHBODY != scwidth) {
+            WIDTHBODY = scwidth;
+            if (scwidth > 1024) {
+                //$(".imgslide").css("height", "320px");
+            };
+            if (scwidth > 720 && scwidth <= 1024) {
+                //$(".imgslide").css("height", "225px");
+            };
+            if (scwidth > 480 && scwidth <= 720) {
+                //$(".imgslide").css("height", "150px");
+            };
+            if (scwidth <= 480) {
+                //$(".imgslide").css("height", "60px");
+            };
+        }
+    };
+
+    function slideactive(gr) {
+        //ShowTable();
+        document.getElementById("listimg" + gr.toString()).style.display = "none";
+        document.getElementById("MainContent" + gr.toString()).style.display = "block";
+    };
+
+    function listactive(gr) {
+        document.getElementById("listimg" + gr.toString()).style.display = "block";
+        document.getElementById("MainContent" + gr.toString()).style.display = "none";
+    };
+
+    $(document).ready(function () {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            Code.photoSwipe('a', '#Gallery1');
+        }, false);
+
+        window.setInterval("setHeight()", 500);
+    });
+</script>

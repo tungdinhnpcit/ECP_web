@@ -1,0 +1,94 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.tblBaoCaoCuoiNgay>
+
+@if (Model != null)
+{
+
+    int i = 0;
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+
+    <div class="table-responsive">
+        <table cellspacing="0" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tiêu đề</th>
+                    <th>Tổng số công việc</th>
+                    <th>Tổng số PTT phát ra</th>
+                    <th>Tổng số PCT phát ra</th>
+                    <th>Tổng số LCT phát ra</th>
+                    <th>Số công việc đã gửi ảnh kiểm soát</th>
+                    <th>Số đơn vị kiểm tra trực tiếp</th>
+                    <th>Số biên bản</th>
+                    <th>Kết quả kiểm tra</th>
+                    <th>Số công việc không đạt</th>
+                    <th>Số công việc kết thúc</th>
+                    <th>Số vi phạm</th>
+                    <th>Số đề nghị</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model.GroupBy(x => x.DonViId))
+                {
+                    var donVi = donViRepository.GetById(group.Key);
+
+                    if (donVi != null)
+                    {
+                        <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
+                            <td colspan="15">
+                                <span class="h5">@donVi.TenDonVi</span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
+                            <td colspan="15">
+                                <span class="h5"></span>
+                            </td>
+                        </tr>
+                    }
+
+
+                    foreach (var group2 in group.GroupBy(x => x.NgayTao).OrderBy(o => o.Key))
+                    {
+                        <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
+                            <td colspan="15">
+                                <span class="h5">@string.Format("{0: dd/MM/yyyy}", group2.Key)</span>
+                            </td>
+                        </tr>
+                        foreach (var item in group2)
+                        {
+                            i++;
+                            int tongSoCongViec = (item.So_CV_KH ?? 0) + (item.So_CV_BS ?? 0) + (item.So_CV_Ko_KH ?? 0);
+
+
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.TieuDe</td>
+                                <td>@tongSoCongViec</td>
+                                <td>@item.Tong_PTT</td>
+                                <td>@item.Tong_PCT</td>
+                                <td>@item.Tong_LCT</td>
+                                <td>@item.So_Dvi_GuiAnh</td>
+                                <td>@item.So_Dvi_Ktra</td>
+                                <td>@item.Kq_SoBB</td>
+                                <td>@item.Kq_KiemTra</td>
+                                <td>@item.Kq_Cv_KoDat</td>
+                                <td>@item.Kq_Cv_KetThuc</td>
+                                <td>@item.ViPham</td>
+                                <td>@item.DeNghi</td>
+                            </tr>
+                                                    }
+                                                }
+                                            }
+            </tbody>
+        </table>
+    </div>
+                                            }
+                                            else
+                                            {
+                                        <h2 class="text-danger text-center">
+                                            Chưa có dữ liệu!
+                                        </h2>
+                                    }
+

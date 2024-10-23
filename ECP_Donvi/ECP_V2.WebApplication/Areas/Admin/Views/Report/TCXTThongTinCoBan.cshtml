@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ECP_V2.WebApplication.Models.TongHopChamDiemModels>
+
+@if (Model != null && Model.Count() > 0)
+{
+    <script>
+        $(".tongsotieuchichuadat").text('@(Model.First().SoTieuChiChuaDat)');
+        $(".tongsodiembitru").text('@(Model.First().TongDiemTru>100?100: Model.First().TongDiemTru)');
+    </script>
+}

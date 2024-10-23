@@ -1,0 +1,118 @@
+﻿
+@{ECP_V2.Business.Repository.PhienLVRepository plvR = new ECP_V2.Business.Repository.PhienLVRepository();
+ECP_V2.Business.Repository.DonViRepository donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+try
+{
+    var donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(donviId);
+    var lstKH = plvR.TKPhienLVTheoTuan_KH(donviId);
+    var lstBS = plvR.TKPhienLVTheoTuan_BS(donviId);
+    var lstDX = plvR.TKPhienLVTheoTuan_DX(donviId);
+
+    int step = 5;
+
+    if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+    {
+        step = 30;
+    }
+
+<div id="chart1" style="width: 100%;"></div>
+<script type="text/javascript">
+
+    var data1 = [];
+    var data2 = [];
+    var data3 = [];
+
+    @foreach(var item in lstKH)
+    {
+        @:data1.push(@item);
+    }
+
+    @foreach (var item in lstBS)
+    {
+        @:data2.push(@item);
+    }
+
+    @foreach (var item in lstDX)
+    {
+        @:data3.push(@item);
+    }
+
+    var series = [{
+        name: "Đăng Ký Theo Kế Hoạch",
+        data: data1,
+
+        // Line chart marker type
+        markers: { type: "square" }
+    }, {
+        name: "Đăng Ký Bổ Sung",
+        data: data2
+    }, {
+        name: "Đăng Ký Đột Xuất",
+        data: data3
+    }];
+
+    function createChart() {
+        $("#chart1").kendoChart({
+            title: {
+                text: "Biểu Đồ Lịch Làm Việc Theo Tuần"
+            },
+            legend: {
+                position: "bottom"
+            },
+            seriesDefaults: {
+                type: "column",
+                stack: true
+            },
+            series: series,
+            seriesColors: ["blue", "red", "green"],
+            valueAxis: {
+                majorUnit: 1,
+                line: {
+                    visible: false
+                },
+                labels: {
+                    step: @step
+                }
+
+            },
+            categoryAxis: {
+                categories: ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"],
+                majorGridLines: {
+                    visible: false
+                }
+            },
+            tooltip: {
+                visible: true,
+                format: "{0} phiên làm việc"
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        createChart();
+        $(document).bind("kendo:skinChange", createChart);
+        $(".options").bind("change", refresh);
+    });
+
+    function refresh() {
+        var chart = $("#chart1").data("kendoChart"),
+            type = $("input[name=seriesType]:checked").val(),
+            stack = $("#stack").prop("checked");
+
+        for (var i = 0, length = series.length; i < length; i++) {
+            series[i].stack = stack;
+            series[i].type = type;
+        };
+
+        chart.setOptions({
+            series: series
+        });
+    }
+        </script>
+
+
+
+    }
+    catch { }
+}

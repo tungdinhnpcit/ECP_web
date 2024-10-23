@@ -1,0 +1,828 @@
+﻿@model ECP_V2.WebApplication.Models.BaoCaoCuoiNgayModel
+@{
+    ViewBag.Title = "Cập nhật báo cáo cuối ngày";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    var lstDoc = (List<ECP_V2.DataAccess.tblChiTietBaoCaoCuoiNgay>)ViewBag.lstChiTietBC;
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(donviId);
+    var donViCha = donViRepository.GetById(donVi.DviCha);
+
+}
+
+<script src="~/Scripts/validation/jquery.form.min.js"></script>
+<script src="~/Scripts/validation/jquery.validate.min.js"></script>
+<script src="~/Scripts/validation/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+
+    var IdDelete = 0;
+
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        $.validator.unobtrusive.parse($('#frmEdit'));
+        $('#frmEdit').submit(function () {
+            // inside event callbacks 'this' is the DOM element so we first
+            // wrap it in a jQuery object and then invoke ajaxSubmit
+            if ($(this).valid()) {
+                //for (instance in CKEDITOR.instances) {
+                //    CKEDITOR.instances[instance].updateElement();
+                //}
+
+                $('#btnEditBaoCao').prop('disabled', true);
+
+                $(this).ajaxSubmit(options);
+            }
+
+            // !!! Important !!!
+            // always return false to prevent standard browser submit and page navigation
+            return false;
+        });
+
+        var x = 0;
+        $('.classSum').bind('input', function () {
+
+            var kh = 0;
+            var bs = 0;
+            var dx = 0;
+            var ct = 0;
+
+            if ($('#So_CV_KH').val() != '' && parseInt($('#So_CV_KH').val()) > 0) {
+                kh = parseInt($('#So_CV_KH').val());
+            }
+
+            if ($('#So_CV_BS').val() != '' && parseInt($('#So_CV_BS').val()) > 0) {
+                bs = parseInt($('#So_CV_BS').val());
+            }
+
+            if ($('#So_CV_DX').val() != '' && parseInt($('#So_CV_DX').val()) > 0) {
+                dx = parseInt($('#So_CV_DX').val());
+            }
+
+            if ($('#txtLenh_CT').val() != '' && parseInt($('#txtLenh_CT').val()) > 0) {
+                ct = parseInt($('#txtLenh_CT').val());
+            }
+
+            if (kh == 0 && bs == 0 && ct == 0) {
+                $("#lbTongSoCviec").text('');
+            }
+            else {
+                if (kh + bs - ct > 0) {
+                    $("#lbTongSoCviec").text(kh + bs - ct);
+                } else {
+                    $("#lbTongSoCviec").text('0');
+                }
+            }
+
+            //if ($(this).val() == '') {
+            //    x = 0;
+            //    $("#lbTongSoCviec").text('');
+            //} else {
+            //    x = +x + +$(this).val();
+            //    $("#lbTongSoCviec").text(x);
+            //}
+        });
+
+        $('#Kq_Cv_KetThuc').bind('input', function () {
+            $("#lbSoCviecKT").text($(this).val());
+        });
+        $('#Tong_PCT').bind('input', function () {
+            $("#lbSoTong_PCT").text($(this).val());
+        });
+        $('#Tong_LCT').bind('input', function () {
+            $("#lbSoTong_LCT").text($(this).val());
+        });
+
+        $('a#btnDelete').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+            IdDelete = $(this).closest('tr').data("id");
+        });
+
+        $('#btnCapQuanLyDienLuc').click(function () {
+
+            var thutu = ($('tr[data-dienluc]').length || 0) + 1;
+            var row = '<tr data-dienluc="' + thutu + '" data-id="0" data-type="1">' +
+                '<td>' + thutu + '</td>' +
+                '<td><input type="text" name="txtHoTen" id="txtHoTen" class="form-control" /></td>' +
+                '<td><input type="text" name="txtChucVu" id="txtChucVu" class="form-control" /></td>' +
+                '<td><input type="text" name="txtDonVi" id="txtDonVi" class="form-control" /></td>' +
+                '<td><input type="text" name="txtYKien" id="txtYKien" class="form-control" /></td>' +
+                '<td>' +
+                    '<a id="btnSaveDienLuc" title="Cập nhật" class="on-editing save-row"><i class="fa fa-save" style="font-size: 25px; cursor: pointer"></i></a>' +
+                    '<a id="btnDelete" href="#modalAnimDelete" title="Xóa ý kiến kiểm soát" class="on-default remove-row delete" style="display: none;"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;"></i></a>' +
+                '</td>' +
+                '</tr>';
+            var parentRow = $(this).closest('tr');
+
+            $(row).insertBefore(parentRow);
+
+            $('a#btnDelete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).closest('tr').data("id");
+            });
+
+        });
+
+        $('#btnCapChiHuyTrucTiep').click(function () {
+
+            var thutu = ($('tr[data-chihuy]').length || 0) + 1;
+            var row = '<tr data-chihuy="' + thutu + '" data-id="0" data-type="2">' +
+                '<td>' + thutu + '</td>' +
+                '<td><input type="text" name="txtHoTen" id="txtHoTen" class="form-control" /></td>' +
+                '<td><input type="text" name="txtChucVu" id="txtChucVu" class="form-control" /></td>' +
+                '<td><input type="text" name="txtDonVi" id="txtDonVi" class="form-control" /></td>' +
+                '<td><input type="text" name="txtYKien" id="txtYKien" class="form-control" /></td>' +
+                '<td>' +
+                '<a id="btnSaveChiHuy" title="Cập nhật" class="on-editing save-row"><i class="fa fa-save" style="font-size: 25px; cursor: pointer"></i></a>' +
+                '<a id="btnDelete" href="#modalAnimDelete" title="Xóa ý kiến kiểm soát" class="on-default remove-row delete" style=" display: none;"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;"></i></a>' +
+                '</td>' +
+                '</tr>';
+            var parentRow = $(this).closest('tr');
+
+            $(row).insertBefore(parentRow);
+
+            $('a#btnDelete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).closest('tr').data("id");
+            });
+        });
+
+
+        $('body').on('click', '#btnSaveDienLuc', function () {
+            var $this = $(this);
+            var parentRow = $(this).closest('tr');
+            var hoTen = parentRow.find('#txtHoTen').val();
+            var chucVu = parentRow.find('#txtChucVu').val();
+            var donVi = parentRow.find('#txtDonVi').val();
+            var yKien = parentRow.find('#txtYKien').val();
+            var type = parentRow.data('type');
+
+            if (hoTen == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Họ tên không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (chucVu == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chức vụ không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (donVi == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Đơn vị không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (yKien == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Ý kiến không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/BaoCaoCuoiNgay/CreateKiemSoat',
+                data: JSON.stringify({
+                    Hoten: hoTen,
+                    Chucvu: chucVu,
+                    TenDonVi: donVi,
+                    NoiDung: yKien,
+                    BaoCaoCuoiNgayId: '@Model.Id',
+                    Type: type
+                }),
+                dataType: "json",
+                beforeSend: function () {
+                    $this.hide();
+                },
+                success: function (data) {
+                    if (data.success) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Thêm ý kiến kiểm soát thành công',
+                            type: 'success'
+                        });
+
+                        parentRow.find('a.delete').show();
+                        parentRow.attr('data-id', data.id);
+                        parentRow.find('input').attr('readonly', 'readonly');
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Lỗi : ' + data.responseText,
+                            type: 'error'
+                        });
+
+                        $this.show();
+                    }
+                },
+                error: function (e) {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Đã có lỗi xảy ra',
+                        type: 'error'
+                    });
+
+                    $this.show();
+                }
+
+            });
+        });
+
+
+        $('body').on('click', '#btnSaveChiHuy', function () {
+
+            var $this = $(this);
+            var parentRow = $(this).closest('tr');
+            var hoTen = parentRow.find('#txtHoTen').val();
+            var chucVu = parentRow.find('#txtChucVu').val();
+            var donVi = parentRow.find('#txtDonVi').val();
+            var yKien = parentRow.find('#txtYKien').val();
+            var type = parentRow.data('type');
+
+            if (hoTen == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Họ tên không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (chucVu == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chức vụ không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (donVi == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Đơn vị không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            if (yKien == '') {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Ý kiến không được để trống',
+                    type: 'error'
+                });
+
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/BaoCaoCuoiNgay/CreateKiemSoat',
+                data: JSON.stringify({
+                    Hoten: hoTen,
+                    Chucvu: chucVu,
+                    TenDonVi: donVi,
+                    NoiDung: yKien,
+                    BaoCaoCuoiNgayId: '@Model.Id',
+                    Type: type
+                }),
+                dataType: "json",
+                beforeSend: function () {//alert(id);
+                    $this.hide();
+                },
+                success: function (data) {
+                    if (data.success) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Thêm ý kiến kiểm soát thành công',
+                            type: 'success'
+                        });
+
+                        parentRow.find('a.delete').show();
+                        parentRow.attr('data-id', data.id);
+                        parentRow.find('input').attr('readonly', 'readonly');
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Lỗi : ' + data.responseText,
+                            type: 'error'
+                        });
+
+                        $this.show();
+                    }
+                },
+                error: function (e) {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Đã xảy ra lỗi',
+                        type: 'error'
+                    });
+
+                    $this.show();
+                }
+
+            });
+        });
+
+    });
+
+    var options = {
+        // target element(s) to be updated with server response
+        beforeSubmit: showRequest,  // pre-submit callback
+        success: showResponse,  // post-submit callback
+        dataType: 'json',
+        resetForm: false
+    };
+
+    function showRequest(formData, jqForm, options) {
+        return true;
+    }
+
+    function showResponse(responseText, statusText, xhr, $form) {
+        //alert(responseText + " " + statusText);
+        var tmp = responseText;
+        if (tmp == "Sửa bản ghi thành công!") {
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Sửa thành công báo cáo',
+                type: 'success'
+            });
+
+            window.location.href = '@Url.Action("Index","BaoCaoCuoiNgayCongTy")';
+        }
+        else {
+            new PNotify({
+                title: 'Thông báo lỗi!',
+                text: 'Không sửa được báo cáo: ' + responseText,
+                type: 'error'
+            });
+
+            $('#btnEditBaoCao').prop('disabled', false);
+        }
+
+    }
+
+    function DeleteModalDismiss() {
+        $.magnificPopup.close();
+    }
+
+    function DeleteModalConfirm() {
+        if (IdDelete != 0) {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: '/BaoCaoCuoiNgay/DeleteKiemSoat',
+                data:
+                    {
+                        "IdKiemSoat": IdDelete,
+                    },
+                dataType: "json",
+                beforeSend: function () {//alert(id);
+                },
+                success: function (data) {
+                    if (data.success) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Xóa ý kiến kiểm soát thành công',
+                            type: 'success'
+                        });
+
+                        $('tr[data-id="' + IdDelete + '"]').remove();
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Lỗi : ' + data.responseText,
+                            type: 'error'
+                        });
+                    }
+                }
+
+            });
+        }
+
+        $.magnificPopup.close();
+    }
+
+</script>
+
+<!-- Modal Animation -->
+<div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa ý kiến kiểm soát này ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" onclick="DeleteModalDismiss()" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<h1>
+    Sửa thông tin báo cáo
+</h1>
+@using (Html.BeginForm("Update", "BaoCaoCuoiNgayCongTy", FormMethod.Post, new { @class = "form-horizontal form-bordered", role = "form", id = "frmEdit" }))
+{
+    @Html.HiddenFor(x => x.Id)
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="warning-area">
+                @Html.ValidationSummary(true)
+            </div>
+        </header>
+        <div class="panel-body" style="font-family:'Times New Roman';background-color:#FFF;font-size:15px;">
+            <div class="row">
+                <div class="pull-left text-center" style="margin-left:5px;">
+
+                    @if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+                    {
+                        if (donViCha != null)
+                        {
+                            <p>@donViCha.TenDonVi</p>
+                        }
+
+                        <b style="text-decoration: underline">PHÒNG AN TOÀN</b>
+                    }
+                    else
+                    {
+                        if (donViCha != null)
+                        {
+                            <p>@donViCha.TenDonVi</p>
+                        }
+
+                        <b style="text-decoration: underline">@donVi.TenDonVi</b>
+                    }
+                </div>
+                <div class="pull-right text-center" style="margin-right:5px;">
+                    <b>CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</b>
+                    <br />
+                    <b style="text-decoration:solid;text-decoration: underline">Độc lập – Tự do – Hạnh phúc</b>
+                    <br />
+                    <p>.............., ngày @(Model.NgayBaoCao.HasValue ? Model.NgayBaoCao.Value.ToString("dd") : "") tháng @(Model.NgayBaoCao.HasValue ? Model.NgayBaoCao.Value.ToString("MM") : "") năm @(Model.NgayBaoCao.HasValue ? Model.NgayBaoCao.Value.ToString("yyyy") : "")</p>
+                </div>
+            </div>
+            <div class="row">
+                <h3 class="text-center">
+                    <b>BÁO CÁO</b>
+                    <br />
+                    <b style="line-height:2">Kiểm tra kiểm soát công việc ngày</b>
+                    <br />
+                    @if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+                    {
+                        <b style="line-height:2;font-weight:normal">Kính gửi: Trưởng ban an toàn Tổng Công ty điện lực miền Bắc</b>
+                        <br />
+                        <b style="line-height:2;font-weight:normal">Thực hiện công điện số 110/CĐ-EVN<i>NPC</i>-AT ngày 05/12/2016 của Tổng Công ty điện lực miền Bắc. Phòng An toàn @donVi.TenDonVi báo cáo Trưởng ban như sau:</b>
+                    }
+                    else
+                    {
+                        <b style="line-height:2;font-weight:normal">Kính gửi: Trưởng phòng an toàn @(donViCha != null ? donViCha.TenDonVi : "")</b>
+                        <br />
+                        <b style="line-height:2;font-weight:normal">Thực hiện công điện số 110/CĐ-EVN<i>NPC</i>-AT ngày 05/12/2016 của Tổng Công ty điện lực miền Bắc. Phòng An toàn @donVi.TenDonVi báo cáo Trưởng phòng như sau:</b>
+                    }
+                </h3>
+            </div>
+            <div class="row" style="padding:0px 30px;">
+                <div class="row">
+                    <b>I/. Kết quả kiểm tra kiểm soát của đơn vị: (Điện lực, Phân xưởng...)</b>
+                </div>
+                <div class="row">
+                    @{ ViewBag.TongSoSviec = (Model.So_CV_KH ?? 0) + (Model.So_CV_BS ?? 0) + (Model.So_CV_DX ?? 0) - (Model.So_CV_Ko_KH ?? 0); }
+                    - Tổng số công việc thực hiện tại đơn vị là: <label id="lbTongSoCviec" style="color:green;font-size:18px;font-weight:bold;">@ViewBag.TongSoSviec</label>
+                    Phiên làm việc, trong đó:
+                </div>
+                <div class="row">
+                    + Số công việc theo kế hoạch tuần đã đăng ký:
+                    @Html.TextBoxFor(p => p.So_CV_KH, new { @class = "numeric-only classSum", id = "So_CV_KH", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    + Số công việc bổ sung ngày:
+                    @Html.TextBoxFor(p => p.So_CV_BS, new { @class = "numeric-only classSum", id = "So_CV_BS", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    + Số công việc đột xuất ngày:
+                    @Html.TextBoxFor(p => p.So_CV_DX, new { @class = "numeric-only classSum", id = "So_CV_DX", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    + Số công việc hủy bỏ, không thực hiện theo kế hoạch đã đăng ký: @Html.TextBoxFor(p => p.So_CV_Ko_KH, new { @class = "numeric-only classSum", id = "txtLenh_CT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    - Tổng số PTT phát ra: @Html.TextBoxFor(p => p.Tong_PTT, new { @class = "numeric-only", id = "Tong_PTT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    , số PTT được kiểm tra, kiểm soát:
+                    <label id="lbSoTong_PTT">@Model.Tong_PTT</label>
+                </div>
+                <div class="row">
+                    - Tổng số PCT phát ra:
+                    @Html.TextBoxFor(p => p.Tong_PCT, new { @class = "numeric-only", id = "Tong_PCT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    , số PCT được kiểm tra, kiểm soát:
+                    <label id="lbSoTong_PCT">@Model.Tong_PCT</label>
+                </div>
+                <div class="row">
+                    - Tổng số LCT phát ra:
+                    @Html.TextBoxFor(p => p.Tong_LCT, new { @class = "numeric-only", id = "Tong_LCT", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    , số LCT được kiểm tra, kiểm soát:
+                    <label id="lbSoTong_LCT">@Model.Tong_LCT</label>
+                </div>
+                <div class="row">
+                    - Số phiên làm việc đã gửi ảnh lên phần mềm quản lý ATLĐ:
+                    @Html.TextBoxFor(p => p.So_Dvi_GuiAnh, new { @class = "numeric-only", id = "So_Dvi_GuiAnh", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" }) /
+                    @Html.TextBoxFor(p => p.So_Dvi_ChuaGuiAnh, new { @class = "numeric-only", id = "So_Dvi_ChuaGuiAnh", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" }) /
+                    @Html.TextBoxFor(p => p.Tong_So_PhienLV, new { @class = "numeric-only", id = "Tong_So_PhienLV", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+
+                <div class="row">
+                    - Số phiên làm việc cập nhật thêm ảnh của ngày hôm trước:
+                    @Html.TextBoxFor(p => p.So_Dvi_GuiThemAnh, new { @class = "numeric-only", id = "So_Dvi_GuiThemAnh", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" }) /
+                    @Html.TextBoxFor(p => p.Tong_So_PhienLV_ChuaGuiAnh_NgayHomTruoc, new { @class = "numeric-only", id = "Tong_So_PhienLV_ChuaGuiAnh_NgayHomTruoc", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+                <div class="row">
+                    @if ((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM"))
+                    {
+                        @Html.Raw("- Phòng An toàn Công ty:")
+                    }
+                    else
+                    {
+                        @Html.Raw("- Phòng An toàn Điện lực:")
+                    }
+                </div>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;Kết quả kiểm tra trực tiếp tại đơn vị: @Html.TextBoxFor(p => p.So_Dvi_Ktra, new { @class = "numeric-only", id = "So_Dvi_Ktra", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                </div>
+
+                @*<div class="row">
+                        @Html.TextAreaFor(p => p.ChiTietDviKtra, new { @rows = 5, id = "ChiTietDviKtra", @placeholder = ".........", @style = "border:none;width:30%;" })
+                    </div>*@
+                @*<div class="row">
+                        Kết quả:
+                    </div>*@
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;+ Lập  @Html.TextBoxFor(p => p.Kq_SoBB, new { @class = "numeric-only", id = "Kq_SoBB", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    biên bản
+                </div>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;+ Kiểm tra @Html.TextBoxFor(p => p.Kq_KiemTra, new { @class = "numeric-only", id = "Kq_KiemTra", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    PATCTC và BPAT, có @Html.TextBoxFor(p => p.Kq_Cv_KoDat, new { @class = "numeric-only", id = "Kq_Cv_KoDat", @placeholder = ".........", @style = "border:none;width:5%;height: 25px;" })
+                    PATCTC và BPAT không đạt yêu cầu, phương án xử lý.
+                </div>
+                @*<div class="row">
+                        - Công tác kiểm tra, kiểm soát của lãnh đạo đơn vị và KTVATCT được thực hiện tốt/không tốt
+                    </div>
+                    <div class="row">
+                        , có &nbsp;&nbsp;&nbsp;
+                        @Html.TextBoxFor(p => p.Kq_Cv_KetThuc, new { @class = "numeric-only", id = "Kq_Cv_KetThuc", @placeholder = "..............", @style = "border:none;width:5%;height: 25px;" })
+                        / <label id="lbSoCviecKT">@Model.Kq_Cv_KetThuc</label>
+                        công việc đã kết thúc.
+                    </div>
+                    <div class="row">
+                        II/. Những vi phạm,  tồn tại qua một ngày làm việc:
+                    </div>
+                    <div class="row">
+                        - @Html.TextAreaFor(p => p.ViPham, new { @rows = 5, id = "ViPham", @placeholder = ".........", @style = "border:none;width:30%;" })
+                    </div>
+                    <div class="row">
+                        III/. Những đề nghị,  tồn tại qua một ngày làm việc:
+                    </div>
+                    <div class="row">
+                        - @Html.TextAreaFor(p => p.DeNghi, new { @rows = 5, id = "DeNghi", @placeholder = ".........", @style = "border:none;width:30%;" })
+                    </div>*@
+
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;Kết quả kiểm tra, kiểm soát qua điện thoại:
+
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">TT</th>
+                                    <th style="text-align: center;">Họ Và Tên</th>
+                                    <th style="text-align: center;">Chức vụ</th>
+                                    <th style="text-align: center;">Đơn vị</th>
+                                    <th style="text-align: center;">Tồn tại, ý kiến đề xuất</th>
+                                    <th width="50px">Thao tác</th>
+                                </tr>
+                            </thead>
+
+                            @{
+                                var kiemSoatRepository = new ECP_V2.Business.Repository.KiemSoatDienThoaiRepository();
+                                var capDienLuc = kiemSoatRepository.ListByBaoCaoCuoiNgayId(Model.Id).Where(x => x.Type == 1).ToList();
+                                var capChiHuy = kiemSoatRepository.ListByBaoCaoCuoiNgayId(Model.Id).Where(x => x.Type == 2).ToList();
+                            }
+
+                            @if (capDienLuc != null && capDienLuc.Count > 0)
+                            {
+                                int i = 0;
+
+                                foreach (var item in capDienLuc)
+                                {
+
+                                    i++;
+
+                                    <tr data-dienluc="@i" data-type="@item.Type" data-id="@item.Id">
+                                        <td>@i</td>
+                                        <td><input type="text" name="Hoten" id="txtHoTen" class="form-control" readonly value="@item.Hoten" /></td>
+                                        <td><input type="text" name="Chucvu" id="txtChucVu" class="form-control" readonly value="@item.Chucvu" /></td>
+                                        <td><input type="text" name="Donvi" id="txtDonVi" class="form-control" readonly value="@item.TenDonVi" /></td>
+                                        <td><input type="text" name="Noidung" id="txtYKien" class="form-control" readonly value="@item.NoiDung" /></td>
+                                        <td>
+                                            <a id="btnSaveDienLuc" title="Cập nhật" class="on-editing save-row"><i class="fa fa-save" style="font-size: 25px; cursor: pointer; display: none;"></i></a>
+                                            <a id="btnDelete" href="#modalAnimDelete" title="Xóa ý kiến kiểm soát" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            <tr id="cap-quan-ly-dien-luc">
+                                <td colspan="4">
+                                    Cấp quản lý Điện lực &nbsp;&nbsp; <a href="javascript:;" class="btn btn-primary" id="btnCapQuanLyDienLuc" data-tr="#cap-quan-ly-dien-luc"><i class="fa fa-plus"></i> Thêm</a>
+                                </td>
+
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            @if (capChiHuy != null && capChiHuy.Count > 0)
+                            {
+                                int i = 0;
+
+                                foreach (var item in capChiHuy)
+                                {
+
+                                    i++;
+
+                                    <tr data-chihuy="@i" data-type="@item.Type" data-id="@item.Id">
+                                        <td>@i</td>
+                                        <td><input type="text" name="Hoten" id="txtHoTen" class="form-control" readonly value="@item.Hoten" /></td>
+                                        <td><input type="text" name="Chucvu" id="txtChucVu" class="form-control" readonly value="@item.Chucvu" /></td>
+                                        <td><input type="text" name="Donvi" id="txtDonVi" class="form-control" readonly value="@item.TenDonVi" /></td>
+                                        <td><input type="text" name="Noidung" id="txtYKien" class="form-control" readonly value="@item.NoiDung" /></td>
+                                        <td>
+                                            <a id="btnSaveChiHuy" title="Cập nhật" class="on-editing save-row" style="display: none;"><i class="fa fa-save" style="font-size: 25px; cursor: pointer;"></i></a>
+                                            <a id="btnDelete" href="#modalAnimDelete" title="Xóa ý kiến kiểm soát" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            <tr id="cap-chi-huy-truc-tiep">
+                                <td colspan="4">
+                                    Cấp chỉ huy trực tiếp &nbsp;&nbsp; <a href="javascript:;" class="btn btn-primary" id="btnCapChiHuyTrucTiep" data-tr="#cap-chi-huy-truc-tiep"><i class="fa fa-plus"></i> Thêm</a>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row" style="padding:0px 30px;margin-bottom:30px;">
+                    <p class="pull-left">
+                        <b>Nơi nhận:</b>
+                        <br />
+                        <b style="font-weight:normal">- Như trên (báo cáo);</b>
+                        <br />
+                        <b style="font-weight:normal">- Giám đốc, các PGĐ;</b>
+                        <br />
+                        <b style="font-weight:normal">- Lưu KH-KT-AT.</b>
+                    </p>
+                    <p class="pull-right text-center">
+                        <b>TRƯỞNG ĐƠN VỊ</b>
+                        <br />
+                        <br />
+                        @Html.TextBoxFor(p => p.TruongDonVi, new { @class = "numeric-only", id = "txtTruongDonVi", @placeholder = "..............", @style = "border:none;width:5%;height: 25px;" })
+                        <br />
+                        <br />
+                        <i>(Đã ký)</i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-body" style="font-family:'Times New Roman';background-color:#FFF;font-size:15px;">
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-md-1 control-label">File đính kèm</label>
+                    <div class="col-md-11">
+                        @if (lstDoc.Count > 0)
+                        {
+                            <div class="fileupload fileupload-exists" data-provides="fileupload">
+                                <input type="hidden" value="" name="">
+                                <div class="input-append">
+                                    <div class="uneditable-input">
+                                        <i class="fa fa-file fileupload-exists"></i>
+                                        <span class="fileupload-preview" style="line-height: 22px;">@lstDoc.FirstOrDefault().FileName@lstDoc.FirstOrDefault().FileExt</span>
+                                    </div>
+                                    <span class="btn btn-default btn-file">
+                                        <span class="fileupload-exists">Thay đổi</span>
+                                        <span class="fileupload-new">Chọn file</span>
+                                        <input name="uploadFile" id="uploadFile" type="file" class="valid">
+                                    </span>
+                                    @*<a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>*@
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <div class="input-append">
+                                    <div class="uneditable-input">
+                                        <i class="fa fa-file fileupload-exists"></i>
+                                        <span class="fileupload-preview"></span>
+                                    </div>
+                                    <span class="btn btn-default btn-file">
+                                        <span class="fileupload-exists">Thay đổi</span>
+                                        <span class="fileupload-new">Chọn file</span>
+                                        <input name="uploadFile" id="uploadFile" type="file" />
+                                    </span>
+                                    @*<a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>*@
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="panel-footer">
+        <button class="btn btn-primary" type="submit" id="btnEditBaoCao">Đồng ý</button>
+        <a class="btn btn-default" href="@Url.Action("Index","BaoCaoCuoiNgayCongTy")">
+            <span>Hủy bỏ</span>
+        </a>
+    </footer>
+}
+
+

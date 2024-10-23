@@ -1,0 +1,33 @@
+﻿@model List<ECP_V2.DataAccess.Message>
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        if (item.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead)
+        {
+            <li>
+                <a class="clearfix" href="@Url.Action("ChiTietPhienLV", "PhienLV", new { id = item.PhienLamViecId, messageId = item.Id })">
+                    <div class="image">
+                        <i class="fa fa-info bg-success"></i>
+                    </div>
+                    <span class="title">@item.NoiDung</span>
+                    <span class="message">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayTao)</span>
+                </a>
+                <a href="javascript:;" id="btnMarkAsRead" title="Đánh dấu đã đọc" data-id="@item.Id"><span class="fa fa-circle" style="color: #959595"></span></a>
+            </li>
+        }
+        else
+        {
+            <li class="read">
+                <a class="clearfix" href="@Url.Action("ChiTietPhienLV", "PhienLV", new { id = item.PhienLamViecId, messageId = item.Id })">
+                    <div class="image">
+                        <i class="fa fa-info bg-success"></i>
+                    </div>
+                    <span class="title">@item.NoiDung</span>
+                    <span class="message">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayTao)</span>
+                </a>
+            </li>
+        }
+    }
+}

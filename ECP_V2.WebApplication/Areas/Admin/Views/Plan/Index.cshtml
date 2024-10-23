@@ -1,0 +1,503 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<link href="~/Scripts/fancytree/skin-win8/ui.fancytree.min.css" rel="stylesheet" type="text/css" />
+<style>
+    .col-sm-1 {
+        width: 6.33333333%;
+    }
+
+    select {
+        height: 6.333333333333%;
+    }
+
+    .paginate_button {
+        padding: 0 !important;
+    }
+
+    h1 {
+        color: black;
+        text-align: left;
+        font-size: 18px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        float: none !important;
+    }
+
+    .dataTables_wrapper table thead th {
+        padding-right: 0px !important;
+    }
+
+    .td-body-center {
+        text-align: center !important;
+    }
+
+    /*ul.fancytree-container {
+        height: 400px;
+        width: 100%;
+        overflow: auto;
+        background-color: transparent;
+    }*/
+
+</style>
+@*<script src="http://code.jquery.com/jquery-latest.min.js"></script>*@
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<script src="~/Scripts/fancytree/jquery.fancytree-all.min.js" type="text/javascript"></script>
+<script src="~/Scripts/fancytree/extensions/jquery.fancytree.filter.js"></script>
+<script src="~/Scripts/QLTA/pckt.js"></script>
+<script>
+    $(document).ready(function () {
+        loadCboLoaikt("");
+        LoadDmDonVi();
+        //loadDsDoi();
+        //LoadDsPhancong();
+        //initTable();
+        $('input[name="n_Asset"]').attr('checked', false);
+    });
+</script>
+<h1><i class="fa fa-clock-o"></i> <fon style="font-style:italic"> Quản lý phiên làm việc  <i class="fa fa-angle-double-right"></i> Phân công kiểm tra</fon></h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <label>    Đơn vị vận hành: </label>
+            <select class="form-control" id="cbDvvh">
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div style="display: -webkit-inline-box !important;">
+                <div class="form-check" style="padding-right:4px;">
+                    <input class="form-check-input" type="radio" name="rdoMode" id="rdo1" value="1">
+                    <label class="form-check-label" for="rdo1">Chọn 1</label>
+                </div>
+                <div class="form-check" style="padding-right:4px;">
+                    <input class="form-check-input" type="radio" name="rdoMode" id="rdo2" value="2">
+                    <label class="form-check-label" for="rdo2">Chọn 2</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rdoMode" id="rdo3" value="3">
+                    <label class="form-check-label" for="rdo3">Tất cả</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="col-lg-4">
+            <p>
+                <label></label>
+                <input name="search" placeholder="Tìm kiếm...">
+                <button id="btnResetSearch" class="btn btn-danger" style="height:28px;">&times;</button>
+                <span id="matches"></span>
+            </p>
+            <div id="tree" class="sampletree">
+            </div>
+        </div>
+        <div class="col-lg-1" style="padding-top: 40px;margin-left:-15px;">
+            <button class="btn btn-success" id="btnAdd">>></button>
+            <hr />
+            <button class="btn btn-success" id="btnRemove"><<</button>
+        </div>
+        <div class="col-lg-7">
+            <div class="row" style="padding-bottom: 5px !important;">
+                <div class="col-lg-6" style="margin-left:-15px;">
+                    <select class="form-control" id="cbDoi">
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <div style="display: -webkit-inline-box !important;">
+                        <div class="form-check" style="padding-right:4px;">
+                            <input class="form-check-input" type="radio" name="n_Asset" id="rdoDz" value="DUONGDAY">
+                            <label class="form-check-label" for="rdoDz">Đường dây</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="n_Asset" id="rdoTba" value="TRAM">
+                            <label class="form-check-label" for="rdoTba">Trạm</label>
+                        </div>
+                        <div style="padding-right:4px;"></div>
+                        <button class="btn btn-primary" id="btnSavePcong"><i class="fa fa-save"></i> Ghi</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <table id="tblPc" class="display table table-striped table-bordered" style="width:100%">
+                    <thead style="background-color:#0097e6;color:white;">
+                        <tr>
+                            <th style="text-align:center;">Danh sách ĐZ/TBA</th>
+                            <th style="text-align:center;width:130px;">Ngày kiểm tra gần nhất</th>
+                            <th style="text-align:center;">Loại kiểm tra</th>
+                            <th></th>
+                            <th>
+                                <input type="checkbox" name="select_all" value="0" id="example-select-all">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thông báo</h4>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;font-size:14px;color:blue;"><i class="fa fa-bullhorn"></i>  Thêm mới thành công ( Bấm F5 để thấy sự thay đổi)</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    /*
+     * Event handlers for our little demo interface
+     */
+    let pdvi = $('#cbDvvh').val();
+        $("#tree").fancytree({
+            checkbox: true,
+             selectMode: 3,
+             minExpandLevel: 1,
+             quicksearch: true,
+            extensions: ["filter"],
+            icon: function (event, data) {
+                        return { html: '<i class="fa fa-book"></i>' };
+
+            },
+             source: $.ajax({
+                 url: '@Url.Action("getData")',
+                 dataType: "json",
+                 data: JSON.stringify({
+                     vdonvi: pdvi
+                 }),
+             }),
+             filter: {
+                 mode: "hide"
+            },
+            loadChildren: function (event, data) {
+                var children = data.node.getChildren();
+
+                for (var i = 0; i < children.length; i++) {
+                    if (!children[i].isFolder()) {
+                        children[i].data.icon = "/Images/tba.png";
+                        children[i].renderTitle();
+                    }
+                }
+
+                //$(this).css({ "height": $(window).height - 100 });
+
+                $("ul.fancytree-container").css("height", $(window).height() - 243);
+            }
+    });
+    var tree = $("#tree").fancytree("getTree");
+
+    $("input[name=search]").keyup(function (e) {
+        var match = $(this).val();
+        if (e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === "") {
+            $("button#btnResetSearch").click();
+            return;
+        }
+        // Pass text as filter string (will be matched as substring in the node title)
+        var n = tree.applyFilter(match);
+        $("button#btnResetSearch").attr("disabled", false);
+        $("span#matches").text("(" + n + " Phần tử)");
+    }).focus();
+
+    $("button#btnResetSearch").click(function (e) {
+        $("input[name=search]").val("");
+        $("span#matches").text("");
+        tree.clearFilter();
+    }).attr("disabled", true);
+
+    $("input#hideMode").change(function (e) {
+        tree.options.filter.mode = $(this).is(":checked") ? "hide" : "dimm";
+        tree.clearFilter();
+        $("input[name=search]").keyup();
+    });
+
+    function reloadTree() {
+        let pDvi = $('#cbDvvh').val();
+        tree.reload({
+            url: "@Url.Action("getData")",
+            dataType: "json",
+            data: { vdonvi:pDvi }
+        });
+    }
+
+    function fnSelectMode(type) {
+        let pDvi = $('#cbDvvh').val();
+        if (type == 1) {
+            tree.reload({
+                url: "@Url.Action("getData")",
+                dataType: "json",
+                data: JSON.stringify({
+                    vdonvi: pDvi
+                }),
+                selectMode: 1
+            });
+            tree.options.selectMode = 1;
+        } else if (type == 2) {
+                    tree.reload({
+                    url: "@Url.Action("getData")",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        vdonvi: pDvi
+                    }),
+                selectMode: 2
+                });
+            $('#tree').fancytree("option", "selectMode", 2);
+        }
+
+        }
+</script>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script>
+
+        $('#example-select-all').on('click', function () {
+            var table = $('#tblPc').DataTable();
+            // Get all rows with search applied
+            var rows = table.rows().nodes();
+            // Check/uncheck checkboxes for all rows in the table
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+
+        $('input[type=radio]').change(function () {
+
+            var rValue = this.value;
+
+            if (rValue == 1) {
+                tree.options.selectMode = 1;
+                return;
+            } else if (rValue == 2) {
+                tree.options.selectMode = 2;
+                return;
+            } else if(rValue==3){
+                tree.options.selectMode = 3;
+                return;
+            }
+
+            var typeid = "";
+            //Remove by type datatable
+            var tblSelect = $('#tblPc').DataTable() ;
+            var data = tblSelect.rows().data();
+            data
+                .rows(function (idx, x, node) {
+                    typeid = x['typeid'];
+                    if (typeid == undefined) {
+                        typeid = x[3];
+                    }
+
+                    return typeid != rValue;
+
+                })
+                .remove()
+                .draw();
+        });
+
+    //Xư lý nút đẩy dữ liệu
+        $("#btnAdd").click(function (e) {
+            var tblSelect = $('#tblPc').DataTable();
+            var dTbl = tblSelect.rows().data();
+            let icheck = false;
+            let xTbl = 0;
+            $('input[name="n_Asset"]').attr('checked', false);
+            $.map(tree.getSelectedNodes(), function (node) {
+                dTbl.each(function (event, d) {
+                    let assetid = event['assetid'];
+                    if (assetid == undefined) {
+                        assetid = event[5];
+                        xTbl = 1;
+                    }
+                    if (node.key == assetid) {
+                        icheck = true;
+                    }
+                });
+                if (!icheck) {
+                    var irow =
+                    {
+                        assetdesc: node.title,
+                        ngaythmax: "",
+                        tenloaikt: "",
+                        typeid: node.tooltip,
+                        x: '<input type="checkbox" name="x[]" value="' + node.key + '" class="dt-body-center" />' ,
+                        assetid: node.key
+                    }
+                        ;
+                    if (dTbl.length > 0 && xTbl == 0) {
+                        tblSelect.row.add(irow).draw();
+                    } else {
+                        tblSelect.row.add([node.title, "", "", node.tooltip, '<input type="checkbox" name="x[]" value="' + node.key + '" class="dt-body-center" />', node.key]).draw();
+                    }
+                }
+                icheck = false;
+                xTbl = 0;
+
+            });
+
+            alert('Thêm thành công!');
+        });
+
+        $('#btnRemove').on('click', function () {
+            let lstAsset = "";
+
+            var table = $('#tblPc').DataTable();
+            $('input[name="n_Asset"]').attr('checked', false);
+            //tblSelect.row.add({ AssetDesc: '1', DonViId: '2', DoiId: '3', AssetId: '4', TypeId: '5', Id: '6', x: '1' });
+            //tblSelect.draw();
+            var data = table.rows().data();
+            var sizeArrSelect = data.length;
+            let arrId = [];
+            let assetid = "";
+            table.$('input[type="checkbox"]').each(function () {
+                // If checkbox is checked
+                if (this.checked) {
+                    var valCheck = $(this).val();
+                    data.each(function (value, index) {
+                        assetid = value['assetid'];
+                        if (assetid == undefined) {
+                            assetid = value[5];
+                        }
+                        if (valCheck == assetid) {
+                            arrId.push(assetid);
+                            lstAsset += assetid + "#";
+                        }
+                    });
+                }
+            });
+
+            for (let i = 0; i < arrId.length; ++i) {
+                //table.rows(arrId[i] - i).remove();
+                table
+                    .rows(function (idx, data, node) {
+                        assetid = data['assetid'];
+                        if (assetid == undefined) {
+                            assetid = data[5];
+                        }
+
+                        return assetid === arrId[i];
+
+                    })
+                    .remove()
+                    .draw();
+            }
+
+            if (sizeArrSelect == arrId.length) {
+                table.clear();
+                table.destroy();
+            } else {
+                table.draw();
+            }
+
+            let doiid = $("#cbDoi").val();
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/Plan/removeAssignment',
+                dataType: 'text',
+                data: { doiid: doiid, dsAsset: lstAsset},
+                success: function (res) {
+                    if (res == 'SUCCESS') {
+
+                        alert('Gỡ thành công');
+
+                        tree.reload({
+                            url: "@Url.Action("getData")",
+                            dataType: "json"
+                        });
+                    }
+
+                },
+                error: function (ex) {
+                    alert('Gỡ không thành công');
+                }
+            })
+
+        });
+        //Xu ly nut go
+
+    $('#cbDvvh').change(function () {        
+        reloadTree();
+        $('input[name="n_Asset"]').attr('checked', false);
+        //$('#tblPc').dataTable().fnDestroy();
+    })
+
+    $('#cbDoi').change(function () {
+        //alert($('#cbDoi').val());
+        $('input[name="n_Asset"]').attr('checked', false);
+        $('#tblPc').dataTable().fnDestroy();
+        LoadDsPhancong();
+        })
+
+        //Xu ly nut phan cong
+    $('#btnSavePcong').on('click', function () {
+            var table = $('#tblPc').DataTable();
+            var data = table.rows().data();
+            var arrJson = [];
+        $('input[name="n_Asset"]').attr('checked', false);
+        data.each(function (value, index) {
+            if (!value.hasOwnProperty('assetid')) {
+                var obj = {
+                    ASSETID: value[5],
+                    ASSETDESC: value[0].replace('<font color="red">','').replace('</font>',''),
+                    TYPEID: value[3]
+                };
+                arrJson.push(obj);
+            } else {
+                var obj = {
+                    ASSETID: value['assetid'],
+                    ASSETDESC: value['assetdesc'].replace('<font color="red">', '').replace('</font>', ''),
+                    TYPEID: value['typeid']
+                };
+                arrJson.push(obj);
+            }
+
+            })
+        //let donvi = $('#cbDvvh').val();
+            let doiid = $('#cbDoi').val();
+            //ajax để tạo phiên
+            //alert('{"lst":[' + JSON.stringify(arrJson) + ']}');
+
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/Plan/postDsPcong',
+                dataType: 'text',
+                data: { doiid: doiid, dskt: '{"lst":' + JSON.stringify(arrJson) + '}' },
+                success: function (res) {
+                    if (res == 'SUCCESS') {
+                        $('#myModal').modal('show');
+                        //alert('Phân công hoàn thành!');
+                        //reset table selected
+                        $('#tblPc').dataTable().fnClearTable();
+                        reloadTree();
+                        @*tree.reload({
+                            url: "@Url.Action("getData")",
+                            dataType: "json"
+                        });*@
+                    }
+
+                },
+                error: function (ex) {
+                    alert('Cập nhật không thành công');
+                }
+            })
+        });
+    </script>
+}

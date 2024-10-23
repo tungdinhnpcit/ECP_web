@@ -1,0 +1,105 @@
+﻿@model ECP_V2.Common.Helpers.PageData<ECP_V2.DataAccess.Test>
+@{
+    <script type="text/javascript">
+        $(function () {
+            $('a.delete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).attr("id").split("_")[1];
+            });
+
+            $('a.edit').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                SuaCCDC($(this).attr("id").split("_")[1]);
+
+            });
+
+            $('.prev').on('click', function (e) {
+                e.preventDefault();
+                Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+            $('.page-number').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).html());
+                Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+            $('.next').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($("#btnLast").data("sum"));
+                Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+
+        });
+    </script>
+
+    <div class="table-responsive">
+        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th style="text-align:center;padding-left:5px;padding-right:5px">
+                        <div class="checkbox-custom" style="padding-left:0">
+                            <input id="dtGridPhienLVcheckAll" type="checkbox" onclick="checkall(this)" class="checkAll">
+                            <label for="dtGridPhienLVcheckAll"></label>
+                        </div>
+                    </th>
+                    <th>
+                        TT
+                    </th>
+                    <th>
+                        Ten
+                    </th>
+                    <th>
+                        Thao tác
+                    </th>
+                </tr>
+              
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data)
+            {
+                    <tr>
+                        <td style="min-width:30px;max-width:30px;width:30px;text-align:center">
+                            <div class="checkbox-custom" style="margin-left:-3px">
+                                <input id="@item.ID" value="@item.ID" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
+                                <label for="@item.ID"></label>
+                            </div>
+                        </td>
+                        <td style="text-align:center">@(Model.Data.IndexOf(item) + 1)</td>
+                        <td>@item.Name</td>
+                        
+                        <td>
+                            <a id="Edit_@item.ID" href="#modalAnimSua" title="Sửa" class="on-default edit-row edit"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                            <a id="Delete_@item.ID" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("Pager", Model.Page)
+    
+
+}

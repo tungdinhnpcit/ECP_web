@@ -1,0 +1,188 @@
+﻿@model ECP_V2.Common.Helpers.PagingV2.PageData<ECP_V2.Business.Repository.TramViewModel>
+
+<script type="text/javascript">
+    var pageSize = $("#drlPageSize").val();
+    var currentPage = 1;
+    var currentSearh = $('#txtSearch').val();
+    var curentSort = $("#btnSortName").data("sort");
+
+    $(function () {
+        $('a.delete').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+            var $this = $(this);
+            var NameItem = $this.closest('tr').find('.spanName').html();
+            IdItem = $this.closest('tr').find('.Spanid').html();
+        });
+
+
+        /*
+        Modal Dismiss
+        */
+        $(document).on('click', '#modal-dismiss', function (e) {
+            e.preventDefault();
+            $.magnificPopup.close();
+        });
+
+
+    });
+
+    function ShowMsg(title, message) {
+        new PNotify({
+            title: title,
+            text: message,
+            type: 'success'
+        });
+    };
+
+    function GetList(page, pageSize, filter, phongBanId) {
+        var scriptUrl = "/Admin/Tram/List?page=" + page
+            + "&pageSize=" + pageSize
+            + "&currentFilter=" + filter
+
+        $.ajax({
+            url: scriptUrl,
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $(".list").html("");
+                $(".list").html(data);
+
+            }
+        });
+    }
+
+    function DeleteModalConfirm() {
+
+        if (IdItem != "") {
+            var scriptUrl = "/Admin/Tram/Delete";
+            var formData = JSON.stringify({ id: IdItem });
+            $.ajax({
+                url: scriptUrl,
+                type: "POST",
+                data: formData,
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response != null && response.success) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: response.responseText,
+                            type: 'success'
+                        });
+                        $.magnificPopup.close();
+                        var page = parseInt($(".pagination li.active").find("a").html());
+                        GetList(page, pageSize, currentSearh, $('#drlPban').val());
+                    } else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: response.responseText,
+                            type: 'error'
+                        });
+                        $.magnificPopup.close();
+                    }
+                },
+                error: function () {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Không xóa được đơn vị',
+                        type: 'error'
+                    });
+                }
+            });
+        }
+
+        $.magnificPopup.close();
+    }
+
+    function DeleteModalDismiss() {
+        $.magnificPopup.close();
+    }
+
+</script>
+
+@if (Model.Data.Count > 0)
+{
+    <div class="table-responsive">
+        <table cellspacing="0" id="dataTable" class="table table-hover table-nomargin table-bordered dataTable no-footer" role="grid" aria-describedby="datatable-default_info" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th width="50px">
+                        STT
+                    </th>
+                    <td>
+                        Tên trạm
+                    </td>
+                    <th>
+                        Điện thoại liên hệ
+                    </th>
+                    <th>
+                        Phòng ban
+                    </th>
+                    <th>
+                        Đơn vị
+                    </th>
+                    <th width="100px" class="text-center">
+                        Thao tác
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int rowNo = 0;}
+                @foreach (var item in Model.Data)
+                {
+                    <tr>
+                        <td>
+                            <span class="Spanid" style="display: none;">@item.Id</span>
+                            <span class="spanName">
+                                @(rowNo += 1)
+                            </span>
+                        </td>
+                        <td>
+                            @if (!String.IsNullOrEmpty(item.Ten))
+                            {
+                                <span>@item.Ten</span>
+                            }
+                            else
+                            {
+                                <span>Chưa có dữ liệu.</span>
+                            }
+                        </td>
+
+                        <td class="text-left">
+                            <span>@item.SDT</span>
+                        </td>
+                        <td class="text-left">
+                            <span>@item.TenPB</span>
+                        </td>
+                        <td class="text-left">
+                            <span>@item.TenDV</span>
+                        </td>
+                        <td class="text-center">
+                            <a href="@Url.Action("Edit", "Tram", new { id = item.Id })" class="glyphicon glyphicon-pencil" title="Sửa thông tin"></a>
+                            <a href="#modalAnim" class="glyphicon glyphicon-trash delete"></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerV2", Model.Page)
+
+
+}
+else
+{
+    <h1 class="text-danger text-center">
+        Chưa có dữ liệu!
+    </h1>
+}

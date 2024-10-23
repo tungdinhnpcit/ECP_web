@@ -1,0 +1,192 @@
+﻿@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "Nội dung vệ sinh";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+@section ScriptSignalR{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script src="~/Scripts/fancybox-master/dist/jquery.fancybox.min.js"></script>
+    <script src="~/Scripts/AdminJS/twbs-pagination/jquery.twbsPagination.js"></script>
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+
+    <script src="~/Content/admin/noiDungVeSinh/index.js"></script>
+    <script>
+        var ndvsObj = new ndvsController();
+        ndvsObj.initialize();
+    </script>
+}
+<link href="~/Scripts/fancybox-master/dist/jquery.fancybox.min.css" rel="stylesheet" />
+<style>
+    .listRolesName table thead th {
+        padding-left: 8px;
+        padding-right: 8px !important;
+    }
+
+    .nd-isNPC {
+        background-color: antiquewhite !important
+    }
+</style>
+
+<input type="hidden" id="hidKyBaoCao" value="0" />
+
+<div class="block-fluid" id="ndContent">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks" style="margin-right:20px"></span>
+                @*<span id="lblChotBC" style="margin:0px 20px"></span>
+                    <span id="lblChuyenNPC" style="margin:0px 20px"></span>*@
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline row">
+                    <div class="col-sm-12 col-md-4">
+
+                        <select class="form-control" id="ddlDonVi" style="height:38px">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+                    </div>
+
+                    <div class="col-sm-12 col-md-2">
+                        <input id="monthpicker" value="@(DateTime.Now.Month + "/" + DateTime.Now.Year)" title="monthpicker" style="width:100%; height:32px" />
+                    </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" id="btnExport" style="height:38px; float:right; margin-left:15px">Xuất báo cáo</button>
+                            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                            {
+                                <button type="button" class="btn btn-primary" id="btnExport2" style="height:38px; float:right; margin-left:15px">Báo cáo tổng hợp</button>
+                            }
+                            else
+                            {
+                            }
+
+
+                            @if (User.IsInRole("ChuyenNPC_5S"))
+                            {
+                                <button type="button" class="btn btn-success" id="btnChuyenNPC" style="height:38px; float:right; margin-left:15px">Chuyển NPC</button>
+                                <button type="button" class="btn btn-danger" id="btnHuyChotBaoCao" style="height:38px; float:right">Hủy chốt báo cáo</button>
+                            }
+
+                            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                            {
+                                <button type="button" class="btn btn-primary" id="btnChotBaoCao" style="height:38px; float:right; margin-right:15px">Chốt báo cáo</button>
+
+                            }
+                            else
+                            {
+                            }
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                            </thead>
+                            <tbody id="tbl-content">
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_ImageModal")
+@Html.Partial("_AddComment")
+@Html.Partial("_HuyChotModal")
+
+<script id="template-ds-parent" type="x-tmpl-mustache">
+    <tr class="gradeA ds-parent" data-id="{{Id}}">
+        <td style="width:5% ;text-align:center; background-color:bisque">
+            <input type="checkbox" class="form-control checkall" style="width:20px;height:20px;margin:0 auto">
+        </td>
+        <td class="ds-parent-name" colspan="4" style="text-align:left; font-size:15px;font-weight:bold; background-color:bisque">{{Name}}</td>
+    </tr>
+    <tr class="gradeA ds-parent-type">
+        <td class="nd-ckChuyen" style="text-align:center;width:5%; vertical-align:middle; font-size:15px;font-weight:bold; background-color:bisque"></td>
+        <td class="ds-parent-type-stt" style="text-align:center; width:10%; font-size:15px;font-weight:bold; background-color:bisque;vertical-align:middle">STT</td>
+        <td class="ds-parent-type-name" style="text-align:left; width:55%; font-size:15px;font-weight:bold; background-color:bisque;vertical-align:middle">{{TenND}}</td>
+        <td class="ds-parent-type-loaiDVT" style="text-align:center; width:20%; font-size:15px;font-weight:bold; background-color:bisque;vertical-align:middle">{{LoaiDVT}}</td>
+        <td class="ds-parent-type-function" style="text-align:center; width:10%; font-size:15px;font-weight:bold; background-color:bisque;vertical-align:middle"></td>
+    </tr>
+</script>
+
+<script id="template-ds-children" type="x-tmpl-mustache">
+    <tr class="gradeA ds-children" data-id="{{Id}}">
+        <td class="ds-children-name" colspan="3" style="text-align:left; width:80%; font-weight:600;font-size:15px;background-color:antiquewhite;vertical-align:middle">
+            {{Name}}
+            <a href="#" class="btn  btn-sm btn-add-nd" data-id="{{Id}}" title="Thêm" style="font-size:18px; float:right"><i class="fa fa-plus-circle"></i></a>
+
+        </td>
+        <td class="ds-children-value" style="text-align:center;width:20%; font-weight:600;font-size:15px; background-color:antiquewhite;vertical-align:middle">{{Value}}</td>
+        <td class="ds-children-function" style="text-align: center;width: 20%;font-weight: 600;font-size: 15px;background-color: antiquewhite;vertical-align: middle"></td>
+    </tr>
+</script>
+
+<script id="template-nd" type="x-tmpl-mustache">
+    <tr class="gradeA ndvs" data-parent-id="{{DsId}}" data-id="{{Id}}" style="background-color:{{StatusColor}}" title="{{{Title}}}">
+        <td class="nd-ckChuyen {{IsNPC}}" style="text-align:center;width:5%; vertical-align:middle"><input type="checkbox" value="{{Id}}" id="chk{{Id}}" class="ckChoose form-control" style="width:20px;height:20px;margin:0 auto;{{{hiddenCheck3}}}" {{{hiddenCheck2}}}></td>
+        <td class="nd-stt" style="text-align:center;width:10%; vertical-align:middle">{{STT}}</td>
+        <td class="nd-name" style="text-align: left;width: 55%; vertical-align: middle">{{Name}}</td>
+        <td class="nd-value" style="text-align:center;width:20%; vertical-align:middle">{{Value}}</td>
+        <td class="nd-function" style="text-align:center;width:10%; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-image-nd" title="Hình ảnh" style="font-size:18px"><i class="fa fa-picture-o"></i></a>
+            <a href="#" class="btn btn-sm btn-comment-nd" title="Bình luận" style="font-size:18px"><i class="fa fa-comment-o"></i></a>
+            <a href="#" class="btn btn-sm btn-edit-nd" title="Sửa" style="font-size:18px;{{hiddenCheck}}"><i class="fa fa-pencil-square-o"></i></a>
+            <a href="#" class="btn btn-sm btn-delete-nd" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hiddenCheck}}"><i class="fa fa-trash"></i></a>
+            <a href="#" class="btn btn-sm btn-save-nd" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-cancel-nd" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+
+        </td>
+    </tr>
+</script>
+
+<script id="template-add-nd" type="x-tmpl-mustache">
+    <tr class="gradeA ndvs add-ndvs" data-parent-id="{{DsId}}" data-id="{{Id}}">
+        <td class="nd-ckChuyen" style="text-align:center;width:5%; vertical-align:middle"></td>
+        <td class="nd-stt" style="text-align:center;width:10%;background-color:white; vertical-align:middle">{{STT}}</td>
+        <td class="nd-name" style="text-align:left;width:55%;background-color:white; vertical-align:middle"><input type="text" value="{{Name}}" class="txt-nd-name form-control" placeholder="Nhập tên" /></td>
+        <td class="nd-value" style="text-align:center;width:20%;background-color:white; vertical-align:middle"><input type="number" step="0.1" value="{{Value}}" class="txt-nd-value form-control" placeholder="Nhập giá trị" style="text-align:center" /></td>
+        <td class="nd-function" style="text-align:center;width:10%;background-color:white; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-nd" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-delete-add-nd" title="Xóa" style="font-size:18px"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+</script>
+
+<script id="template-edit-nd" type="x-tmpl-mustache">
+    <tr class="gradeA ndvs add-ndvs" data-parent-id="{{DsId}}" data-id="{{Id}}">
+        <td class="nd-ckChuyen" style="text-align:center;width:5%; vertical-align:middle"></td>
+        <td class="nd-stt" style="text-align:center;width:10%;background-color:white; vertical-align:middle">{{STT}}</td>
+        <td class="nd-name" style="text-align:left;width:55%;background-color:white; vertical-align:middle"><input type="text" value="{{Name}}" class="txt-nd-name form-control" placeholder="Nhập tên" /></td>
+        <td class="nd-value" style="text-align:center;width:20%;background-color:white; vertical-align:middle"><input type="number" step="0.1" value="{{Value}}" class="txt-nd-value form-control" placeholder="Nhập giá trị" style="text-align: center" /></td>
+        <td class="nd-function" style="text-align:center;width:10%;background-color:white; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-nd" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-cancel-nd" title="Hủy" data-id="{{Id}}" style="font-size: 18px"><i class="fa fa-ban"></i></a>
+        </td>
+    </tr>
+</script>

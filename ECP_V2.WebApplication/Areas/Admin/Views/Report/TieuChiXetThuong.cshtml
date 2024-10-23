@@ -1,0 +1,1037 @@
+﻿@model IEnumerable<ECP_V2.WebApplication.Models.ChamDiemAnToanModels>
+
+@{
+    ViewBag.Title = "Tiêu chí xét thưởng";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@functions {
+
+    string RemoveFirstTitle(string name)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.Trim();
+                name = name.Substring(name.IndexOf(" ")).Trim();
+            }
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+        return name;
+    }
+}
+
+<style>
+    .rError {
+        cursor: pointer;
+        background-color: antiquewhite;
+        display: table-row !important;
+    }
+
+    .rNone {
+        background-color: white;
+        display: none !important;
+    }
+
+    table {
+        width: 600px;
+    }
+
+        table tr {
+            width: 100% !important;
+        }
+
+    ol {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .hidetd {
+        display: none;
+    }
+
+    .wapper {
+        width: 700px;
+        margin: 0 auto;
+        padding: 50px;
+        background: #fff;
+    }
+
+    td {
+        border: 1px solid #666 !important;
+        padding-left: 7px !important;
+        width: auto !important;
+    }
+
+    p {
+        margin: 0;
+        padding: 3px 0;
+        font-size: 15px;
+    }
+
+    ol li strong {
+        line-height: 130%;
+        font-size: 20px;
+    }
+
+        ol li strong em {
+            font-size: 18px !important;
+        }
+
+    li {
+        list-style: none;
+    }
+
+    .rowError {
+        cursor: pointer;
+        background-color: antiquewhite;
+        display: table-row !important;
+    }
+
+        .rowError td1 {
+            display: table-row !important;
+        }
+
+    .anhvipham img {
+        float: left;
+        width: 188px;
+        height: 188px;
+        padding: 4px;
+        border: 1px solid #999;
+    }
+</style>
+<!-- Modal Animation -->
+<div id="modalAnimDetail" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">
+                Thông tin chi tiết
+            </h2>
+        </header>
+        <div id="chitietchamdiembody" class="panel-body" style="padding:0">
+
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-default modal-dismiss" onclick="ModalDismissDetail()" id="modal-dismiss">Thoát</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div class="wapper">
+    <p><strong><u>PHỤ LỤC 01</u></strong><strong>.</strong></p>
+    <p><strong style="font-size:18px; text-align:center">TIÊU CHÍ XÉT THƯỞNG ATĐ HÀNG THÁNG ĐỐI VỚI CÁC ĐƠN VỊ</strong></p>
+    <p style="text-align:center"><em>(Kèm theo văn bản số &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/EVNNPC-TC&NS ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tháng 10 năm 2019)</em></p>
+    <ol>
+        <li><strong>I. Tiêu chí xét thưởng đối với việc thực hiện các chỉ tiêu về sự cố</strong></li>
+    </ol>
+    <table>
+        <tbody>
+            <tr>
+                <td width="578">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="177">
+                    <p><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            <tr>
+                <td width="578">
+                    <p><strong>a.</strong> Thực hiện chỉ tiêu sự cố lưới điện 110kV:</p>
+                </td>
+                <td width="177">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td width="578">
+                    <p><strong><em>+ Sự cố đường dây 110kV:</em></strong></p>
+                </td>
+                <td width="177">
+                    <p><strong>&nbsp;</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1a1 = new List<int>() { 3, 4, 5, 6 };
+                var list_1a1 = Model.Where(x => groupId_1a1.Contains(x.TieuChiId)).ToList();
+                if (list_1a1 != null)
+                {
+                    foreach (var item in list_1a1)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td width="578">
+                    <p><strong><em>+ Sự cố TBA 110kV:</em></strong></p>
+                </td>
+                <td width="177">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1a2 = new List<int>() { 8, 9 };
+                var list_1a2 = Model.Where(x => groupId_1a2.Contains(x.TieuChiId)).ToList();
+                if (list_1a2 != null)
+                {
+                    foreach (var item in list_1a2)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>b.</strong> Thực hiện chỉ tiêu chỉ số độ tin cậy lưới điện phân phối của phần sự cố, cắt điện có kế hoạch và tổng hợp chung (MAIFI; SAIDI; SAIFI).<strong>.</strong></p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>+</strong> Xét thưởng đối với chỉ tiêu kế hoạch tháng (So sánh thực hiện với chỉ tiêu giao cho tháng tương ứng):</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1b1 = new List<int>() { 12, 13, 14, 15 };
+                var list_1b1 = Model.Where(x => groupId_1b1.Contains(x.TieuChiId)).ToList();
+                if (list_1b1 != null)
+                {
+                    foreach (var item in list_1b1)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>+</strong> Xét thưởng đối với chỉ tiêu kế hoạch quý (So sánh thực hiện với chỉ tiêu giao cho quý, điểm trừ được trừ vào điểm thưởng ATĐ tháng cuối quý tương ứng):</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1b2 = new List<int>() { 17, 18, 19, 20 };
+                var list_1b2 = Model.Where(x => groupId_1b2.Contains(x.TieuChiId)).ToList();
+                if (list_1b2 != null)
+                {
+                    foreach (var item in list_1b2)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>c.</strong> Cập nhật số liệu trên chương trình OMS và PMIS+GIS</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1c1 = new List<int>() { 37, 38, 39, 40 };
+                var list_1c1 = Model.Where(x => groupId_1c1.Contains(x.TieuChiId)).ToList();
+                if (list_1c1 != null)
+                {
+                    foreach (var item in list_1c1)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p style="width:107px">@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>d.</strong> Công tác quản lý bảo vệ môi trường</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1d1 = new List<int>() { 42, 43, 44, 45, 46, 47 };
+                var list_1d1 = Model.Where(x => groupId_1d1.Contains(x.TieuChiId)).ToList();
+                if (list_1d1 != null)
+                {
+                    foreach (var item in list_1d1)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>e.</strong> Khối lượng thực hiện 5S lưới điện so với khối lượng đã đăng ký</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_1e1 = new List<int>() { 49, 50, 51, 52, 53 };
+                var list_1e1 = Model.Where(x => groupId_1e1.Contains(x.TieuChiId)).ToList();
+                if (list_1e1 != null)
+                {
+                    foreach (var item in list_1e1)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+            @{
+
+                List<int> groupId_1f = new List<int>() { 54 };
+                var list_1f = Model.Where(x => groupId_1f.Contains(x.TieuChiId)).First();
+                if (list_1f != null && list_1f.TieuChiId > 0)
+                {
+                    <tr class="@(list_1f.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(list_1f.Id)">
+                        <td width="578">
+                            <p><strong>f.</strong> Để xảy ra sự cố thiết bị dẫn đến ngừng sản xuất, ngừng vận h&agrave;nh, phải sa thải những phụ tải lớn do lỗi chủ quan g&acirc;y ra (<em>Ch&aacute;y m&aacute;y, đứt l&egrave;o, đứt d&acirc;y, hư hỏng c&aacute;c trạm điện, c&aacute;c trạm biến &aacute;p, c&aacute;c thiết bị đ&oacute;ng cắt...</em>)</p>
+                        </td>
+                        <td width="179">
+                            <p>@(list_1f.SoDiemDaCham)</p>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="rNone">
+                        <td width="578">
+                            <p><strong>f.</strong> Để xảy ra sự cố thiết bị dẫn đến ngừng sản xuất, ngừng vận h&agrave;nh, phải sa thải những phụ tải lớn do lỗi chủ quan g&acirc;y ra (<em>Ch&aacute;y m&aacute;y, đứt l&egrave;o, đứt d&acirc;y, hư hỏng c&aacute;c trạm điện, c&aacute;c trạm biến &aacute;p, c&aacute;c thiết bị đ&oacute;ng cắt...</em>)</p>
+                        </td>
+                        <td width="177">
+                            <p></p>
+                        </td>
+                    </tr>
+                }
+            }
+            @{
+
+                List<int> groupId_1g = new List<int>() { 55 };
+                var list_1g = Model.Where(x => groupId_1g.Contains(x.TieuChiId)).First();
+                if (list_1g != null && list_1g.TieuChiId > 0)
+                {
+                    <tr class="@(list_1g.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(list_1g.Id)">
+                        <td width="578">
+                            <p><strong>g. </strong>Để xảy ra sự cố đường d&acirc;y, TBA 110kV m&agrave; kh&ocirc;ng t&igrave;m ra nguy&ecirc;n nh&acirc;n</p>
+                        </td>
+                        <td width="179">
+                            <p>@(list_1g.SoDiemDaCham)</p>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="rNone">
+                        <td width="578">
+                            <p><strong>g. </strong>Để xảy ra sự cố đường d&acirc;y, TBA 110kV m&agrave; kh&ocirc;ng t&igrave;m ra nguy&ecirc;n nh&acirc;n</p>
+                        </td>
+                        <td width="177">
+                            <p></p>
+                        </td>
+                    </tr>
+                }
+            }
+
+            @{
+
+                List<int> groupId_1h = new List<int>() { 56 };
+                var list_1h = Model.Where(x => groupId_1h.Contains(x.TieuChiId)).First();
+                if (list_1h != null && list_1h.TieuChiId > 0)
+                {
+                    <tr class="@(list_1h.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(list_1h.Id)">
+                        <td width="578">
+                            <p><strong>h.</strong> B&aacute;o c&aacute;o kh&ocirc;ng đ&uacute;ng, kh&ocirc;ng đầy đủ t&igrave;nh h&igrave;nh sự cố v&agrave; mất điện tr&ecirc;n lưới điện ph&acirc;n phối.</p>
+                        </td>
+                        <td width="179">
+                            <p>@(list_1h.SoDiemDaCham)</p>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="rNone">
+                        <td width="578">
+                            <p><strong>h.</strong> B&aacute;o c&aacute;o kh&ocirc;ng đ&uacute;ng, kh&ocirc;ng đầy đủ t&igrave;nh h&igrave;nh sự cố v&agrave; mất điện tr&ecirc;n lưới điện ph&acirc;n phối.</p>
+                        </td>
+                        <td width="177">
+                            <p></p>
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+    <p><i>(Các chỉ tiêu xét thưởng ATĐ nêu trên chỉ xét đối với các nguyên nhân do lỗi chủ quan).</i></p>
+    <ol>
+        <li><strong>II. Tiêu chí xét thưởng đối với việc thực hiện kỷ luật trong sản xuất vận hành:</strong></li>
+    </ol>
+    <table>
+        <tbody>
+            <tr>
+                <td width="590">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="165">
+                    <p style="width:107px"><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_2a = new List<int>() { 58, 59 };
+                var list_2a = Model.Where(x => groupId_2a.Contains(x.TieuChiId)).ToList();
+                if (list_2a != null)
+                {
+                    foreach (var item in list_2a)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td width="590">
+                    <p><strong>c. </strong>Vi phạm quy tr&igrave;nh quản l&yacute; vận h&agrave;nh:</p>
+                </td>
+                <td width="165">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_2c = new List<int>() { 61, 62, 63, 64, 65, 66 };
+                var list_2c = Model.Where(x => groupId_2c.Contains(x.TieuChiId)).ToList();
+                if (list_2c != null)
+                {
+                    foreach (var item in list_2c)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td width="590">
+                    <p><strong>d. </strong>Đối với c&ocirc;ng t&aacute;c điều độ<strong>:</strong></p>
+                </td>
+                <td width="165">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+
+            @{
+                List<int> groupId_2d = new List<int>() { 68, 69 };
+                var list_2d = Model.Where(x => groupId_2d.Contains(x.TieuChiId)).ToList();
+                if (list_2d != null)
+                {
+                    foreach (var item in list_2d)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            <tr>
+                <td colspan="2" width="755">
+                    <p><strong>e</strong>. Nếu c&aacute;c vi phạm từ điểm (<strong>a)</strong> đến điểm (<strong>c)</strong> n&ecirc;u tr&ecirc;n mang t&iacute;nh chất lặp lại v&agrave; đ&atilde;được Tổng c&ocirc;ng ty nhắc nhở bằng văn bản, Hội đồng x&eacute;t thưởng NPC trừ điểm thưởng ATĐ của đơn vị <strong>gấp 2 lần</strong> số điểm trừ đối với mỗi lỗi lặp lại.</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p><strong>III. Tiêu chí xét thưởng ATĐ đối với chỉ thị thi đua 2747/CTLT-EVNNPC-CĐ về giảm sự cố và nâng cao độ tin cậy cung cấp điện.</strong></p>
+    <table>
+        <tbody>
+            <tr>
+                <td width="602">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="153">
+                    <p style="width:107px"><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_3 = new List<int>() { 72, 73 };
+                var list_3 = Model.Where(x => groupId_3.Contains(x.TieuChiId)).ToList();
+                if (list_3 != null)
+                {
+                    foreach (var item in list_3)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+    <ol>
+        <li><strong>IV. Tiêu chí xét thưởng trong công tác An toàn, vệ sinh lao động:</strong></li>
+    </ol>
+    <table>
+        <tbody>
+            <tr>
+                <td width="578">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="179">
+                    <p style="width:107px"><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            <tr>
+                <td width="578">
+                    <p><strong>1. Về tai nạn lao động</strong></p>
+                </td>
+                <td width="179">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+
+            @{
+                List<int> groupId_41 = new List<int>() { 75, 76, 77, 78 };
+                var list_41 = Model.Where(x => groupId_41.Contains(x.TieuChiId)).ToList();
+                if (list_41 != null)
+                {
+                    foreach (var item in list_41)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p>@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>e</strong>. Báo cáo khi xảy ra tai nạn lao động:</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_41e = new List<int>() { 80, 81 };
+                var list_4e = Model.Where(x => groupId_41e.Contains(x.TieuChiId)).ToList();
+                if (list_4e != null)
+                {
+                    foreach (var item in list_4e)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">- @(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p>f. Báo cáo khi xảy ra tai nạn giao thông, tai nạn trong dân, tai nạn nhà thầu và tai nạn do vi phạm HLBVATLĐCA:</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_41f = new List<int>() { 83, 84 };
+                var list_4f = Model.Where(x => groupId_41f.Contains(x.TieuChiId)).ToList();
+                if (list_4f != null)
+                {
+                    foreach (var item in list_4f)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">- @(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+            @*<tr>
+                    <td width="578">
+                        <p>g. Trường hợp để xảy ra sự cố g&acirc;y tai nạn lao động chết người, ngo&agrave;i việc C&ocirc;ng ty bị trừ điểm theo <strong>khoản c mục II</strong> n&ecirc;u tr&ecirc;n, c&aacute;c c&aacute; nh&acirc;n v&agrave; đơn vị li&ecirc;n quan bị cắt giảm tiền thưởng ATĐ như sau:</p>
+                        <p>- C&aacute; nh&acirc;n li&ecirc;n quan trực tiếp <em>(theo kết luận kiểm điểm, xử l&yacute; tr&aacute;ch nhiệm)</em> bị cắt to&agrave;n bộ tiền thưởng ATĐ của cả năm;</p>
+                        <p>- Đơn vị quản l&yacute; trực tiếp người bị tai nạn <em>(Điện lực, Chi nh&aacute;nh, Ph&acirc;n xưởng,&hellip;)</em> bị cắt 6 th&aacute;ng tiền thưởng ATĐ;</p>
+                        <p>- Cơ quan Tổng c&ocirc;ng ty bị cắt thưởng ATĐ qu&yacute; xảy ra tai nạn.</p>
+                        <p>- Trường hợp đơn vị (<em>C&ocirc;ng ty Điện lực, C&ocirc;ng ty C&ocirc;ng nghệ th&ocirc;ng tin Điện lực miền Bắc, C&ocirc;ng ty Dịch vụ Điện lực miền Bắc</em>) để xảy ra 2 vụ tai nạn lao động chết người th&igrave; bị cắt to&agrave;n bộ tiền thưởng ATĐ của năm đ&oacute;.</p>
+                        <p>- Đối với Cơ quan Tổng c&ocirc;ng ty, trong năm nếu to&agrave;n Tổng c&ocirc;ng ty để xảy ra 3 vụ tai nạn lao động chết người trở l&ecirc;n th&igrave; bị cắt to&agrave;n bộ thưởng ATĐ của cả năm.</p>
+                    </td>
+                    <td width="179">
+                        <p>&nbsp;</p>
+                    </td>
+                </tr>*@
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>2. Vi phạm các quy trình, quy định về an toàn lao động:</strong><em>(Các vi phạm mang tính chất lặp lại đã được Tổng công ty nhắc nhở bằng văn bản thì bị trừ điểm gấp đôi số điểm trừ đối với mỗi lỗi lặp lại)</em></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_42 = new List<int>() { 86, 87, 88, 89, 90, 91, 92, 93 };
+                var list_42 = Model.Where(x => groupId_42.Contains(x.TieuChiId)).ToList();
+                if (list_42 != null)
+                {
+                    foreach (var item in list_42)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>3. Công tác huấn luyện AT-VSLĐ theo quy định của pháp luật và Tổng công ty</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_43 = new List<int>() { 95, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106 };
+                var list_43 = Model.Where(x => groupId_43.Contains(x.TieuChiId)).ToList();
+                if (list_43 != null)
+                {
+                    foreach (var item in list_43)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>4. Công tác phòng chống cháy nổ và cứu nạn cứu hộ</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_44 = new List<int>() { 108, 109, 110 };
+                var list_44 = Model.Where(x => groupId_44.Contains(x.TieuChiId)).ToList();
+                if (list_44 != null)
+                {
+                    foreach (var item in list_44)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p>d.Vi phạm các quy định về phòng chống cháy nổ và cứu nạn cứu hộ</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_45d = new List<int>() { 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127 };
+                var list_45d = Model.Where(x => groupId_45d.Contains(x.TieuChiId)).ToList();
+                if (list_45d != null)
+                {
+                    foreach (var item in list_45d)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">+ @(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>5. Công tác Quản lý hành lang an toàn lưới điện cao áp</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_45 = new List<int>() { 129, 130, 131 };
+                var list_45 = Model.Where(x => groupId_45.Contains(x.TieuChiId)).ToList();
+                if (list_45 != null)
+                {
+                    foreach (var item in list_45)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>6. Công tác kiểm tra kiểm soát ATLĐ qua chương trình quản lý an toàn lao động(ECP)</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_46 = new List<int>() { 133, 134, 135, 136, 137 };
+                var list_46 = Model.Where(x => groupId_46.Contains(x.TieuChiId)).ToList();
+                if (list_46 != null)
+                {
+                    foreach (var item in list_46)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td colspan="2" width="758">
+                    <p><strong>7. Công tác vệ sinh lao động</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_47 = new List<int>() { 140, 141 };
+                var list_47 = Model.Where(x => groupId_47.Contains(x.TieuChiId)).ToList();
+                if (list_47 != null)
+                {
+                    foreach (var item in list_47)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+            <tr>
+                <td width="578">
+                    <p><strong>8. Công tác lập và thực hiện kế hoạch ATVSLĐ</strong></p>
+                </td>
+                <td width="179">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_48 = new List<int>() { 143, 144, 145 };
+                var list_48 = Model.Where(x => groupId_48.Contains(x.TieuChiId)).ToList();
+                if (list_48 != null)
+                {
+                    foreach (var item in list_48)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td width="578">
+                    <p><strong>9. Công tác quản lý dụng cụ an toàn, dụng cụ làm việc</strong></p>
+                </td>
+                <td width="179">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_49 = new List<int>() { 147, 148, 149 };
+                var list_49 = Model.Where(x => groupId_49.Contains(x.TieuChiId)).ToList();
+                if (list_49 != null)
+                {
+                    foreach (var item in list_49)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+            <tr>
+                <td width="578">
+                    <p><strong>10. Công tác PCTT&TKCN</strong></p>
+                </td>
+                <td width="179">
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+
+            @{
+                List<int> groupId_410 = new List<int>() { 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161 };
+                var list_410 = Model.Where(x => groupId_410.Contains(x.TieuChiId)).ToList();
+                if (list_410 != null)
+                {
+                    foreach (var item in list_410)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+    <p><strong>&nbsp;</strong></p>
+    <ol>
+        <li><strong>V. Tiêu chí xét thưởng đối với việc thực hiện kỷ luật trong kinh doanh bán điện:</strong></li>
+    </ol>
+    <table>
+        <tbody>
+            <tr>
+                <td width="590">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="165">
+                    <p style="width:107px"><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_5 = new List<int>() { 163, 164, 165 };
+                var list_5 = Model.Where(x => groupId_5.Contains(x.TieuChiId)).ToList();
+                if (list_5 != null)
+                {
+                    foreach (var item in list_5)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+
+
+
+        </tbody>
+    </table>
+    <p><em> Tổng số điểm bị giảm trừ do vi phạm kỷ luật trong kinh doanh b&aacute;n điện trong th&aacute;ng tối đa kh&ocirc;ng qu&aacute; <strong>15 </strong>điểm.</em></p>
+    <ol>
+        <li><strong> VI. Tiêu chí xét thưởng ATĐ đối với công tác Quản lý vận hành hệ thống viễn thông và hệ thống công nghệ thông tin:</strong></li>
+        <li><strong><em>1. Đối với Công ty Công nghệ thông tin Điện lực miền Bắc.</em></strong></li>
+    </ol>
+    <table>
+        <tbody>
+            <tr>
+                <td width="602">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="153">
+                    <p style="width:107px"><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_61 = new List<int>() { 168, 169, 170, 171, 172, 173 };
+                var list_61 = Model.Where(x => groupId_61.Contains(x.TieuChiId)).ToList();
+                if (list_61 != null)
+                {
+                    foreach (var item in list_61)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+    <ol start="2">
+        <li><strong><em> 2. Đối với Công ty Điện lực, Công ty Dịch vụ ĐLMB.</em></strong></li>
+    </ol>
+    <table>
+        <tbody>
+            <tr>
+                <td width="602">
+                    <p><strong>Tiêu chí xét thưởng</strong></p>
+                </td>
+                <td width="153">
+                    <p style="width:107px"><strong>Điểm trừ</strong></p>
+                </td>
+            </tr>
+            @{
+                List<int> groupId_62 = new List<int>() { 175, 176, 177, 178, 179, 180 };
+                var list_62 = Model.Where(x => groupId_62.Contains(x.TieuChiId)).ToList();
+                if (list_62 != null)
+                {
+                    foreach (var item in list_62)
+                    {
+                        <tr class="@(item.SoDiemDaCham > 0 ? "rError" : "rNone")" data-id="@(item.Id)">
+                            <td width="578">
+                                <p style="font-style: italic;">@(RemoveFirstTitle(item.TenTieuChi))</p>
+                            </td>
+                            <td width="179">
+                                <p>@(item.SoDiemDaCham)</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+    <p><strong><em>&nbsp;</em></strong></p>
+    <p><i>Trường hợp tổng số điểm đơn vị bị trừ từ mục I đến mục V vượt quá 100 điểm thì số điểm bị trừ tối đa tính bằng 100 điểm (tương ứng 100% quỹ tiền thưởng ATĐ)</i></p>
+    <p>&nbsp;</p>
+    <ol>
+        <li><strong> VI.  Mức giảm thưởng đối với cơ quan quản lý cấp trên:</strong></li>
+    </ol>
+    <p>
+        - Đối với Cơ quan Tổng công ty, điểm xét thưởng ATĐ hàng tháng được lấy bằng mức bình quân điểm xét thưởng ATĐ của các Công ty Điện lực, Công ty Công nghệ thông tin Điện lực miền Bắc, Công ty Dịch vụ Điện lực miền Bắc.
+    </p>
+    <p>
+        - Đối với Cơ quan Công ty Điện lực, điểm trừ hàng tháng được lấy bằng mức bình quân điểm trừ thưởng ATĐ của các đơn vị cơ sở thuộc Công ty quản lý.
+    </p>
+    <br />
+</div>
+<div class="jsDiem">
+    <script src="~/Scripts/TieuChiXetThuong.js?v=1.111"></script>
+</div>

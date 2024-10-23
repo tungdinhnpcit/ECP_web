@@ -1,0 +1,210 @@
+﻿@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "Báo cáo các vị trí xung yếu có nguy cơ gây sự cố trong mùa mưa bão";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+@section ScriptSignalR{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+    <script src="~/Content/admin/shared/numberToString.js"></script>
+    <script src="~/Content/admin/pctt_DiemXungYeu/index.js"></script>
+    <script>
+        var dxyObj = new dxyController();
+        dxyObj.initialize();
+    </script>
+}
+
+<style>
+    .listRolesName table thead th {
+        padding-left: 8px;
+        padding-right: 8px !important;
+    }
+
+    .nd-isNPC {
+        background-color: antiquewhite !important
+    }
+
+
+    tr.header-collapse {
+        cursor: pointer;
+    }
+
+    .header-collapse .sign:after {
+        content: "+";
+        display: inline-block;
+    }
+
+    .header-collapse.expand .sign:after {
+        content: "-";
+    }
+</style>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks" style="margin-right:20px"></span>Báo cáo các vị trí xung yếu có nguy cơ gây sự cố trong mùa mưa bão
+                <span id="lblChuyenNPC" style="margin:0px 20px"></span>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline row">
+                    <div class="col-sm-12 col-md-4">
+                        <span>Chọn đơn vị</span>
+                        <br />
+                        <select class="form-control" id="ddlDonVi" style="height:38px">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <span>Chọn năm: &nbsp;</span>
+                        <br />
+                        <select class="form-control" id="ddlYear" style="height:38px">
+                            @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 4; i--)
+                            {
+                                <option value="@i" @(i == DateTime.Now.Year ? " selected='selected'" : "")>Năm @i</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4" style="padding-top: 10px">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" id="btnExport" style="height:38px; float:right; margin-left:15px"><i class="fa fa-file-excel-o" aria-hidden="true" style="margin-right:5px"></i>Xuất báo cáo</button>
+                            @if (User.IsInRole("DuyetNPC"))
+                            {
+                                <button type="button" class="btn btn-success" id="btnChuyenNPC" style="height:38px; float:right; margin-left:15px"><i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="margin-right:5px"></i>Chuyển Tổng công ty</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-bordered table-hover dataTables-example" id="table-content">
+                            <thead>
+                                <tr class="gradeX">
+                                    <th style="width:5% ;text-align:center">
+                                        <input type="checkbox" id="checkall" class="ckChoose form-control" style="width:20px;height:20px;margin:0 auto">
+                                    </th>
+                                    <th style="width:5% ;text-align:center">STT</th>
+                                    <th style="width:15%">Tên đường dây, TBA</th>
+                                    <th style="width:25%">Tình trạng</th>
+                                    <th style="width:10%; text-align:center">Mức độ</th>
+                                    <th style="width:20%; text-align:center" colspan="2">Kế hoạch xử lý (ngày/tháng/năm)</th>
+                                    <th style="width:10%; text-align:center">Ghi chú</th>
+                                    <th style="width:10%; text-align:center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-content">
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script id="template-dxy-donvi" type="x-tmpl-mustache">
+    <tr class="gradeA header-collapse expand" data-dvid="{{Id}}">
+        <td class="dxy-ckChoose" style="text-align:center; vertical-align:middle; background-color:#caeaf4"><input type="checkbox" value="{{Id}}" id="chk{{Id}}" class="ckChooseDV form-control" style="width:20px;height:20px;margin:0 auto"></td>
+        <td class="dxy-stt-donvi" style="text-align:center; vertical-align:middle; background-color:#caeaf4">{{STT}}</td>
+        <td class="dxy-donvi-collapse" colspan="7" style="text-align:left; font-size:15px;font-weight:bold; background-color:#caeaf4">{{Name}} <span class="sign" style="margin-left: 5px"></span></td>
+    </tr>
+</script>
+
+<script id="template-dxy-type" type="x-tmpl-mustache">
+    <tr class="gradeA dxy-type" data-id="{{Id}}" data-dvid="{{dvId}}">
+        <td class="dxy-ckChoose" style="text-align:center; vertical-align:middle; background-color:antiquewhite"><input type="checkbox" value="{{Id}}" id="chk{{Id}}" class="ckChooseType form-control" style="width:20px;height:20px;margin:0 auto"></td>
+        <td class="dxy-stt-type" style="text-align:center; vertical-align:middle; background-color:antiquewhite">{{STT}}</td>
+        <td class="dxy-type-name" colspan="7" style="text-align:left; font-weight:600;font-size:15px;background-color:antiquewhite;vertical-align:middle">
+            {{Name}}
+            <a href="#" class="btn btn-sm btn-add-dxy" data-dvid="{{dvId}}" data-id="{{Id}}" title="Thêm" style="font-size:18px; float:right; vertical-align:middle; padding:0px; margin:0px"><i class="fa fa-plus-circle"></i></a>
+        </td>
+    </tr>
+</script>
+
+<script id="template-dxy" type="x-tmpl-mustache">
+    <tr class="gradeA pctt" data-id="{{Id}}" data-dvid="{{dvId}}" data-type="{{dxyType}}" style="height:60px;background-color:{{StatusColor}}">
+        <td class="dxy-ckChoose {{IsNPC}}" style="text-align:center; vertical-align:middle"><input type="checkbox" value="{{Id}}" id="chk{{Id}}" class="ckChoose form-control" style="width:20px;height:20px;margin:0 auto;{{{hiddenCheck}}}" {{{hiddenCheck2}}}></td>
+        <td class="dxy-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="dxy-TenDuongDay" style="text-align:left;vertical-align: middle">{{TenDuongDay}}</td>
+        <td class="dxy-tinhtrang" style="text-align:left; vertical-align:middle">{{TinhTrang}}</td>
+        <td class="dxy-mucdo" style="text-align:center; vertical-align:middle" data-mdid="{{MucDoId}}">{{{MucDo}}}</td>
+        <td class="dxy-kehoach-bd" style="text-align:center; vertical-align:middle">{{KHBD}}</td>
+        <td class="dxy-kehoach-kt" style="text-align:center; vertical-align:middle">{{KHKT}}</td>
+        <td class="dxy-ghichu" style="text-align:left; vertical-align:middle">{{GhiChu}}</td>
+        <td class="dxy-function" style="text-align:center; vertical-align:middle">
+            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+            {
+                <a href="#" class="btn btn-sm btn-edit-dxy" title="Sửa" style="font-size:18px;{{hiddenCheck}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-delete-dxy" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hiddenCheck}}"><i class="fa fa-trash"></i></a>
+                <a href="#" class="btn btn-sm btn-save-dxy" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-dxy" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+            }
+            else
+            {
+                <a href="#" class="btn btn-sm btn-edit-dxy" title="Sửa" style="font-size:18px;{{hiddenCheck}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-delete-dxy" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hiddenCheck}}"><i class="fa fa-trash"></i></a>
+                <a href="#" class="btn btn-sm btn-save-dxy" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-dxy" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+            }
+
+        </td>
+    </tr>
+</script>
+
+<script id="template-add-dxy" type="x-tmpl-mustache">
+    <tr class="gradeA pctt add-pctt" data-id="{{Id}}" data-dvid="{{dvId}}" data-type="{{dxyType}}">
+        <td class="dxy-ckChoose" style="text-align:center; vertical-align:middle"></td>
+        <td class="dxy-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="dxy-TenDuongDay" style="text-align:left;vertical-align: middle"><textarea rows="1" value="{{TenDuongDay}}" class="txt-dxy-tenduongday form-control" placeholder="">{{TenDuongDay}}</textarea></td>
+        <td class="dxy-tinhtrang" style="text-align:left; vertical-align:middle"><textarea rows="1" value="{{TinhTrang}}" class="txt-dxy-tinhtrang form-control" placeholder="">{{TinhTrang}}</textarea></td>
+        <td class="dxy-mucdo" style="text-align:left; vertical-align:middle">{{{MucDo}}}</td>
+        <td class="dxy-kehoach-bd" style="text-align:right; vertical-align:middle"><input type="text" value="{{KHBD}}" class="txt-dxy-khbd txt-dxy-khbd-{{dvId}}-{{dxyType}}-{{STT}} form-control" placeholder="" /></td>
+        <td class="dxy-kehoach-kt" style="text-align:center; vertical-align:middle"><input type="text" value="{{KHKT}}" class="txt-dxy-khkt txt-dxy-khkt-{{dvId}}-{{dxyType}}-{{STT}} form-control" placeholder="" /></td>
+        <td class="dxy-ghichu" style="text-align:center; vertical-align:middle"><textarea rows="1" value="{{GhiChu}}" class="txt-dxy-ghichu form-control" placeholder="">{{GhiChu}}</textarea></td>
+
+        <td class="nd-function" style="text-align:center; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-dxy" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-delete-add-dxy" title="Xóa" style="font-size: 18px"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+</script>
+
+<script id="template-edit-dxy" type="x-tmpl-mustache">
+    <tr class="gradeA pctt add-pctt" data-id="{{Id}}">
+        <td class="dxy-ckChoose" style="text-align:center; vertical-align:middle"></td>
+        <td class="dxy-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="dxy-TenDuongDay" style="text-align:left;vertical-align: middle"><textarea rows="1" value="{{TenDuongDay}}" class="txt-dxy-tenduongday form-control" placeholder="">{{TenDuongDay}}</textarea></td>
+        <td class="dxy-tinhtrang" style="text-align:left; vertical-align:middle"><textarea rows="1" value="{{TinhTrang}}" class="txt-dxy-tinhtrang form-control" placeholder="">{{TinhTrang}}</textarea></td>
+        <td class="dxy-mucdo" style="text-align:left; vertical-align:middle">{{{MucDo}}}</td>
+        <td class="dxy-kehoach-bd" style="text-align:right; vertical-align:middle"><input type="text" value="{{KHBD}}" class="txt-dxy-khbd txt-dxy-khbd-{{dvId}}-{{dxyType}}-{{STT}} form-control" placeholder="" /></td>
+        <td class="dxy-kehoach-kt" style="text-align:center; vertical-align:middle"><input type="text" value="{{KHKT}}" class="txt-dxy-khkt txt-dxy-khkt-{{dvId}}-{{dxyType}}-{{STT}} form-control" placeholder="" /></td>
+        <td class="dxy-ghichu" style="text-align:center; vertical-align:middle"><textarea rows="1" value="{{TinhTrang}}" class="txt-dxy-ghichu form-control" placeholder="">{{GhiChu}}</textarea></td>
+
+        <td class="nd-function" style="text-align:center; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-dxy" title="Lưu" style="font-size: 18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-cancel-dxy" title="Hủy" data-id="{{Id}}" style="font-size: 18px"><i class="fa fa-ban"></i></a>
+        </td>
+    </tr>
+</script>
+

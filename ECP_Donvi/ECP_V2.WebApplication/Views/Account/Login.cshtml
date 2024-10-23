@@ -1,0 +1,237 @@
+﻿@using ECP_V2.WebApplication.Models
+@model AdminViewModel
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html class="fixed">
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <meta name="keywords" content="VNIT TECH, KSTAT, ECP" />
+    <meta name="description" content="Phần mềm được phát triển bởi công ty TNHH VNIT TECH">
+    <meta name="author" content="vnit-tech.com">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Web Fonts  -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/vendor/bootstrap/css/bootstrap.css" />
+
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/vendor/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/vendor/magnific-popup/magnific-popup.css" />
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/stylesheets/theme.css" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/stylesheets/skins/default.css" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/Content/AdminPanel/assets/stylesheets/theme-custom.css">
+
+    <!-- Head Libs -->
+    <script src="~/Scripts/AdminPanel/assets/vendor/modernizr/modernizr.js"></script>
+    <script>
+
+    </script>    
+</head>
+<body class="newLogin">
+    <!-- start: page -->
+    @*<div id="fb-root"></div>
+        <script>
+        (function (d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v3.0';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+        </script>*@
+
+
+    @if (Session["Version"] != null)
+    {
+        <div id="modalAnimVersion" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">
+                        Những thay đổi trong phiên bản mới
+                    </h2>
+                </header>
+                <div class="panel-body" style="padding:0">
+                    <div class="modal-wrapper" style="padding-left: 50px; height: 300px; overflow-y: auto;">
+                        @Html.Raw(Session["Version"].ToString())
+                    </div>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </div>
+    }
+
+    <section class="body-sign">
+        <div class="center-sign">
+            <a href="@Url.Action("Login","Account")" class="logo pull-left">
+                @*<img src="~/Scripts/AdminPanel/assetsimages/logo.png" height="54" alt="Porto Admin" />*@
+                <img src="~/Images/ImageDesign/logo1.png" alt="ECP - Kiểm soát ATLĐ" height="54" />
+            </a>
+
+            <div class="panel panel-sign">
+                <div class="panel-title-sign mt-xl text-right">
+                    <h2 class="title text-uppercase text-weight-bold m-none"><i class="fa fa-user mr-xs"></i> Đăng nhập hệ thống</h2>
+                </div>
+                <div class="panel-body">
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="text-center center-error">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group mb-lg">
+                            <label>Tên đăng nhập</label>
+                            <div class="input-group input-group-icon">
+                                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control input-lg" })
+                                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                                @*<input name="username" type="text" class="form-control input-lg" />*@
+                                <span class="input-group-addon">
+                                    <span class="icon icon-lg">
+                                        <i class="fa fa-user"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-lg">
+                            <div class="clearfix">
+                                <label class="pull-left">Mật khẩu</label>
+                                @*<a href="pages-recover-password.html" class="pull-right">Quên mật khẩu?</a>*@
+                            </div>
+                            <div class="input-group input-group-icon">
+                                @Html.PasswordFor(m => m.Password, new { @name = "pwd", @type = "password", @class = "form-control input-lg" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                <span class="input-group-addon">
+                                    <span class="icon icon-lg">
+                                        <i class="fa fa-lock"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="" id="divRemember">
+                                    @Html.CheckBoxFor(m => m.RememberMe, new { id = "rbRemember" })
+
+                                    <label for="RememberMe">Nhớ cho lần đăng nhập sau</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="submit" class="btn btn-primary hidden-xs">Đăng nhập</button>
+                                <button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">Đăng nhập</button>
+                            </div>
+                        </div>
+                    }
+
+
+                    @*<hr>
+                <p class="text-center" style="display: inline;font-weight:bold;color:red">
+                    Nhấn
+                    <div style="display: inline;" class="fb-like" data-href="https://www.facebook.com/kiemsoatantoan" data-layout="button" data-action="like" data-size="large" data-show-faces="false" data-share="false"></div>
+                    <span style="display: inline;font-weight:bold;color:red">để cập nhật thông tin mới nhất về phần mềm!</span>
+                </p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="fb-page" data-href="https://www.facebook.com/kiemsoatantoan" data-width="434" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/kiemsoatantoan" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/kiemsoatantoan">Phần Mềm Quản Lý An Toàn Lao Động</a></blockquote></div>
+                    </div>
+                </div>*@
+
+                    <hr />
+
+                    @*<a href="https://drive.google.com/open?id=0B7sCDMQvYyDVWlBaakVuVGp6YUU">Tải xuống bản dành cho thiết bị Adroid Version 2.3</a>*@
+
+                    @*@if (Session["PublishDate"] != null)
+                {
+                    <div class="row text-center">
+                        Phiên bản @ViewContext.Controller.GetType().Assembly.GetName().Version cập nhật ngày @Session["PublishDate"].ToString().
+                        <br />
+                        <a href="#modalAnimVersion" id="btnViewVersion">
+                            Xem những thay đổi
+                        </a>
+                    </div>
+                }*@
+                    <br />
+                </div>
+            </div>
+
+            <p class="text-center text-muted mt-md mb-md" style="font-size:18px;font-family:Tahoma;font-weight:bold;color:yellow !important">&copy; TỔNG CÔNG TY ĐIỆN LỰC MIỀN BẮC</p>
+            <p class="text-center text-muted mt-md mb-md" style="font-size:18px;font-family:Tahoma;font-weight:bold;color:yellow !important">ECP -  AN TOÀN HIỆU QUẢ</p>
+        </div>       
+    </section>
+    <!-- end: page -->
+    <!-- Vendor -->
+
+    <script src="~/Scripts/AdminPanel/assets/vendor/jquery/jquery.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/nanoscroller/nanoscroller.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/magnific-popup/magnific-popup.js"></script>
+    <script src="~/Scripts/AdminPanel/assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+    <!-- Theme Base, Components and Settings -->
+    <script src="~/Scripts/AdminPanel/assets/javascripts/theme.js"></script>
+
+    <!-- Theme Custom -->
+    <script src="~/Scripts/AdminPanel/assets/javascripts/theme.custom.js"></script>
+
+    <!-- Theme Initialization Files -->
+    <script src="~/Scripts/AdminPanel/assets/javascripts/theme.init.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('a#btnViewVersion').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+            /*
+            Modal Dismiss
+            */
+            $(document).on('click', '#modal-dismiss', function (e) {
+                e.preventDefault();
+                $.magnificPopup.close();
+            });
+
+        });
+
+        function ModalDismissDetail() {
+            $.magnificPopup.close();
+        }
+    </script>
+
+</body>
+</html>

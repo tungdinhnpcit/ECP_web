@@ -1,0 +1,92 @@
+﻿@model List<ECP_V2.Business.Repository.BieuDoTronModel>
+
+<div class="row" style="text-align:center">
+    <p style="font-size:26px"><strong><a style="color: #96ed95;text-decoration: none;" onclick="">Tổng số dụng cụ chưa đến hạn : @string.Format("{0:n0}", Model.Sum(o => o.SLChuaDenHan))</a></strong></p>
+    <p style="font-size:26px"><strong><a style="color: #F6BB42;text-decoration: none;" onclick="">Tổng số dụng cụ đến hạn 30 ngày : @string.Format("{0:n0}", Model.Sum(o => o.SLDenHan30Ngay))</a></strong></p>
+    <p style="font-size:26px"><strong><a style="color: #f26d30;text-decoration: none;" onclick="">Tổng số dụng cụ đến hạn 15 ngày : @string.Format("{0:n0}", Model.Sum(o => o.SLDenHan15Ngay))</a></strong></p>
+    <p style="font-size:26px"><strong><a style="color: #ac2925;text-decoration: none;" onclick="">Tổng số dụng cụ hết hạn : @string.Format("{0:n0}", Model.Sum(o => o.SLQuaHan))</a></strong></p>
+    <p style="font-size:26px"><strong><a style="color: black;text-decoration: none;" onclick="">Tổng số : @string.Format("{0:n0}", Model.Sum(o => o.SLChuaDenHan) + Model.Sum(o => o.SLDenHan30Ngay) + Model.Sum(o => o.SLDenHan15Ngay) + Model.Sum(o => o.SLQuaHan))</a></strong></p>
+</div>
+
+<div class="row" style="margin-top:10px">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3" style="border: 1px solid #CFD9DB;">
+            <h4 style="text-align:center"><strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','')">Đơn vị: @Html.Raw(item.Id)</a></strong></h4>
+            <div id="chart-@Html.Raw(item.Id)" class="chart chart-md" style="cursor:zoom-in"></div>
+            <h4 style="text-align:center"><strong><a style="color:black;cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','')">Tổng số : @string.Format("{0:n0}", item.SLChuaDenHan + item.SLDenHan30Ngay + item.SLDenHan15Ngay + item.SLQuaHan)</a></strong></h4>
+            <h4 style="text-align:center"><strong><a style="cursor:zoom-in" onclick="GoToURL('chart-@Html.Raw(item.Id)','')">@item.TenDonVi</a></strong></h4>
+        </div>
+    }
+
+
+</div>
+
+<style>
+    .legendLabel {
+        padding-left: 5px;
+    }
+</style>
+<script type="text/javascript">
+
+    (function () {
+        @foreach(var item in Model)
+        {
+            @:InitPlot('chart-@Html.Raw(item.Id)', @item.SLChuaDenHan, @item.SLDenHan30Ngay, @item.SLDenHan15Ngay, @item.SLQuaHan);
+                }
+    })();
+
+    function InitPlot(ID, data1, data2, data3, data4) {
+        var piedata = [
+        { label: "Chưa đến hạn ("+data1+")", data: [data1], color: '#96ed95',ID:ID,TrangThai:'cdh' },
+        { label: "Đến hạn 30 ngày ("+data2+")", data: [data2], color: '#F6BB42',ID:ID,TrangThai:'shh30' },
+        { label: "Đến hạn 15 ngày ("+data3+")", data: [data3], color: '#f26d30',ID:ID,TrangThai:'shh15' },
+        { label: "Hết hạn ("+data4+")", data: [data4], color: '#ac2925',ID:ID,TrangThai:'hh' },
+        ];
+        function labelFormatter(label, series) {
+            return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        $.plot('#' + ID, piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 0.9,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        formatter: labelFormatter,
+                        threshold: 0.1
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+
+        $('#' + ID).bind("plotclick", function(event, pos, obj){
+            if (!obj){return;}
+
+            GoToURL(obj.series.ID,obj.series.TrangThai);
+        });
+
+        $(".legend table").css("top","-10px");
+        $(".legend div").css("top","-10px");
+        $(".legend div").css("background-color","none");
+    }
+
+    function GoToURL(ID, lable) {
+
+        var url = "/Admin/CCDC/Index?DonViId="
+            + ID + "&TrangThai="
+            + lable+"&MaNhom=@ViewBag.MaNhom"
+        ;
+
+        var win = window.open(url, '_blank');
+        win.focus();
+
+
+    }
+</script>

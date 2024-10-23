@@ -1,0 +1,133 @@
+﻿@model IEnumerable<ECP_V2.WebApplication.Models.api_ChamDiemAnToanModel>
+@{
+    var i = 0;
+}
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="pb-lg">BẢNG TỔNG HỢP CHẤM ĐIỂM AN TOÀN THÁNG @string.Format("{0:MM}", DateTime.Now) NĂM @string.Format("{0:yyyy}", DateTime.Now)</h2>
+            <div class="toggle" data-plugin-toggle>
+                @foreach (var group in Model.GroupBy(y => y.TenLoaiTC))
+                {
+                    <section class="toggle @(i==0?"active":"")">
+                        <label>@group.Key <strong style="color:red">(@string.Format("{0:#,0.## điểm trừ}", group.Sum(o => o.SoDiemDaCham)))</strong></label>
+                        <div class="toggle-content">
+                            <table style="width:100%">
+                                <tbody>
+                                    @foreach (var it in group)
+                                    {
+                                        <tr style="border-top: 1px solid #ccc;height:50px">
+
+                                            @if (it.IsQuanTrong.GetValueOrDefault() && it.IsDaChamDiem)
+                                            {
+                                                <td style="padding-top:5px;padding-bottom:5px">
+                                                    <a style="color:red;font-size:15px;cursor:default" href="javascript:void(0)"><span class="glyphicon glyphicon-th-large text-primary mr-5"></span> @it.TenTieuChi</a>
+                                                    <div style="margin-top:5px">
+                                                        @Html.Raw(it.GhiChuViPham)
+                                                    </div>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="padding-top:5px;padding-bottom:5px">
+                                                    <a style="color:black;font-size:15px;cursor:default" href="javascript:void(0)"><span class="glyphicon glyphicon-th-large text-primary mr-5"></span> @it.TenTieuChi</a>
+                                                    <div style="margin-top:5px">
+                                                        @Html.Raw(it.GhiChuViPham)
+                                                    </div>
+                                                </td>
+                                            }
+
+                                            @if (it.IsDaChamDiem)
+                                            {
+                                            <!--So diem cua tieu chi phai > 0 moi cham diem-->
+                                                if (it.SoDiem != 0 || it.IsQuanTrong.GetValueOrDefault())
+                                                {
+                                                    <td style="text-align:center;max-width:200px;min-width:200px;width:200px">
+                                                        <input type="hidden" name="hidTieuChiId" value="@it.TieuChiId" />
+                                                        <!--Neu la loai tieu chi suat su co-->
+                                                        @if (it.IsSuatSuCo.GetValueOrDefault())
+                                                        {
+                                                        <!--Neu khong phai la tieu chi dong bo-->
+                                                            if (it.MaTieuChiDongBo == null)
+                                                            {
+
+                                                                @(string.Format("{0:#,0.## }", (it.SoSuatViPham ?? 0)) + "/ " + string.Format("{0:#,0.##}", it.SoSuat) + " (" + string.Format("{0:n0}", it.TyLe) + "%)")
+                                                            }
+                                                            else if (it.SoSuatViPham > 0)
+                                                            {
+
+                                                                @(string.Format("{0:#,0.## }", (it.SoSuatViPham ?? 0)) + it.DonViDongBo + "/ " + string.Format("{0:#,0.##}", it.SoSuat) + it.DonViDongBo + " (" + string.Format("{0:n0}", it.TyLe) + "%)")
+                                                            }
+
+                                                        }
+
+                                                    </td>
+
+                                                <!--Neu la tieu chi nhap so lan truc tiep-->
+                                                    if (it.IsChonDonVi.GetValueOrDefault())
+                                                    {
+                                                        <td style="text-align:center;max-width:110px;min-width:110px;width:110px">
+                                                            <div class="col-md-8">
+                                                                @string.Format("{0:#,0.## }", it.SoLuongDaCham.GetValueOrDefault())
+                                                            </div>
+                                                            <strong class="col-md-4">@it.DonViTinhDiem</strong>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+
+                                                <!--Neu la tieu chuan quan trong, co chon don vi-->
+                                                    if (it.IsQuanTrong.GetValueOrDefault())
+                                                    {
+                                                        <td style="max-width:300px;min-width:300px;width:300px">
+                                                            @Html.Raw(it.DropDviQlyHtml)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                    <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                    <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                }
+
+                                                if (!it.IsQuanTrong.GetValueOrDefault())
+                                                {
+                                                    <td style="text-align:center;max-width:150px;min-width:150px;width:150px;font-weight:bold;color:red">
+                                                        @string.Format("{0:#,0.## điểm}", it.SoDiemDaCham)
+                                                    </td>
+                                                }
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            }
+                                            else
+                                            {
+                                                <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                                <td style="text-align:center;max-width:50px;min-width:50px;width:50px"></td>
+                                            }
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </section>
+                }
+            </div>
+        </div>
+    </div>
+}

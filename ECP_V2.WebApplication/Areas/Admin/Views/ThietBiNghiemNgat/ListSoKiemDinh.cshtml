@@ -1,0 +1,115 @@
+﻿@model List<ECP_V2.WebApplication.Areas.Admin.Models.tbnn_SoTheoDoiTBNNViewModels>
+
+<script type="text/javascript">
+        $(function () {
+            $('a.delete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).attr("id").split("_")[1];
+            });
+
+            $('a.edit').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                SuaKD($(this).attr("id").split("_")[1]);
+
+            });
+        });
+</script>
+
+<div class="table-responsive">
+    <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+        <thead>
+            <tr>
+                <th>
+                    Lần kiểm định
+                </th>
+                <th>
+                    Ngày tháng năm kiểm định
+                </th>
+                <th>
+                    Người kiểm tra
+                </th>
+                <th>
+                    Đơn vị kiểm định
+                </th>
+                <th>
+                    Biên bản số
+                </th>
+                <th>
+                    Kết quả
+                </th>
+                @*<th>
+                    Thời hạn kiểm định tiếp theo
+                </th>*@
+                <th style="text-align:center">
+                    Thao tác
+                </th>
+            </tr>
+            <tr>
+                <th style="font-style:italic;font-weight:normal;text-align:center">
+                    (1)
+                </th>
+                <th style="font-style:italic;font-weight:normal;text-align:center">
+                    (2)
+                </th>
+                <th style="font-style:italic;font-weight:normal;text-align:center">
+                    (3)
+                </th>
+                <th style="font-style:italic;font-weight:normal;text-align:center">
+                    (4)
+                </th>
+                <th style="font-style:italic;font-weight:normal;text-align:center">
+                    (5)
+                </th>
+                <th style="font-style:italic;font-weight:normal;text-align:center">
+                    (6)
+                </th>
+                @*<th style="font-style:italic;font-weight:normal;text-align:center">
+                    (7)
+                </th>*@
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="text-align:center">@item.LanKiemTra</td>
+                    <td>@string.Format("{0:dd/MM/yyyy}", item.NgayKiemTra)</td>
+                    <td>@item.NguoiKiemTra</td>
+                    <td>@item.DonViKiemTra</td>
+                    <td>@item.BienBanSo</td>
+                    <td>@(item.KetQua.GetValueOrDefault() ? "Đạt" : "Không đạt")</td>
+                    @*<td>@string.Format("{0:dd/MM/yyyy}", item.NgayKiemTraTiepTheo)</td>*@
+                    <td>
+                        <a id="Edit_@item.ID" href="#modalAnimSua" title="Sửa" class="on-default edit-row edit"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                        <a id="Delete_@item.ID" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+

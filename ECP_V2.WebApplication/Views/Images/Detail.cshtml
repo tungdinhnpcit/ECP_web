@@ -1,0 +1,396 @@
+﻿@using ECP_V2.DataAccess;
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    tblPhienLamViec phienLV = ViewBag.PhienLV;
+    List<tblImage> images = null;
+    if (ViewBag.Images != null)
+    {
+        images = ViewBag.Images;
+    }
+}
+<link href="~/Content/mystyle.css" rel="stylesheet" />
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Ảnh/Video @Model.NoiDung
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clsg1" style="display: block;">
+    <table style="float: right">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="listactive" onclick="javascript:listactive(1)">
+                        <img src="/Content/Slide/Images/text-list.png">
+                    </div>
+                </td>
+                <td>
+                    <div id="slideactive" onclick="javascript:slideactive(1)">
+                        <img src="/Content/Slide/Images/image-slide.png">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="clear: both;"></div>
+    <div id="listimg1" style="display: none;">
+        <div id="table" style="overflow: scroll">
+            <table id="tblImage" class="table table-hover table-nomargin table-bordered table-striped  dataTable-noheader dataTable-nofooter ">
+                <thead>
+                    <tr>
+                        <th>
+                            Chức năng
+                        </th>
+                        <th>
+                            Ảnh hiển thị
+                        </th>
+                        <th>Nhóm ảnh/video</th>
+                        <th>Ghi chú</th>
+                        <th>Địa điểm</th>
+                    </tr>
+                </thead>
+                <tbody class="list-img">
+                    @{Html.RenderAction("_GetListItem", "Images", new { phienlvid = Model.Id, page = 0, pageSize = 20, sortOrder = "", filter = "" });}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="MainContent1" style="display: block;">
+        <div id="Gallery1" class="box-img">
+            <div class="gallery-row">
+                @{Html.RenderAction("_GetListItem", "Images", new { phienlvid = Model.Id, type = 1, page = 0, pageSize = 20, sortOrder = "", filter = "" });}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="spopup">
+    <div class="slideItem">
+    </div>
+    <div class="scounter noselect">
+        1/1
+    </div>
+    <div class="sbottomControl">
+        <div class="sleft noselect"><</div>
+        <div class="sright noselect">></div>
+        <div class="rotateleft noselect"></div>
+        <div class="rotateright noselect"></div>
+    </div>
+    <div class="sclose noselect">
+    </div>
+</div>
+
+<script type="text/javascript">
+    setInterval(function () {
+        if ($(".files tr").length > 0) {
+            $(".upload-all").attr("style", "");
+            $(".upload-cancel").attr("style", "");
+        } else {
+            $(".upload-all").attr("style", "display:none;");
+            $(".upload-cancel").attr("style", "display:none;");
+        }
+    }, 800);
+    function GetImageItem(imageId) {
+        console.log(imageId);
+        var json = { "imageId": imageId }
+        try {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Gallery/GetMyImg",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    $(".list-img").prepend(data.ListImage);
+                    $(".box-img").prepend(data.SlideImage);
+                },
+                error: removeItemFailed
+            });
+        } catch (e) {
+
+        }
+    }
+    function SaveAllDesInTable(idtemp) {
+        var notename = "txtnode" + idtemp;
+        var commentname = "txtcomment" + idtemp;
+        var tagname = "txttag" + idtemp;
+        var slgroup = "slgroup" + idtemp;
+
+        var valuenote = $("#" + notename).val();
+        var valuecomment = $("#" + commentname).val();
+        var valuetagname = $("#" + tagname).val();
+        var valuegroup = $("#" + slgroup).val();
+
+        var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname, "groupid": valuegroup };
+        console.log(json);
+        $.ajax({
+            type: "POST",
+            url: "/Images/Update",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            dataType: "json",
+            success: function (data) {
+                UpdateInfoCompleted(data);
+            },
+            error: UpdateInfoFailed
+        });
+        $("#row" + idtemp).remove();
+        ShowTable();
+    };
+    function ShowTable() {
+
+    };
+    function UpdateInfoCompleted(results) {
+
+        if (results) {
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Cập nhật thành công',
+                type: 'success'
+            });
+        } else {
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Cập nhật không thành công',
+                type: 'error'
+            });
+        }
+    };
+    function UpdateInfoFailed(request, status, error) {
+        new PNotify({
+            title: 'Thông báo!',
+            text: 'Cập nhật không thành công',
+            type: 'error'
+        });
+    };
+    function DeleteImage(idtemp) {
+        var r = confirm("Bạn có muốn xóa ảnh?");
+        if (r == true) {
+            var json = { "id": idtemp };
+            $.ajax({
+                type: "POST",
+                url: "/Images/Delete",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data.Message);
+                    $(".tr" + idtemp).remove();
+                    //$(".box-img").html(data.SlideImage);
+                    showResponseX(true);
+                },
+                error: removeItemFailed
+            });
+            $("#row" + idtemp).remove();
+        }
+    };
+    function ShowAllDes(idtemp) {
+        $("#txtnode" + idtemp).css("border", "1px");
+        $("#txtcomment" + idtemp).css("border", "1px");
+        $("#txttag" + idtemp).css("border", "1px");
+
+        $("#txtnode" + idtemp).css("background", "#fff");
+        $("#txtcomment" + idtemp).css("background", "#fff");
+        $("#txttag" + idtemp).css("background", "#fff");
+
+        $("#btnSaveAllDes" + idtemp).css("display", "block");
+        $("#btnShowAllDes" + idtemp).css("display", "none");
+    };
+
+    function ChangeGroup(idtemp) {
+        var slgroup = "slgroup" + idtemp;
+        var valuegroup = $("#" + slgroup).val();
+        var json = { "id": idtemp, "groupid": valuegroup };
+        try {
+            $.ajax({
+                type: "POST",
+                url: "/Images/UpdateGroupId",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                dataType: "json",
+                success: function (data) {
+                    UpdateInfoCompleted(data);
+                },
+                error: UpdateInfoFailed
+            });
+        } catch (e) {
+
+        }
+    }
+
+    function SaveAllDes(idtemp) {
+        var notename = "txtnode" + idtemp;
+        var commentname = "txtcomment" + idtemp;
+        var tagname = "txttag" + idtemp;
+        var slgroup = "slgroup" + idtemp;
+
+        var valuenote = $("#" + notename).val();
+        var valuecomment = $("#" + commentname).val();
+        var valuetagname = $("#" + tagname).val();
+        var valuegroup = $("#" + slgroup).val();
+
+        var json = { "id": idtemp, "note": valuenote, "comment": valuecomment, "tag": valuetagname, "groupid": valuegroup };
+        console.log(json);
+        $.ajax({
+            type: "POST",
+            url: "/Images/Update",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json),
+            dataType: "json",
+            success: UpdateInfoCompleted,
+            error: UpdateInfoFailed
+        });
+        $("#txtnode" + idtemp).css("border", "0px");
+        $("#txtcomment" + idtemp).css("border", "0px");
+        $("#txttag" + idtemp).css("border", "0px");
+
+        $("#txtnode" + idtemp).css("background", "transparent");
+        $("#txtcomment" + idtemp).css("background", "transparent");
+        $("#txttag" + idtemp).css("background", "transparent");
+
+        $("#btnSaveAllDes" + idtemp).css("display", "none");
+        $("#btnShowAllDes" + idtemp).attr("style", "");
+    };
+    function removeItemCompleted(results) {
+        //alert("Xóa ảnh thành công!");
+    };
+    function removeItemFailed(request, status, error) {
+        alert("ERROR");
+    };
+    function showResponseX(responseText) {
+
+        if (responseText) {
+            showSuccess('Cập nhật thành công');
+        }
+        else
+            showError('Có lỗi xảy ra');
+
+        setTimeout("hideTop()", 3000);
+        unloading();
+    }
+    function mySlideShow(index) {
+        if (isNaN(index))
+            return;
+        console.log(index);
+        console.log($(".slide-item-" + index).attr("data-isvideo"));
+        if ($(".slide-item-" + index).attr("data-isvideo") == "1") {
+            var getSrc = $(".slide-item-" + index).attr("data-image");
+            var getVideoSrc = $(".slide-item-" + index).attr("data-video");
+            //$(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+            $(".slideItem").html('<video width="100%" height="100%" controls="controls" autoplay> <source src="' + getVideoSrc + '" type="video/mp4"> Your browser does not support the video tag. </video>');
+            $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+        }
+        else {
+            var getSrc = $(".slide-item-" + index).attr("data-image");
+            //$(".slideItem").attr("style", "background:url(" + getSrc + ") no-repeat center center;");
+            $(".slideItem").html("<img src='" + getSrc + "' id='imgcenter' class='img-slide' />");
+            $(".scounter").text((index + 1) + "/" + $(".slide-item").length);
+        }
+    }
+
+    var slideCurrent = 0;
+    $(document).on('click', '.gallery-item-show', function () {
+        console.log($(this).attr("data-image"));
+        var getIndex = $(this).attr("data-index");
+        slideCurrent = parseInt(getIndex);
+        $(".spopup").fadeIn(600);
+        
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sright', function () {
+
+        rl = 0;
+        rr = 0;
+
+        if (slideCurrent == $(".gallery-row .slide-item").length - 1) {
+            slideCurrent = 0;
+        }
+        else {
+            slideCurrent++;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sleft', function () {
+        rl = 0;
+        rr = 0;
+        if (slideCurrent == 0) {
+            slideCurrent = $(".gallery-row .slide-item").length - 1;
+        } else {
+            slideCurrent--;
+        }
+        mySlideShow(slideCurrent);
+    });
+
+    $(document).on('click', '.sclose', function () {
+        rl = 0;
+        rr = 0;
+
+        $(".slideItem").html('');
+        $(".spopup").fadeOut(400);
+    });
+    $(document).on('change', '.slgroup', function () {
+        console.log($(this).attr("data-id"));
+        ChangeGroup($(this).attr("data-id"));
+    });
+
+    var rl = 0;
+    $(document).on('click', '.rotateleft', function () {
+        rl -= 90;
+        $("#imgcenter").rotate(rl);
+    });
+
+    var rr = 0;
+    $(document).on('click', '.rotateright', function () {
+        rr += 90;
+        $("#imgcenter").rotate(rr);
+    });
+</script>
+
+<script type="text/javascript">
+
+    var WIDTHBODY = $(window).width();
+
+    function setHeight() {
+        var scwidth = $(window).width();
+        if (WIDTHBODY != scwidth) {
+            WIDTHBODY = scwidth;
+            if (scwidth > 1024) {
+                //$(".imgslide").css("height", "320px");
+            };
+            if (scwidth > 720 && scwidth <= 1024) {
+                //$(".imgslide").css("height", "225px");
+            };
+            if (scwidth > 480 && scwidth <= 720) {
+                //$(".imgslide").css("height", "150px");
+            };
+            if (scwidth <= 480) {
+                //$(".imgslide").css("height", "60px");
+            };
+        }
+    };
+
+    function slideactive(gr) {
+        //ShowTable();
+        document.getElementById("listimg" + gr.toString()).style.display = "none";
+        document.getElementById("MainContent" + gr.toString()).style.display = "block";
+    };
+
+    function listactive(gr) {
+        document.getElementById("listimg" + gr.toString()).style.display = "block";
+        document.getElementById("MainContent" + gr.toString()).style.display = "none";
+    };
+
+    $(document).ready(function () {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            Code.photoSwipe('a', '#Gallery1');
+        }, false);
+
+        window.setInterval("setHeight()", 500);
+    });
+</script>

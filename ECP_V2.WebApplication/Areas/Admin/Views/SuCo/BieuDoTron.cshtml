@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Biểu đồ tròn";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<style>
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content-body {
+        padding: 5px;
+    }
+</style>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <div class="panel-actions">
+                    <div id="datatable-default_filter" class="dataTables_filter" style="margin-right: 10px; float: right;">
+                        <select class="form-control" onchange="drlLoaiListTieuChi_change(this)" id="drlLoaiListTieuChi">
+                            <option value="cda" selected="selected">Cấp điện áp</option>
+                            <option value="lsc">Loại sự cố</option>
+                            <option value="lts">Loại tài sản</option>
+                            <option value="nn">Lý do</option>
+                            <option value="tc">Tính chất</option>
+                        </select>
+                    </div>
+                </div>
+                <span class="glyphicon glyphicon-tasks"></span> @ViewBag.Title
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row show-grid" style="margin-bottom: 20px;border-bottom: 1px solid #CFD9DB;padding-bottom: 20px;">
+                    <div style="float:left;margin-left:10px;margin-top:10px">
+                        <span>Từ ngày</span>
+                        <input id="GioBd" type="text" style="width:110px" placeholder="Từ ngày...">
+                    </div>
+                    <div style="float:left;margin-left:10px;margin-top:10px" id="content-denngay">
+                        <span>Đến ngày</span>
+                        <input id="GioKt" type="text" style="width:110px" placeholder="Đến ngày...">
+                    </div>
+                </div>
+                <div class="row show-grid">
+                    <div class="listRolesName list" style="margin-top: 5px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+        var start = $("#GioBd").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+        }).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+
+        var end = $("#GioKt").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+            change: end_chage
+        }).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+
+        Paging();
+
+    });
+
+    function end_chage() {
+        Paging();
+    }
+
+    function Paging() {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        var scriptUrl = "/Admin/SuCo/ListBieuDoTron";
+        $.ajax({
+            url: scriptUrl,
+            type: 'GET',
+            dataType: 'html',
+            data: {
+                DateFrom: $("#GioBd").val(),
+                DateTo: $("#GioKt").val(),
+                LoaiListTieuChi: $("#drlLoaiListTieuChi").val(),
+            },
+            async: false,
+            success: function (data) {
+                $(".list").html("");
+                $(".list").html(data);
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+    }
+
+    function drlLoaiListTieuChi_change(el) {
+        Paging();
+    }
+
+</script>

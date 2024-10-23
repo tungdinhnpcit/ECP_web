@@ -1,0 +1,352 @@
+﻿.select-box {
+    margin-bottom: 20px;
+}
+
+.btn-edit {
+    width: 50px;
+}
+
+.updateimginfo img {
+    max-width: 225px !important;
+}
+
+.gallery-item img, .ps-slider-item img {
+    max-width: 100% !important;
+}
+
+#main {
+    padding-left: 10px !important;
+}
+
+.groupAction {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #111;
+    border: 1px solid #808080;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+    padding-left: 7px;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    float: left;
+    margin-top: -3px;
+}
+
+.clsg1 {
+}
+
+.groupName {
+    float: left;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 3px;
+}
+
+div.gallery-row:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+div.gallery-item {
+    float: left;
+    width: 224px;
+    height: 224px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    border-radius: 15px;
+}
+
+    div.gallery-item a {
+        display: block;
+        margin: 5px;
+        border: 1px solid #3c3c3c;
+    }
+
+    div.gallery-item img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+.gallery-item_list {
+}
+
+.listimg {
+    height: 225px;
+    width: 235px;
+    border: 1px solid #999;
+    padding: 2px;
+}
+
+#slideactive, #listactive {
+    width: 30px;
+    height: 27px;
+    padding: 2px;
+    cursor: pointer;
+}
+
+    #slideactive img, #listactive img {
+        width: 28px;
+        height: 25px;
+        background-color: #DFDCD1;
+    }
+
+.gallery-item-des {
+    position: absolute;
+    bottom: 0px;
+    color: #000;
+    font-size: 16px;
+    line-height: 32px;
+    font-weight: bold;
+    padding: 0 5px;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(211, 211, 211, 0.57);
+}
+
+.gallery-item-show {
+    position: absolute;
+    bottom: 30px;
+    color: #000;
+    font-size: 16px;
+    line-height: 32px;
+    font-weight: bold;
+    padding: 0 5px;
+    width: 100%;
+    text-align: center;
+    height: 145px;
+}
+
+.gallery-item-play .playvideo {
+    display: block !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -16px;
+    margin-left: -16px;
+    height: 32px;
+    width: 32px;
+    background: url(/images/imagedesign/play.png) no-repeat center center;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.centered {
+    margin: 0 auto;
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.slide-item:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.spopup {
+    display: none;
+    background: #000;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999990;
+}
+
+.slideItem {
+    position: fixed;
+    top: 0;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    z-index: 999991;
+}
+
+.sbottomControl {
+    position: fixed;
+    height: 55px;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+    z-index: 999991;
+}
+
+.sclose {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+    cursor: pointer;
+    z-index: 999999;
+    background: url(/content/images/close_blue.png) no-repeat center center;
+    background-size: 100%;
+}
+
+    .sclose:hover {
+        color: #808080;
+    }
+
+.scounter {
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+    height: 25px;
+    font-size: 16px;
+    color: #03a6ff;
+    text-align: center;
+    z-index: 99999999;
+}
+
+.sleft, .sright {
+    width: 50%;
+    height: 50px;
+    z-index: 999992;
+    font-size: 50px;
+    font-weight: bold;
+    line-height: 50px;
+    font-family: arial;
+    padding: 0;
+    color: #666;
+    cursor: pointer;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: absolute;
+    border: 1px solid #999;
+    background: #fff;
+    border-radius: 25px;
+    text-align: center;
+    width: 85px;
+}
+
+.sleft {
+    left: 50%;
+    margin-left: -90px;
+}
+
+.sright {
+    right: 50%;
+    margin-right: -85px;
+}
+
+    .sleft:hover, .sright:hover {
+        color: #999;
+    }
+
+    .rotateleft, .rotateright {
+    width: 50%;
+    height: 50px;
+    z-index: 999992;
+    font-size: 50px;
+    font-weight: bold;
+    line-height: 50px;
+    font-family: arial;
+    padding: 0;
+    color: #666;
+    cursor: pointer;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: absolute;
+    /*border: 1px solid #999;*/
+    background-color: #fff;
+    /*border-radius: 25px;*/
+    text-align: center;
+    width: 85px;
+     
+}
+.rotateleft {
+    left: 60%;
+    margin-left: -115px;
+    background: url(/content/images/rotate-left.png) no-repeat center center;
+    background-size: 58%;
+}
+
+.rotateright {
+    right: 40%;
+    margin-right: -30px;
+    background: url(/content/images/rotate-right.png) no-repeat center center;
+    background-size: 58%;
+}
+
+.btn-primary, .btn-primary:hover, .btn-warning, .btn-warning:hover, .btn-danger, .btn-danger:hover, .btn-success, .btn-success:hover, .btn-info, .btn-info:hover {
+    text-shadow: none !important;
+}
+
+.chitietphien {
+    height: 25px;
+    margin: 15px auto;
+    text-align: center;
+}
+
+    .chitietphien a {
+        text-align: center;
+        font-size: 16px;
+        color: #888;
+    }
+
+.img-slide {
+    width: auto;
+    margin: 0 auto;
+    display: block;
+    max-width: 100%;
+}
+
+.slgroup {
+    width: 165px !important;
+}
+
+.gallery-item-group {
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px;
+    margin: 0;
+    position: absolute;
+    top: 0px;
+    line-height: 12px;
+    font-weight: bold;
+    color: #000;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    width: 100%;
+    text-align: center;
+}
+
+.hidden-xs {
+    display: block !important;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .select-box select {
+        width: 99%;
+    }
+
+    .gallery-row {
+        width: 224px;
+        margin: 0 auto;
+    }
+}

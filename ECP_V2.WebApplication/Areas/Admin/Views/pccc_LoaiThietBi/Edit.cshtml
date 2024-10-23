@@ -1,0 +1,158 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.pccc_LoaiThietBiViewModels
+@{
+    Layout = null;
+}
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+<style>
+    select {
+        height: 40px;
+        padding: 0;
+    }
+</style>
+<div style="padding:10px">
+    @using (Html.BeginForm("Edit", "pccc_LoaiThietBi", FormMethod.Post, new { id = "frmEdit", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.MaNhom)
+
+        <div class="row">
+            <div class="col-md-4">
+                <label class="control-label" for="TenLoai">Tên loại PCCC</label>
+                @Html.TextBoxFor(model => model.TenLoai, new { @class = "form-control", @placeholder = "Nhập tên loại thiết bị phòng cháy chữa cháy ..." })
+                @Html.ValidationMessageFor(model => model.TenLoai)
+            </div>
+            <div class="col-md-2">
+                <label class="control-label" for="TenLoai">Quy tắc đánh mã</label>
+                @Html.TextBoxFor(model => model.QuyTacDanhMa, new { @class = "form-control", @placeholder = "GHA-{0000}" })
+                @Html.ValidationMessageFor(model => model.QuyTacDanhMa)
+            </div>
+            <div class="col-md-2">
+                <label class="control-label" for="HanKiemDinh">Hạn kiểm định</label>
+                <div class="clearfix"></div>
+                <div class="col-md-8" style="padding:0">
+                    <div data-plugin-spinner data-plugin-options='{ "value":6, "min": 0, "max": 9999 }'>
+                        <div class="input-group input-small">
+                            @Html.TextBoxFor(model => model.HanKiemDinh, new { @class = "spinner-input form-control", @onClick = "this.select();", @style = "width:50px" })
+                            <div class="spinner-buttons input-group-btn btn-group-vertical" style="float:left;width:22px">
+                                <button type="button" class="btn spinner-up btn-xs btn-default">
+                                    <i class="fa fa-angle-up"></i>
+                                </button>
+                                <button type="button" class="btn spinner-down btn-xs btn-default">
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.HanKiemDinh)
+                </div>
+                <label class="col-md-2 control-label" style="padding-right:0;padding-left:0" for="inputDefault">Tháng</label>
+            </div>
+            <div class="col-md-4">
+                
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-3">
+                <label class="control-label" for="MaHSX">Hãng sản xuất</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.HangSX != null)
+                {
+                @Html.DropDownListFor(model => model.MaHSX, (SelectList)ViewBag.HangSX, "Chọn hãng sản xuất", new { @class = "selectoption" })
+                }
+                else
+                {
+                <select id="MaHSX" name="MaHSX" class="selectoption">
+                    <option value="">Chọn hãng sản xuất</option>
+                </select>
+                }
+                @Html.ValidationMessageFor(model => model.MaHSX)
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="MaNSX">Nước sản xuất</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.NuocSX != null)
+                {
+                @Html.DropDownListFor(model => model.MaNSX, (SelectList)ViewBag.NuocSX, "Chọn nước sản xuất", new { @class = "selectoption" })
+                }
+                else
+                {
+                <select id="MaNSX" name="MaNSX" class="selectoption">
+                    <option value="">Chọn nước sản xuất</option>
+                </select>
+                }
+                @Html.ValidationMessageFor(model => model.MaNSX)
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="NamSX">Năm sản xuất</label>
+                <div class="clearfix"></div>
+                <div data-plugin-spinner data-plugin-options='{ "value":@DateTime.Now.Year, "min": 1900, "max": 2099 }'>
+                    <div class="input-group input-small">
+                        @Html.TextBoxFor(model => model.NamSX, new { @class = "spinner-input form-control", @onClick = "this.select();", @style = "width:100px" })
+                        <div class="spinner-buttons input-group-btn btn-group-vertical" style="float:left;width:22px">
+                            <button type="button" class="btn spinner-up btn-xs btn-default">
+                                <i class="fa fa-angle-up"></i>
+                            </button>
+                            <button type="button" class="btn spinner-down btn-xs btn-default">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @Html.ValidationMessageFor(model => model.NamSX)
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="NgayDuaVaoSuDung">Ngày đưa vào sử dụng</label>
+                <div class="clearfix"></div>
+                @Html.TextBoxFor(model => model.NgayDuaVaoSuDung, new { })
+                @Html.ValidationMessageFor(model => model.NgayDuaVaoSuDung)
+            </div>
+        </div>
+
+    }
+</div>
+
+<script>
+    $(function () {
+
+        $("#NgayDuaVaoSuDung").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+        }).data("kendoDatePicker");
+
+
+        // Spinner
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['spinner'])) {
+
+                $(function () {
+                    $('[data-plugin-spinner]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions)
+                            opts = pluginOptions;
+
+                        $this.themePluginSpinner(opts);
+                    });
+                });
+
+            }
+
+        }).apply(this, [jQuery]);
+
+        
+    });
+    function ChangeCheckBox() {
+        var items = document.getElementById('IsMuaTrong');
+        if (items.checked)
+            items.value = true;
+        else
+            items.value = false;
+    }
+
+</script>

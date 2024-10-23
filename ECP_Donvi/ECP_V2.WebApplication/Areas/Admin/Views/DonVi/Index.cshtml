@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách đơn vị";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+
+    @if (User.IsInRole("Admin"))
+    {
+        <h1>
+            <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Add", "DonVi")">
+                <i class="fa fa-plus"></i> &nbsp; Thêm mới đơn vị
+            </a>
+            <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("ImportData", "DonVi")">
+                <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel
+            </a>
+            @*<a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Export", "DonVi")">
+                    <i class="fa fa-cloud-download"></i> &nbsp; Xuất danh sách
+                </a>*@
+        </h1>
+    }
+    
+    <!-- Modal Animation -->
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+@*id="LoadingOverlayApi" data-loading-overlay*@
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách đơn vị
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig"); }
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>
+                                @*<input type="search" class="form-control" placeholder="Tìm kiếm" aria-controls="datatable-default">*@
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "DonVi", new { page = 1, pageSize = (Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) : 10, sortOrder = "", filter = "" });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section JavaScriptOnePgae{
+    @*<script type="text/javascript">
+                    window.onerror = function (msg, url, line) {
+                       alert("Message : " + msg );
+                       alert("url : " + url );
+                       alert("Line number : " + line );
+                    }
+        </script>*@
+    <script type="text/javascript">
+        $(function () {
+            var pageSize = $("#drlPageSize").val();
+
+            $("#drlPageSize").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                var textSelected = optionSelected.text();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = null;
+                var scriptUrl = "/Admin/DonVi/List?page=1&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&currentFilter=" + currentSearh;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,36 @@
+﻿@model List<ECP_V2.Business.Repository.pccc_ThongKeoLoaiThietBiModel>
+
+<script type="text/javascript">
+
+</script>
+
+<div class="table-responsive">
+    <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+        <thead>
+            <tr>
+                <th style="font-weight:bold">
+                    Tên PCCC
+                </th>
+                @foreach (var item in Model)
+                {
+                    <th>
+                        @item.TenLoai
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:bold">
+                    Số lượng
+                </td>
+                @foreach (var item in Model)
+                {
+                    <th>
+                        @string.Format("{0:n0}", item.SoLuong)
+                    </th>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,185 @@
+﻿@{
+    ViewBag.Title = "Tổng hợp theo dõi phân loại thiết bị phòng cháy chữa cháy";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+<style>
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content-body {
+        padding: 5px;
+    }
+</style>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <div class="panel-actions">
+                    <a href="#" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;width:105px;height:28px;line-height:0; float: right;">
+                        <i class="fa fa-file-excel-o"></i> &nbsp; Export
+                    </a>
+                </div>
+                @if (ViewBag.MaNhom == "1")
+                {
+            <p><span class="glyphicon glyphicon-tasks" style="margin-right:5px"></span>Tổng hợp theo dõi phân loại thiết bị phòng cháy chữa cháy</p>
+                }
+                else if (ViewBag.MaNhom == "2")
+                {
+            <p><span class="glyphicon glyphicon-tasks" style="margin-right:5px"></span>Tổng hợp theo dõi phân loại thiết bị phòng cháy chữa cháy</p>
+                }
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    @Html.Hidden("NotificationAutoHide", TempData["NotificationAutoHide"])
+                    <div id="NotificationBox" class="@TempData["NotificationCSS"]" style="display: none">
+                        @Html.Raw(@TempData["Notification"])
+                    </div>
+                }
+
+            </div>
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row show-grid" style="margin-bottom:10px">
+                    <div style="float:left;margin-left:10px;margin-top:10px">
+                        <p>Đơn Vị</p>
+                        <select class="form-control" id="cmbDonViID" onchange="donvi_change(this)">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+                    </div>
+                    <div style="float:left;margin-left:10px;margin-top:10px">
+                        <p>Phòng Ban</p>
+                        @if (Session["DonViID"].ToString() == "PA")
+                        {
+                            <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                        }
+                        else
+                        {
+                            if (User.IsInRole("Leader"))
+                            {
+                                var phongBanRepository = new ECP_V2.Business.Repository.PhongBanRepository();
+                                var phongBan = phongBanRepository.GetById(Session["PhongBanId"].ToString());
+
+                                if (phongBan != null)
+                                {
+                                    <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)">
+                                        <option value="@phongBan.Id">@phongBan.TenPhongBan</option>
+                                    </select>
+                                }
+                                else
+                                {
+                                    <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                                }
+                            }
+                            else
+                            {
+                                <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)">
+                                    <option value="">Chọn phòng ban</option>
+                                    @try
+                                    {
+                                        @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                                    }
+                                    catch { }
+                                </select>
+                            }
+                        }
+                    </div>
+
+                </div>
+                <div class="row show-grid">
+                    <div class="listRolesName list" style="margin-top: 5px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+
+        Paging();
+
+    });
+
+    function donvi_change(el) {
+
+        LoadPhongBanByDonVi(el.value);
+
+        Paging();
+    }
+
+    function LoadPhongBanByDonVi(DonViId) {
+
+        $.ajax({
+            url: "/Admin/PCCC/CmbPhongBan",
+            data: {
+                DonViId: DonViId
+            },
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+
+                $('#cmbPhongBan').html("");
+                $('#cmbPhongBan').html(data);
+
+            }
+        });
+    }
+
+    function phongban_change(el) {
+        Paging();
+    }
+
+    function Paging() {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        var scriptUrl = "/Admin/PCCC/ListTongHop";
+        $.ajax({
+            url: scriptUrl,
+            data: {
+                DonViId: $("#cmbDonViID").val(),
+                PhongBanId: $("#cmbPhongBan").val(),
+                MaNhom:@ViewBag.MaNhom,
+            },
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $(".list").html("");
+                $(".list").html(data);
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+    }
+
+
+
+</script>

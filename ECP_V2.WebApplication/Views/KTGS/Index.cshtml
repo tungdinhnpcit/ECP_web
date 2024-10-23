@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+
+<h4 style="font-weight:bold;"><i class="fa fa-align-justify"></i> Quản lý kiểm tra đột xuất >> Thống kê tình hình lập biên bản</h4>
+<style media="all" type="text/css">
+    .alignRight {
+        text-align: center;
+    }
+</style>
+<div style="margin: 3px;">
+    <div style="display:inline">
+        <label class="input-group-text" for="inputGroupSelect01">Chọn đơn vị</label>
+    </div>
+    <select class="custom-select" id="cbodonvi">
+        <option selected value="-1">Tất cả</option>
+    </select>
+
+
+    <div style="display:inline">
+        <label class="input-group-text">Tháng</label>
+    </div>
+    <select class="custom-select" id="cbothang">
+        <option selected value="1">1</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Năm</label>
+    </div>
+    <select class="custom-select" id="cbonam">
+        <option value="2021">2021</option>
+        <option value="2022">2022</option>
+        <option selected value="2023">2023</option>
+        <option value="2024">2024</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Tồn tại</label>
+    </div>
+    <select class="custom-select" id="cbotontai">
+        <option selected value="-1">Tất cả</option>
+        <option value="co">Có tồn tại</option>
+        <option value="khong">Không tồn tại</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Khắc phục</label>
+    </div>
+    <select class="custom-select" id="cbokpngay">
+        <option selected value="-1">Tất cả</option>
+        <option value="kpn">Khắc phục ngay</option>
+        <option value="dkp">Đã khắc phục</option>
+        <option value="ckp">Chưa khắc phục</option>
+    </select>
+
+    <a onclick="ktgs.loaddata()" class="btn btn-success btn-sm"><i class="fa fa-align-justify"></i> Tìm kiếm</a>
+    <a onclick="ktgs.excel()" class="btn btn-primary btn-sm"><i class="fa fa-file-excel-o"></i> Xuất excel</a>
+    <a onclick="ktgs.addnew()" class="btn btn-primary btn-sm"><i class="fa fa-file-excel-o"></i> Thêm phiên</a>
+</div>
+
+<div>
+
+    <table id="tblktgs" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+        <thead>
+            <tr>
+                <th style="width: 50%">Đơn vị</th>
+                <th style="width: 15%">Tổng số biên bản</th>
+                <th style="width: 15%">Số biên bản tồn tại</th>
+                <th style="width: 15%">Số biên bản tồn tại đã khắc phục</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_ds_ktgs.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_bb_ctiet.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_kptt.js"></script>
+    <script src="~/Scripts/KTGS/js/ktgs.js"></script>
+}
+<style>
+    select {
+        display: inline !important;
+    }
+
+    .body-content {
+        background-color: #ffffff;
+    }
+
+    .imgthump {
+        height: 128px;
+        width: 128px;
+        padding: 2px;
+        background-color: #cecece;
+    }
+</style>
+
+

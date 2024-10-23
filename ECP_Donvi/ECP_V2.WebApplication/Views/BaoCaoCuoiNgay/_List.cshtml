@@ -1,0 +1,226 @@
+﻿@model ECP_V2.Common.Helpers.PagedData<ECP_V2.WebApplication.Models.BaoCaoCuoiNgayModel>
+
+
+<script type="text/javascript">
+    
+
+    $(function () {
+
+        //var IdItem = $this.closest('tr').find('.Spanid').html();
+        var IdItem = 0;
+        $('a.delete').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+                var $this = $(this);
+                var NameItem = $this.closest('tr').find('.spanName').html();
+                IdItem = $this.closest('tr').find('.Spanid').html();
+            });
+
+        /*
+        Modal Dismiss
+        */
+        $(document).on('click', '#modal-dismiss', function (e) {
+            e.preventDefault();
+            $.magnificPopup.close();
+        });
+
+
+        /*
+        Modal Confirm
+        */
+        $(window).keypress(function (e) {
+            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                //$(".ui-dialog:visible").find('.ui-dialog-buttonpane').find('button:first').click();
+                $("#modal-confirm").click();
+                return false;
+            }
+        });
+
+        $(document).one('click', '#modal-confirm', function (e) {
+            e.preventDefault();
+
+            if (IdItem != "")
+            {
+                var scriptUrl = "/Manager/BaoCaoCuoiNgay/Delete?id=" + IdItem;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: true,
+                    success: function (data) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Xóa thành công báo cáo',
+                            type: 'success'
+                        });
+                        $.magnificPopup.close();
+                        var page = parseInt($(".page-number-Current").html());
+                        GetList(page, pageSize, currentSearh);
+                    },
+                    error: function () {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không xóa được báo cáo',
+                            type: 'error'
+                        });
+                    }
+                });
+            }
+
+            $.magnificPopup.close();
+        });
+
+        $('.page-number').on('click', function (e) {
+            e.preventDefault();
+            var page = parseInt($(this).html());
+            GetList(page, pageSize, currentSearh);
+        });
+
+        $('.prev').on('click', function (e) {
+            e.preventDefault();
+            GetList(1, pageSize, currentSearh);
+        });
+
+        $('.next').on('click', function (e) {
+            e.preventDefault();
+            var page = parseInt($("#btnLast").data("sum"));
+            GetList(page, pageSize, currentSearh);
+        });
+
+
+    });
+
+    
+
+</script>
+
+
+
+@if (Model.Data.Count() > 0)
+{
+    <div class="table-responsive">
+        <table cellspacing="0" id="dataTable" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>
+                        Mã báo cáo
+                    </th>
+                    <td>
+                        Tên báo cáo
+                    </td>
+                    <td>Tài liệu đính kèm</td>
+                    <td>Đơn vị</td>
+                    <td>Ngày tạo</td>
+                    <th width="100px" class="text-center">
+                        Thao tác
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data)
+                {
+                    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+                    var donVi = donViRepository.GetById(item.DonViId);
+                    var chiTietBaoCaoCuoiNgayRepository = new ECP_V2.Business.Repository.ChiTietBaoCaoCuoiNgayRepository();
+                    var chiTietBaoCaoCuoiNgayList = chiTietBaoCaoCuoiNgayRepository.List().Where(x => x.IdBaoCao == item.Id).ToList();
+
+                    <tr>
+                        <td>
+                            <span class="Spanid" style="display: none;">@item.Id</span>
+                            <span class="spanName">
+                                @item.Id
+                            </span>
+                        </td>
+                        <td>
+                            @if (!String.IsNullOrEmpty(item.TieuDe))
+                            {
+                                <span>@item.TieuDe</span>
+                            }
+                            else
+                            {
+                                <span>Chưa có dữ liệu.</span>
+                            }
+                        </td>
+
+                        @if(chiTietBaoCaoCuoiNgayList != null && chiTietBaoCaoCuoiNgayList.Count > 0)
+                        {
+                            <td>@chiTietBaoCaoCuoiNgayList.Count</td>
+                        }
+                        else
+                        {
+                            <td>0</td>
+                        }
+
+                        @if (donVi != null)
+                        {
+                            <td>@donVi.TenDonVi</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>@string.Format("{0: dd/MM/yyyy HH:mm:ss}", item.NgayTao)</td>
+                        <td class="text-center">                            
+                            <a title="Chi tiết báo cáo" href="@Url.Action("Detail", "BaoCaoCuoiNgay", new { id = item.Id })" class="glyphicon glyphicon-eye-open"></a>
+                            <a href="@Url.Action("Edit", "BaoCaoCuoiNgay", new { id = item.Id })" class="glyphicon glyphicon-pencil"></a>
+                            <a href="#modalAnim" class="glyphicon glyphicon-trash delete"></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row datatables-footer">
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_info" id="datatable-tabletools_info" role="status" aria-live="polite">
+                Hiển thị từ
+                <b>@((Model.CurrentPage - 1) * Model.RecordsPerPage + 1)</b>
+                đến
+                <b>@(((Model.CurrentPage * Model.RecordsPerPage) > Model.TotalRecords ? Model.TotalRecords : (Model.CurrentPage * Model.RecordsPerPage)))</b>
+                trong tổng số
+                <b>
+                    @(Model.TotalRecords)
+                    <b class="text-primary">@(Model.RecordsName)</b>
+                </b>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_paginate paging_bs_normal" id="datatable-tabletools_paginate">
+                <ul class="pagination">
+                    <li class="prev">
+                        <a href="javascript:void(0);" id="btnFirst">
+                            <span class="fa fa-chevron-left"></span>
+                        </a>
+                    </li>
+                    @for (int m = 1; m <= Model.NumberOfPages; m++)
+                    {
+                        if (m == Model.CurrentPage)
+                        {
+                            <li> <a href="javascript:void(0);" tabindex="0" class="paginate_active page-number-Current">@m</a></li>
+                        }
+                        else
+                        {
+                            <li> <a class="paginate_button page-number" href="javascript:void(0);" tabindex="0">@m</a></li>
+                        }
+                    }
+                    <li class="next"><a id="btnLast" href="javascript:void(0);" data-sum="@Model.NumberOfPages"><span class="fa fa-chevron-right"></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h2 class="text-danger text-center">
+        Chưa có dữ liệu!
+    </h2>
+}

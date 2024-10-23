@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý rủi ro";
+    Layout = "~/Views/Shared/_LayoutAdminIndex.cshtml";
+}
+<div class="panel-heading br-b-n">
+    <div class="panel-title hidden-xs">
+        <div class="panel-actions">
+            <select class="form-control" style="width:160px;" id="drtrangthai" onchange="qlrr_ql.changecbo()">
+                <option value="CHUA_KP" selected="selected">Chưa khắc phục</option>
+                <option value="DA_KP">Đã khắc phục</option>
+            </select>
+        </div>
+        <span class="glyphicon glyphicon-tasks"></span> Danh sách rủi ro theo vị trí
+    </div>
+
+    <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" onclick="qlrr_ql.Addrr()">
+        <i class="fa fa-check-circle"></i> &nbsp; Thêm mới
+    </a>
+</div>
+
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["PhongBanId"]" id="PhongBanId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["HoTen"]" id="HoTen" style="display:none">
+
+
+
+
+
+
+<table id="tblruiro2" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+    <thead>
+        <tr>
+            <th style="width: 20%">Nội dung rủi ro</th>
+            <th style="width: 20%">Vị trí</th>
+            <th style="width: 20%">Biện pháp</th>
+            <th style="width: 20%">Nội dung khắc phục</th>
+            <th style="width: 10%">Trạng thái</th>
+            <th style="width: 10%">Thao tác</th>
+        </tr>
+    </thead>
+</table>
+
+
+
+@section scripts2 {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/quanlyruiro/js/service.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/util.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/modal_AddRuiRo.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/modal_AddRuiRo.js"></script>
+    <script src="~/Scripts/quanlyruiro/js/qlrr_ql.js"></script>
+}
+
+

@@ -1,0 +1,59 @@
+﻿@model ECP_V2.WebApplication.ModelsView.ViewRole
+@{
+    ViewBag.Title = "Tạo mới";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card-box">
+                <h4 class="header-title m-t-0 m-b-30">
+                    @ViewBag.Title
+                </h4>
+                <hr />
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12 col-xl-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, new { @class = "col-sm-2 form-control-label" })
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, new { @class = "col-sm-2 form-control-label" })
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TypeOfRole, new { @class = "col-sm-2 form-control-label" })
+                            <div class="col-md-10">                                
+                                @Html.DropDownListFor(x => x.TypeOfRole, (SelectList)ViewBag.LstRole, new { @class = "form-control" })
+                                @*@Html.TextBoxFor(model => model.TypeOfRole, new { @class = "form-control" })*@
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <input type="submit" value="Tạo mới" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div><!-- end col -->
+
+                </div><!-- end row -->
+            </div>
+        </div><!-- end col -->
+    </div>  
+}
+
+<div>
+    <a href="@Url.Action("Index")" class="btn btn-secondary waves-effect"><i class="icon icon-arrow-left"></i>Về trang trước</a>
+</div>
+
+@section JavaScriptOnePgae {
+    @Scripts.Render("~/bundles/jqueryval")
+}

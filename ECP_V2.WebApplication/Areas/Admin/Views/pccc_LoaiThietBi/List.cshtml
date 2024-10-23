@@ -1,0 +1,148 @@
+﻿@model ECP_V2.Common.Helpers.PageData<ECP_V2.Business.Repository.pccc_LoaiThietBiModel>
+@{
+    <script type="text/javascript">
+        $(function () {
+            $('a.delete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).attr("id").split("_")[1];
+            });
+
+            $('a.edit').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                SuaLoaiCCDC($(this).attr("id").split("_")[1]);
+
+            });
+
+            $('.prev').on('click', function (e) {
+                e.preventDefault();
+                Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+            $('.page-number').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).html());
+                Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+            $('.next').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($("#btnLast").data("sum"));
+                Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+        });
+    </script>
+
+    <div class="table-responsive">
+        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th style="text-align:center;padding-left:5px;padding-right:5px">
+                        <div class="checkbox-custom" style="padding-left:0">
+                            <input id="dtGridPhienLVcheckAll" type="checkbox" onclick="checkall(this)" class="checkAll">
+                            <label for="dtGridPhienLVcheckAll"></label>
+                        </div>
+                    </th>
+                    <th style="text-align:center">
+                        #
+                    </th>
+                    <th>
+                        Tên loại PCCC
+                    </th>
+                    <th>
+                        Quy tắc đánh mã
+                    </th>
+                    <th>
+                        Hãng sản xuất
+                    </th>
+                    <th>
+                        Nước sản xuất
+                    </th>
+                    <th>
+                        Năm sản xuất
+                    </th>
+                    <th>
+                        Ngày đưa vào sử dụng
+                    </th>
+                    <th>
+                        Hạn kiểm định
+                    </th>
+                    <th>
+                        Người tạo
+                    </th>
+                    <th>
+                        Ngày tạo
+                    </th>
+                    <th>
+                        Người sửa
+                    </th>
+                    <th>
+                        Ngày sửa
+                    </th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>
+                            Thao tác
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data)
+            {
+                    <tr>
+                        <td style="min-width:30px;max-width:30px;width:30px;text-align:center">
+                            <div class="checkbox-custom" style="margin-left:-3px">
+                                <input id="@item.ID" value="@item.ID" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
+                                <label for="@item.ID"></label>
+                            </div>
+                        </td>
+                        <td style="text-align:center">@(Model.Data.IndexOf(item) + 1)</td>
+                        <td>@item.TenLoai</td>
+                        <td>@item.QuyTacDanhMa</td>
+                        <td>@item.TenHangSX</td>
+                        <td>@item.TenNuocSX</td>
+                        <td>@item.NamSX</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgayDuaVaoSuDung)</td>
+                        <td>@item.HanKiemDinh tháng</td>
+                        <td>@item.NguoiTao</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgayTao)</td>
+                        <td>@item.NguoiSua</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.NgaySua)</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a id="Edit_@item.ID" href="#modalAnimSua" title="Sửa" class="on-default edit-row edit"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                                <a id="Delete_@item.ID" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("Pager", Model.Page)
+
+
+}

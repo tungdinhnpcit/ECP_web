@@ -1,0 +1,765 @@
+﻿@{
+    ViewBag.Title = "Quản lý loại thiết bị phòng cháy chữa cháy";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+<style>
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content-body {
+        padding: 5px;
+    }
+
+    .ui-pnotify
+    {
+        z-index:10000;
+    }
+</style>
+@if (User.IsInRole("Admin"))
+{
+    <div class="head" id="ndContent">
+        <h1>
+            <a href="#modalAnimThem" class="mb-xs mt-xs mr-xs btn btn-primary add" style="cursor:pointer">
+                <i class="fa fa-plus"></i> &nbsp; Thêm Loại PCCC
+            </a>
+            <a href="#modalAnimDeleteAll" class="mb-xs mt-xs mr-xs btn btn-danger removeall" style="cursor:pointer;width:105px;height:28px;line-height:0; float: right;">
+                <i class="fa fa-remove"></i> &nbsp; Xóa
+            </a>
+
+        </h1>
+        <div class="clear">
+        </div>
+    </div>
+}
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <div class="panel-actions">
+                    <div id="datatable-default_filter" class="dataTables_filter" style="margin-right: 10px; float: right;">
+                        <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                               onkeyup="txtSearch_onkeyup(event,this)" />
+                    </div>
+                    <div id="datatable-default_filter" class="dataTables_filter" style="margin-right: 10px; float: right;">
+                        <select class="form-control" onchange="pagelength_change(this)" id="drlPageSize">
+                            <option value="10" selected="selected">10</option>
+                            @*<option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>*@
+                        </select>
+                    </div>
+                </div>
+                @if (ViewBag.MaNhom == "1")
+                {
+                    <p><span class="glyphicon glyphicon-tasks" style="margin-right:5px"></span>Tổng hợp theo dõi loại thiết bị phòng cháy chữa cháy</p>
+                }
+                else if (ViewBag.MaNhom == "2")
+                {
+                    <p><span class="glyphicon glyphicon-tasks" style="margin-right:5px"></span>Tổng hợp theo dõi loại công cụ dụng cụ làm việc</p>
+                }
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    @Html.Hidden("NotificationAutoHide", TempData["NotificationAutoHide"])
+                    <div id="NotificationBox" class="@TempData["NotificationCSS"]" style="display: none">
+                        @Html.Raw(@TempData["Notification"])
+                    </div>
+                }
+
+            </div>
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                @*<div class="row show-grid" style="margin-bottom:10px">
+                        <div style="float:left;margin-left:10px;margin-top:10px">
+                            <p>Đơn Vị</p>
+                            <select class="form-control" id="cmbDonViID" onchange="donvi_change(this)">
+                                @try
+                                {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                                }
+                                catch { }
+                            </select>
+                        </div>
+                        <div style="float:left;margin-left:10px;margin-top:10px">
+                            <p>Phòng Ban</p>
+                            @if (Session["DonViID"].ToString() == "PA")
+                            {
+                            <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                            }
+                            else
+                            {
+                                if (User.IsInRole("Leader"))
+                                {
+                                    var phongBanRepository = new ECP_V2.Business.Repository.PhongBanRepository();
+                                    var phongBan = phongBanRepository.GetById(Session["PhongBanId"].ToString());
+
+                                    if (phongBan != null)
+                                    {
+                            <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)">
+                                <option value="@phongBan.Id">@phongBan.TenPhongBan</option>
+                            </select>
+                                    }
+                                    else
+                                    {
+                            <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                                    }
+                                }
+                                else
+                                {
+                            <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)">
+                                <option value="">Chọn phòng ban</option>
+                                @try
+                                        {
+                                        @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                                        }
+                                        catch { }
+                            </select>
+                                }
+                            }
+                        </div>
+                        <div style="float:left;margin-left:10px;margin-top:10px">
+                                <p>Từ ngày</p>
+                                <input id="GioBd" onchange="start_chage" type="text" style="width:110px" placeholder="Từ ngày...">
+                            </div>
+                            <div style="float:left;margin-left:10px;margin-top:10px" id="content-denngay">
+                                <p>Đến ngày</p>
+                                <input id="GioKt" type="text" style="width:110px" placeholder="Đến ngày...">
+                            </div>
+
+
+                    </div>*@
+                <div class="row show-grid">
+                    <div class="listRolesName list" style="margin-top: 5px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa bản ghi này ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimThem" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title"></h2>
+        </header>
+        <div class="panel-body" style="padding:0">
+            <div class="modal-wrapper" style="padding:0">
+
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="LuuLoaiCCDC()" id="modal-confirm">Lưu</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimSua" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title"></h2>
+        </header>
+        <div class="panel-body" style="padding:0">
+            <div class="modal-wrapper" style="padding:0">
+
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="LuuSuaLoaiCCDC()" id="modal-confirm">Lưu</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimDeleteAll" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa các bản ghi này ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirmAll()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<script type="text/javascript">
+    var IdDelete = 0;
+    var IdTrangThai = '';
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        //var start = $("#GioBd").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+
+        //var end = $("#GioKt").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //    change: end_chage
+        //}).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+
+        $('a.add').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+
+            ThemLoaiCCDC();
+
+        });
+
+        $('a.removeall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+
+        });
+
+        Paging(1, $("#drlPageSize").val(), $('#txtSearch').val());
+    });
+
+    function DeleteModalConfirm() {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/pccc_LoaiThietBi/Delete",
+            dataType: "json",
+            data: {
+                id: IdDelete
+            },
+            async: true,
+            success: function (json) {
+                if (json.type == "success") {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'success'
+                    });
+                    Paging($('.pagination a.paginate_active').text(), $("#drlPageSize").val(), $('#txtSearch').val());
+                }
+                else {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi xóa bản ghi',
+                    type: 'error'
+                });
+            }
+        });
+        $.magnificPopup.close();
+    }
+
+    function DeleteModalConfirmAll() {
+        var count = 0;
+        var items = document.getElementsByClassName('chkbox');
+
+        for (i = 0; i < items.length ; i++)
+            if (items[i].checked)
+                count++;
+
+        if (count == 0) {
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Bạn chưa chọn dòng để xóa !',
+                type: 'error'
+            });
+            return;
+        }
+
+        var str = '';
+        for (i = 0; i < items.length ; i++) {
+            if (items[i].checked) {
+                str = str + items[i].value + ',';
+            }
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/pccc_LoaiThietBi/DeleteAll",
+            dataType: "json",
+            data: {
+                id: str
+            },
+            async: true,
+            success: function (json) {
+                if (json.type == "success") {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'success'
+                    });
+                    Paging($('.pagination a.paginate_active').text(), $("#drlPageSize").val(), $('#txtSearch').val());
+                }
+                else {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi xóa bản ghi',
+                    type: 'error'
+                });
+            }
+        });
+        $.magnificPopup.close();
+    }
+
+    function end_chage() {
+        Paging(1, $("#drlPageSize").val(), $('#txtSearch').val());
+    }
+
+    function start_chage() {
+        Paging(1, $("#drlPageSize").val(), $('#txtSearch').val());
+    }
+
+    function ThemLoaiCCDC() {
+
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        $.ajax({
+            type: "GET",
+            url: '/Admin/pccc_LoaiThietBi/Create',
+            data: {
+                MaNhom: @ViewBag.MaNhom,
+            },
+            success: function (json) {
+
+                $('#modalAnimThem .modal-wrapper').html('');
+                $('#modalAnimThem .modal-wrapper').html(json);
+                $('#modalAnimThem .panel-title').text('Thêm loại thiết bị phòng cháy chữa cháy');
+
+                $.validator.unobtrusive.parse($('#frmCreate'));
+                $('#frmCreate').submit(function () {
+                    // inside event callbacks 'this' is the DOM element so we first
+                    // wrap it in a jQuery object and then invoke ajaxSubmit
+                    if ($(this).valid())
+                        $(this).ajaxSubmit(options);
+
+                    // !!! Important !!!
+                    // always return false to prevent standard browser submit and page navigation
+                    return false;
+                });
+
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+
+    }
+
+    var options = {
+        // target element(s) to be updated with server response
+        beforeSubmit: showRequest,  // pre-submit callback
+        success: showResponse,  // post-submit callback
+        dataType: 'json',
+        resetForm: false
+    };
+    function showRequest(formData, jqForm, options) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        return true;
+    }
+    function showResponse(responseText, statusText, xhr, $form) {
+        if (responseText.split("|")[0] != "") {
+
+            Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Thêm bản ghi thành công',
+                type: 'success'
+            });
+            $.magnificPopup.close();
+        }
+        else {
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Có lỗi xảy ra khi thêm bản ghi: ' + responseText.split("|")[1],
+                type: 'error'
+            });
+        }
+        unloading();
+    }
+
+    function LuuLoaiCCDC() {
+
+        if ($("#TenLoai").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tên loại PCCC không được để trống !'
+            });
+            $("#TenLoai").focus();
+            return;
+        }
+
+        //if ($("#QuyTacDanhMa").val() == '') {
+        //    new PNotify({
+        //        title: 'Cảnh báo',
+        //        text: 'Quy tắc đánh mã không được để trống !'
+        //    });
+        //    $("#QuyTacDanhMa").focus();
+        //    return;
+        //}
+
+        if ($("#HanKiemDinh").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Hạn kiểm định không được để trống !'
+            });
+            $("#HanKiemDinh").focus();
+            return;
+        }
+
+        if ($("#NgayDuaVaoSuDung").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Ngày đưa vào sử dụng không được để trống !'
+            });
+            $("#NgayDuaVaoSuDung").focus();
+            return;
+        }
+
+
+        $('#frmCreate').submit();
+
+
+    }
+
+    function donvi_change(el) {
+
+        LoadPhongBanByDonVi(el.value);
+
+        Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+    }
+
+    function phongban_change(el) {
+        Paging(1, $("#drlPageSize").val(), $('#txtSearch').val());
+    }
+
+    function LoadPhongBanByDonVi(DonViId) {
+
+        $.ajax({
+            url: "/Admin/pccc_LoaiThietBi/CmbPhongBan",
+            data: {
+                DonViId: DonViId
+            },
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+
+                $('#cmbPhongBan').html("");
+                $('#cmbPhongBan').html(data);
+
+            }
+        });
+    }
+
+    function Paging(page, pageSize, filter) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        var scriptUrl = "/Admin/pccc_LoaiThietBi/List";
+        $.ajax({
+            url: scriptUrl,
+            data: {
+                page: page,
+                pageSize: pageSize,
+                filter: filter,
+                DateFrom: $("#GioBd").val(),
+                DateTo: $("#GioKt").val(),
+                DonViId: $("#cmbDonViID").val(),
+                PhongBanId: $("#cmbPhongBan").val(),
+                MaNhom:@ViewBag.MaNhom,
+            },
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $(".list").html("");
+                $(".list").html(data);
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+    }
+
+    function pagelength_change(el) {
+        Paging(1, el.value, $('#txtSearch').val());
+    }
+
+    function checkall(obj) {
+        //Duyệt qua các checkbox có class = class_name (item)
+        //Trả về các phần tử ở dạng mảng, bắt dầu từ vị trí 0;
+        var items = document.getElementsByClassName("chkbox");
+        if (obj.checked == true) //Đã được chọn
+        {
+            for (i = 0; i < items.length ; i++)
+                items[i].checked = true;
+        }
+        else { //Checkbox chưa được chọn
+            for (i = 0; i < items.length ; i++)
+                items[i].checked = false;
+        }
+    }
+
+    function ChangeCheckBox() {
+
+        var count = 0;
+        var items = document.getElementsByClassName('chkbox');
+        for (i = 0; i < items.length ; i++) {
+            if (items[i].checked) {
+                count++;
+
+            }
+        }
+        if (count == items.length)
+            document.getElementById('dtGridPhienLVcheckAll').checked = true;
+        else
+            document.getElementById('dtGridPhienLVcheckAll').checked = false;
+    }
+
+    function txtSearch_onKeyPress(e, el) {
+        var key;
+        if (window.event)
+            key = window.event.keyCode;     //IE
+        else
+            key = e.which;     //firefox
+
+        if (key == 13) {
+
+            Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+
+        }
+    }
+
+    function txtSearch_onkeyup(e, el) {
+        if (el.value == '') {
+            Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+
+        }
+    }
+
+    function SuaLoaiCCDC(id) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        $.ajax({
+            type: "GET",
+            url: '/Admin/pccc_LoaiThietBi/Edit',
+            async: true,
+            data: {
+                id: id
+            },
+            success: function (json) {
+
+                $('#modalAnimSua .modal-wrapper').html('');
+                $('#modalAnimSua .modal-wrapper').html(json);
+                $('#modalAnimSua .panel-title').text('Sửa thiết bị phòng cháy chữa cháy');
+
+                $.validator.unobtrusive.parse($('#frmEdit'));
+                $('#frmEdit').submit(function () {
+                    // inside event callbacks 'this' is the DOM element so we first
+                    // wrap it in a jQuery object and then invoke ajaxSubmit
+                    if ($(this).valid())
+                        $(this).ajaxSubmit(options2);
+
+                    // !!! Important !!!
+                    // always return false to prevent standard browser submit and page navigation
+                    return false;
+                });
+
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+    }
+    var options2 = {
+        // target element(s) to be updated with server response
+        beforeSubmit: showRequest2,  // pre-submit callback
+        success: showResponse2,  // post-submit callback
+        dataType: 'json',
+        resetForm: false
+    };
+    function showRequest2(formData, jqForm, options) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        return true;
+    }
+    function showResponse2(responseText, statusText, xhr, $form) {
+        if (responseText.split("|")[0] != "") {
+            Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Sửa bản ghi thành công',
+                type: 'success'
+            });
+            $.magnificPopup.close();
+        }
+        else {
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Có lỗi xảy ra khi sửa bản ghi: ' + responseText.split("|")[1],
+                type: 'error'
+            });
+        }
+        unloading();
+    }
+
+    function LuuSuaLoaiCCDC() {
+
+        if ($("#TenLoai").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tên loại PCCC không được để trống !'
+            });
+            $("#TenLoai").focus();
+            return;
+        }
+
+        //if ($("#QuyTacDanhMa").val() == '') {
+        //    new PNotify({
+        //        title: 'Cảnh báo',
+        //        text: 'Quy tắc đánh mã không được để trống !'
+        //    });
+        //    $("#QuyTacDanhMa").focus();
+        //    return;
+        //}
+
+        if ($("#HanKiemDinh").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Hạn kiểm định không được để trống !'
+            });
+            $("#HanKiemDinh").focus();
+            return;
+        }
+
+        if ($("#NgayDuaVaoSuDung").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Ngày đưa vào sử dụng không được để trống !'
+            });
+            $("#NgayDuaVaoSuDung").focus();
+            return;
+        }
+
+        $('#frmEdit').submit();
+
+
+    }
+
+
+
+
+</script>
+

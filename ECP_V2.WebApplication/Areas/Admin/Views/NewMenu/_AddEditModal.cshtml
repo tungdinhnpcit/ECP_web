@@ -1,0 +1,112 @@
+﻿<div id="modal-add-edit" class="bootbox modal fade modal-darkorange in" tabindex="" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Quản lý Menu</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" id="frmMaintainance">
+                        <div class="form-group row">
+                            <input type="hidden" id="hidIdM" value="0" />
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Mã Code <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtCode" class="form-control" id="txtCode">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Tên hiển thị <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtText" class="form-control" id="txtText">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtDescM" class="col-sm-3 col-form-label">Mô tả</label>
+                            <div class="col-sm-9">
+                                <textarea rows="4" name="txtDescription" class="form-control" id="txtDescription"></textarea>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="txtContentM" class="col-sm-3 col-form-label">Cấp bậc </label>
+                            <div class="col-sm-9">
+                                <input type="number" id="txtLevel" class="form-control" name="txtLevel" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtContentM" class="col-sm-3 col-form-label">Thứ tự <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="number" id="txtThuTu" class="form-control" name="txtThuTu" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Đường dẫn <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtUrl" class="form-control" id="txtUrl">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Css-class </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtClass" class="form-control" id="txtClass">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Cấp cha </label>
+                            <div class="col-sm-9">
+                                <select id="ddlParents" class="form-control" name="ddlParents"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtContentM" class="col-sm-3 col-form-label">RoleView <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <select id="txtRoleView" class="form-control" name="txtRoleView">
+                                    <option value="">Tất cả</option>
+                                    <option value="1">Cấp công ty</option>
+                                    <option value="2">Cấp điện lực</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="ckStatus" class="col-sm-3 col-form-label">Tin tức</label>
+                            <div class="col-md-9">
+                                <input style="margin-top:5px; height:20px; width:20px;" type="checkbox" checked="checked" id="ckIsNews">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="ckStatus" class="col-sm-3 col-form-label">Trang ngoài</label>
+                            <div class="col-md-9">
+                                <input style="margin-top:5px; height:20px; width:20px;" type="checkbox" checked="checked" id="ckIsFrontPage">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="ckStatus" class="col-sm-3 col-form-label">Hiển thị</label>
+                            <div class="col-md-9">
+                                <input style="margin-top:5px; height:20px; width:20px;" type="checkbox" checked="checked" id="ckIsShowMenu">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right" style="float:right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
+                                <button type="button" id="btnSave" class="btn btn-primary float-right" style="margin-right:15px; float:right"><i class="fa fa-floppy-o" style="margin-right:6px"></i>Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+﻿@model List<ECP_V2.WebApplication.Models.ApplicationRole>
+
+<label class="col-sm-1 control-label" style="padding: 5px 0 0 0;"></label>
+<div class="col-sm-11" style="padding: 0; margin-top: 10px;">
+    @*@Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPban, "Chọn phòng ban/đội ...", new { @class = "form-control", @disabled = "disabled" })*@
+
+    @if (Model != null)
+    {
+        int i = 0;
+
+        foreach (var item in Model)
+        {
+            i++;
+            string check = (i == 1) ? "checked" : "";
+
+            <input type="radio" name="ChiTietQuyen" value="@item.Name" @check /> @item.Description <br />
+        }
+    }
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('input[name="ChiTietQuyen"]').change(function (e) {
+            e.preventDefault();
+
+            $('#danhsach-taikhoan #txtSearch').val('');
+
+            if ($(this).is(':checked')) {
+                GetList(1, $('#drlPageSizeTaiKhoan').val(), '', '', $(this).val(), $('#drlPhongBanAll').val(), $('#drlDonViAll').val());
+                GetListChucNang(1, $('#drlPageSizeChucNang').val(), '', '', $(this).val());
+            }
+        })
+    });
+</script>

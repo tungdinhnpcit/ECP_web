@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Quản lý danh mục chỉ tiêu";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<script src="~/Scripts/Danhmuc/dm_chitieu.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.6.3.js"></script>
+<style>
+    .cell-shadow {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .cell-center {
+        text-align: center;
+    }
+
+    .form-control{
+        height:45px !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        loadDanhmuc();
+    });
+</script>
+<div class="row">
+    <div class="col-lg-12">
+        <h4><i class="fa fa-check-square">  Danh mục chỉ tiêu đánh giá</i></h4>
+    </div>
+    <div class="col-lg-12">
+        <!--Danh sách danh mục-->
+        <div class="form-control">
+            <button type="button" class="btn btn-primary" id="cmdAdd" onclick="cmdAddFrm()"><i class="fa fa-plus"></i></button>
+            <button type="button" class="btn btn-secondary" id="cmdEdit" onclick="cmdEdit()"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-danger" id="cmdDelete" onclick="cmdDelete()"><i class="fa fa-times"></i></button>
+        </div>
+        <div style="padding-top:10px;">
+            <table id="tblDanhmuc" class="table table-bordered table-striped" style="width:100%;padding-left:20px;">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Mã chỉ tiêu</th>
+                        <th style="text-align:center;">Tên chỉ tiêu</th>
+                        <th style="text-align:center;">Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!----Modal Thêm mới danh mục-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addNthau"
+     aria-hidden="true" id="mdAdd">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mdLabelList">Thêm/Sửa danh mục</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="madmuc">Mã chỉ tiêu</label>
+                    <input id="madmuc" type="text" class="form-group" style="width:100%;">
+                </div>
+                <div class="form-group">
+                    <label for="tendmuc"> Tên chỉ tiêu</label>
+                    <input id="tendmuc" type="text" class="form-group" style="width:100%;">
+                </div>                
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="trangthai">
+                    <label class="form-check-label" for="trangthai">Trạng thái</label>
+                </div>
+                <div>
+                    <input type="hidden" id="mahd"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="clearInfor()">Thêm mới</button>
+                <button type="button" class="btn btn-primary" id="modal-btn-si" onclick="onSave()">Ghi</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>

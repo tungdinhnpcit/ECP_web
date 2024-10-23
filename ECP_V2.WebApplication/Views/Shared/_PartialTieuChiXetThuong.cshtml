@@ -1,0 +1,88 @@
+﻿@model IEnumerable<ECP_V2.WebApplication.Models.TongHopChamDiemModels>
+
+
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+            <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+        </div>
+        <h2 class="panel-title">Bảng tiêu chí xét thưởng</h2>
+    </header>
+    <div class="panel-body">
+        <div class="table-responsive">
+
+            @if (Model != null && Model.Count() > 0)
+            {
+                int i = 0;
+
+                <table class="table table-bordered table-striped table-condensed mb-none">
+                    <thead>
+                        <tr>
+                            <th>Vị trí</th>
+                            <th>CÔNG TY ĐIỆN LỰC</th>
+                            <th class="text-right">Số tiêu chí chưa đạt</th>
+                            <th class="text-right">Tổng số điểm bị trừ</th>
+                            <th class="text-right">Vị trí tháng trước</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+
+                            i++;
+                            if (ViewBag.MaDonVi.ToString().ToUpper() == item.MA_DVIQLY.ToUpper())
+                            {
+                                <tr class="sr@(i) @(ViewBag.MaDonVi.ToString().ToUpper() == item.MA_DVIQLY.ToUpper() ? " dvcurrent" : "")" onclick="document.location.href = '/Admin/Report/TieuChiXetThuong'">
+                                    <td>@(i)</td>
+                                    <td>@item.TEN_DVIQLY</td>
+                                    <td class="text-right">
+                                        @(item.SoTieuChiChuaDat)
+                                    </td>
+                                    <td class="text-right">@(item.TongDiemTru > 100 ? 100 : item.TongDiemTru)</td>
+                                    <td class="text-right">@(item.ViTriThangTruoc)</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr class="sr@(i) @(ViewBag.MaDonVi.ToString().ToUpper() == item.MA_DVIQLY.ToUpper() ? " dvcurrent" : "")">
+                                    <td>@(i)</td>
+                                    <td>@(item.TEN_DVIQLY)</td>
+                                    <td class="text-right">
+                                        @(item.SoTieuChiChuaDat)
+                                    </td>
+                                    <td class="text-right">@(item.TongDiemTru>100?100: item.TongDiemTru)</td>
+                                    <td class="text-right">@(item.ViTriThangTruoc)</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Chưa có danh sách mẫu tài liệu!</p>
+            }
+        </div>
+    </div>
+    <style>
+        .sr1, .sr2, .sr3, .sr4, .sr5, .sr6, .sr7, .sr8, .sr9, .sr10 {
+            background-color: #c0ff81 !important;
+            color: #333;
+        }
+
+        .sr20, .sr21, .sr22, .sr23, .sr24, .sr25, .sr26, .sr27, .sr28, .sr29 {
+            background-color: #ffa9a9 !important;
+            color: #333;
+        }
+
+        .dvcurrent {
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+
+    </script>
+</section>

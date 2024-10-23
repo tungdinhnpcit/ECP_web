@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách Menu";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+    <h1>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("AddMenu", "Menu")">
+            <i class="fa fa-plus"></i> &nbsp; Thêm mới Menu
+        </a>      
+        @if(ViewBag.Message != null)
+        {
+            <i id="txtMsg">@Html.Raw(ViewBag.Message)</i>
+        }
+    </h1>
+    <!-- Modal Animation -->
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">
+                    Thông báo
+                </h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+@*id="LoadingOverlayApi" data-loading-overlay*@
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách Menu
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-4 col-md-4">
+                            @*<select data-plugin-selectTwo class="form-control populate" style="width: 75px;" id="drlPageSize">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">25</option>
+                                <option value="50">50</option>
+                            </select>*@
+                            @Html.DropDownList("drlPageSize", (IEnumerable<SelectListItem>)ViewBag.LstPageSize, new {@class="form-control populate", style = "width: 75px;", @id = "drlPageSize" })
+                        </div>
+                        <div class="col-sm-8 col-md-8 pull-left">                           
+                            @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.Roles,"--- Chọn quyền ---", new { @class = "form-control populate", @id = "drlRole" })
+                        </div>                                             
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>                                
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "Menu", new { page = 1, pageSize = @ViewBag.DefaultSize, sortOrder = "", filter = "" });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section JavaScriptOnePgae{ 
+    <script type="text/javascript">
+        $(function () {
+            var pageSize = 25;
+
+            $("#drlPageSize").change(function () {
+                var roleS = $("#drlRole").find("option:selected");
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                var textSelected = optionSelected.text();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = null;
+                var scriptUrl = "/Admin/Menu/List?page=" + page + "&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&currentFilter=" + currentSearh + "&roleId=" + roleS.val();
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    },
+                    error: function () {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không lấy được dữ liệu!',
+                            type: 'error'
+                        });
+                    }
+                });
+            });
+
+            $("#drlRole").change(function () {
+                
+                var pageS = $("#drlPageSize").find("option:selected");
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                var textSelected = optionSelected.text();                
+                pageSize = pageS.val();
+                var page = 1;                
+                if ($(".page-number-Current").html() != null)
+                    page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = null;                
+                var scriptUrl = "/Admin/Menu/List?page=" + page + "&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&currentFilter=" + currentSearh + "&roleId=" + valueSelected;                
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    },
+                    error: function () {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không lấy được dữ liệu!',
+                            type: 'error'
+                        });
+                    }
+                });
+            });
+            
+        });
+    </script>
+}

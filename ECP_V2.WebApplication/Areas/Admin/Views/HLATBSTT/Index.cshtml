@@ -1,0 +1,575 @@
+﻿
+@{
+    ViewBag.Title = "Bổ sung thông tin nhân sự";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/AdminPanel/assets/vendor/select2/select2.css")" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">*@
+<link href="~/Content/DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<!-- Core jquery-->
+@*<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>*@
+<script src="~/Scripts/HluAt/hluat_bstt.js"></script>
+<script src="~/Scripts/DataTables/dataTables.jqueryui.min.js"></script>
+<script src="~/Content/AdminPanel/assets/vendor/select2/select2.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        //Load danh mục:
+        LoadDsOrg();
+
+        //Khởi tạo danh sách đơn vị
+        $('#tblOrg').DataTable({
+            select: {
+                style: 'single'
+            },
+            "paging": false,
+            "bFilter": false, //hide Search bar
+            "bInfo": false, // hide showing entries
+        });
+
+        let height = $(window).height() - 640;
+        $('#tblNhansu').DataTable({
+            scrollY: 300,
+            scrollX: true,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_",
+                "zeroRecords": "Không có dữ liệu",
+                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+                "infoEmpty": "",
+                "paginate": {
+                    "next": ">>",
+                    "previous": "<<"
+                },
+                search: "",
+                searchPlaceholder: "Tìm kiếm..."
+            },
+            "columnDefs": [{
+                "className": "dt-center", "targets": 0
+            }]
+        });
+    })
+
+    // ----------multiplefile-upload---------
+    $("#multiplefileupload").fileinput({
+        'theme': 'fa',
+        'uploadUrl': '#',
+        showRemove: false,
+        showUpload: false,
+        showZoom: false,
+        showCaption: false,
+        browseClass: "btn btn-danger",
+        browseLabel: "",
+        browseIcon: "<i class='fa fa-plus'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
+        fileActionSettings: {
+            showUpload: false,
+            showZoom: false,
+            removeIcon: "<i class='fa fa-times'></i>",
+        }
+    });
+</script>
+
+<style>
+    .input-date {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+    }
+
+    hr {
+        display: block;
+        margin-top: 5px;
+        border-style: solid;
+        border-top-width: 1px;
+    }
+
+    .modal-header {
+        background: #3c40c6;
+        color: white;
+    }
+
+        .modal-header .close {
+            margin-top: -20px;
+        }
+
+    table.dataTable tbody tr.selected {
+        background-color: #f6e58d !important;
+        color: black;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.5em 0.1em;
+        margin-left: 0px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        width: 100%;
+    }
+
+    .dt-body-left {
+        color: blue;
+    }
+
+    .pagination {
+        margin: 0px;
+    }
+
+    /*----------multiple-file-upload-----------*/
+    .input-group.file-caption-main {
+        display: none;
+    }
+
+    .close.fileinput-remove {
+        display: none;
+    }
+
+    .file-drop-zone {
+        margin: 0px;
+        border: 1px solid #fff;
+        background-color: #fff;
+        padding: 0px;
+        display: contents;
+    }
+
+        .file-drop-zone.clickable:hover {
+            border-color: #fff;
+        }
+
+        .file-drop-zone .file-preview-thumbnails {
+            display: inline;
+        }
+
+    .file-drop-zone-title {
+        padding: 15px;
+        height: 120px;
+        width: 120px;
+        font-size: 12px;
+    }
+
+    .file-input-ajax-new {
+        display: inline-block;
+    }
+
+    .file-input.theme-fas {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .file-preview {
+        padding: 0px;
+        border: none;
+        display: inline;
+    }
+
+    .file-drop-zone-title {
+        display: none;
+    }
+
+    .file-footer-caption {
+        display: none !important;
+    }
+
+    .kv-file-upload {
+        display: none;
+    }
+
+    .file-upload-indicator {
+        display: none;
+    }
+
+    .file-drag-handle.drag-handle-init.text-info {
+        display: none;
+    }
+
+    .krajee-default.file-preview-frame .kv-file-content {
+        width: 90px;
+        height: 90px;
+        display: flex;
+        text-align: center;
+        align-items: center;
+    }
+
+    .krajee-default.file-preview-frame {
+        background-color: #fff;
+        margin: 3px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+        .krajee-default.file-preview-frame:not(.file-preview-error):hover {
+            box-shadow: none;
+            border-color: #ed3237;
+        }
+
+            .krajee-default.file-preview-frame:not(.file-preview-error):hover .file-preview-image {
+                transform: scale(1.1);
+            }
+
+    .krajee-default.file-preview-frame {
+        box-shadow: none;
+        border-color: #fff;
+        max-width: 150px;
+        margin: 5px;
+        padding: 0px;
+        transition: 0.5s;
+    }
+
+    .file-thumbnail-footer,
+    .file-actions {
+        width: 20px;
+        height: 20px !important;
+        position: absolute !important;
+        top: 3px;
+        right: 3px;
+    }
+
+    .kv-file-remove:focus,
+    .kv-file-remove:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .kv-file-remove {
+        border-radius: 50%;
+        z-index: 1;
+        right: 0;
+        position: absolute;
+        top: 0;
+        text-align: center;
+        color: #fff;
+        background-color: #ed3237;
+        border: 1px solid #ed3237;
+        padding: 2px 6px;
+        font-size: 11px;
+        transition: 0.5s;
+    }
+
+        .kv-file-remove:hover {
+            border-color: #fdeff0;
+            background-color: #fdeff0;
+            color: #ed1924;
+        }
+
+    .kv-preview-data.file-preview-video {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .btn-outline-secondary.focus, .btn-outline-secondary:focus {
+        box-shadow: none;
+    }
+
+    .btn-toggleheader,
+    .btn-fullscreen,
+    .btn-borderless {
+        display: none;
+    }
+
+    .btn-kv.btn-close {
+        color: #fff;
+        border: none;
+        background-color: #ed3237;
+        font-size: 11px;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        padding: 0px;
+    }
+
+    .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
+    .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+    .show > .btn-outline-secondary.dropdown-toggle:focus {
+        background-color: rgba(255,255,255,0.8);
+        color: #000;
+        box-shadow: none;
+        color: #ed3237;
+    }
+
+    .kv-file-content .file-preview-image {
+        width: 90px !important;
+        height: 90px !important;
+        max-width: 90px !important;
+        max-height: 90px !important;
+        transition: 0.5s;
+    }
+
+    .btn-danger.btn-file {
+        padding: 0px;
+        height: 95px;
+        width: 95px;
+        display: inline-block;
+        margin: 5px;
+        border-color: #fdeff0;
+        background-color: #fdeff0;
+        color: #ed1924;
+        border-radius: 15px;
+        padding-top: 30px;
+        transition: 0.5s;
+    }
+
+        .btn-danger.btn-file:active,
+        .btn-danger.btn-file:hover {
+            background-color: #fde3e5;
+            color: #ed1924;
+            border-color: #fdeff0;
+            box-shadow: none;
+        }
+
+        .btn-danger.btn-file i {
+            font-size: 30px;
+        }
+</style>
+
+<div class="container-fruid ms-auto" style="margin-top:-40px;">
+    <div class="row">
+        <h3><i class="fa fa-list"> Bổ sung thông tin nhân sự</i></h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card mb-2">
+                <div class="card-body">
+                    <table id="tblOrg" class="table cell-border compact stripe" style="width:100%">
+                        <thead style="background-color: #3742fa; color:white;">
+                            <tr>
+                                <th></th>
+                                <th style="text-align:center;">Đơn vị</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="card mb-2">
+                <div class="card-body">
+                    <table id="tblNhansu" class="table cell-border compact stripe" style="width:100%">
+                        <thead style="background-color: #3742fa; color:white;">
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>Họ và Tên</th>
+                                <th>Chức vụ</th>
+                                <th>Phòng ban</th>
+                                <th>CCCD</th>
+                                <th>Bậc thợ</th>
+                                <th>Bậc AT</th>
+                                <th>Chức danh ATĐ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="form-group row" style="padding-left:15px;">
+                    <button type="button" class="btn btn-primary" id="btnSave"><i class="fa fa-save"></i> Ghi</button>
+                </div>
+                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; ">
+
+                    <div class="form-group row">
+                        <label for="hovaten" class="col-sm-2 col-form-label">Họ và tên:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   id="hovaten" style="font-weight:bold;" value="" />
+                        </div>
+                        <label for="chucvu" class="col-sm-2 col-form-label">Chức vụ:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   id="chucvu" style="font-weight:bold;" value="" />
+                        </div>
+                        <label for="phongban" class="col-sm-2 col-form-label">Phòng ban:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   id="phongban" style="font-weight:bold;" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="ngaysinh" class="col-sm-2 col-form-label">Ngày sinh:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   id="ngaysinh" style="font-weight:bold;" value="" />
+                        </div>
+                        <label for="gioitinh" class="col-sm-2 col-form-label">Giới tính:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   id="gioitinh" style="font-weight:bold;" value="" />
+                        </div>
+                        <label for="cccd" class="col-sm-2 col-form-label">CCCD/CMT:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   id="cccd" style="font-weight:bold;" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="bactho" class="col-sm-2 col-form-label">Bậc thợ:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   for="bactho" style="font-weight:bold;" value="" />
+                            <select id="bactho" class="form-control">
+                                <option value="1">1/8</option>
+                                <option value="2">2/8</option>
+                                <option value="3">3/8</option>
+                                <option value="4">4/8</option>
+                                <option value="5">5/8</option>
+                                <option value="6">6/8</option>
+                                <option value="7">7/8</option>
+                                <option value="8">8/8</option>
+                            </select>
+                        </div>
+                        <label for="bacat" class="col-sm-2 col-form-label">Bậc AT:</label>
+                        <div class="col-sm-2">
+                            <label type="text" readonly class="form-control-plaintext"
+                                   for="bacat" style="font-weight:bold;" value="" />
+                            <select id="bacat" class="form-control">
+                                <option value="1">1/5</option>
+                                <option value="2">2/5</option>
+                                <option value="3">3/5</option>
+                                <option value="4">4/5</option>
+                                <option value="5">5/5</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="nsid" />
+                    </div>
+                    <div class="form-group row">
+
+                        <label for="cdatd-select" class="col-sm-2 col-form-label">Chức danh ATĐ:</label>
+                        @*<select id="cdatd" class="form-control">
+                                <option value="1">Người giám sát</option>
+                                <option value="2">Người kiểm tra</option>
+                            </select>*@
+                        <div class="col-sm-10">
+                            <select class="form-select" id="cdatd-select" data-placeholder="Chọn chức danh ATĐ" multiple>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; background-color: #0984e3;color:white;">
+                    <span><i class="fa fa-folder" style="color:yellow"></i>  Hồ sơ đính kèm</span>
+                </div>
+                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem;">
+                    <div class="form-group row" style="padding-top:5px !important">
+                        <section class="bg-diffrent">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="verify-sub-box">
+                                            <div class="file-loading">
+                                                <input id="multiplefileupload" lang="vi" type="file" accept=".jpg,.gif,.png,.txt,.xls,.xlsx" multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; background-color: #0984e3;color:white;">
+                    <span><i class="fa fa-info" style="color:yellow"></i>  Nhóm An toàn</span>
+                </div>
+                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; ">
+
+                    <div class="form-group row" style="padding-top:5px !important;">
+                        <div class="col-lg-4">
+                            <label type="text" for="cboATD" class="form-control-plaintext"
+                                   style="font-weight:bold;" value="" />
+                            <select class="form-control form-control-sm" id="cboATD">
+                                <option value="ALL">--Nhóm An toàn Điện--</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <label type="text" for="cboATVSLD" class="form-control-plaintext"
+                                   style="font-weight:bold;" value="" />
+                            <select class="form-control form-control-sm" id="cboATVSLD">
+                                <option value="ALL">--Nhóm An toàn VSLĐ--</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <label type="text" for="cboHotline" class="form-control-plaintext"
+                                   style="font-weight:bold;" value="" />
+                            <select class="form-control form-control-sm" id="cboHotline">
+                                <option value="ALL">--Nhóm Hotline--</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#tblOrg tbody').on('click', 'tr', function () {
+        var table = $('#tblOrg').DataTable();
+
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            LoadDsNhansuByOrg();
+        }
+    });
+
+    $('#tblNhansu tbody').on('click', 'tr', function () {
+        var table = $('#tblNhansu').DataTable();
+
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            LoadNhansuById();
+            LoadGroup();
+            LoadGroupWorker();
+        }
+    });
+
+    //$('#cmdView').click(function (e) {
+    //    LoadKquaBC02();
+    //});
+    $('#cdatd-select').select2({
+        theme: "bootstrap-5",
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        closeOnSelect: false,
+        allowClear: true,
+    });
+    $('#btnSave').on('click', function () {
+        OnSaveInforHR();
+    });
+
+</script>

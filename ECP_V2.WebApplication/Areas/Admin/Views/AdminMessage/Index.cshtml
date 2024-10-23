@@ -1,0 +1,415 @@
+﻿
+@{
+    ViewBag.Title = "Thông báo từ quản trị viên";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+
+    @if (User.IsInRole("Admin"))
+    {
+        <h1>
+            <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Add", "AdminMessage")">
+                <i class="fa fa-plus"></i> &nbsp; Thêm mới thông báo
+            </a>
+        </h1>
+    }
+
+    <!-- Modal Animation -->
+    <div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa thông báo này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DeleteModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <div id="modalAnimActive" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn kích hoạt thông báo này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ActiveModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="ActiveModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <div id="modalAnimDeactive" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn tạm dừng thông báo này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DeactiveModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DeactiveModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+
+    <div class="clear">
+    </div>
+</div>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách thông báo quản trị viên
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    @*<div class="col-sm-12 col-md-3">
+                        <span>Đơn Vị : &nbsp;</span>
+                        <select class="form-control" id="cmbDonViID" onchange="donvi_change(this)">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+                    </div>*@
+
+                    @*<div class="col-sm-12 col-md-4">
+                            <span>Kiểu : &nbsp;</span>
+                            <select class="form-control" id="cmbtype" onchange="type_change(this)">
+                                <option value="">Chọn Kiểu</option>
+                                <option value="Info">Info</option>
+                                <option value="Error">Error</option>
+                            </select>
+                        </div>*@
+
+                    <div class="col-sm-12 col-md-7">
+                        <div class="input-group">
+                            <span>Từ ngày: &nbsp;</span>
+                            <input id="GioBd" type="text" placeholder="Thời gian bắt đầu">
+                            <span>&nbsp; Đến ngày: &nbsp;</span>
+                            <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig"); }
+                    </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "AdminMessage", new { page = 1, pageSize = (Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) : 10, filter = "" });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+
+</style>
+
+@section JavaScriptOnePgae{
+
+    <script type="text/javascript">
+
+        var IdDelete = 0;
+        var IdActive = 0;
+        var IdDeactive = 0;
+
+        $(function () {
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+
+            var start = $("#GioBd").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            var end = $("#GioKt").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                change: end_chage
+            }).data("kendoDatePicker");
+        });
+
+        function end_chage() {
+            Paging(1, 10, $("#txtSearch").val(), $('#GioBd').val(), $('#GioKt').val());
+        }
+
+        //function donvi_change(el) {
+        //    Paging(1, 10, $("#txtSearch").val(), /*$('#cmbtype').val()*/ '', $('#GioBd').val(), $('#GioKt').val()/*, el.value*/);
+        //}
+
+        //function type_change(el) {
+        //    Paging(1, 10, $("#txtSearch").val(), el.value, $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+        //}
+
+        function Paging(page, pageSize, filter, DateFrom, DateTo) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/AdminMessage/List";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    page: page,
+                    pageSize: pageSize,
+                    filter: filter,
+                    DateFrom: DateFrom,
+                    DateTo: DateTo,
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    $("#drlPageSize").val(pageSize);
+                    $("#txtSearch").val(filter);
+
+                    unloading();
+                }
+            });
+        }
+
+
+        function pagelength_change(el) {
+            Paging(1, el.value, $("#txtSearch").val(), $('#GioBd').val(), $('#GioKt').val());
+        }
+
+        function txtSearch_onKeyPress(e, el) {
+            var key;
+            if (window.event)
+                key = window.event.keyCode;     //IE
+            else
+                key = e.which;     //firefox
+
+            if (key == 13) {
+                Paging(1, 10, el.value, $('#GioBd').val(), $('#GioKt').val());
+            }
+        }
+
+        function txtSearch_onkeyup(e, el) {
+            if (el.value == '')
+                Paging(1, 10, el.value, $('#GioBd').val(), $('#GioKt').val());
+        }
+
+        function DeleteModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DeleteModalConfirm() {
+
+            if (IdDelete != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/AdminMessage/Delete',
+                    data:
+                    {
+                        Id: IdDelete
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa thông báo thành công',
+                                type: 'success'
+                            });
+
+                            Paging(1, 10, $("#txtSearch").val(), $('#GioBd').val(), $('#GioKt').val());
+
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        function ActiveModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function ActiveModalConfirm() {
+
+            if (IdActive != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/AdminMessage/ActiveUpdateStatus',
+                    data:
+                    {
+                        Id: IdActive
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Kích hoạt thông báo thành công',
+                                type: 'success'
+                            });
+
+                            Paging(1, 10, $("#txtSearch").val(), $('#GioBd').val(), $('#GioKt').val());
+
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+
+        function DeactiveModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function DeactiveModalConfirm() {
+
+            if (IdDeactive != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/AdminMessage/DeactiveUpdateStatus',
+                    data:
+                    {
+                        Id: IdDeactive
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Tạm dừng thông báo thành công',
+                                type: 'success'
+                            });
+
+                            Paging(1, 10, $("#txtSearch").val(), $('#GioBd').val(), $('#GioKt').val());
+
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+
+    </script>
+}
+

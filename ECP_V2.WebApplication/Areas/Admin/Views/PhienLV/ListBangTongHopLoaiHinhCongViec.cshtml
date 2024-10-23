@@ -1,0 +1,98 @@
+﻿@model List<ECP_V2.Business.Repository.BangTongHopLoaiCongViec>
+@{
+    if (Model == null)
+    {
+        @:Không có dữ liệu
+        return;
+    }
+
+    int i = 0;
+
+
+    if (Model.Count() > 0)
+    {
+        <table cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th style="text-align:center">
+                        TT
+                    </th>
+                    <th>
+                        Tên loại hình công việc
+                    </th>
+                    <th style="text-align:center">
+                        Đang thực hiện (Số lượng)
+                    </th>
+                    <th style="text-align:center">
+                        Đã thực hiện xong (Số lượng)
+                    </th>
+                    <th style="text-align:center">
+                        Hoãn, hủy (Số lượng)
+                    </th>
+                    <th style="text-align:center">
+                        Tổng
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model.OrderBy(o => o.STTLoai).GroupBy(y => y.TenNhom))
+                {
+                    <tr class="group-header">
+                        <td style="background-color: lightblue; border-color: #eee; color: darkblue;"></td>
+                        <td style="background-color: lightblue; border-color: #eee; color: darkblue;">
+                            <a rowhide="1" title="Mở rộng ra" style="margin-right: 10px; cursor: pointer" class="" onclick="ExpandCollapseRow('r@(group.FirstOrDefault().STTLoai)', this)">
+                                <i class="fa fa-expand btn btn-sm btn-default" style="margin:0;padding:5px"></i>
+                            </a>
+                            @group.Key
+                        </td>
+                        <td style="background-color: lightblue; border-color: #eee; color: darkblue;text-align:center">
+                            @string.Format("{0:n0}", group.Sum(o => o.SLDangThucHien))
+                        </td>
+                        <td style="background-color: lightblue; border-color: #eee; color: darkblue;text-align:center">
+                            @string.Format("{0:n0}", group.Sum(o => o.SLDaThucHienXong))
+                        </td>
+                        <td style="background-color: lightblue; border-color: #eee; color: darkblue;text-align:center">
+                            @string.Format("{0:n0}", group.Sum(o => o.SLHoanHuy))
+                        </td>
+                        <td style="background-color: lightblue; border-color: #eee; color: darkblue;text-align:center">
+                            @string.Format("{0:n0}", group.Sum(o => o.SLChuaThucHien) + group.Sum(o => o.SLDangThucHien) + group.Sum(o => o.SLDaThucHienXong) + group.Sum(o => o.SLHoanHuy))
+                        </td>
+                    </tr>
+                    i = 0;
+                    foreach (var item in group.OrderBy(o => o.STT))
+                    {
+                        <tr class="r@(item.STTLoai)" style="display:none">
+                            <td style="        text-align: center">@(i + 1)</td>
+                            <td>
+                                @item.TenLoai
+                            </td>
+                            <td style="text-align:center">@string.Format("{0:n0}", item.SLDangThucHien)</td>
+                            <td style="text-align:center">@string.Format("{0:n0}", item.SLDaThucHienXong)</td>
+                            <td style="text-align:center">@string.Format("{0:n0}", item.SLHoanHuy)</td>
+                            <td style="text-align:center">@string.Format("{0:n0}", (item.SLChuaThucHien ?? 0) + (item.SLDangThucHien ?? 0) + (item.SLDaThucHienXong ?? 0) + (item.SLHoanHuy ?? 0))</td>
+                        </tr>
+                        i++;
+                    }
+
+                }
+                <tr>
+                    <td colspan="2" style="text-align:center;font-weight:bold">Tổng</td>
+                    <td style="text-align:center;font-weight:bold">@string.Format("{0:n0}", Model.Sum(o => o.SLDangThucHien))</td>
+                    <td style="text-align:center;font-weight:bold">@string.Format("{0:n0}", Model.Sum(o => o.SLDaThucHienXong))</td>
+                    <td style="text-align: center;font-weight: bold">
+                        @string.Format("{0:n0}", Model.Sum(o => o.SLHoanHuy))
+                    </td>
+                    <td style="text-align:center;font-weight:bold">@string.Format("{0:n0}", Model.Sum(o => o.SLChuaThucHien) + Model.Sum(o => o.SLDangThucHien) + Model.Sum(o => o.SLDaThucHienXong) + Model.Sum(o => o.SLHoanHuy))</td>
+                </tr>
+
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h3 class="text-danger text-center">
+            Không có dữ liệu hoặc các điều kiện lọc chưa đúng !
+        </h3>
+    }
+}

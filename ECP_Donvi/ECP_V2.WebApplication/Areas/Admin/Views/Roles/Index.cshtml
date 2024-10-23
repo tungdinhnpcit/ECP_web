@@ -1,0 +1,110 @@
+﻿@model IEnumerable<ECP_V2.WebApplication.ModelsView.ViewRole>
+@{
+    ViewBag.Title = "Roles";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<div class="col-sm-12">
+    <div class="card-box table-responsive">
+        <h4 class="m-t-0 header-title"><b></b></h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dt-buttons btn-group">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="mb-xs mt-xs mr-xs btn btn-primary" tabindex="0" aria-controls="datatable-buttons" href="@Url.Action("Create","Roles")">
+                            <span>Tạo mới</span>
+                        </a>
+                        <a class="mb-xs mt-xs mr-xs btn btn-primary" tabindex="0" aria-controls="datatable-buttons" href="@Url.Action("Index","Roles")">
+                            <span>Danh sách</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="clearfix"></div>
+        <div class="block-fluid">
+            <div class="panel panel-visible">
+                <div class="panel-heading br-b-n">
+                    <div class="panel-title hidden-xs">
+                        <span class="glyphicon glyphicon-tasks"></span> Danh sách phòng ban
+                    </div>
+                </div>
+
+                <div class="panel-body pn">
+                    <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="table-responsive">
+                            <table id="itemContent" class="table table-bordered table-striped mb-none dataTable no-footer" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Name)
+                                        </th>
+                                        <td>
+                                            @Html.DisplayNameFor(model => model.Description)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayNameFor(model => model.TypeOfRole)
+                                        </td>
+                                        <th>Thao tác</th>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Description)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TypeOfRole)
+                                            </td>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <td>
+                                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
+                                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/datatables")
+
+
+    <script>
+        $(document).ready(function () {
+            $('#itemContent').DataTable({
+                "info": false,
+                "oLanguage": {
+                    "sSearch": "Tìm kiếm: ",
+                    "sLengthMenu": "Hiển thị _MENU_ bản ghi",
+                    "oPaginate": {
+                        "sPrevious": "Trang trước",
+                        "sNext": "Trang tiếp",
+                        "sLast": "Trang cuối",
+                        "sFirst": "Trang đầu",
+                    }
+                }
+            });
+        });
+    </script>
+}

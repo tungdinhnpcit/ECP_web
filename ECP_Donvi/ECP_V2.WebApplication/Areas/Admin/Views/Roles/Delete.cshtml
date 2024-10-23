@@ -1,0 +1,77 @@
+﻿@model ECP_V2.WebApplication.ModelsView.ViewRole
+
+@{
+    ViewBag.Title = "Xóa quyền";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@*<h2>Delete</h2>
+
+<h3>Bạn có thực sự muốn xóa?</h3>
+<div>
+    <h4>ApplicationRole</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-secondary waves-effect" /> |
+            <a href="@Url.Action("Index")" class="btn btn-secondary waves-effect"><i class="icon icon-arrow-left"></i>Về trang trước</a>
+        </div>
+    }
+</div>*@
+
+@{
+    ViewBag.Title = "Xóa dư án/nhóm công việc";
+}
+
+<div class="jumbotron">
+    <header>
+        <h2>Bạn có chắc chắn muốn xóa quyền này ???</h2>
+        Việc xóa quyền sẽ ảnh hưởng rất lớn đến vận hành hệ thống. Hãy chắc chắn hành động của bạn!
+    </header>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <h4 class="header-title m-t-0 m-b-30">
+                @ViewBag.Title
+            </h4>
+            <hr />
+
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12 col-xl-6">
+                    <dl class="dl-horizontal row">
+                        <dt class="col-sm-3">
+                            @Html.DisplayNameFor(model => model.Name)
+                        </dt>
+                        <dd class="col-sm-9">
+                            @Html.DisplayFor(model => model.Name)
+                        </dd>                 
+                    </dl>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-actions no-color">
+                            <input type="submit" value="Xóa dữ liệu" class="btn btn-danger" /> |
+                            <a href="@Url.Action("Index")" class="btn btn-secondary waves-effect"><i class="icon icon-arrow-left"></i>Về trang trước</a>
+                        </div>
+                    }
+                </div><!-- end col -->
+
+            </div><!-- end row -->
+        </div>
+    </div><!-- end col -->
+</div>

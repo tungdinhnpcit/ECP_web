@@ -1,0 +1,243 @@
+﻿<style>
+    .facebook-address {
+        background-color: transparent;
+        margin-top: 5px;
+    }
+
+    .discussion-address {
+        background-color: transparent;
+        margin-top: 5px;
+    } 
+    .facebookBtn {
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #4267b2;
+        color: #4267b2;
+    }
+
+    .discussionBtn {
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #ed9c28;
+        color: #ed9c28;
+    }
+
+    .facebookBtn:hover {
+        background: rgba(0, 0, 0, 0.3);
+        color: #4267b2;
+    }
+
+    .discussionBtn:hover {
+        background: rgba(0, 0, 0, 0.3);
+        color: #ed9c28;
+    }
+
+    .facebook-icon {
+        float: right;
+        padding: 5px 20px;
+        color: #fff;
+        background: #4267b2;
+        border-radius: 5px;
+        font-size: 30px;
+    }
+
+    .discussion-icon {
+        float: right;
+        padding: 5px 18px;
+        color: #fff;
+        background: #ed9c28;
+        border-radius: 5px;
+        font-size: 30px;
+    }
+
+    .facebook-text {
+        float: left;
+        font-size: 19px;
+    }
+
+    .discussion-text{
+        float: left;
+        font-size: 19px;
+    }
+
+    .sidebar-left-collapsed .facebook-address .facebook-text {
+        display: none;
+    }
+
+    .sidebar-left-collapsed .facebook-address a {
+        padding: 2px 7px;
+        border: none;
+    }
+
+    .sidebar-left-collapsed .discussion-address a {
+        padding: 2px 7px;
+        border: none;
+    }
+    
+    .sidebar-left-collapsed .facebook-address .facebook-icon {
+        float: none;
+        margin: 0 auto;
+    }
+
+    .sidebar-left-collapsed .discussion-address .discussion-icon {
+        float: none;
+        margin: 0 auto;
+    }
+
+    .sidebar-left-collapsed .discussion-address .discussion-text {
+        display: none;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .facebook-address .facebook-text {
+        display: block;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .discussion-address .discussion-text {
+        display: block;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .facebook-address {
+        background-color: transparent;
+        margin-top: 5px;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .discussion-address {
+        background-color: transparent;
+        margin-top: 5px;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .facebookBtn {
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #4267b2;
+        color: #4267b2;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .discussionBtn {
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #ed9c28;
+        color: #ed9c28;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .facebookBtn:hover {
+        background: rgba(0, 0, 0, 0.1);
+        color: #4267b2;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .discussionBtn:hover {
+        background: rgba(0, 0, 0, 0.1);
+        color: #ed9c28;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .facebook-icon {
+        float: right;
+        padding: 5px 20px;
+        color: #fff;
+        background: #4267b2;
+        border-radius: 5px;
+        font-size: 30px;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .discussion-icon {
+        float: right;
+        padding: 5px 18px;
+        color: #fff;
+        background: #ed9c28;
+        border-radius: 5px;
+        font-size: 30px;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .facebook-text {
+        float: left;
+        font-size: 19px;
+    }
+
+    html.sidebar-left-collapsed .sidebar-left .nano:hover .discussion-text {
+        float: left;
+        font-size: 19px;
+    }
+
+</style>
+
+<aside id="sidebar-left" class="sidebar-left">
+    <div class="sidebar-header">
+        <div class="sidebar-title">
+            Quản trị hệ thống
+        </div>
+        <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+            <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+        </div>
+    </div>
+
+    <div class="nano">
+        <div class="nano-content">
+            <nav id="menu" class="nav-main" role="navigation">
+                @*Left menu*@
+                @Html.Action("GetMenuLeft", "Home", new { area = "" })
+            </nav>
+            <hr class="separator" />
+            @if (Session["DonViID"] != null)
+            {
+                if (@Session["DonViID"].ToString().Length > 4)
+                {
+                    if (Session["DonViID"].ToString().Contains("PH") || Session["DonViID"].ToString().Contains("PM") || Session["DonViID"].ToString().Contains("PN"))
+                    {
+                        string linkn = @Session["DonViID"].ToString().Substring(0, 2).ToString() + ".PNG";
+                        <div class="img-responsive text-center center" style="background-color:aliceblue;">
+                            <img class="img-responsive" style="margin-left:50px;" src="/Content/images/logo_dien/@linkn" />
+                        </div>
+                    }
+                    else
+                    {
+                        string linkn = @Session["DonViID"].ToString().Substring(0, 4).ToString() + ".PNG";
+                        <div class="img-responsive text-center center" style="background-color:aliceblue;">
+                            <img class="img-responsive" style="margin-left:50px;" src="/Content/images/logo_dien/@linkn" />
+                        </div>
+                    }
+
+                }
+                else
+                {
+                    if (Session["DonViID"].ToString().Contains("PH") || Session["DonViID"].ToString().Contains("PM") || Session["DonViID"].ToString().Contains("PN"))
+                    {
+                        string linkn = @Session["DonViID"].ToString().Substring(0, 2).ToString() + ".PNG";
+                        <div class="img-responsive text-center center" style="background-color:aliceblue;">
+                            <img class="img-responsive" style="margin-left:50px;" src="/Content/images/logo_dien/@linkn" />
+                        </div>
+                    }
+                    else
+                    {
+                        string linkn = @Session["DonViID"].ToString() + ".PNG";
+                        <div class="img-responsive text-center center" style="background-color:aliceblue;">
+                            <img class="img-responsive" style="margin-left:50px;" src="/Content/images/logo_dien/@linkn" />
+                        </div>
+                    }
+                }
+
+            }
+
+            @*<hr class="separator" />*@
+
+            @*@if (Session["PublishDate"] != null)
+                {
+                    var publishDate = (ECP_V2.DataAccess.SystemConfig)Session["PublishDate"];
+
+                    <div class="text-center center">
+                        <a href="#modalAnimVersion" id="btnViewVersion" style="color: #fff;">Phiên bản cập nhật ngày @publishDate.Value</a>
+                    </div>
+                }*@
+
+            @*<div class="clearfix facebook-address">
+                <a href="https://www.facebook.com/kiemsoatantoan" class="mb-xs mt-xs mr-xs btn btn-block clearfix facebookBtn"><div class="text-uppercase facebook-text"><span>Địa chỉ facebook<br /></span><span style="font-size: 13px;">Trang cập nhật thông tin</span></div><div class="facebook-icon"><i class="fa fa-facebook"></i></div></a>
+            </div>
+
+            <div class="clearfix discussion-address">
+                <a href="https://www.facebook.com/groups/kiemsoatantoan/" class="mb-xs mt-xs mr-xs btn btn-block clearfix discussionBtn"><div class="text-uppercase discussion-text"><span>Nhóm trao đổi<br /></span><span style="font-size: 13px;">Nhóm trao đổi góp ý</span></div><div class="discussion-icon"><i class="fa fa-bookmark"></i></div></a>
+            </div>*@
+
+        </div>
+
+    </div>
+
+</aside>

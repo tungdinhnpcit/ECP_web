@@ -1,0 +1,2114 @@
+﻿@{
+    ViewBag.Title = "Lịch làm việc trên lưới điện tại hiện trường";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV = null;
+    List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV3 = null;
+    List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV4 = null;
+    List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV5 = null;
+    if (ViewBag.ThuocTinhPhienLV != null)
+    {
+        listThuocTinhPhienLV = ViewBag.ThuocTinhPhienLV;
+    }
+    if (listThuocTinhPhienLV != null && listThuocTinhPhienLV.Count > 0)
+    {
+        listThuocTinhPhienLV3 = listThuocTinhPhienLV.Where(x => x.LoaiThuocTinh == 3).ToList();
+        listThuocTinhPhienLV4 = listThuocTinhPhienLV.Where(x => x.LoaiThuocTinh == 4).ToList();
+        listThuocTinhPhienLV5 = listThuocTinhPhienLV.Where(x => x.LoaiThuocTinh == 5).ToList();
+    }
+    string donViID = Session["DonViID"] != null ? Session["DonViID"].ToString() : "";
+    int phongBanId = 0;
+    int.TryParse(Session["PhongBanId"].ToString(), out phongBanId);
+}
+@*<link rel="stylesheet" href="assets/vendor/select2/select2.css" />
+    <link rel="stylesheet" href="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />*@
+
+@*<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />*@
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+
+<div class="head" id="ndContent">
+    <h1>
+        <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" onclick="ExpandCollapse()">
+            <i class="fa fa-exchange"></i> &nbsp; Thu nhỏ / Mở rộng Lịch
+        </a>
+        <a href="#modalAnimImportKH" id="ImportKH" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel lịch theo kế hoạch
+        </a>
+        <a href="#modalAnimImportBS" id="ImportBS" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel lịch bổ sung
+        </a>
+
+        <a href="#modalAnimImportDX" id="ImportDX" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+            <i class="fa fa-file-excel-o"></i> &nbsp; Nhập từ Excel lịch đột xuất
+        </a>
+
+        <span id="weekid" data-week="@(ViewBag.WeekId)" style="display:none"></span>
+
+        <a class="mb-xs mt-xs mr-xs btn @(ViewBag.WeekId == "TT" ? "btn-success" : "btn-primary") WeekButton" style="cursor:pointer" onclick="ShowWeekBack(this)">
+            <i class="fa fa-mail-reply"></i> &nbsp; Tuần trước
+        </a>
+        <a class="mb-xs mt-xs mr-xs btn @(ViewBag.WeekId == "" ? "btn-success" : "btn-primary") WeekButton" style="cursor:pointer" onclick="ShowWeekToday(this)">
+            <i class="fa fa-level-down"></i> &nbsp; Tuần hiện tại
+        </a>
+        <a class="mb-xs mt-xs mr-xs btn @(ViewBag.WeekId == "TK" ? "btn-success" : "btn-primary") WeekButton" style="cursor:pointer" onclick="ShowWeekNext(this)">
+            <i class="fa fa-mail-forward"></i> &nbsp; Tuần kế tiếp
+        </a>
+
+        @if (!User.IsInRole("TaoCongViec"))
+        {
+            <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" href="@Url.Action("Index", "PhienLV")">
+                <i class="fa fa-list"></i> &nbsp; Danh sách phiên làm việc
+            </a>
+        }
+    </h1>
+    <!-- Modal Animation Cancel -->
+    <div id="modalAnimCancel" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn hủy những thay đổi này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="CancelModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="CancelModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Modal Animation -->
+    <div id="modalAnimCopy" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">
+                    Nhân bản phiên làm việc
+                </h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper">
+
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-6 text-left">
+                        <input type="checkbox" class="chkbox" id="ckhTaoPhieuCongTac" />
+                        <strong>Tạo Phiếu/Lệnh công tác</strong>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="CopyModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="CopyModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Modal Animation -->
+    <div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa phiên làm việc này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DeleteModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Modal Animation Import KH-->
+    <div id="modalAnimImportKH" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Import Excel Phiên Làm Việc Theo Kế Hoạch</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-file-excel-o"></i>
+                    </div>
+                    <div class="modal-text">
+                        <div style="margin-top: -25px; margin-bottom: 10px;">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Ctybc-LLV.Tuan.xlsx")" style="cursor:pointer">
+                                    <h4>Tải file mẫu</h4>
+                                </a>
+                            }
+                            else
+                            {
+                                @*<a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-LLV.Tuan.xlsx")" style="cursor:pointer">
+                                        <h4>Tải file mẫu</h4>
+                                    </a>*@
+                                <a href="javascript:;" id="btnDownloadTuanCty">
+                                    <h4>Tải file mẫu</h4>
+                                </a>
+                            }
+                        </div>
+
+                        @using (Html.BeginForm("ImportExcelPLV_KH", "PhienLV", FormMethod.Post, new { id = "frmImportPhienLvKH", enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+                        {
+                            <input type="hidden" name="typeshow" id="importkhtypeshow" value="@(ViewBag.WeekId)" />
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <div class="input-append">
+                                    <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span></div>
+                                    <span class="btn btn-file"><span class="fileupload-new">Chọn file</span><span class="fileupload-exists">Thay đổi</span><input type="file" accept=".xls,.xlsx" name="file" id="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ImportKHModalConfirm()" id="modal-confirm">Lưu</button>
+                        <button class="btn btn-default modal-dismiss" onclick="ImportKHModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <!-- Modal Animation Import BS-->
+    <div id="modalAnimImportBS" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Import Excel Phiên Làm Việc Bổ Sung</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-file-excel-o"></i>
+                    </div>
+                    <div class="modal-text">
+                        <div style="margin-top: -25px; margin-bottom: 10px;">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-Bsung.xlsx")" style="cursor:pointer">
+                                    <h4>Tải file mẫu</h4>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-Bsung.xlsx")" style="cursor:pointer">
+                                    <h4>Tải file mẫu</h4>
+                                </a>
+                            }
+                        </div>
+
+                        @using (Html.BeginForm("ImportExcelPLV_BS", "PhienLV", FormMethod.Post, new { id = "frmImportPhienLvBS", enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+                        {
+                            <input type="hidden" name="typeshow" id="importbstypeshow" value="@(ViewBag.WeekId)" />
+                            <div style="margin-bottom:15px;margin-top:5px" class="input-group">
+                                <span>Ngày Bổ Sung : &nbsp;</span>
+                                <input id="NgayBoSung" name="NgayBoSung" type="text" placeholder="Ngày Bổ Sung">
+                            </div>
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <div class="input-append">
+                                    <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span></div>
+                                    <span class="btn btn-file"><span class="fileupload-new">Chọn file</span><span class="fileupload-exists">Thay đổi</span><input type="file" accept=".xls,.xlsx" name="file" id="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ImportBSModalConfirm()" id="modal-confirm">Lưu</button>
+                        <button class="btn btn-default modal-dismiss" onclick="ImportBSModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Modal Animation Import DX-->
+    <div id="modalAnimImportDX" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Import Excel Phiên Làm Việc Đột Xuất</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-file-excel-o"></i>
+                    </div>
+                    <div class="modal-text">
+                        <div style="margin-top: -25px; margin-bottom: 10px;">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-Dxuat.xlsx")" style="cursor:pointer">
+                                    <h4>Tải file mẫu</h4>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-Dxuat.xlsx")" style="cursor:pointer">
+                                    <h4>Tải file mẫu</h4>
+                                </a>
+                            }
+                        </div>
+
+                        @using (Html.BeginForm("ImportExcelPLV_DX", "PhienLV", FormMethod.Post, new { id = "frmImportPhienLvDX", enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+                        {
+                            <input type="hidden" name="typeshow" id="importdxtypeshow" value="@(ViewBag.WeekId)" />
+                            <div style="margin-bottom:15px;margin-top:5px" class="input-group">
+                                <span>Ngày Đột Xuất : &nbsp;</span>
+                                <input id="NgayDotXuat" name="NgayDotXuat" type="text" placeholder="Ngày Đột Xuất">
+                            </div>
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <div class="input-append">
+                                    <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span></div>
+                                    <span class="btn btn-file"><span class="fileupload-new">Chọn file</span><span class="fileupload-exists">Thay đổi</span><input type="file" accept=".xls,.xlsx" name="file" id="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ImportDXModalConfirm()" id="modal-confirm">Lưu</button>
+                        <button class="btn btn-default modal-dismiss" onclick="ImportDXModalDismiss()" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <div id="modalAnimGuiLai" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn gửi lại phiên làm việc này ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="GuiLaiModalConfirm()" id="modal-confirm"><span class="fa fa-reply" style="color: #fff;"></span> Gửi lại</button>
+                        <button class="btn btn-default modal-dismiss" onclick="GuiLaiModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    <div class="clear">
+    </div>
+</div>
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách phiên làm việc
+            </div>
+            <div class="panel-title fulltable hide" style="position: absolute; top: 17px; right: 20px; cursor:pointer">
+                <span class="glyphicon glyphicon-fullscreen"></span>
+            </div>
+            <div class="panel-title nonetable hide" style="position: fixed; top: 0px; right: 18px; z-index: 99999999; cursor: pointer; color: #fff;">
+                <span class="glyphicon glyphicon-resize-small" style="background: red; display: block; height: 32px; width: 32px; padding: 6px;"></span>
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div class="text-center">
+                @if (TempData["TongSoPhien"] != null)
+                {
+                    <div id="NotificationBox2" class="alert alert-info" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto; font-size:17px;line-height: 140%;">
+                            Tổng số phiên: @(TempData["TongSoPhien"])
+                            <br />
+                            <span style="color:#a94441; font-weight:bold">
+                                Số phiên gặp lỗi: @(TempData["SoPhienLoi"])
+                            </span>
+                            <br />
+                            <span style="color:darksalmon; font-weight:bold">
+                                Số phiên đã tồn tại: @(TempData["SoPhienDaTonTai"])
+                            </span>
+                            <br />
+                            <span style="color:green; font-weight:bold">
+                                Số phiên thành công: @(TempData["SoPhienThanhCong"])
+                            </span>
+                            <br />
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    <div id="NotificationBox2" class="@TempData["NotificationCSS"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification"])
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center">
+                @if (TempData["Notification3"] != null)
+                {
+                    <div id="NotificationBox1" class="@TempData["NotificationCSS3"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification3"])
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox3" class="@TempData["NotificationCSS2"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification2"])
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("PhienLvPaging", "PhienLV", new { page = 1, pageSize = 10, sortOrder = "", filter = "", type = ViewBag.WeekId });}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="selectdayofweek">
+    <ul>
+        <li><a rowname="Tuesday" class="todayofweek" id="style@(DayOfWeek.Tuesday)">T3</a></li>
+        <li><a rowname="Wednesday" class="todayofweek" id="style@(DayOfWeek.Wednesday)">T4</a></li>
+        <li><a rowname="Thursday" class="todayofweek" id="style@(DayOfWeek.Thursday)">T5</a></li>
+        <li><a rowname="Friday" class="todayofweek" id="style@(DayOfWeek.Friday)">T6</a></li>
+        <li><a rowname="Saturday" class="todayofweek" id="style@(DayOfWeek.Saturday)">T7</a></li>
+        <li><a rowname="Sunday" class="todayofweek" id="style@(DayOfWeek.Sunday)">CN</a></li>
+        <li><a rowname="Monday" class="todayofweek" id="style@(DayOfWeek.Monday)">T2</a></li>
+    </ul>
+    <script>
+        $('#style@(DateTime.Now.DayOfWeek)').attr('style', 'background:#006a9e !important;');
+
+
+
+        $(".todayofweek").click(function () {
+            var myElementId = "tr#" + $(this).attr("rowname");
+            console.log(myElementId);
+
+            var checkTimeToScroll = $(document).scrollTop() - ($(myElementId).offset().top - 150);
+            if (checkTimeToScroll < 0) {
+                checkTimeToScroll = checkTimeToScroll * (-1);
+            }
+            if (checkTimeToScroll > 7000) {
+                $('html, body').animate({
+                    scrollTop: ($(myElementId).offset().top - 150)
+                }, 1);
+            } else if (checkTimeToScroll > 3000) {
+                $('html, body').animate({
+                    scrollTop: ($(myElementId).offset().top - 150)
+                }, 1);
+            }
+            else {
+                $('html, body').animate({
+                    scrollTop: ($(myElementId).offset().top - 150)
+                }, 1);
+            }
+        });
+    </script>
+</div>
+<div id="scrollbottom" style="overflow-x: scroll; overflow-y: hidden; height: 20px; width: 300px; position: fixed; bottom: 0px; right: 55px; background-color: #9E9E9E; border-radius: 6px; border: 1px solid #9E9E9E;">
+    <div id="scrollbottomcontent" style="height:23px; width:600px"></div>
+</div>
+<script>
+    $("#scrollbottom").scroll(function () {
+        var getRet = ($(this).scrollLeft() / 302) * 100;
+        yourFunction(getRet);
+    });
+
+    function yourFunction(retag) {
+        try {
+            $(".table-responsive").scrollLeft((3000 / 100) * retag);
+        } catch (e) {
+
+        }
+    }
+</script>
+<style>
+    .ui-pnotify .notification-danger, .ui-pnotify .notification-success {
+        color: #fff !important;
+    }
+
+    hr {
+        margin: 7px 0 7px 0;
+    }
+
+    #dtGridPhienLV tbody tr:hover {
+        background: #d5dcff;
+    }
+
+    #dtGridPhienLV tbody tr td:hover {
+        background-color: #c7d0ff !important;
+    }
+
+    .content-body {
+        padding: 0px;
+    }
+
+    .spacetd {
+        width: 190px;
+        display: block;
+        border: 0 !important;
+    }
+
+    .multiselect {
+        padding: 3px !important;
+        text-align: left !important;
+    }
+
+    .multiselect-wap .btn-default {
+        display: none !important;
+    }
+
+    .multiselect-wap {
+        /*margin-top: -14px;*/
+    }
+
+    .multiselect-container {
+        /*max-height: 600px;*/
+    }
+
+        .multiselect-container > li > a > label {
+            padding: 3px 5px 3px 22px !important;
+            font-size: 16px !important;
+        }
+
+    .wap-scroll {
+        position: fixed;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        z-index: 999999;
+        background: #fff;
+        height: 100%;
+        width: 100%;
+        overflow: scroll;
+        margin-left: 120px;
+    }
+
+    .body-scoll-none {
+        overflow: hidden !important;
+    }
+
+    .actions {
+        position: absolute;
+        width: 130px;
+        right: 0;
+        top: auto;
+        border-top-width: 1px;
+        /*only relevant for first row*/
+        margin-top: -1px;
+        /*compensate for top border*/
+        padding-left: 3px;
+        padding-right: 3px;
+        background: #faf9f9;
+        margin-top: -16px;
+        height: 100%;
+        padding: 12px !important;
+    }
+
+        .actions:before {
+        }
+
+    .table .actions a, .table .actions-hover a {
+        margin-right: 10px !important;
+    }
+
+    .pererror {
+        background: #ffd6c7 url(/Content/Customs/erroricon.png) no-repeat top right !important;
+    }
+
+    .statusdone {
+        background-color: #d9ffad !important;
+    }
+
+    .statusreview {
+        /*background-color: #c4edff !important;*/
+    }
+
+    .statusnon {
+        /*background-color: gainsboro !important;*/
+    }
+
+    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+        /*padding: 8px;
+        padding-bottom:16px;*/
+    }
+
+    .empdata {
+        margin-top: -9px;
+    }
+
+    #dtGridPhienLV tbody tr:last-child {
+        /*height: 500px !important;*/
+        background: #f1f1f1;
+    }
+
+        #dtGridPhienLV tbody tr:last-child td {
+            border: none !important;
+        }
+
+    .radioStyle input[type="checkbox"] {
+        -webkit-appearance: radio;
+        -moz-appearance: radio;
+        -ms-appearance: radio;
+    }
+
+    .multiselect-container > li > label.multiselect-group {
+        font-size: 16px;
+    }
+
+    #selectdayofweek {
+        overflow-y: hidden;
+        height: 37px;
+        width: 242px;
+        position: fixed;
+        bottom: 0px;
+        right: 355px;
+        background-color: #9E9E9E;
+        border-radius: 6px;
+        border: 1px solid #9E9E9E;
+        padding-left: 2px;
+    }
+
+        #selectdayofweek ul {
+            margin: 0;
+            padding: 0;
+        }
+
+            #selectdayofweek ul li {
+                float: left;
+                width: 32px;
+                height: 32px;
+                list-style: none;
+                margin-right: 2px;
+                margin-top: 2px;
+            }
+
+                #selectdayofweek ul li a {
+                    height: 32px;
+                    width: 32px;
+                    display: block;
+                    line-height: 32px;
+                    text-align: center;
+                    font-weight: bold;
+                    background: #2590c5;
+                    color: #fff;
+                    cursor: pointer;
+                }
+
+                    #selectdayofweek ul li a:hover {
+                        background: #fff;
+                        color: #2590c5;
+                        text-decoration: none;
+                    }
+</style>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script type="text/javascript">
+
+        var IdDelete = 0;
+        var IdCopy = 0;
+        var IdGuiLai = 0;
+        var NoiDungDelete = 0;
+        var IdCancel = 0;
+        var typeshow = $("#weekid").attr("data-week");
+        var updateDataId = 0;
+
+        $(function () {
+
+
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+
+            // khai bao cho Popup
+            $('#ImportKH').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            // khai bao cho Popup
+            $('#ImportBS').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            // khai bao cho Popup
+            $('#ImportDX').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            $("#NgayBoSung").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                value:new Date()
+            }).data("kendoDatePicker");
+
+            $("#NgayDotXuat").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                value: new Date()
+            }).data("kendoDatePicker");
+
+            $('#btnDownloadTuanCty').bind('click', function () {
+
+                $.UnifiedExportFile(
+                    {
+                        action: "/Admin/PhienLV/DownloadExportTuan_Cty",
+                        data: {
+                        },
+                        downloadType: 'Progress',
+                        ajaxLoadingSelector: '#loading'
+                    });
+            });
+
+        });
+
+        function CopyModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function CopyModalConfirm() {
+            if (IdCopy != "") {
+
+                loading('Đang xử lý...', 1);
+
+                var listDate = [];
+
+                $('#modalAnimCopy .chkDate').each(function (index, item) {
+                    if (item.checked) {
+                        listDate.push(item.value);
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/CreatePhienLVCopy',
+                    data:
+                        JSON.stringify({
+                            "id": IdCopy,
+                            "listDate": listDate,
+                            "IsTaoPhieuCongTac": document.getElementById("ckhTaoPhieuCongTac").checked
+                        }),
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data != null) {
+
+                            $.each(data, function (index, item) {
+
+                                if (item.success) {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: item.responseText,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    new PNotify({
+                                        title: 'Thông báo!',
+                                        text: 'Lỗi : ' + item.responseText,
+                                        type: 'error'
+                                    });
+                                }
+                            });
+
+                            Paginglv(typeshow);
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        function GetListDateNhanBan(date) {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/Admin/PhienLV/GetListDateNhanBan?date=' + date,
+                success: function (json) {
+
+                    $('#modalAnimCopy .modal-wrapper').html('');
+                    $('#modalAnimCopy .modal-wrapper').html(json);
+                    unloading();
+                }
+            });
+
+        }
+
+
+        function edit(el) {
+            ControllScrollLeft();
+
+            //ReturnSelectionPosition();
+
+            var str = $(el).attr("id").split("_");
+            var status = $(el).data('status');
+
+            id = str[1];
+
+            var tr = $(el).parents('tr:first');
+
+            //if (status != '' && parseInt(status) == 2) {
+
+            //    tr.find('#spanLyDoThayDoi_' + id + '').hide();
+            //    tr.find('#LyDoThayDoi_' + id + '').show();
+
+            //} else {
+                //tr.find('#spanNoiDung_' + id + ', #spanPhongBanID_' + id + ', #spanDiaDiem_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLyDoThayDoi_' + id + '').hide();
+                //tr.find('#NoiDung_' + id + ', #PhongBanID_' + id + ', #DiaDiem_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LyDoThayDoi_' + id + '').show();
+            //}
+
+
+            tr.find('#spanPhongBanID_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id +  ', #spanLyDoThayDoi_' + id + ', #spanNgayKt_' + id + '').hide();
+            tr.find('#PhongBanID_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '').show();
+
+
+            $(el).hide();
+            $("#Update_" + id).show();
+            $("#Cancel_" + id).show();
+
+            $(".datePickerIns_" + id).kendoDatePicker({
+                format: 'dd/MM/yyyy'
+            }).data("kendoDatePicker");
+        };
+
+        function huybo(el) {
+            ControllScrollLeft();
+
+            //ReturnSelectionPosition();
+
+            var str = $(el).attr("id").split("_");
+            var status = $(el).data('status');
+
+            id = str[1];
+
+            var tr = $(el).parents('tr:first');
+
+            //if (status != '' && parseInt(status) == 2) {
+
+            //    tr.find('#spanLyDoThayDoi_' + id + '').hide();
+            //    tr.find('#LyDoThayDoi_' + id + '').show();
+
+            //} else {
+            //tr.find('#spanNoiDung_' + id + ', #spanPhongBanID_' + id + ', #spanDiaDiem_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLyDoThayDoi_' + id + '').hide();
+            //tr.find('#NoiDung_' + id + ', #PhongBanID_' + id + ', #DiaDiem_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LyDoThayDoi_' + id + '').show();
+            //}
+
+
+            tr.find('#spanLyDoThayDoi_' + id + '').hide();
+            tr.find('#LyDoThayDoi_' + id + '').show();
+
+
+            $(el).hide();
+            $("#UpdateHuyBo_" + id).show();
+            $("#CancelHuyBo_" + id).show();
+        };
+
+        function cancel(el) {
+            ReturnSelectionPosition();
+
+            var str = $(el).attr("id").split("_");
+            id = str[1];
+
+            var tr = $(el).parents('tr:first');
+            tr.find('#spanNoiDung_' + id + ',#spanPhongBanID_' + id + ', #spanDiaDiem_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id +  ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id + ',#spanLyDoThayDoi_' + id + ',#spanNgayKt_' + id + '').show();
+            tr.find('#NoiDung_' + id + ', #PhongBanID_' + id + ', #DiaDiem_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id +  ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '').hide();
+
+            $(el).hide();
+            $("#Update_" + id).hide();
+            $("#Edit_" + id).show();
+
+        };
+
+        function cancelHuyBo(el) {
+            ReturnSelectionPosition();
+
+            var str = $(el).attr("id").split("_");
+            id = str[1];
+
+            var tr = $(el).parents('tr:first');
+            tr.find('#spanNoiDung_' + id + ',#spanPhongBanID_' + id + ', #spanDiaDiem_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id +  ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id + ',#spanLyDoThayDoi_' + id + '').show();
+            tr.find('#NoiDung_' + id + ', #PhongBanID_' + id + ', #DiaDiem_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id +  ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id +', #LyDoThayDoi_' + id + '').hide();
+
+            $(el).hide();
+            $("#UpdateHuyBo_" + id).hide();
+            $("#HuyBo_" + id).show();
+        };
+
+        function update(el, NgayLamViec, TT_Phien) {
+            loading('Đang xử lý...', 1);
+
+            ReturnSelectionPosition();
+
+            //return selection
+
+            //
+            var str = $(el).attr("id").split("_");
+            id = str[1];
+            updateDataId = id;
+            var tr = $(el).parents('tr:first');
+
+            if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
+
+                if ($("#LyDoThayDoi_" + id).val() == '') {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Nhập: Lý do hủy/Lý do sửa',
+                        type: 'error'
+                    });
+
+                    unloading();
+
+                    return false;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/EditPhienLv',
+                    data:
+                         JSON.stringify(
+            {
+                            "Id": id,
+                            "PhongBanID": $("#PhongBanID_" + id).attr("dataempid"),
+                            "TT_Phien": TT_Phien,
+                            "TrangThai": $("#TrangThai_" + id).val(),
+                            "NoiDung": $("#NoiDung_" + id).val(),
+                            "DiaDiem": $("#DiaDiem_" + id).val(),
+                            "NgayLamViec": NgayLamViec,
+                            "GioBd": $("#GioBd_" + id).val(),
+                            "GioKt": $("#GioKt_" + id).val(),
+                            "NgayKt": $("#NgayKt_" + id).val(),
+                            "NguoiDuyet_SoPa": $("#NguoiDuyet_SoPa_" + id).val(),
+                            "NguoiChiHuy": $("#NguoiChiHuy_" + id).val(),
+                            "GiamSatVien": $("#GiamSatVien_" + id).val(),
+                            "NguoiKiemSoat": $("#NguoiKiemSoat_" + id).val(),
+                            "NguoiKiemTraPhieu": $("#NguoiKiemTraPhieu_" + id).val(),
+                            "LanhDaoTrucBan": $("#LanhDaoTrucBan_" + id).val(),
+                            "LyDoThayDoi": $("#LyDoThayDoi_" + id).val(),
+
+                            "NguoiDuyet_SoPa_Id": $("#NguoiDuyet_SoPa_" + id).attr("dataempid"),
+                            "NguoiChiHuy_Id": $("#NguoiChiHuy_" + id).attr("dataempid"),
+                            "GiamSatVien_Id": $("#GiamSatVien_" + id).attr("dataempid"),
+                            "NguoiKiemSoat_Id": $("#NguoiKiemSoat_" + id).attr("dataempid"),
+                            "NguoiKiemTraPhieu_Id": $("#NguoiKiemTraPhieu_" + id).attr("dataempid"),
+                        "LanhDaoTrucBan_Id": $("#LanhDaoTrucBan_" + id).attr("dataempid"),
+
+                        "LanhDaoCongViec_Id": $("#LanhDaoCongViec_" + id).attr("dataempid"),
+                        "LanhDaoCongViec": $("#LanhDaoCongViec_" + id).val(),
+                        "NguoiCapPhieu_Id": $("#NguoiCapPhieu_" + id).attr("dataempid"),
+                        "NguoiCapPhieu": $("#NguoiCapPhieu_" + id).val(),
+
+                            "PhieuLenh": $("#PhieuLenh_" + id).attr("dataempid"),
+                            "CatDien": $("#CatDien_" + id).attr("dataempid") || 0,
+                            "TiepDia": $("#TiepDia_" + id).attr("dataempid") || 0,
+                            "TinhChat": $("#TinhChat_" + id).attr("dataempid") || 0
+                        }),
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+
+                        if (data > 0) {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Sửa phiên làm việc thành công',
+                                type: 'success'
+                            });
+                            setTimeout(function () {
+                                unloading();
+                            }, 1500);
+                            Paginglv(typeshow);
+
+                            unloading();
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+
+                            unloading();
+                        }
+
+
+                    }
+
+                });
+            } else {
+                unloading();
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Dữ liệu chưa đầy đủ',
+                    type: 'error'
+                });
+            }
+        };
+
+        function updateHuyBo(el, NgayLamViec, TT_Phien) {
+            loading('Đang xử lý...', 1);
+
+            ReturnSelectionPosition();
+
+            //return selection
+
+            //
+            var str = $(el).attr("id").split("_");
+            id = str[1];
+            updateDataId = id;
+            var tr = $(el).parents('tr:first');
+
+            if (id != "") {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/HuyBoPhienLv',
+                    data:
+                    {
+                        "Id": id,
+                        "LyDoThayDoi": $("#LyDoThayDoi_" + id).val(),
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+
+                        if (data == "") {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Hủy bỏ phiên làm việc thành công',
+                                type: 'success'
+                            });
+                            setTimeout(function () {
+                                unloading();
+                            }, 1500);
+                            Paginglv(typeshow);
+
+                            unloading();
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+
+                            unloading();
+                        }
+
+
+                    }
+
+                });
+            } else {
+                unloading();
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Dữ liệu chưa đầy đủ',
+                    type: 'error'
+                });
+            }
+        };
+
+        function add(el, NgayLamViec, TT_Phien) {
+            console.log(NgayLamViec);
+
+            ControllScrollLeft();
+
+            var index = $("#dtGridPhienLV tbody tr").length + 1;
+
+            var tr = '<tr>' +
+                       '<td><span>' +
+                       '</span></td>' +
+                       '<td><span>' +
+                       '<textarea rows="2" id="NoiDung_' + index + '" class = "form-control" placeholder="Nội dung công việc"></textarea>' +
+                       '</span></td>' +
+                       @*'<td><span>' +
+                       '<select class="form-control" id="PhongBanID_' + index + '">' +
+                       '@if (User.IsInRole("TaoCongViec"))
+                       {
+                           try
+                            {
+                               int phongBanId = 0;
+                               int.TryParse(Session["PhongBanId"].ToString(), out phongBanId);
+
+                                @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtmlTaoCongViec(phongBanId))
+                            }
+                            catch (Exception ex)
+                            { }
+                       }
+                       else
+                       {
+                           try
+                       {
+                         @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                       }
+                       catch (Exception ex)
+                       { }
+                       } ' +
+                       '</select>' +
+                        '</span></td>' +*@
+
+                        //listphongban
+                        '<td class="radioStyle" onlyone="1"><span>' +
+                '<textarea searchbox="1" dataempid="" onkeypress="return false;" datasourceidname="listphongban" class="PhongBan_SelectEmp form-control" id="PhongBanID_' + index + '" placeholder="Đơn vị làm công việc" class = "form-control"></textarea>' +
+                        '</span><div class="multiselect-wap"></div></td>' +
+
+                       '<td><span>' +
+                       '<textarea rows="2" id="DiaDiem_' + index + '" placeholder="Địa điểm (vị trí) công tác" class = "form-control"></textarea>' +
+                       '</span></td>' +
+                '<td><span>' +
+
+                '<input type="text" value="00:00" style="width: 65px;" data-plugin-timepicker class="form-control" id="GioBd_' + index + '" placeholder="Giờ bắt đầu" data-plugin-options="{ "showMeridian": false }"><br/>' +
+                '<span id="spanNgayBd_' + index + '" style="font-size: 12px; line-height: 30px;">' + NgayLamViec.replace(' 00:00:00', '') + '</span>' +
+                       '</span></td>' +
+                       '<td><span>' +
+                '<input value="00:00" type="text" style="width: 65px;" data-plugin-timepicker class="form-control" id="GioKt_' + index + '" placeholder="Giờ kết thúc" data-plugin-options="{ "showMeridian": false }"><br/>' +
+
+                '<input type="text" value="' + NgayLamViec.replace(' 00:00:00', '') + '" style="width: 100px;background: transparent; padding-left: 0;" class="form-control datePickerIns_'+ index +'" id="NgayKt_' + index + '" placeholder="Ngày kết thúc">' +
+
+                '</span></td>' +
+
+                //listphieulenh
+                '<td class="radioStyle" onlyone="1"><span>' +
+                '<textarea dataempid="" onkeypress="return false;" datasourceidname="listphieulenh" class="PhieuLenh_SelectEmp form-control" id="PhieuLenh_' + index + '" placeholder="Phiếu/Lệnh công tác" class = "form-control"></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                //listcatdien
+                '<td class="radioStyle" onlyone="1"><span>' +
+                '<textarea dataempid="" onkeypress="return false;" datasourceidname="listcatdien" class="CatDien_SelectEmp form-control" id="CatDien_' + index + '" placeholder="Trạng thái cắt điện" class = "form-control"></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                //listtiepdia
+                '<td class="radioStyle" onlyone="1"><span>' +
+                '<textarea dataempid="" onkeypress="return false;" datasourceidname="listtiepdia" class="TiepDia_SelectEmp form-control" id="TiepDia_' + index + '" placeholder="Trạng thái tiếp địa" class = "form-control"></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                //listtinhchat
+                '<td class="radioStyle" onlyone="1"><span>' +
+                '<textarea dataempid="" onkeypress="return false;" datasourceidname="listtinhchat" class="TinhChat_SelectEmp form-control" id="TinhChat_' + index + '" placeholder="Tính chất phiên lv" class = "form-control"></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                       '<td><span>' +
+                       '<textarea searchbox="1" dataempid=""  datasourceidname="listnguoiduyet" class="NguoiDuyet_SoPa_SelectEmp form-control" id="NguoiDuyet_SoPa_' + index + '" placeholder="Người duyệt phương án" class = "form-control"></textarea>' +
+                       '</span><div class="multiselect-wap"></div></td>' +
+                       '<td><span>' +
+                       '<textarea dataempid=""  searchbox="1" datasourceidname="listchihuytructiep" class="NguoiChiHuy_SelectEmp form-control"  rows="2" id="NguoiChiHuy_' + index + '" placeholder="Người chỉ huy trực tiếp" class = "form-control" ></textarea>' +
+                       '</span><div class="multiselect-wap"></div></td>' +
+                       '<td><span>' +
+                       '<textarea dataempid=""   searchbox="1" datasourceidname="listgiamsat" class="GiamSatVien_SelectEmp form-control" rows="2" id="GiamSatVien_' + index + '" placeholder="Người giám sát ATLĐ" class = "form-control" ></textarea>' +
+                       '</span><div class="multiselect-wap"></div></td>' +
+                       '<td><span>' +
+                '<textarea dataempid=""  searchbox="1" datasourceidname="listkiemsoat"  class="NguoiKiemSoat_SelectEmp form-control" rows="2" id="NguoiKiemSoat_' + index + '" placeholder="Người cho phép" class = "form-control" ></textarea>' +
+                       '</span><div class="multiselect-wap"></div></td>' +
+                       '<td><span>' +
+                       '<textarea dataempid=""  searchbox="1" datasourceidname="listkiemtraphieu" class="NguoiKiemTraPhieu_SelectEmp form-control" rows="2" id="NguoiKiemTraPhieu_' + index + '" placeholder="Người kiểm tra PCT; PTT; LCT" class = "form-control" ></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                       '<td><span>' +
+                       '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaotrucban"  class="LanhDaoTrucBan_SelectEmp form-control" rows="2" id="LanhDaoTrucBan_' + index + '" placeholder="Lãnh đạo đơn vị trực ban kiểm soát" class = "form-control" ></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                  '<td onlyone="1"><span>' +
+                       '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaocongviec"  class="LanhDaoCongViec_SelectEmp form-control" rows="2" id="LanhDaoCongViec_' + index + '" placeholder="Lãnh đạo công việc" class = "form-control" ></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                  '<td onlyone="1"><span>' +
+                       '<textarea dataempid=""  searchbox="1" datasourceidname="listnguoicapphieu"  class="NguoiCapPhieu_SelectEmp form-control" rows="2" id="NguoiCapPhieu_' + index + '" placeholder="Người cấp phiếu" class = "form-control" ></textarea>' +
+                '</span><div class="multiselect-wap"></div></td>' +
+
+                       '<td><span>' +
+                       '<textarea rows="2" id="LyDoThayDoi_' + index + '" placeholder="Thay đổi (nếu có), lý do thay đổi" class = "form-control" ></textarea>' +
+                       '</span></td>' +
+                       '<td class="actions">' +
+                       '<a id="Save_' + index + '" onclick="save(this,' + "'" + NgayLamViec + "'" + ',' + TT_Phien + ')"  title="Lưu" class="on-editing save-row"><i class="fa fa-save" style="font-size:25px;cursor:pointer"></i></a> &nbsp;' +
+                       '<a href="#modalAnimCancel" id="Cancel_' + index + '" title="Hủy bỏ" class="on-editing cancel-row"><i class="fa fa-times" style="font-size:25px;cursor:pointer"></i></a>' +
+                       '</td>';
+
+            //add vao row dau tien cua nhóm đó
+            $(el).parents('tr:first').after(tr);
+
+            // khai bao cho Popup
+            $('#Cancel_' + index).magnificPopup({
+    type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+                               IdCancel = index;
+                           });
+
+            $(".datePickerIns_" + index).kendoDatePicker({
+                format: 'dd/MM/yyyy'
+            }).data("kendoDatePicker");
+
+                           // TimePicker
+                           (function ($) {
+
+                               'use strict';
+
+                               if ($.isFunction($.fn['timepicker'])) {
+
+                    $(function () {
+                        $('[data-plugin-timepicker]').each(function () {
+                                           var $this = $(this),
+                                opts = {
+                                               showMeridian: false
+                                };
+                            $this.themePluginTimePicker(opts);
+                                       });
+                                   });
+
+                               }
+
+            }).apply(this, [jQuery]);
+
+            //// DatePicker
+            //(function ($) {
+
+            //    'use strict';
+
+            //    if ($.isFunction($.fn['datepicker'])) {
+
+            //        $(function () {
+            //            $('[data-plugin-datepicker]').each(function () {
+            //                var $this = $(this),
+            //                    opts = {
+            //                        showMeridian: false
+            //                    };
+            //                $this.themePluginDatePicker(opts);
+            //            });
+            //        });
+
+            //    }
+
+            //}).apply(this, [jQuery]);
+
+
+                       };
+
+        function save(el, NgayLamViec, TT_Phien) {
+            console.log(NgayLamViec);
+
+            loading('Đang xử lý...', 1);
+
+            ReturnSelectionPosition();
+
+            var str = $(el).attr("id").split("_");
+            var id = str[1];
+            var tr = $(el).parents('tr:first');
+            if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
+                console.log("thực hiện " + id + " " + NgayLamViec +" "+ TT_Phien);
+                console.log($("#PhongBanID_" + id).html());
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/CreatePhienLv',
+                    data:
+                        JSON.stringify(
+            {
+                            "PhongBanID": $("#PhongBanID_" + id).attr("dataempid"),
+                            "TT_Phien": TT_Phien,
+                            "NoiDung": $("#NoiDung_" + id).val(),
+                            "DiaDiem": $("#DiaDiem_" + id).val(),
+                            "NgayLamViec": NgayLamViec,
+                            "GioBd": $("#GioBd_" + id).val(),
+                            "GioKt": $("#GioKt_" + id).val(),
+                            "NgayKt": $("#NgayKt_" + id).val(),
+                            "NguoiDuyet_SoPa": $("#NguoiDuyet_SoPa_" + id).val(),
+                            "NguoiChiHuy": $("#NguoiChiHuy_" + id).val(),
+                            "GiamSatVien": $("#GiamSatVien_" + id).val(),
+                            "NguoiKiemSoat": $("#NguoiKiemSoat_" + id).val(),
+                            "NguoiKiemTraPhieu": $("#NguoiKiemTraPhieu_" + id).val(),
+                            "LanhDaoTrucBan": $("#LanhDaoTrucBan_" + id).val(),
+                            "LyDoThayDoi": $("#LyDoThayDoi_" + id).val(),
+
+                            "NguoiDuyet_SoPa_Id": $("#NguoiDuyet_SoPa_" + id).attr("dataempid"),
+                            "NguoiChiHuy_Id": $("#NguoiChiHuy_" + id).attr("dataempid"),
+                            "GiamSatVien_Id": $("#GiamSatVien_" + id).attr("dataempid"),
+                            "NguoiKiemSoat_Id": $("#NguoiKiemSoat_" + id).attr("dataempid"),
+                            "NguoiKiemTraPhieu_Id": $("#NguoiKiemTraPhieu_" + id).attr("dataempid"),
+                            "LanhDaoTrucBan_Id": $("#LanhDaoTrucBan_" + id).attr("dataempid"),
+
+                            "LanhDaoCongViec_Id": $("#LanhDaoCongViec_" + id).attr("dataempid"),
+                        "LanhDaoCongViec": $("#LanhDaoCongViec_" + id).val(),
+                        "NguoiCapPhieu_Id": $("#NguoiCapPhieu_" + id).attr("dataempid"),
+                        "NguoiCapPhieu": $("#NguoiCapPhieu_" + id).val(),
+
+                            "PhieuLenh": $("#PhieuLenh_" + id).attr("dataempid"),
+                            "CatDien": $("#CatDien_" + id).attr("dataempid"),
+                            "TiepDia": $("#TiepDia_" + id).attr("dataempid"),
+                            "TinhChat": $("#TinhChat_" + id).attr("dataempid")
+                        }),
+                    dataType: "json",
+                    beforeSend: function () {
+                        //alert(id);
+                    },
+                    success: function (response) {
+
+                        if (response.success > 0) {
+                            updateDataId = response.success;
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Thêm phiên làm việc thành công',
+                                type: 'success'
+                            });
+                            Paginglv(typeshow);
+                            unloading();
+                        }
+                        else {
+                            if (response.success == -2) {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Cảnh báo : ' + response.mess,
+                                    type: 'warning'
+                                });
+                                unloading();
+                            }
+                            else {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Lỗi : ' + response,
+                                    type: 'error'
+                                });
+                                unloading();
+                            }
+
+                        }
+                    }
+                });
+            } else {
+                unloading();
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Dữ liệu chưa đầy đủ',
+                    type: 'error'
+                });
+            }
+        };
+
+        function Paginglv(type) {
+            var oldScroll = 0;
+            if (!$(".nonetable").hasClass("hide")) {
+                oldScroll = $(".wap-scroll").scrollTop();
+                console.log(oldScroll);
+            }
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/PhienLV/PhienLvPaging";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    type:type
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    unloading();
+
+                    // TimePicker
+                    (function ($) {
+
+                        'use strict';
+
+                        if ($.isFunction($.fn['timepicker'])) {
+
+                            $(function () {
+                                $('[data-plugin-timepicker]').each(function () {
+                                    var $this = $(this),
+                                        opts = {
+                                            showMeridian: false
+                                        };
+                                    $this.themePluginTimePicker(opts);
+                                });
+                            });
+
+                        }
+
+                    }).apply(this, [jQuery]);
+
+                    //// DatePicker
+                    //(function ($) {
+
+                    //    'use strict';
+
+                    //    if ($.isFunction($.fn['datepicker'])) {
+
+                    //        $(function () {
+                    //            $('[data-plugin-datepicker]').each(function () {
+                    //                var $this = $(this),
+                    //                    opts = {
+                    //                        showMeridian: false
+                    //                    };
+                    //                $this.themePluginDatePicker(opts);
+                    //            });
+                    //        });
+
+                    //    }
+
+                    //}).apply(this, [jQuery]);
+
+                    if (!$(".nonetable").hasClass("hide")) {
+                        $(".table-responsive").addClass("wap-scroll");
+                        $("body").addClass("body-scoll-none");
+                        $(".nonetable").removeClass("hide");
+                        //
+                        if (updateDataId > 0) {
+                            $(".wap-scroll").scrollTop($("#spanNoiDung_" + updateDataId).offset().top + 50);
+                        }
+                        else {
+                            $(".wap-scroll").scrollTop(oldScroll + 500);
+                        }
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    unloading();
+                },
+            });
+        }
+
+        function ExpandCollapse() {
+            $('#dtGridPhienLV tbody tr:not(.group-header, .group-header-l2)').toggle();
+        }
+
+        function MoveTable(type) {
+            if (type == "Right") {
+                $('.table-responsive').scrollLeft($('#dtGridPhienLV').width());
+                ControllScrollRight();
+            }
+            else {
+                $('.table-responsive').scrollLeft(-$('#dtGridPhienLV').width());
+                ControllScrollLeft();
+            }
+        }
+
+        function CancelModalDismiss() {
+            ReturnSelectionPosition();
+
+            $.magnificPopup.close();
+        }
+
+        function CancelModalConfirm() {
+            ReturnSelectionPosition();
+
+            $("#Cancel_" + IdCancel).parents("tr").remove();
+            $.magnificPopup.close();
+        }
+
+        function DeleteModalDismiss() {
+            ReturnSelectionPosition();
+
+            $.magnificPopup.close();
+        }
+
+        function DeleteModalConfirm() {
+            ReturnSelectionPosition();
+
+            if (IdDelete != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/DeletePhienLv',
+                    data:
+                        {
+                            "Id": IdDelete,
+                            "NoiDung": NoiDungDelete
+                        },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data == "") {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Xóa phiên làm việc thành công',
+                                type: 'success'
+                            });
+                            Paginglv(typeshow);
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data,
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        function ImportKHModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function ImportKHModalConfirm()
+        {
+            var fileName = $('#frmImportPhienLvKH input[type=file]').val();
+            if (fileName != "") {
+                $('#frmImportPhienLvKH').submit();
+            }
+            else
+                alert("Bạn chưa chọn file excel !");
+        }
+
+        function ImportBSModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function ImportBSModalConfirm() {
+            var fileName = $('#frmImportPhienLvBS input[type=file]').val();
+
+            if ($("#NgayBoSung").val() == null || $("#NgayBoSung").val() == "")
+            {
+                alert("Bạn chưa chọn ngày bổ sung !");
+                return;
+            }
+
+            if (fileName == "") {
+                alert("Bạn chưa chọn file excel !");
+                return;
+            }
+
+            $('#frmImportPhienLvBS').submit();
+
+        }
+
+        function ImportDXModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function ImportDXModalConfirm() {
+            var fileName = $('#frmImportPhienLvDX input[type=file]').val();
+
+            if ($("#NgayDotXuat").val() == null || $("#NgayDotXuat").val() == "") {
+                alert("Bạn chưa chọn ngày đột xuất !");
+                return;
+            }
+
+            if (fileName == "") {
+                alert("Bạn chưa chọn file excel !");
+                return;
+            }
+
+            $('#frmImportPhienLvDX').submit();
+
+        }
+
+
+        function ShowWeekBack(btn)
+        {
+            typeshow = "TT";
+            $("#weekid").attr("data-week", typeshow);
+            $(".WeekButton").addClass("btn-primary");
+            $(".WeekButton").removeClass("btn-success");
+            $(btn).removeClass("btn-primary");
+            $(btn).addClass("btn-success");
+            $("#importkhtypeshow").val(typeshow);
+            $("#importbstypeshow").val(typeshow);
+            history.pushState({}, null, document.location.href.replace("?typeshow=TT", "").replace("?typeshow=TK", "").replace("?typeshow=", "") + "?typeshow=" + typeshow);
+            Paginglv(typeshow);
+        }
+
+        function ShowWeekToday(btn) {
+            typeshow = "";
+            $("#weekid").attr("data-week", typeshow);
+            $(".WeekButton").addClass("btn-primary");
+            $(".WeekButton").removeClass("btn-success");
+            $(btn).removeClass("btn-primary");
+            $(btn).addClass("btn-success");
+            $("#importkhtypeshow").val(typeshow);
+            $("#importbstypeshow").val(typeshow);
+            history.pushState({}, null, document.location.href.replace("?typeshow=TT", "").replace("?typeshow=TK", "").replace("?typeshow=", ""));
+            Paginglv(typeshow);
+        }
+
+        function ShowWeekNext(btn) {
+            typeshow = "TK";
+            $("#weekid").attr("data-week", typeshow);
+            $(".WeekButton").addClass("btn-primary");
+            $(".WeekButton").removeClass("btn-success");
+            $(btn).removeClass("btn-primary");
+            $(btn).addClass("btn-success");
+            $("#importkhtypeshow").val(typeshow);
+            $("#importbstypeshow").val(typeshow);
+            history.pushState({}, null, document.location.href.replace("?typeshow=TT", "").replace("?typeshow=TK", "").replace("?typeshow=", "") + "?typeshow=" + typeshow);
+            Paginglv(typeshow);
+        }
+
+        function initMultiSelect(isFilter) {
+            $('select.multiselect-add').multiselect({
+                includeSelectAllOption: false,
+                selectAllValue: 'select-all-value',
+                enableFiltering: isFilter,
+                enableCaseInsensitiveFiltering: isFilter,
+                filterPlaceholder: 'Tìm kiếm ...',
+                nonSelectedText: 'Check an option!',
+                numberDisplayed: 1,
+                maxHeight: 400,
+            });
+        }
+
+        function ReturnSelectionPosition() {
+            if (sourceIdName != null) {
+                $(".empdata").appendTo($(".empdataparent"));
+                sourceIdName = null;
+            }
+        }
+
+        function SetSelectionPosition(forParent) {
+            $("select.multiselect-add").html($("#" + sourceIdName).html());
+
+            $('select.multiselect-add').multiselect('destroy');
+
+            var isFilter = false;
+            if ($(forParent).find("textarea").attr("searchbox") == "1") {
+                isFilter = true;
+            }
+            initMultiSelect(isFilter);
+
+            $("select.multiselect-add").multiselect("clearSelection");
+
+            $(".empdata").appendTo($(forParent).find(".multiselect-wap"));
+            setTimeout(function () {
+                var attr = $(currentInputRuning).attr("dataempid");
+                //console.log(attr);
+                if (typeof attr !== typeof undefined && attr !== false) {
+                    var splitValue = $(currentInputRuning).attr("dataempid");
+                    $("select.multiselect-add").val(splitValue.split(','));
+                    $("select.multiselect-add").multiselect("refresh");
+                }
+                $(".multiselect-wap .btn-group").addClass("open");
+                $(".multiselect-wap .btn-default").attr("aria-expanded", "true");
+            }, 300);
+        }
+
+        var currentInputRuning = null;
+        var sourceIdName = null;
+
+        $(document).on("focus", ".NguoiDuyet_SoPa_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiChiHuy_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".GiamSatVien_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiKiemSoat_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiKiemTraPhieu_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".LanhDaoTrucBan_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+         $(document).on("focus", ".LanhDaoCongViec_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+         });
+
+         $(document).on("focus", ".NguoiCapPhieu_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".PhieuLenh_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".CatDien_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".TiepDia_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".TinhChat_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".PhongBan_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("chosen", ".multiselect-add" , function () {
+            console.log("chosen");
+            console.log($(this));
+        });
+
+        $(document).on("change", ".multiselect-add", function () {
+            var oldSelected = "";
+            var arrayOld = null;
+            if ($(currentInputRuning).attr("dataempid")) {
+                console.log($(currentInputRuning).attr("dataempid"));
+                oldSelected = $(currentInputRuning).attr("dataempid");
+                arrayOld = oldSelected.split(",");
+            } else {
+                arrayOld = [];
+            }
+            $(currentInputRuning).val('');
+            $(currentInputRuning).attr("dataempid", '');
+
+            if ($(this).parents("td").attr("onlyone") == "1") {
+                console.log("onlyone");
+                if ($(this).closest('select').find('option').filter(':selected').length > 0) {
+                    var arrayNew = $(this).val();
+                    var latest_value = "";
+                    var latest_text = "";
+
+                    var diffItem = [];
+
+                    jQuery.grep(arrayNew, function (el) {
+                        if (jQuery.inArray(el, arrayOld) == -1) diffItem.push(el);
+                    });
+
+                    console.log("arrayOld " + arrayOld);
+                    console.log("arrayNew " + arrayNew);
+                    console.log("diff " + diffItem);
+
+                    var latest_value = "";
+                    var latest_text = "";
+                    if (diffItem != null && diffItem.length > 0) {
+                        latest_value = diffItem[0];
+                        latest_text = $(".multiselect-add").find("option[value = '" + latest_value + "']").text();
+                    }
+
+                    if (latest_value != "undefined") {
+                        console.log("set onlyone");
+                        $(currentInputRuning).val(latest_text);
+                        $(currentInputRuning).attr("dataempid", latest_value);
+
+                        $("select.multiselect-add").val(latest_value);
+                        $("select.multiselect-add").multiselect("refresh");
+                    }
+                }
+            } else {
+                var newSelect = $(this).val();
+                if (newSelect != null) {
+                    var indexEmp = 0;
+                    $(newSelect).each(function (eachIndex, curVal) {
+                        var textSelect = $(".multiselect-add").find("option[value = '" + curVal + "']").text();
+                        console.log(textSelect);
+                        if (indexEmp == 0) {
+                            console.log(textSelect);
+                            $(currentInputRuning).val(textSelect);
+                            $(currentInputRuning).attr("dataempid", curVal);
+                        } else {
+                            var oldValue = $(currentInputRuning).val();
+                            $(currentInputRuning).val(oldValue + ", " + textSelect);
+                            $(currentInputRuning).attr("dataempid", $(currentInputRuning).attr("dataempid") + "," + curVal);
+                        }
+                        indexEmp++;
+                    });
+                }
+            }
+
+        });
+
+        $(document).on("click", ".fulltable", function () {
+            $(".table-responsive").addClass("wap-scroll");
+            $("body").addClass("body-scoll-none");
+            $(".nonetable").removeClass("hide");
+        });
+
+        $(document).on("click", ".nonetable", function () {
+            $(".table-responsive").removeClass("wap-scroll");
+            $("body").removeClass("body-scoll-none");
+            $(".fulltable").removeClass("hide");
+            $(this).addClass("hide");
+        });
+
+        function ControllScrollLeft() {
+            $("#scrollbottom").scrollLeft(0);
+        }
+        function ControllScrollRight() {
+            $("#scrollbottom").scrollLeft(2600);
+        }
+
+        function GuiLaiModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function GuiLaiModalConfirm() {
+            if (IdGuiLai != "") {
+
+                loading('Đang xử lý...', 1);
+
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/GuiLaiPhienLv',
+                    data:
+                    {
+                        "Id": IdGuiLai
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+
+                    },
+                    success: function (data) {
+                        unloading();
+                        if (data.success) {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+
+                            Paginglv(typeshow);
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không thể duyệt phiên làm việc này',
+                            type: 'error'
+                        });
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        function ExpandCollapseRow(elementClass, obj) {
+            if ($(obj).attr("rowhide") != "1") {
+                $(obj).attr("rowhide", "1");
+                $(obj).find(".btn").removeClass("fa-compress");
+                $(obj).find(".btn").addClass("fa-expand");
+                $(obj).attr("title", "Mở rộng ra");
+
+                $("." + elementClass).hide();
+            } else {
+                $(obj).attr("rowhide", "0");
+                $(obj).find(".btn").addClass("fa-compress");
+                $(obj).find(".btn").removeClass("fa-expand");
+                $(obj).attr("title", "Thu gọn lại");
+
+                $("." + elementClass).show();
+            }
+        };
+
+    </script>
+}
+<div style="display:none" class="mytemp">
+    <div class="empdataparent">
+        <div class="empdata">
+            <select class="multiselect-add form-control" multiple="multiple" data-plugin-multiselect data-plugin-options='{ "enableCaseInsensitiveFiltering": true }'>
+                <optgroup label="Nhân viên">
+                    <option value="0">Tên Nhân Viên</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+
+    <div id="listnguoiduyet">
+        <optgroup label="Người duyệt phương án">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiDuyetChucNang" });}
+        </optgroup>
+    </div>
+    <div id="listphutrachduyet">
+        <optgroup label="Người phụ trách duyệt">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiKiemTra" });}
+        </optgroup>
+    </div>
+    <div id="listchihuytructiep">
+        <optgroup label="Người chỉ huy trực tiếp">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "ChiHuyTrucTiep" });}
+        </optgroup>
+    </div>
+    <div id="listgiamsat">
+        <optgroup label="Người giám sát">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiGiamSat" });}
+        </optgroup>
+    </div>
+    <div id="listkiemsoat">
+        <optgroup label="Người cho phép">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiKiemSoatDonViCongTac" });}
+        </optgroup>
+    </div>
+    <div id="listkiemtraphieu">
+        <optgroup label="Người kiểm tra phiếu">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiKiemTra" });}
+        </optgroup>
+    </div>
+    <div id="listlanhdaotrucban">
+        <optgroup label="Lãnh đạo trực ban">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "LanhDaoDonViTrucBanKiemSoat" });}
+        </optgroup>
+    </div>
+
+    <div id="listlanhdaocongviec">
+        <optgroup label="Lãnh đạo công việc">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "LanhDaoCongViec" });}
+        </optgroup>
+    </div>
+    <div id="listnguoicapphieu">
+        <optgroup label="Người cấp phiếu">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiCapPhieu" });}
+        </optgroup>
+    </div>
+
+    <div id="listphieulenh">
+        <optgroup label="Phiếu/Lệnh công tác">
+            <option value="1">Phiếu công tác</option>
+            <option value="2">Lệnh công tác</option>
+        </optgroup>
+    </div>
+    <div id="listcatdien">
+        @if (listThuocTinhPhienLV3 != null && listThuocTinhPhienLV3.Count > 0)
+        {
+            <optgroup label="Trạng thái cắt điện">
+                @foreach (var item in listThuocTinhPhienLV3)
+                {
+                    <option value="@(item.Id)">@(item.TenThuocTinh)</option>
+                }
+            </optgroup>
+        }
+    </div>
+    <div id="listtiepdia">
+        @if (listThuocTinhPhienLV4 != null && listThuocTinhPhienLV4.Count > 0)
+        {
+            <optgroup label="Trạng thái tiếp địa">
+                @foreach (var item in listThuocTinhPhienLV4)
+                {
+                    <option value="@(item.Id)">@(item.TenThuocTinh)</option>
+                }
+            </optgroup>
+        }
+    </div>
+    <div id="listtinhchat">
+        @if (listThuocTinhPhienLV5 != null && listThuocTinhPhienLV5.Count > 0)
+        {
+            <optgroup label="Tính chất khác">
+                @foreach (var item in listThuocTinhPhienLV5)
+                {
+                    <option value="@(item.Id)">@(item.TenThuocTinh)</option>
+                }
+            </optgroup>
+        }
+    </div>
+    <div id="listphongban">
+        @{
+
+            @*if (User.IsInRole("Leader"))
+            {
+                var phongBanRepository = new ECP_V2.Business.Repository.PhongBanRepository();
+                var phongBan = phongBanRepository.GetById(phongBanId);
+
+                <optgroup label="Đơn vị làm công việc">
+                    @if (phongBan != null)
+                    {
+                        <option value="@(phongBan.Id)">@(phongBan.TenPhongBan)</option>
+                    }
+                </optgroup>
+            }
+            else
+            {
+
+            }*@
+            List<ECP_V2.DataAccess.tblPhongBan> listPhongBan = ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtmlCustom(donViID);
+            List<ECP_V2.DataAccess.tblPhongBan> listPhongBanBenNgoai = ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtmlBenNgoai(donViID);
+
+            <optgroup label="Đơn vị làm công việc">
+                @if (listPhongBan != null)
+                {
+                    foreach (var item in listPhongBan)
+                    {
+                        <option value="@(item.Id)">@(item.TenPhongBan)</option>
+                    }
+                }
+            </optgroup>
+            <optgroup label="Đơn vị bên ngoài">
+                @if (listPhongBanBenNgoai != null)
+                {
+                    foreach (var item in listPhongBanBenNgoai)
+                    {
+                        <option value="@(item.Id)">@(item.TenPhongBan)</option>
+                    }
+                }
+            </optgroup>
+        }
+    </div>
+</div>

@@ -1,0 +1,377 @@
+﻿@model ECP_V2.Business.Repository.PhienLVModel
+
+@{
+    ViewBag.Title = "Chi tiết phiên làm việc";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@if (Model == null || Model.Id == 0)
+{
+    <h2>Phiên làm việc không tồn tại!</h2>
+}
+else
+{
+
+    var tinhChatPhienRepository = new ECP_V2.Business.Repository.TinhChatPhienRepository();
+
+    <h2>Phiên làm việc: @(Model.NoiDung)</h2>
+
+    <div class="col-md-7">
+        <h4></h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                Loại công việc
+            </dt>
+
+            <dd>
+                @tinhChatPhienRepository.GetById(Model.TT_Phien).Name
+            </dd>
+            <dt>
+                Đơn vị làm công việc
+            </dt>
+
+            <dd>
+                @Model.TenPhongBan
+            </dd>
+
+            <dt>
+                Nội dung công việc
+            </dt>
+
+            <dd>
+                @Model.NoiDung
+            </dd>
+
+            <dt>
+                Địa điểm (vị trí) công tác
+            </dt>
+
+            <dd>
+                @Model.DiaDiem
+            </dd>
+
+            <dt>
+                Ngày làm việc
+            </dt>
+
+            <dd>
+                @(Model.NgayLamViec.ToString("dd/MM/yyyy"))
+            </dd>
+
+            <dt>
+                Giờ bắt đầu
+            </dt>
+
+            <dd>
+                @if (Model.GioBd != null)
+                {
+                    if (Model.GioBd.Date != Model.GioKt.Date)
+                    {
+                        @Html.Raw(string.Format("{0:dd/MM/yyyy HH:mm:ss}", Model.GioBd))
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Format("{0:HH:mm}", Model.GioBd))
+                    }
+                }
+
+            </dd>
+
+            <dt>
+                Giờ kết thúc
+            </dt>
+
+            <dd>
+                @if (Model.GioKt != null)
+                {
+                    if (Model.GioBd.Date != Model.GioKt.Date)
+                    {
+                        @Html.Raw(string.Format("{0:dd/MM/yyyy HH:mm:ss}", Model.GioKt))
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Format("{0:HH:mm}", Model.GioKt))
+                    }
+                }
+            </dd>
+
+            <dt>
+                Số phiếu công tác / lệnh công tác
+            </dt>
+
+            <dd>
+                @if (Model.MaPCT != null)
+                {
+                    var phieuCongTacRepository = new ECP_V2.Business.Repository.PhieuCongTacRepository();
+                    var phieu = phieuCongTacRepository.GetById(Model.MaPCT);
+
+                    if (phieu != null && !string.IsNullOrEmpty(phieu.SoPhieu))
+                    {
+                        @Html.Raw(phieu.SoPhieu)
+                    }
+                    else
+                    {
+                        @Html.Raw("Chưa có")
+                    }
+                }
+            </dd>
+
+            <hr />
+            <dt>
+                Người duyệt phương án
+            </dt>
+
+            <dd>
+                @(Model.NguoiDuyet_SoPa)
+            </dd>
+
+            <dt>
+                Người chỉ huy trực tiếp
+            </dt>
+
+            <dd>
+                @(Model.NguoiChiHuy)
+            </dd>
+
+            <dt>
+                Người giám sát ATĐ
+            </dt>
+
+            <dd>
+                @(Model.GiamSatVien)
+            </dd>
+
+            <dt>
+                Người cho phép
+            </dt>
+
+            <dd>
+                @(Model.NguoiKiemSoat)
+            </dd>
+
+            <dt>
+                Người kiểm tra PCT; PTT; LCT
+            </dt>
+
+            <dd>
+                @(Model.NguoiKiemTraPhieu)
+            </dd>
+
+            <dt>
+                Lãnh đạo đơn vị kiểm tra kiểm soát
+            </dt>
+
+            <dd>
+                @(Model.LanhDaoTrucBan)
+            </dd>
+            <hr />
+            <dt>
+                Ngày tạo
+            </dt>
+
+            <dd>
+                @(Model.NgayTao.Value.ToString("HH:mm dd/MM/yyyy"))
+            </dd>
+
+            <dt>
+                Người tạo
+            </dt>
+
+            <dd>
+                @(Model.NguoiTao)
+            </dd>
+
+            <dt>
+                Ngày sửa
+            </dt>
+
+            <dd>
+                @(Model.NgaySua != null ? Model.NgaySua.Value.ToString("HH:mm dd/MM/yyyy") : "")
+            </dd>
+
+            <dt>
+                Người sửa
+            </dt>
+
+            <dd>
+                @(Model.NguoiSua)
+            </dd>
+
+            <dt>
+                Người duyệt phương án
+            </dt>
+
+            <dd>
+                @(Model.NguoiDuyet)
+            </dd>
+
+            <dt>
+                Ngày duyệt
+            </dt>
+
+            <dd>
+                @(Model.NgayDuyet != null ? Model.NgayDuyet.Value.ToString("HH:mm dd/MM/yyyy") : "")
+            </dd>
+
+            <dt>
+                Ngày kết thúc
+            </dt>
+
+            <dd>
+                @(Model.NgayKetThuc != null ? Model.NgayKetThuc.Value.ToString("HH:mm dd/MM/yyyy") : "")
+            </dd>
+
+            <dt>
+                Người kết thúc
+            </dt>
+
+            <dd>
+                @(Model.NguoiKetThuc)
+            </dd>
+
+            <dt>
+                Kết thúc bằng máy tính
+            </dt>
+
+            <dd>
+                @if (Model.NgayKetThuc != null)
+                {
+                    <input type="checkbox" @(Model.IsEndByWeb.GetValueOrDefault() ? "checked" : "") />
+                }
+            </dd>
+
+            <dt>
+                Lý do thay đổi
+            </dt>
+
+            <dd>
+                @(Model.LyDoThayDoi)
+            </dd>
+            <hr />
+            <br />
+            <dt>
+                <a href="/Admin/PhienLV/LapLichLamViec">Lập lịch làm việc</a>
+            </dt>
+
+            <dd>
+                <strong><a href="/Admin/PhienLV/Index">Danh sách phiên làm việc</a></strong>
+            </dd>
+        </dl>
+    </div>
+
+    <div class="col-md-5">
+        @if (ViewBag.TaiLieuList != null)
+        {
+            IEnumerable<ECP_V2.DataAccess.plv_TaiLieu> taiLieuList = (IEnumerable<ECP_V2.DataAccess.plv_TaiLieu>)ViewBag.TaiLieuList;
+
+            <hr />
+            <h4>Danh sách tài liệu đính kèm</h4>
+
+            foreach (var item in taiLieuList)
+            {
+                <a href="@item.URL" title="@item.Ten" target="_blank"><span class="fa fa-download"></span> @item.Ten</a><br />
+            }
+        }
+
+
+        @if (ViewBag.PhienLVNhatKy != null)
+        {
+            var phienLVNhatKy = (IEnumerable<ECP_V2.DataAccess.tblPhienLamViec_NhatKy>)ViewBag.PhienLVNhatKy;
+            var nhanVienRepository = new ECP_V2.Business.Repository.NhanVienRepository();
+
+            <hr />
+            <h4>Nhật ký phiên làm việc</h4>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Ngày tạo</th>
+                    @*<th>Trạng thái cũ</th>
+                        <th>Trạng thái mới</th>*@
+                    <th>Ghi chú</th>
+                    <th>Người tạo</th>
+                </tr>
+
+                @foreach (var item in phienLVNhatKy)
+                {
+                    var user = nhanVienRepository.GetByUserName(item.NguoiTao);
+
+                    <tr>
+                        <td>@string.Format("{0: dd/MM/yyyy HH:mm:ss}", item.NgayTao)</td>
+                        <td>@item.GhiChu</td>
+                        @*@if (item.TrangThaiCu == 1)
+                            {
+                                <td>Vừa tạo</td>
+                            }
+                            else if (item.TrangThaiCu == 2)
+                            {
+                                <td>Đã duyệt</td>
+                            }
+                            else if (item.TrangThaiCu == 3)
+                            {
+                                <td>Đã xong</td>
+                            }
+                            else if (item.TrangThaiCu == 5)
+                            {
+                                <td>Chuyển hoàn</td>
+                            }
+                            else if (item.TrangThaiCu == 6)
+                            {
+                                <td>Đã xóa</td>
+                            }
+                            else if (item.TrangThaiCu == 7)
+                            {
+                                <td>Hủy bỏ</td>
+                            }
+
+                            @if (item.TrangThaiMoi == 1)
+                            {
+                                <td>Vừa tạo</td>
+                            }
+                            else if (item.TrangThaiMoi == 2)
+                            {
+                                <td>Đã duyệt</td>
+                            }
+                            else if (item.TrangThaiMoi == 3)
+                            {
+                                <td>Đã xong</td>
+                            }
+                            else if (item.TrangThaiMoi == 5)
+                            {
+                                <td>Chuyển hoàn</td>
+                            }
+                            else if (item.TrangThaiMoi == 6)
+                            {
+                                <td>Đã xóa</td>
+                            }
+                            else if (item.TrangThaiMoi == 7)
+                            {
+                                <td>Hủy bỏ</td>
+                            }*@
+
+                        @if (user != null)
+                        {
+                            <td>@user.TenNhanVien</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
+                    </tr>
+                }
+
+            </table>
+        }
+
+    </div>
+}
+<style>
+    .content-body {
+        background: #fff;
+    }
+
+    dt, dd {
+        line-height: 23px;
+    }
+</style>

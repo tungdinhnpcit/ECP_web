@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Danh sách tổng hợp báo cáo cuối ngày
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                @*<div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-2 col-md-2">
+                            @{ Html.RenderAction("GetDropDownListPageSize", "SystemConfig", new { area = "Admin" }); }
+                        
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                </div>*@
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "BaoCaoTongHop", new { @*page = 1, pageSize = 10, filter = ""*@ });}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

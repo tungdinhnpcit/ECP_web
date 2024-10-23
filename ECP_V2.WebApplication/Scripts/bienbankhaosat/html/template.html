@@ -1,0 +1,180 @@
+﻿<div id="modal_addbbks" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title" id="titBBKS">Thêm mới biên bản khảo sát hiện trường</h4>
+            </div>
+            <div class="modal-body">
+                <span> Tên biên bản</span>
+                <input type="text" id="txtten" />
+                <button id="btnAdd" onclick="model_bbks.addbienban()">Thêm</button>
+                <button id="btnEdit" onclick="model_bbks.editbienban()">Lưu</button>
+                <input type="hidden" id="id_bbks" name="id_bbks" value="0">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal_vitriBBKS" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm vị trí vào biên bản</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="txtvitri">Vị trí</label>
+                    <input type="text" class="form-control" id="txtvitri" placeholder="Nhập vị trí hoặc chọn liên kết từ PMIS">
+                    <button type="button" onclick="model_bbks.gettreepmis()" style="margin:5px" class="btn btn-primary">Chọn vị trí PMIS</button>
+                    <label id="lblidpmis" style="color:red" />
+                </div>
+                <div class="form-group">
+                    <label for="txtnoidung">Loại công việc</label>
+                    <input type="text" class="form-control" id="txtloaicv" placeholder="Nhập loại công việc">
+                </div>
+                <div class="form-group">
+                    <label for="txtnoidung">Nội dung công việc</label>
+                    <input type="text" class="form-control" id="txtnoidungcv" placeholder="Nhập nội dung công việc">
+                </div>
+                <div class="form-group">
+                    <label for="txtnoidung">Phương án thực hiện</label>
+                    <input type="text" class="form-control" id="txtphuonganth" placeholder="Nhập phương án thực hiện">
+                </div>
+                <div class="form-group">
+                    <label for="txtnoidung">Biện pháp an toàn</label>
+                    <input type="text" class="form-control" id="txtbienphapat" placeholder="Nhập biện pháp an toàn">
+                </div>
+                <div class="form-group">
+                    <!--<label class="col-xs-2 control-label" for="txtcancu">
+                        Công cụ dụng cụ
+                    </label>-->
+                    <div class="col-xs-10">
+                        <table id="tblkq_vattu" class="table table-striped table-bordered table-hover" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">
+                                        Mã CCDC
+                                    </th>
+                                    <th style="width: 30%">
+                                        Tên CCDC
+                                    </th>
+                                    <th style="width: 10%">
+                                        Số lượng
+                                    </th>                                    
+                                    <th style="width: 10%">
+                                        Năm SX
+                                    </th>                                    
+                                    <th style="width: 10%">
+                                        Chọn
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xs-2">
+                        <button class="btn-vbdi-grey" type="button" onclick="model_bbks.chonCCDC()">
+                            <i class="ace-icon fa fa-floppy-o bigger-120"></i>Chọn
+                        </button>
+                    </div>
+                    <!--<label for="txtcongcudc">Công cụ dụng cụ</label>
+                                    <input type="text" class="form-control" id="txtcongcudc" placeholder="Chọn công cụ dụng cụ">
+                                    <button type="button" onclick="model_bbks.chonCCDC()" style="margin:5px" class="btn btn-primary">Chọn CCDC</button>
+                                    <label id="lblidccdc" style="color:red" />
+                                    <label for="txtnoidung">Công cụ dụng cụ</label>
+                    <input type="text" class="form-control" id="txtcongcudc" placeholder="Nhập công cụ dụng cụ">-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="model_bbks.addvitri()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_treepmis" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Cây vị trí PMIS</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" placeholder="Tìm kiếm" id="txttreesearch" class="form-control search-query" style="width: 99%; margin:10px" />
+                <div style="max-height: 550px; overflow-y: auto;" id="tree">
+                </div>
+
+                <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" onclick="modal_treepmis.chon()">
+                    <i class="fa fa-check-circle"></i> &nbsp; Chọn
+                </a>
+                <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" onclick="modal_treepmis.huy()">
+                    <i class="fa fa-check-circle"></i> &nbsp; Hủy
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_viewvitriBBKS" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Xem vị trí vào biên bản</h4>
+            </div>
+            <div class="modal-body">
+                <table id="tblvattu" class="table table-striped table-bordered table-hover" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">Mã vị trí</th>
+                            <th style="width: 20%">Tên vị trí</th>
+                            <th style="width: 15%">Nội dung</th>
+                            <th style="width: 15%">Phương án TH</th>
+                            <th style="width: 10%">Biện pháp AT</th>
+                            <th style="width: 10%">Công cụ DC</th>
+                            <th style="width: 10%">Chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="model_bbks.deletevitri()">Xóa vị trí</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_viewCCDC" class="modal bs-example-modal-xs" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm công cụ dụng cụ</h4>
+            </div>
+            <div class="modal-body">
+                <table id="tblccdc" class="table table-striped table-bordered table-hover" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">Mã CCDC</th>
+                            <th style="width: 20%">Tên CCDC</th>
+                            <th style="width: 15%">Năm SX</th>
+                            <th style="width: 10%">Chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal" onclick="model_bbks.okccdc()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</div>

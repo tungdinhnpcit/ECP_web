@@ -1,0 +1,103 @@
+﻿@if (ViewBag.NoScript == null)
+{
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+}
+@if (Request.IsAuthenticated)
+{
+    ECP_V2.Business.Repository.NhanVienRepository nhanVienRepository = new ECP_V2.Business.Repository.NhanVienRepository();
+    ECP_V2.DataAccess.tblNhanVien user = null;
+
+    try
+    {
+        user = nhanVienRepository.GetByUserName(User.Identity.Name);
+    }
+    catch
+    {
+        user = null;
+    }
+
+    if (user != null)
+    {
+        <div id="userbox" class="userbox">
+            <a href="#" data-toggle="dropdown">
+                <figure class="profile-picture">
+                    @*<img src="@(string.IsNullOrEmpty(user.UrlImage) ? "/Content/Customs/icon-user-default.png" : user.UrlImage)" alt="abc" class="img-circle" data-lock-picture="@user.UrlImage" />*@
+                    <img src="/Content/Customs/icon-user-default.png" alt="abc" class="img-circle" data-lock-picture="/Content/Customs/icon-user-default.png" />
+                </figure>
+                <div class="profile-info" data-lock-name="@User.Identity.Name" data-lock-email="@user.Email">
+                    <span class="role">@user.TenNhanVien</span>
+                </div>
+                <i class="fa custom-caret"></i>
+            </a>
+
+            <div class="dropdown-menu">
+                <ul class="list-unstyled">
+                    <li class="divider"></li>
+                    <li>
+                        <a role="menuitem" tabindex="-1" href="@Url.Action("ChiTiet","TaiKhoan",new { Area = "Admin", id = user.Id})"><i class="fa fa-user"></i> Hồ sơ của bạn</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ChangePassword", "Manage",new { Area = "" })"><i class="fa fa-lock"></i>Đổi mật khẩu</a>
+                    </li>
+                    @*<li>
+                            <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Khóa màn hình</a>
+                        </li>*@
+                    <li>
+                        @using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm" }))
+                        {
+                            try
+                            {
+                                @Html.AntiForgeryToken()
+                            }
+                            catch
+                            {
+                            }
+                            <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-power-off"></i>Đăng xuất</a>
+                        }
+                        @*<a role="menuitem" tabindex="-1" href="@Url.Action("LogOff","Account",new { Area = "" })"><i class="fa fa-power-off"></i> Đăng xuất</a>*@
+                    </li>
+                    <li>
+                        <a onclick="ClearCache()"><i class="fa fa-trash"></i> Xóa Cache</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p>Chưa đăng nhập!</p>
+}
+
+<script>
+    function ClearCache() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/ClearCache",
+            dataType: "json",
+            success: function (json) {
+                if (json.type === "success") {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'success'
+                    });
+                }
+                else {
+                    new PNotify({
+                        title: 'Cảnh báo',
+                        text: json.mess,
+                    });
+                }
+            },
+            error: function () {
+                new PNotify({
+                    title: 'Cảnh báo',
+                    text: 'Có lỗi xảy ra khi xóa !'
+                });
+            }
+        });
+    }
+
+</script>

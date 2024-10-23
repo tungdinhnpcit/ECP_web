@@ -1,0 +1,191 @@
+﻿@using System.Globalization
+@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = ViewBag.ViewTitle;
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var year = DateTime.Now.Year;
+    var quarter = (DateTime.Now.Month + 2) / 3;
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+@section ScriptSignalR{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+    <script src="~/Content/admin/pctt_ThietBi/index.js"></script>
+    <script>
+        var tbObj = new tbController();
+        tbObj.initialize();
+    </script>
+}
+
+<style>
+    .listRolesName table thead th {
+        padding-left: 8px;
+        padding-right: 8px !important;
+    }
+
+    .nd-isNPC {
+        background-color: antiquewhite !important
+    }
+</style>
+
+<input type="hidden" id="hidType" value="@Model" />
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks" style="margin-right:20px"></span>@ViewBag.ViewTitle
+                <span id="lblChuyenNPC" style="margin:0px 20px"></span>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline row">
+                    <div class="col-sm-12 col-md-3">
+                        <span>Chọn đơn vị</span>
+                        <br />
+                        <select class="form-control" id="ddlDonVi" style="height:38px">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        <span>Chọn năm: &nbsp;</span>
+                        <br />
+                        <select class="form-control" id="ddlYear" style="height:38px">
+                            @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 4; i--)
+                            {
+                                <option value="@i" @(i == DateTime.Now.Year ? " selected='selected'" : "")>Năm @i</option>
+                            }
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <span>Nhập từ khóa: &nbsp;</span>
+                        <br />
+                        <div class="input-group mb-md">
+                            <input type="text" id="txtKeyword" class="form-control" placeholder="Tìm kiếm...">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" id="btnSearch">Tìm kiếm</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4" style="padding-top: 10px">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" id="btnExport" style="height:38px; float:right; margin-left:15px"><i class="fa fa-file-excel-o" aria-hidden="true" style="margin-right:5px"></i>Xuất báo cáo</button>
+                            @if (User.IsInRole("DuyetNPC"))
+                            {
+                                <button type="button" class="btn btn-success" id="btnChuyenNPC" style="height:38px; float:right; margin-left:15px"><i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="margin-right:5px"></i>Chuyển Tổng công ty</button>
+                            }
+
+                            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                            {
+                                <button type="button" class="btn btn-primary" id="btn-add-tb" style="height:38px; float:right; margin-left:15px"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-right:5px"></i>Thêm thiết bị</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-primary" id="btn-add-tb" style="height:38px; float:right; margin-left:15px"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-right:5px"></i>Thêm thiết bị</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-striped table-bordered table-hover dataTables-example" id="table-hl">
+                            <thead>
+                                <tr class="gradeX">
+                                    <th style="width:5%; text-align:center">STT</th>
+                                    <th style="width:25%; text-align:center">Tên, quy cách</th>
+                                    <th style="width:15%; text-align:center">Đơn vị tính</th>
+                                    <th style="width:15%; text-align:center">Số lượng</th>
+                                    <th style="width:15%; text-align:center">Nơi để</th>
+                                    <th style="width:15%; text-align:center">Ghi chú</th>
+                                    <th style="width:10%; text-align:center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-content">
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script id="template-tb" type="x-tmpl-mustache">
+    <tr class="gradeA pctt {{{IsNPC}}}" data-id="{{Id}}" style="height:60px;background-color:{{StatusColor}}">
+        <td class="tb-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="tb-tentb" style="text-align:left; vertical-align:middle">{{Ten}}</td>
+        <td class="tb-donvitinh" style="text-align:left; vertical-align: middle">{{DonViTinh}}</td>
+        <td class="tb-soluong" style="text-align:center; vertical-align:middle">{{SoLuong}}</td>
+        <td class="tb-noide" style="text-align:center; vertical-align:middle">{{NoiDe}}</td>
+        <td class="tb-ghichu" style="text-align:center; vertical-align:middle">{{GhiChu}}</td>
+        <td class="tb-function" style="text-align:center; vertical-align:middle">
+            @if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+            {
+                <a href="#" class="btn btn-sm btn-edit-tb" title="Sửa" style="font-size:18px;{{hidden}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-delete-tb" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hidden}}"><i class="fa fa-trash"></i></a>
+                <a href="#" class="btn btn-sm btn-save-tb" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-tb" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+            }
+            else
+            {
+                <a href="#" class="btn btn-sm btn-edit-tb" title="Sửa" style="font-size:18px;{{hidden}}"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="btn btn-sm btn-delete-tb" title="Xóa" data-id="{{Id}}" style="font-size:18px;{{hidden}}"><i class="fa fa-trash"></i></a>
+                <a href="#" class="btn btn-sm btn-save-tb" title="Lưu" style="font-size:18px;display:none"><i class="fa fa-floppy-o"></i></a>
+                <a href="#" class="btn btn-sm btn-cancel-tb" title="Hủy" style="font-size:18px;display:none"><i class="fa fa-ban"></i></a>
+            }
+        </td>
+    </tr>
+</script>
+
+<script id="template-add-tb" type="x-tmpl-mustache">
+    <tr class="gradeA pctt add-pctt" data-id="{{Id}}">
+        <td class="tb-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="tb-tentb" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{Ten}}" class="txt-tb-tentb form-control" placeholder="">{{Ten}}</textarea></td>
+        <td class="tb-donvitinh" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{DonViTinh}}" class="txt-tb-donvitinh form-control" placeholder="">{{DonViTinh}}</textarea></td>
+        <td class="tb-soluong" style="text-align:left; vertical-align: middle"><input type="number" min="0" value="{{SoLuong}}" class="txt-tb-soluong form-control" placeholder="" /></td>
+        <td class="tb-noide" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{NoiDe}}" class="txt-tb-noide form-control" placeholder="">{{NoiDe}}</textarea></td>
+        <td class="tb-ghichu" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{GhiChu}}" class="txt-tb-ghichu form-control" placeholder="">{{GhiChu}}</textarea></td>
+
+        <td class="nd-function" style="text-align:center;width:10%; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-tb" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-delete-add-tb" title="Xóa" style="font-size: 18px"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+</script>
+
+<script id="template-edit-tb" type="x-tmpl-mustache">
+    <tr class="gradeA pctt add-pctt" data-id="{{Id}}">
+        <td class="tb-stt" style="text-align:center; vertical-align:middle">{{STT}}</td>
+        <td class="tb-tentb" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{Ten}}" class="txt-tb-tentb form-control" placeholder="">{{Ten}}</textarea></td>
+        <td class="tb-donvitinh" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{DonViTinh}}" class="txt-tb-donvitinh form-control" placeholder="">{{DonViTinh}}</textarea></td>
+        <td class="tb-soluong" style="text-align:left; vertical-align: middle"><input type="number" min="0" value="{{SoLuong}}" class="txt-tb-soluong form-control" placeholder="" /></td>
+        <td class="tb-noide" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{NoiDe}}" class="txt-tb-noide form-control" placeholder="">{{NoiDe}}</textarea></td>
+        <td class="tb-ghichu" style="text-align:left; vertical-align: middle"><textarea rows="1" value="{{GhiChu}}" class="txt-tb-ghichu form-control" placeholder="">{{GhiChu}}</textarea></td>
+
+        <td class="nd-function" style="text-align:center;width:10%; vertical-align:middle">
+            <a href="#" class="btn btn-sm btn-save-tb" title="Lưu" style="font-size:18px"><i class="fa fa-floppy-o"></i></a>
+            <a href="#" class="btn btn-sm btn-cancel-tb" title="Hủy" data-id="{{Id}}" style="font-size: 18px"><i class="fa fa-ban"></i></a>
+        </td>
+    </tr>
+</script>

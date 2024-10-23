@@ -1,0 +1,348 @@
+﻿@{
+    ViewBag.Title = "Chỉ tiêu về số vụ sự cố trung, hạ áp theo loại";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Tổng số vụ sự cố trung hạ áp theo loại năm @string.Format("{0:yyyy}", DateTime.Now)
+            </div>
+            <div class="panel-title fulltable hide" style="position: absolute; top: 17px; right: 20px; cursor:pointer">
+                <span class="glyphicon glyphicon-fullscreen"></span>
+            </div>
+            <div class="panel-title nonetable hide" style="position: fixed; top: 0px; right: 18px; z-index: 99999999; cursor: pointer; color: #fff;">
+                <span class="glyphicon glyphicon-resize-small" style="background: red; display: block; height: 32px; width: 32px; padding: 6px;"></span>
+            </div>
+        </div>
+        <div class="panel-body pn">
+            <div id="msgNotification" style="width:100%;text-align:center;border:1px solid #ecedf0;padding:10px;margin-bottom:10px;display:none">
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification"] != null)
+                {
+                    <div id="NotificationBox2" class="@TempData["NotificationCSS"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification"])
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox1" class="@TempData["NotificationCSS3"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification3"])
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center">
+                @if (TempData["Notification2"] != null)
+                {
+                    <div id="NotificationBox3" class="@TempData["NotificationCSS2"]" style="display: block">
+                        <div style="width:400px; text-align:left; margin:0 auto">
+                            @Html.Raw(@TempData["Notification2"])
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline" style="">
+                    <div style="position:relative;width:150px;float:right">
+                        <span>Năm: </span>
+                        <input id="Date" type="text" style="width:80px">
+                    </div>
+                    <div class="col-md-8">
+                        <span>Loại: </span>
+                        <select id="ddlLoai" class="selectoption">
+                            <option value="-1">Khách hàng</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="table">
+
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer" style="text-align:right">
+            @if (User.IsInRole("ChiTieuCapDonVi") || User.IsInRole("ChiTieuCapCongTy"))
+            {
+                <button id="btnSave" onclick="Save()" class="btn btn-primary">Lưu</button>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="scrollbottom" style="overflow-x: scroll; overflow-y: hidden; height: 20px; width: 300px; position: fixed; bottom: 0px; right: 55px; background-color: #9E9E9E; border-radius: 6px; border: 1px solid #9E9E9E;">
+    <div id="scrollbottomcontent" style="height:23px; width:600px"></div>
+</div>
+
+
+
+<script>
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        $("#Date").kendoDatePicker({
+            start: "decade",
+            depth: "decade",
+            format: "yyyy",
+            value: new Date(),
+            change: onChange,
+        });
+
+        Paging();
+    });
+
+    function onChange() {
+        Paging();
+    }
+
+    $("#scrollbottom").scroll(function () {
+        var getRet = ($(this).scrollLeft() / 302) * 100;
+        yourFunction(getRet);
+    });
+
+    function yourFunction(retag) {
+        try {
+            $(".table-responsive").scrollLeft((2500 / 100) * retag);
+        } catch (e) {
+
+        }
+    }
+
+    function loading1(name, overlay) {
+        $('.body').append('<div id="overlay"></div><div id="preloader" style="height: 40px;">' + name + '..</div>');
+        if (overlay == 1) {
+            $('#overlay').css('opacity', 0.4).fadeIn(400, function () { $('#preloader').fadeIn(400); });
+            return false;
+        }
+        $('#preloader').fadeIn();
+    }
+
+    function unloading1() {
+        $('#preloader').fadeOut(400, function () { $('#overlay').fadeOut(); $(this).remove(); })
+    }
+
+
+    function Paging() {
+
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+
+        var scriptUrl = "/Admin/ChiTieuSoVuSuCoV2/ListDonViTheoLoai";
+        $.ajax({
+            type: "GET",
+            url: scriptUrl,
+            dataType: 'html',
+            async: true,
+            data: {
+                Date: $("#Date").val(),
+                Loai: $("#ddlLoai").val()
+            },
+            success: function (data) {
+                $('#table').html(data);
+
+                unloading1();
+            },
+            error: function () {
+                unloading1();
+            }
+        });
+
+    }
+
+    function Save() {
+
+        loading1('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading1();
+        })
+
+       var nam = $("#txtinputSuatNam").val();
+        var t1 = $("#txtinputSuatT1").val();
+        var t2 = $("#txtinputSuatT2").val();
+        var t3 = $("#txtinputSuatT3").val();
+        var t4 = $("#txtinputSuatT4").val();
+        var t5 = $("#txtinputSuatT5").val();
+        var t6 = $("#txtinputSuatT6").val();
+        var t7 = $("#txtinputSuatT7").val();
+        var t8 = $("#txtinputSuatT8").val();
+        var t9 = $("#txtinputSuatT9").val();
+        var t10 = $("#txtinputSuatT10").val();
+        var t11 = $("#txtinputSuatT11").val();
+        var t12 = $("#txtinputSuatT12").val();
+        var tong = parseInt(t1) + parseInt(t2) + parseInt(t3) + parseInt(t4) +
+            parseInt(t5) + parseInt(t6) + parseInt(t7) + parseInt(t8) + parseInt(t9)
+            + parseInt(t10) + parseInt(t11) + parseInt(t12);
+
+        if (tong > parseInt(nam)) {
+            unloading1();
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch tháng lớn hơn số lượng kế hoạch năm !',
+                type: 'error'
+            });
+        }
+        else if (tong == parseInt(nam)) {
+
+            SetSave();
+
+        }
+        else if (tong < parseInt(nam)) {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch tháng nhỏ hơn số lượng kế hoạch năm, bạn có chắc muốn lưu !',
+                type: 'error',
+                confirm: {
+                    confirm: true
+                },
+                buttons: {
+                    closer: false,
+                    sticker: false
+                },
+            }).get().on('pnotify.confirm', function () {
+
+                SetSave();
+
+            }).on('pnotify.cancel', function () {
+                unloading1();
+            });
+
+        }
+
+    }
+
+    function SetSave() {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/ChiTieuSoVuSuCoV2/SaveDonViTheoLoai",
+            dataType: "json",
+            data: {
+                Date: $("#Date").val(),
+                MaDV: $("#hidMaDV").val(),
+                Loai: $("#ddlLoai").val(),
+
+                SuatT1: $("#txtinputSuatT1").val(),
+                SuatT2: $("#txtinputSuatT2").val(),
+                SuatT3: $("#txtinputSuatT3").val(),
+                SuatT4: $("#txtinputSuatT4").val(),
+                SuatT5: $("#txtinputSuatT5").val(),
+                SuatT6: $("#txtinputSuatT6").val(),
+                SuatT7: $("#txtinputSuatT7").val(),
+                SuatT8: $("#txtinputSuatT8").val(),
+                SuatT9: $("#txtinputSuatT9").val(),
+                SuatT10: $("#txtinputSuatT10").val(),
+                SuatT11: $("#txtinputSuatT11").val(),
+                SuatT12: $("#txtinputSuatT12").val(),
+
+                IdT1: $("#hidIdT1").val(),
+                IdT2: $("#hidIdT2").val(),
+                IdT3: $("#hidIdT3").val(),
+                IdT4: $("#hidIdT4").val(),
+                IdT5: $("#hidIdT5").val(),
+                IdT6: $("#hidIdT6").val(),
+                IdT7: $("#hidIdT7").val(),
+                IdT8: $("#hidIdT8").val(),
+                IdT9: $("#hidIdT9").val(),
+                IdT10: $("#hidIdT10").val(),
+                IdT11: $("#hidIdT11").val(),
+                IdT12: $("#hidIdT12").val(),
+            },
+            success: function (json) {
+                if (json.type == "success") {
+                    $("#msgNotification").css("display", "block");
+                    $("#msgNotification").html(json.mess);
+                    Paging();
+                    unloading1();
+                }
+                else {
+                    $("#msgNotification").css("display", "block");
+                    $("#msgNotification").html(json.mess);
+                    unloading1();
+                }
+            },
+            error: function () {
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi lưu bản ghi',
+                    type: 'error'
+                });
+                unloading1();
+            }
+        });
+    }
+
+    function updatetotalkehoach() {
+        var nam = $("#txtinputSuatNam").val();
+        var t1 = $("#txtinputSuatT1").val();
+        var t2 = $("#txtinputSuatT2").val();
+        var t3 = $("#txtinputSuatT3").val();
+        var t4 = $("#txtinputSuatT4").val();
+        var t5 = $("#txtinputSuatT5").val();
+        var t6 = $("#txtinputSuatT6").val();
+        var t7 = $("#txtinputSuatT7").val();
+        var t8 = $("#txtinputSuatT8").val();
+        var t9 = $("#txtinputSuatT9").val();
+        var t10 = $("#txtinputSuatT10").val();
+        var t11 = $("#txtinputSuatT11").val();
+        var t12 = $("#txtinputSuatT12").val();
+        var tong = parseInt(t1) + parseInt(t2) + parseInt(t3) + parseInt(t4) +
+            parseInt(t5) + parseInt(t6) + parseInt(t7) + parseInt(t8) + parseInt(t9)
+            + parseInt(t10) + parseInt(t11) + parseInt(t12);
+        $("#lblTongKeHoach").html(tong);
+
+        if (parseInt(tong) > parseInt(nam)) {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch tháng lớn hơn số lượng kế hoạch năm !',
+                type: 'error'
+            });
+            return;
+        }
+    }
+
+    function updatetotal() {
+        var nam = $("#txtinputSuatNam").val();
+        var t1 = $("#txtinputSuatT1").val();
+        var t2 = $("#txtinputSuatT2").val();
+        var t3 = $("#txtinputSuatT3").val();
+        var t4 = $("#txtinputSuatT4").val();
+        var t5 = $("#txtinputSuatT5").val();
+        var t6 = $("#txtinputSuatT6").val();
+        var t7 = $("#txtinputSuatT7").val();
+        var t8 = $("#txtinputSuatT8").val();
+        var t9 = $("#txtinputSuatT9").val();
+        var t10 = $("#txtinputSuatT10").val();
+        var t11 = $("#txtinputSuatT11").val();
+        var t12 = $("#txtinputSuatT12").val();
+        var tong = parseInt(t1) + parseInt(t2) + parseInt(t3) + parseInt(t4) +
+            parseInt(t5) + parseInt(t6) + parseInt(t7) + parseInt(t8) + parseInt(t9)
+            + parseInt(t10) + parseInt(t11) + parseInt(t12);
+        $("#lblTongKeHoachDC").html(tong);
+
+        if (parseInt(tong) > parseInt(nam)) {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Tổng số lượng kế hoạch tháng lớn hơn số lượng kế hoạch năm !',
+                type: 'error'
+            });
+            return;
+        }
+    }
+
+</script>
+

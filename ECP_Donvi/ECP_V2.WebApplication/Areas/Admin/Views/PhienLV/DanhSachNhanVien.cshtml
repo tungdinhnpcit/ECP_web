@@ -1,0 +1,11 @@
+﻿@model List<ECP_V2.DataAccess.tblNhanVien>
+@{ 
+    Layout = null;
+}
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@(item.Id)" data-bat="@(item.BacAnToan)">@(item.TenNhanVien + (string.IsNullOrEmpty(item.SoDT) ? "" : " - " + item.SoDT))</option>
+    }
+}

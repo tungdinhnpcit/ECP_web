@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "DK_NHAN_DANG_ANH";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+
+<input type="text" value="@Session["UrlKTGS"]" id="UrlKTGS" style="display:none">
+
+<div class="panel-heading br-b-n">
+    <div class="panel-title hidden-xs">
+        <span class="glyphicon glyphicon-tasks"></span> Đăng ký khuân mặt AI
+    </div>
+
+    <div>
+        <label class="input-group-text" for="inputGroupSelect01">File Hình ảnh</label>
+    </div>
+    <div class="input-group mb-3">
+        <div>
+            <label class="input-group-text" for="inputGroupSelect01">Nội dung khắc phục:</label>
+        </div>
+        <div>
+            <input class="form-control" data-val="true" data-val-required="Tên loại không được để trống!" id="txtten" name="TenLoai" placeholder="Nhập tên nhân viên" type="text" value="">
+        </div>
+        <input type="file" accept="image/*" class="custom-file-input" multiple id="fileupload">
+        <div id="imgpreview">
+
+        </div>
+        <a onclick="ai_image.save()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Lưu</a>
+    </div>
+
+
+</div>
+<script>
+    var ai_image = {      
+        save: function () {
+            base= $('#UrlKTGS').val();
+            var formData = new FormData();
+            formData.append('username', '22');
+            formData.append('file', fileupload.files[0]);
+            $.ajax({
+                type: "Post",
+                url: base + "api/v1/AI/AIImage",
+                data: formData,                  
+                contentType: false,
+                processData: false
+            }).done(function (d) {
+                try {
+                    alert('Đăng ký thành công');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        },
+
+         init: function () {
+            fileupload.onchange = evt => {
+                const [file] = fileupload.files;
+                if (file) {
+                    var html = '';
+                    for (i = 0; i < fileupload.files.length; ++i) {
+                        html += '<img src=' + URL.createObjectURL(fileupload.files[i]) + ' style="height:110px;width:110px;margin:10px;border: 2px darkgray solid"/>'
+                    }
+                    $('#imgpreview').html(html);
+                    // blah.src = URL.createObjectURL(file)
+                }
+            }
+        },
+    }
+    ai_image.init();
+</script>
+
+@section scripts2 {
+
+
+
+}
+
+
+

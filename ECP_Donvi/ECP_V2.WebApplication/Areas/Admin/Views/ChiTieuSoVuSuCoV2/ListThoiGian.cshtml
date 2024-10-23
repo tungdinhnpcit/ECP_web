@@ -1,0 +1,643 @@
+﻿@model List<ECP_V2.WebApplication.Areas.Admin.Models.DonViChiTieuThoiGianSuCoViewModels>
+
+<div class="row">
+    <div class="pull-left" style="margin-top:10px;padding-left:5px">
+
+    </div>
+    <div class="pull-right">
+        @*@if (User.IsInRole("ChiTieuCapCongTy"))
+            {
+                if (Model.Count > 0 && ViewBag.NPCIsOpen != null && (bool)ViewBag.NPCIsOpen)
+                {
+                    <a href="#modalAnimLockAll" class="btn btn-danger btn-sm lockall"><i style="margin-right:5px" class="fa fa-lock"></i>Khóa tất cả</a>
+                    <a href="#modalAnimUnLockAll" class="btn btn-success btn-sm no-margin unlockall"><i style="margin-right:5px" class="fa fa-unlock"></i>Mở khóa tất cả</a>
+                }
+            }*@
+    </div>
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="block-fluid">
+            <div class="panel panel-visible">
+                <div class="panel-heading br-b-n">
+                    <div class="panel-title hidden-xs">
+                        <span class="glyphicon glyphicon-tasks"></span> @item.TEN_DVIQLY
+                    </div>
+                </div>
+                <div class="panel-body pn">
+                    <div class="table-responsive">
+                        <table cellspacing="0" id="dtGridHLLDCA" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+                            <thead>
+                                <tr>
+                                    <th style="vertical-align:middle" class="text-center"></th>
+                                    <th style="vertical-align:middle" class="text-center">T1</th>
+                                    <th style="vertical-align:middle" class="text-center">T2</th>
+                                    <th style="vertical-align:middle" class="text-center">T3</th>
+                                    <th style="vertical-align:middle" class="text-center">T4</th>
+                                    <th style="vertical-align:middle" class="text-center">T5</th>
+                                    <th style="vertical-align:middle" class="text-center">T6</th>
+                                    <th style="vertical-align:middle" class="text-center">T7</th>
+                                    <th style="vertical-align:middle" class="text-center">T8</th>
+                                    <th style="vertical-align:middle" class="text-center">T9</th>
+                                    <th style="vertical-align:middle" class="text-center">T10</th>
+                                    <th style="vertical-align:middle" class="text-center">T11</th>
+                                    <th style="vertical-align:middle" class="text-center">T12</th>
+                                    <th style="vertical-align:middle" class="text-center">Năm @(item.Nam == 0 ? DateTime.Now.Year : item.Nam)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Kế hoạch<br />phút/vụ
+                                        <input type="hidden" name="hidMaDV" id="hidMaDV_@Model.IndexOf(item)" value="@item.MA_DVIQLY" />
+                                        <input type="hidden" name="hidId" id="hidId_@Model.IndexOf(item)" value="@item.Id" />
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT1_@Model.IndexOf(item)" name="txtinputT1" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang1.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang1.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT2_@Model.IndexOf(item)" name="txtinputT2" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang2.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang2.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT3_@Model.IndexOf(item)" name="txtinputT3" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang3.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang3.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT4_@Model.IndexOf(item)" name="txtinputT4" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang4.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang4.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT5_@Model.IndexOf(item)" name="txtinputT5" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang5.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang5.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT6_@Model.IndexOf(item)" name="txtinputT6" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang6.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang6.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT7_@Model.IndexOf(item)" name="txtinputT7" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang7.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang7.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT8_@Model.IndexOf(item)" name="txtinputT8" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang8.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang8.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT9_@Model.IndexOf(item)" name="txtinputT9" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang9.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang9.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT10_@Model.IndexOf(item)" name="txtinputT10" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang10.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang10.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT11_@Model.IndexOf(item)" name="txtinputT11" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang11.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang11.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @*<div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                                <div class="input-group input-small">
+                                                    <input onkeyup="updatetotal()" id="txtinputT12_@Model.IndexOf(item)" name="txtinputT12" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.Thang12.GetValueOrDefault()">
+                                                    <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                        <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </button>
+                                                        <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <p>@string.Format("{0:#,0.##}", item.Thang12.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                                            <div class="input-group input-small">
+                                                <input onkeyup="updatetotal()" id="txtinputTBN_@Model.IndexOf(item)" name="txtinputTBN" type="text" onClick="this.select();" style="text-align:center;width:80px" class="spinner-input form-control" value="@item.TrungBinhNam.GetValueOrDefault()">
+                                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                                    <button type="button" class="btn spinner-up btn-xs btn-default">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <button type="button" class="btn spinner-down btn-xs btn-default">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Kế hoạch<br />phút/vụ sau điều chỉnh
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang1DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang2DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang3DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang4DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang5DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang6DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang7DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang8DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang9DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang10DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang11DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.Thang12DC.GetValueOrDefault())</p>
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        <p>@string.Format("{0:#,0.##}", item.TrungBinhNamDC.GetValueOrDefault())</p>
+                                    </td>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Thực hiện<br />phút/vụ
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT1
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT2
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT3
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT4
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT5
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT6
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT7
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT8
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT9
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT10
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT11
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THT12
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.THTBN
+                                    </td>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Kế hoạch<br />phút
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT1
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT2
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT3
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT4
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT5
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT6
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT7
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT8
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT9
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT10
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT11
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT12
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @string.Format("{0:#,0.##}", item.TGTBN)
+                                    </td>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Kế hoạch<br />phút sau điều chỉnh
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT1DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT2DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT3DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT4DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT5DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT6DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT7DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT8DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT9DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT10DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT11DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @item.TGT12DC
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @string.Format("{0:#,0.##}", item.TGTBNDC)
+                                    </td>
+                                </tr>
+                                <tr style="text-align:center">
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        Trạng thái khóa
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT1.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT2.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT3.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT4.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT5.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT6.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT7.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT8.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT9.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT10.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT11.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenT12.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align:middle;font-weight:bold">
+                                        @if (item.IsOpenNam.GetValueOrDefault())
+                                        {
+                                            <span style="color:green">Mở</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:darkred">Khóa</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    // Spinner
+    (function ($) {
+
+        'use strict';
+
+        if ($.isFunction($.fn['spinner'])) {
+
+            $(function () {
+                $('[data-plugin-spinner]').each(function () {
+                    var $this = $(this),
+                        opts = {};
+
+                    var pluginOptions = $this.data('plugin-options');
+                    if (pluginOptions)
+                        opts = pluginOptions;
+
+                    $this.themePluginSpinner(opts);
+                });
+            });
+
+        }
+
+        $('[data-plugin-spinner]').on('change', function () {
+            updatetotal();
+        });
+
+        $('a.lockall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+        });
+
+        $('a.unlockall').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+        });
+
+        updatetotal();
+
+    }).apply(this, [jQuery]);
+</script>
+

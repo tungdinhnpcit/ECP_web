@@ -1,0 +1,130 @@
+﻿
+
+<div id="modal_ds_ktgs" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="height: 750px;overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div style="overflow-y:auto">
+                    <table id="tblktgs_ctiet" class="dataTable table table-striped table-bordered table-hover" style="width:100%!important;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center">Mã biên bản</th>
+                                <th style="text-align: center">Loại biên bản</th>
+                                <th style="text-align: center">Địa điểm</th>
+                                <th style="text-align: center">Nội dung công việc</th>
+                                <th style="text-align: center">Tồn tại</th>
+                                <th style="text-align: center">Tình trạng khắc phục</th>
+                                <th style="text-align: center">Chi tiết</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_kptt" class="modal bs-example-modal-lg">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="height: 750px;overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div style="overflow-y:auto">
+
+                    <div>
+                        <label class="input-group-text" for="inputGroupSelect01">Nội dung khắc phục:</label>
+
+                    </div>
+                    <div>
+                        <input class="form-control" data-val="true" data-val-required="Tên loại không được để trống!" id="txtndkp" name="TenLoai" placeholder="Nhập nội dung khắc phục" type="text" value="">
+                     
+                    </div>
+                    <div>
+                        <label class="input-group-text" for="inputGroupSelect01">File đính kèm:</label>
+                    </div>
+                    <div class="input-group mb-3">
+                        
+                            <input type="file" accept="image/*" class="custom-file-input" multiple id="fileupload">
+                        <div id="imgpreview" >
+
+                        </div>   
+                        
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a onclick="modal_kptt.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_kptt.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script id="template_ktgs" type="text/x-handlebars-template">
+    <div class="modal-content" style="height: 750px;overflow-y: auto;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+            <div style="display:table">
+            </div>
+            <div class="row">
+                <div class="label label-lg label-info arrowed-in arrowed-right" style="width:98%" id="divthongtin">
+                    <b>Thông tin biên bản</b>
+                    <i class="ace-icon fa fa-chevron-down" style="margin-bottom:8px;margin-left:2px" id="morett"></i>
+                </div>
+                <div class="row" id="showtt">
+                    <div class="col-md-4">
+                        <b>Địa điểm:</b>
+                        <div> ${DiaDiem}</div>
+                        <b>Nội dung công việc:</b>
+                        <div> ${NoiDungCongViec}</div>
+                        <b>Ngày thực hiện:</b>
+                        <div> ${util.FormatDateToVn(ThoiGian)}</div>
+                        <b>Tinh trạng:</b>
+                        <div>
+                            {{if TINH_TRANG!='KT'}}
+                            Kết thúc
+                            {{else}}
+                            Còn tồn tại
+                            {{/if}}
+                        </div>
+                        <b>Khắc phục:</b>
+                        <div>
+                            ${Nd_Kphuc}
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="text-align:center">
+                        <img id="imglager" style="height:100%;width:100%" src="" />
+                    </div>
+                    <div class="col-md-2" id="groupimg">
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<div id="modal_ctbb" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" id="md_content_xlvb">
+
+
+    </div>
+</div>

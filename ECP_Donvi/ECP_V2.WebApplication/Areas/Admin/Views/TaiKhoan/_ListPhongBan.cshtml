@@ -1,0 +1,46 @@
+﻿@if (ViewBag.ListPhongBan != null)
+{
+    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPhongBan" })
+}
+else
+{
+    @*@Html.DropDownList(null, null, "Phòng ban chưa được tạo", new { @class = "form-control mb-md", @id = "drlPban" })*@
+    <p>Phòng ban chưa được tạo</p>
+}
+
+<script>
+    $(function(){
+        $("#drlPhongBan").change(function () {
+
+            var pageS = $("#drlPageSize").find("option:selected")
+            var selectDVi = $('#drlDonViId').val();
+
+            if (selectDVi.length > 0)
+            {
+                var selectPban = $('#drlPhongBan').val();
+
+                pageSize = pageS.val();
+                var page = 1;
+                if ($(".page-number-Current").html() != null)
+                    page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = null;
+
+                //var roleId = $('#drlRole').val();
+                var scriptUrl = "/Admin/TaiKhoan/List?page=" + page + "&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&currentFilter=" + currentSearh + "&PhongBanId=" + selectPban /*+ "&roleId=" + roleId*/ + "&DonViId=" + selectDVi;
+
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            }                     
+        });
+    });
+</script>

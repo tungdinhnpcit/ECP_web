@@ -1,0 +1,150 @@
+﻿@{ECP_V2.Business.Repository.LogsRepository lgr = new ECP_V2.Business.Repository.LogsRepository();
+try
+{
+    List<ECP_V2.DataAccess.Log> lgInfo = lgr.AdvancedSearchLogs(0, 10,"", "Info", "", "", Session["DonViID"].ToString());
+    List<ECP_V2.DataAccess.Log> lgError = lgr.AdvancedSearchLogs(0, 10,"", "Error", "", "", Session["DonViID"].ToString());
+    <!-- start: page -->
+    <div class="inner-toolbar clearfix">
+        <ul>
+            @*<li>
+                    <button type="button" class="btn btn-primary"><i class="fa fa-pause m-none"></i> Tạm Dừng</button>
+                </li>*@
+            <li class="right">
+                <ul class="nav nav-pills nav-pills-primary">
+                    <li>
+                        <label>Kiểu</label>
+                    </li>
+                    <li class="active">
+                        <a href="#custom-log" data-toggle="tab">Log Thông Tin</a>
+                    </li>
+                    <li>
+                        <a href="#error-log" data-toggle="tab">Log Lỗi</a>
+                    </li>
+                    <li>
+                        <a href="#access-log" data-toggle="tab">Ghi Chú Log</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <section class="panel" style="margin-top:30px">
+        <div class="panel-body tab-content">
+            <div id="custom-log" class="tab-pane active">
+                <table class="table table-striped table-no-more table-bordered  mb-none">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%"><span class="text-weight-normal text-sm">Kiểu</span></th>
+                            <th style="width: 15%"><span class="text-weight-normal text-sm">Ngày</span></th>
+                            <th><span class="text-weight-normal text-sm">Nội Dung</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="log-viewer">
+                        @foreach (var item in lgInfo)
+                        {
+                            <tr>
+                                <td data-title="Type" class="pt-md pb-md">
+                                    <i class="fa fa-info fa-fw text-info text-md va-middle"></i>
+                                    <span class="va-middle">Info</span>
+                                </td>
+                                <td data-title="Date" class="pt-md pb-md">
+                                    @string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.EventDateTime)
+                                </td>
+                                <td data-title="Message" class="pt-md pb-md">
+                                    @item.EventMessage
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div id="error-log" class="tab-pane">
+                <table class="table table-striped table-no-more table-bordered mb-none">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%"><span class="text-weight-normal text-sm">Kiểu</span></th>
+                            <th style="width: 15%"><span class="text-weight-normal text-sm">Ngày</span></th>
+                            <th><span class="text-weight-normal text-sm">Nội Dung</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="log-viewer">
+                        @foreach (var item in lgError)
+                        {
+                            <tr>
+                                <td data-title="Type" class="pt-md pb-md">
+                                    <i class="fa fa-times-circle fa-fw text-danger text-md va-middle"></i>
+                                    <span class="va-middle">Error</span>
+                                </td>
+                                <td data-title="Date" class="pt-md pb-md">
+                                    @string.Format("{0:dd/MM/yyyy HH:mm:ss}", @item.EventDateTime)
+                                </td>
+                                <td data-title="Message" class="pt-md pb-md">
+                                    @item.EventMessage
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div id="access-log" class="tab-pane">
+                <table class="table table-striped table-no-more table-bordered  mb-none">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%"><span class="text-weight-normal text-sm">Kiểu</span></th>
+                            <th><span class="text-weight-normal text-sm">Chú Thích</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="log-viewer">
+                        <tr>
+                            <td data-title="Type" class="pt-md pb-md">
+                                <i class="fa fa-bug fa-fw text-muted text-md va-middle"></i>
+                                <span class="va-middle">Debug</span>
+                            </td>
+                            <td data-title="Message" class="pt-md pb-md"></td>
+                        </tr>
+                        <tr>
+                            <td data-title="Type" class="pt-md pb-md">
+                                <i class="fa fa-info fa-fw text-info text-md va-middle"></i>
+                                <span class="va-middle">Info</span>
+                            </td>
+                            <td data-title="Message" class="pt-md pb-md">
+                                Thông tin
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-title="Type" class="pt-md pb-md">
+                                <i class="fa fa-warning fa-fw text-warning text-md va-middle"></i>
+                                <span class="va-middle">Warning</span>
+                            </td>
+                            <td data-title="Message" class="pt-md pb-md">
+                                Chú ý
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-title="Type" class="pt-md pb-md">
+                                <i class="fa fa-times-circle fa-fw text-danger text-md va-middle"></i>
+                                <span class="va-middle">Error</span>
+                            </td>
+                            <td data-title="Message" class="pt-md pb-md">
+                                Lỗi
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-title="Type" class="pt-md pb-md">
+                                <i class="fa fa-ban fa-fw text-danger text-md va-middle"></i>
+                                <span class="va-middle">Fatal</span>
+                            </td>
+                            <td data-title="Message" class="pt-md pb-md"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+	<!-- end: page -->
+}
+catch { }
+}
+
+
+

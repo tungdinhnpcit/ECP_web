@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "SCANPLV_DANG_ANH";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<h2>Điểm danh FaceID phiên làm việc</h2>
+
+
+
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+
+
+<div style="margin: 3px;">
+    <div style="display:inline">
+        <label class="input-group-text" for="inputGroupSelect01">Chọn đơn vị</label>
+    </div>
+    <select class="custom-select" id="cbodonvi">
+        <option selected value="-1">Tất cả</option>
+    </select>
+
+
+    <div style="display:inline">
+        <label class="input-group-text">Tháng</label>
+    </div>
+    <select class="custom-select" id="cbothang">
+        <option selected value="1">1</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Năm</label>
+    </div>
+    <select class="custom-select" id="cbonam">
+        <option selected value="2021">2021</option>
+        <option value="2022">2022</option>
+    </select>
+
+
+    <div style="display:inline">
+        <label class="input-group-text" >Khắc phục</label>
+    </div>
+  
+
+    <a onclick="aiplv.loaddata()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Tìm kiếm</a>    
+</div>
+
+<div>
+
+    <table id="tblaiplv" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+        <thead>
+            <tr>                
+                <th style="width: 25%">Nội dung thực hiện</th>
+                <th style="width: 25%">Vị trí thực hiện</th>
+                <th style="width: 25%">Ngày thực hiên</th>
+                <th style="width: 25%">Thao tác</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/aiplv.js"></script>
+}

@@ -1,0 +1,117 @@
+﻿@using ECP_V2.Common.Helpers
+
+@model ECP_V2.DataAccess.plv_ThuocTinhPhien
+@{
+    ViewBag.Title = "Thêm thuộc tính phiên";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        HttpMethod = "post",
+        OnComplete = "CompleteAjaxRequest"
+    };
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<script type="text/javascript">
+
+    function CompleteAjaxRequest(obj) {
+
+        var returnObj = eval('(' + obj.responseText + ')');
+
+        if (returnObj.Status == "success") {            
+            if (returnObj.Message != null) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Thêm thành công thuộc tính phiên',
+                    type: 'success'
+                });           
+                window.location.href = returnObj.RedirectUrl;
+            }
+            else if (returnObj.RedirectUrl != null) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Thêm thành công thuộc tính phiên',
+                    type: 'success'
+                });
+                window.location.href = returnObj.RedirectUrl;
+            }
+        } else {
+            new PNotify({
+                title: 'Thông báo lỗi!',
+                text: 'Không thêm được thuộc tính phiên: ' + returnObj.Message,
+                type: 'error'
+            });
+        }
+
+        return false;
+    };
+
+</script>
+<h1>
+    <a class="mb-xs mt-xs mr-xs btn btn-primary" href="@Url.Action("Index", "ThuocTinhPhien")">
+        <i class="fa fa-list"></i> &nbsp; Danh sách thuộc tính phiên
+    </a>
+</h1>
+<div class="row-fluid">
+    <div class="span12">      
+        <div class="row">
+            @using (Ajax.BeginForm("Add", "ThuocTinhPhien", null, ajaxOpts, new { enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
+            {
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="warning-area">
+                            @Html.ValidationSummary(true)                            
+                        </div>                        
+                    </header>
+                    <div class="panel-body">
+                        @*<div class="form-group">
+                            <label class="col-sm-4 control-label">Mã đơn vị:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(model => model.Id, new { @class = "form-control", id = "txtDonViId" })
+                                @Html.ValidationMessageFor(m => m.Id)
+                            </div>
+                        </div>*@
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Tên thuộc tính: </label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.TenThuocTinh, new { @class = "form-control", id = "txtTenThuocTinh" })
+                                @Html.ValidationMessageFor(m => m.TenThuocTinh)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Trạng thái:</label>
+                            <div class="col-sm-8">
+                                <select id="txtTrangThai" name="TrangThai" class="form-control">
+                                    <option value="0">Tạm dừng</option>
+                                    <option value="1">Kích hoạt</option>
+                                </select>
+                                @Html.ValidationMessageFor(m => m.TrangThai)
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Mô tả:</label>
+                            <div class="col-sm-8">
+                                @Html.TextAreaFor(x => x.MoTa, new { @class = "form-control", id = "txtMoTa" })
+                                @Html.ValidationMessageFor(m => m.MoTa)
+                            </div>
+                        </div>
+                        
+                        @*<div class="form-group">
+                            <label class="col-sm-4 control-label">Kiểu đơn vị:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(x => x.KieuDvi, new { @class = "form-control", id = "txtKieuDvi" })
+                                @Html.ValidationMessageFor(m => m.KieuDvi)
+                            </div>
+                        </div>*@
+                    </div>
+                    <footer class="panel-footer">
+                        <button class="btn btn-primary" type="submit">Đồng ý</button>
+                        <a class="btn btn-default" href="@Url.Action("Index","ThuocTinhPhien")">
+                            <span>Hủy bỏ</span>
+                        </a>                    
+                    </footer>
+                </section>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ECP_V2.WebApplication.Models.TaiLieuModel>
+
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+            <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+        </div>
+        <h2 class="panel-title">Danh sách mẫu tài liệu ban hành tại đơn vị</h2>
+    </header>
+    <div class="panel-body">
+        <div class="table-responsive">
+
+            @if (Model != null && Model.Count() > 0)
+            {
+                int i = 0;
+
+                <table class="table table-bordered table-striped table-condensed mb-none">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên tài liệu</th>
+                            <th class="text-right">Tải về</th>
+                            <th class="text-right">Ngày cập nhật</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+
+                            i++;
+
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.TenTaiLieu</td>
+                                <td class="text-right">
+                                    <a href="@(ViewBag.UrlConfig + item.Url)" class="fa fa-download">Tải về</a>
+                                </td>
+                                <td class="text-right">@string.Format("{0: dd/MM/yyyy}", item.NgayCapNhat)</td>
+                            </tr>
+                        }
+                        
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Chưa có danh sách mẫu tài liệu!</p>
+            }
+
+
+        </div>
+    </div>
+</section>

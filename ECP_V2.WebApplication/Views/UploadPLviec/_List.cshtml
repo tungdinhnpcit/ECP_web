@@ -1,0 +1,163 @@
+﻿@model ECP_V2.Common.Helpers.PageData<ECP_V2.Business.Repository.PhienLVModel>
+
+
+<script type="text/javascript">
+
+
+        $(function () {
+
+            $('.page-number').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).html());
+                Paging(page, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+            });
+
+            $('.prev').on('click', function (e) {
+                e.preventDefault();
+                Paging(1, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+            });
+
+            $('.next').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($("#btnLast").data("sum"));
+                Paging(page, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val());
+            });
+
+            //khai bao Popup cho nut xoa du lieu
+            $('a.detail').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDetail = $(this).attr("id").split("_")[1];
+                DetailPhienLv(IdDetail);
+
+            });
+
+            //khai bao Popup cho nut them comment
+            $('a.comment').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+
+                IdDetail = $(this).attr("id").split("_")[1];
+                AddComment(IdDetail);
+
+            });
+
+        });
+
+
+
+
+
+
+
+
+</script>
+
+
+
+@if (Model.Data.Count() > 0)
+    {
+        ECP_V2.Business.Repository.PhienLVRepository phienLVRepository = new ECP_V2.Business.Repository.PhienLVRepository();
+
+    <div class="table-responsive">
+        <table cellspacing="0" id="dtGridPhienLV" class="table table-striped table-no-more table-bordered  mb-none" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th>                        
+                        <span class="text-weight-normal text-sm">STT</span>
+                    </th>
+                    <th>                        
+                        <span class="text-weight-normal text-sm">Nội dung công việc</span>
+                    </th>
+                    <th>                        
+                        <span class="text-weight-normal text-sm">Đơn vị làm công việc</span>
+                    </th>
+                    <th>                        
+                        <span class="text-weight-normal text-sm">Địa điểm (vị trí) công tác</span>
+                    </th>
+                    <th>                        
+                        <span class="text-weight-normal text-sm">Thời gian công tác</span>
+                    </th>                 
+                    <th class="text-center" style="min-width:100px;">                        
+                        <span class="text-weight-normal text-sm">Thao tác</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="log-viewer">
+                @foreach (var group in Model.Data.GroupBy(x => x.NgayLamViec))
+                {
+                    <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
+                        <td colspan="12">
+                            <span class="h5">@ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(group.Key)</span>
+                        </td>
+                    </tr>
+                    foreach (var group2 in group.GroupBy(x => x.TT_Phien))
+                    {
+                        <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
+                            <td colspan="12">
+                                <span class="h5">@phienLVRepository.GetTinhChatPhienNameById(group2.Key)</span>
+                            </td>
+                        </tr>
+                        foreach (var item in group2)
+                        {
+                            <tr>
+                                <td data-title="STT" class="pt-md pb-md">
+                                    @(Model.Data.IndexOf(item) + 1)
+                                </td>
+                                <td data-title="Nội dung công việc" class="pt-md pb-md">
+                                    <span id="spanNoiDung_@item.Id">@item.NoiDung</span>
+                                    @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
+                                </td>
+                                <td data-title="Đơn vị làm công việc" class="pt-md pb-md">
+                                    <span id="spanPhongBanID_@item.Id">@item.TenPhongBan</span>
+                                    <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
+                                </td>
+                                <td data-title="Địa điểm (vị trí) công tác" class="pt-md pb-md">
+                                    <span id="spanDiaDiem_@item.Id">@item.DiaDiem</span>
+                                    @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
+                                </td>
+                                <td data-title="Thời gian công tác" class="pt-md pb-md">
+                                    <span id="spanGioBd_@item.Id">@string.Format("{0:hh\\:mm}", @item.GioBd) -</span> <span id="spanGioKt_@item.Id">@string.Format("{0:hh\\:mm}", @item.GioKt)</span>
+                                    <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
+                                </td>               
+                                <td data-title="Thao tác" class="pt-md pb-md">                                    
+                                    <a href="/Images/Upload?phienlvid=@item.Id" class="glyphicon glyphicon-upload" style="font-size: 32px;" title="Tải ảnh cho phiên làm việc này"></a>
+                                    <a href="/Images/Detail?phienlvid=@item.Id" class="glyphicon glyphicon-picture" title="Hình ảnh phiên làm việc" style="font-size: 32px; margin-left: 5px;"></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+        @Html.Partial("Pager", Model.Page)
+}
+else
+{
+    <h2 class="text-danger text-center">
+        Chưa có dữ liệu!
+    </h2>
+}
+

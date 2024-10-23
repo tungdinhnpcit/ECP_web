@@ -1,0 +1,68 @@
+﻿<div id="modal-add-edit" class="bootbox modal fade modal-darkorange in" tabindex="" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Quản lý danh mục báo cáo ATVSLĐ</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" id="frmMaintainance">
+                        <div class="form-group row">
+                            <input type="hidden" id="hidIdM" value="0" />
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Tên <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtTen" class="form-control" id="txtTen">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Đơn vị tính </label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtDonViTinh" class="form-control" id="txtDonViTinh">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtContentM" class="col-sm-3 col-form-label">Thứ tự <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="number" id="txtThuTu" class="form-control" name="txtThuTu" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Cấp cha </label>
+                            <div class="col-sm-9">
+                                <select id="ddlParents" class="form-control" name="ddlParents"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="txtContentM" class="col-sm-3 col-form-label">Loại danh mục <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <select id="txtType" class="form-control" name="txtType">
+                                    <option value="1" selected="selected">Kế hoạch</option>
+                                    <option value="2">Kết quả</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="ckStatus" class="col-sm-3 col-form-label">Bắt buộc nhập</label>
+                            <div class="col-md-9">
+                                <input style="margin-top:5px; height:20px; width:20px;" type="checkbox" checked="checked" id="ckIsRequỉed">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right" style="float:right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
+                                <button type="button" id="btnSave" class="btn btn-primary float-right" style="margin-right:15px; float:right"><i class="fa fa-floppy-o" style="margin-right:6px"></i>Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

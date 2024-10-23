@@ -1,0 +1,136 @@
+﻿@model List<ECP_V2.Business.Repository.RoleViewModel>
+@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "Báo cáo lịch sử";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@section ScriptSignalR{
+    <script src="~/Scripts/AdminJS/twbs-pagination/jquery.twbsPagination.js"></script>
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+
+    <script src="~/Content/admin/bcls/index.js"></script>
+    <script>
+        var bclsObj = new bclsController();
+        bclsObj.initialize();
+    </script>
+}
+
+<style>
+
+    .header-collapse {
+        cursor: pointer;
+    }
+
+        .header-collapse .sign:after {
+            content: "+";
+            display: inline-block;
+        }
+
+        .header-collapse.expand .sign:after {
+            content: "-";
+        }
+</style>
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> <span>Báo cáo lịch sử</span>
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+
+                <div>
+                    <div class="ibox-content">
+                        <div class="col-md-12 col-xs-12" style="padding:0px">
+                            <div class="col-md-5 col-xs-12" style="border:1px solid #DADADA; border-radius:5px; padding:10px 20px; min-height:225px;">
+                                <label style="text-align: center; font-size: 20px; font-weight: bold; width: 100%; margin: 10px 0px 20px;">Chọn phân hệ</label>
+
+                                <div style="margin-bottom:5px;">
+                                    <input type="radio" name="rdbModule" style="height:18px; width:18px" value="@ECP_V2.Common.Helpers.PhanHe.PhanHeSuCo" />
+                                    <span style="margin-left:15px; font-size:16px; font-weight:400">Sự cố</span>
+                                </div>
+
+                                @*<div style="margin-bottom:5px;">
+                                    <input type="radio" name="rdbModule" style="height:18px; width:18px" value="@ECP_V2.Common.Helpers.PhanHe.PhanHeImage" />
+                                    <span style="margin-left:15px; font-size:16px; font-weight:400">Hình ảnh</span>
+                                </div>*@
+
+                                <div style="margin-bottom:5px;">
+                                    <input type="radio" name="rdbModule" style="height:18px; width:18px" value="@ECP_V2.Common.Helpers.PhanHe.PhanHePhieuCongTac" />
+                                    <span style="margin-left:15px; font-size:16px; font-weight:400">Phiếu công tác</span>
+                                </div>
+
+                                @*<div style="margin-bottom:5px;">
+                                    <input type="radio" name="rdbModule" style="height:18px; width:18px" value="@ECP_V2.Common.Helpers.PhanHe.PhanHePhienLamViec" />
+                                    <span style="margin-left:15px; font-size:16px; font-weight:400">Lịch công tác</span>
+                                </div>*@
+
+
+                            </div>
+
+                            <div class="col-md-7 col-xs-12" style="padding-left:30px">
+                                <div class="row" style="border:1px solid #DADADA; border-radius:5px; padding:10px 20px">
+                                    <label style="text-align: center; font-size: 20px; font-weight: bold; width: 100%; margin: 10px 0px 20px;">Chọn thời gian</label>
+
+                                    <div class="col-md-12 col-xs-12">
+                                        <div style="float:left;margin-left:10px;margin-top:10px">
+                                            <p>Từ ngày</p>
+                                            <input id="txtTuNgay" type="text" style="width:200px" placeholder="Từ ngày...">
+                                        </div>
+                                        <div style="float:left;margin-left:20px;margin-top:10px" id="content-denngay">
+                                            <p>Đến ngày</p>
+                                            <input id="txtDenNgay" type="text" style="width:200px" placeholder="Đến ngày...">   
+                                        </div>
+                                        <div style="float:left;margin-left:20px;margin-top:10px" id="content-denngay">
+                                            <p>Đơn Vị:</p>
+                                            <select class="form-control" id="cmbDonViID">
+                                                @*<option value="">Tất cả</option>*@
+                                                @try
+                                                {
+                                                    @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                                                }
+                                                catch { }
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-xs-12" style="margin-top:30px; padding-right:10px; height:45px">
+                                        <button type="button" class="btn btn-success" id="btnConfirm" style="height:38px; float:right; margin-left:15px"><i class="fa fa-search-plus" aria-hidden="true" style="margin-right:5px"></i>Truy vấn</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-xs-12 show-grid">
+                            <div class="listRolesName list" style="margin:0px;margin-top:50px; ">
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script id="template-parent" type="x-tmpl-mustache">
+    <div style="margin-top:5px;">
+        <input type="checkbox" class="ckbParent ckbChoose" style="height:15px; width:15px" value="{{Id}}" {{{checked}}} />
+        <span style="margin-left:10px; font-size:14px; font-weight:400">{{Name}}</span>
+    </div>
+</script>
+
+<script id="template-children" type="x-tmpl-mustache">
+    <div style="margin-bottom:5px; margin-left:30px;">
+        <input type="checkbox" class="ckbChildren ckbChoose" style="height:15px; width:15px" value="{{Id}}" data-parent="{{ParentId}}" {{{checked}}} />
+        <span style="margin-left:10px; font-size:14px; font-weight:400">{{Name}}</span>
+    </div>
+</script>

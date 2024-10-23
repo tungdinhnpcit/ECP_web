@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo sự cố chi tiết";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"].ToString()" id="DonViID" style="display:none">
+<h3><span class="fa fa-align-left"></span>  Biểu TH SC chi tiết SC HL, TBA, DZ, TSKH</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label for="cbodonvi">Đơn vị:</label>
+                    <select class="form-control" id="cboDonvi">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="cboThang" id="lbThang">Tháng:</label>
+                    <select class="form-control" id="cboThang">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="cboNam">Năm:</label>
+                    <select class="form-control" id="cboNam">
+                        <option>2022</option>
+                        <option>2023</option>
+                        <option>2024</option>
+                        <option>2025</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group" style="padding-top:28px;float:right;">
+                    <button type="button" class="btn btn-primary" id="btnSave" onclick="sc_chitiet.loadData();">Xem</button>
+                    <button type="button" class="btn btn-primary" id="btnExcel" onclick="sc_chitiet.exportData();">Xuất Excel</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="row" style="padding-top:10px;">
+            <div class="col-lg-12">
+                <table class="table table-bordered table-responsive table-striped" id="tblSucos">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="text-align:center;">STT</th>
+                            <th rowspan="2" style="text-align:center;">Tên đơn vị</th>
+                            <th rowspan="2" style="text-align:center;">Do yếu tố hành lang</th>
+                            <th colspan="7" style="text-align:center;">Sự cố thuộc TBA</th>
+                            <th colspan="9" style="text-align:center;">Sự cố thuộc đường dây</th>
+                            <th rowspan="2" style="text-align:center;">Do TSKH</th>
+                            <th rowspan="2" style="text-align:center;">Tổng</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:center;">Hư hỏng MBA</th>
+                            <th style="text-align:center;">Chống sét các loại</th>
+                            <th style="text-align:center;">Cầu chì(dây chì, sứ đỡ SI, FCO,PK)</th>
+                            <th style="text-align:center;">Cầu dao</th>
+                            <th style="text-align:center;">Tủ PP(ATM, TU, TI, cáp mặt máy...</th>
+                            <th style="text-align:center;">Sứ đỡ thanh cái, thanh cái, đầu cốt, đầu cực MBA</th>
+                            <th>Sự cố Khác</th>
+                            <th>Sứ, cách điện</th>
+                            <th>Đứt dây</th>
+                            <th>Tụt lèo/đứt lèo, ghíp, khóa máng, đầu cốt</th>
+                            <th>MC, LBS, Recloser, DCL, Cầu chì</th>
+                            <th>Cáp lực, đầu cáp, hộp nối</th>
+                            <th>Chống sét các loại, mỏ phóng sét</th>
+                            <th>TU, TI, RMU, Tụ bù, FCO</th>
+                            <th>Sự cố khác</th>
+                            <th>Không xác định</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+}
+
+@section scriptsAdd {
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+    @*nghiệp vụ*@
+    <script src="~/Scripts/BCSC/report_detail.js"></script>
+}
+<style>
+    .borders div {
+        border-right: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+
+    tr.group,
+    tr.group:hover {
+        background-color: #74b9ff !important;
+    }
+</style>

@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Chi tiết vị trí chụp hình ảnh phiên làm việc trên bản đồ";
+    var lstImages = (ECP_V2.DataAccess.tblImage)ViewBag.lstImages;
+    if (lstImages.KinhDo == null || lstImages.ViDo == null)
+    {
+        @:<h2>Không có dữ liệu</h2>
+        return;
+    }
+}
+
+<div id="map" style="width:100%;height:600px"></div>
+<script>
+    function initMap() {
+        var pt = { lat: @lstImages.ViDo, lng: @lstImages.KinhDo };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: pt
+        });
+        var marker = new google.maps.Marker({
+            position: pt,
+            map: map
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIVkam84peG4Z8bcxJVeUO_3zStLdOIHs&callback=initMap">
+</script>
+
+
+
+
+

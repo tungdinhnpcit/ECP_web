@@ -1,0 +1,208 @@
+﻿@{
+    ViewBag.Title = "Báo Cáo Phiên Làm Việc";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+    <div class="text-center">
+        @if (TempData["Notification"] != null)
+        {
+            @Html.Hidden("NotificationAutoHide", TempData["NotificationAutoHide"])
+            <div id="NotificationBox" class="@TempData["NotificationCSS"]" style="display: none">
+                @Html.Raw(@TempData["Notification"])
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabs">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#popular1" data-toggle="tab"><i class="fa fa-file-excel-o"></i> Báo cáo tổng hợp đầu giờ</a>
+                    </li>
+                    <li>
+                        <a href="#popular2" data-toggle="tab"><i class="fa fa-file-excel-o"></i> Báo cáo tổng hợp cuối ngày</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="popular1" class="tab-pane active">
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-1">
+                                <span>Từ ngày : &nbsp;</span>
+                            </div>
+                            <div class="col-md-11">
+                                <input id="GioBdBCDG" type="text" placeholder="Thời gian bắt đầu">
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-1">
+                                <span>Đến ngày : &nbsp;</span>
+                            </div>
+                            <div class="col-md-11">
+                                <input id="GioKtBCDG" type="text" placeholder="Thời gian kết thúc">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="chart-data-selector ready" id="salesSelectorWrapper">
+                                    <div>
+                                        <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" onclick="funBaoCaoDauGio()">
+                                            <i class="fa fa-file"></i> &nbsp; Xem báo cáo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tableBCDG">
+                            @{Html.RenderAction("BaoCaoDauGio", "ReportV2", new { DateFrom = "", DateTo = "" });}
+                        </div>
+                        <div id="tableBCDGV2">
+                            @{Html.RenderAction("BaoCaoDauGioV2", "ReportV2", new { DateFrom = "", DateTo = "" });}
+                        </div>
+                    </div>
+                    <div id="popular2" class="tab-pane">
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-1">
+                                <span>Từ ngày : &nbsp;</span>
+                            </div>
+                            <div class="col-md-11">
+                                <input id="GioBdBCCN" type="text" placeholder="Thời gian bắt đầu">
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-1">
+                                <span>Đến ngày : &nbsp;</span>
+                            </div>
+                            <div class="col-md-11">
+                                <input id="GioKtBCCN" type="text" placeholder="Thời gian kết thúc">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="chart-data-selector ready" id="salesSelectorWrapper">
+                                    <div>
+                                        <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" onclick="funBaoCaoCuoiNgay()">
+                                            <i class="fa fa-file"></i> &nbsp; Xem báo cáo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tableBCCN">
+                            @{Html.RenderAction("BaoCaoCuoiNgay", "ReportV2", new { DateFrom = "", DateTo = "" });}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+</style>
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script type="text/javascript">
+        $(function () {
+
+
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+
+            $("#GioBdBCDG").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            $("#GioKtBCDG").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            $("#GioBdBCCN").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            $("#GioKtBCCN").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+        });
+
+        function funBaoCaoDauGio()
+        {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/ReportV2/BaoCaoDauGio";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    DateFrom: $('#GioBdBCDG').val(),
+                    DateTo: $('#GioKtBCDG').val()
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $("#tableBCDG").html("");
+                    $("#tableBCDG").html(data);
+
+                    unloading();
+                }
+            });
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/ReportV2/BaoCaoDauGioV2";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    DateFrom: $('#GioBdBCDG').val(),
+                    DateTo: $('#GioKtBCDG').val()
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $("#tableBCDGV2").html("");
+                    $("#tableBCDGV2").html(data);
+
+                    unloading();
+                }
+            });
+        }
+
+        function funBaoCaoCuoiNgay() {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/ReportV2/BaoCaoCuoiNgay";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    DateFrom: $('#GioBdBCCN').val(),
+                    DateTo: $('#GioKtBCCN').val()
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $("#tableBCCN").html("");
+                    $("#tableBCCN").html(data);
+
+                    unloading();
+                }
+            });
+
+          
+        }
+    </script>
+}

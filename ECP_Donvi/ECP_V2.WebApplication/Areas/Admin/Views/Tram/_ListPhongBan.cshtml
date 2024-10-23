@@ -1,0 +1,8 @@
+﻿@if (ViewBag.ListPhongBan != null)
+{
+    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPhongBan, "Chọn phòng ban ...", new { @class = "form-control mb-md", @id = "drlPhongBan" })
+}
+else
+{
+    <p>Phòng ban chưa được tạo</p>
+}

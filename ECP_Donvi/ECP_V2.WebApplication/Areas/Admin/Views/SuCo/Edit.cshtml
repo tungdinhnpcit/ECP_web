@@ -1,0 +1,595 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.SuCoViewModel
+@{
+    Layout = null;
+    var lstTaiLieu = (List<ECP_V2.DataAccess.sc_TaiLieu>)ViewBag.lstTaiLieu;
+    var lstHinhAnh = (List<ECP_V2.DataAccess.sc_TaiLieu>)ViewBag.lstHinhAnh;
+}
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+<style>
+    select {
+        height: 40px;
+        padding: 0;
+    }
+
+    #divUpLoad .fileUpload {
+        position: relative;
+        overflow: hidden;
+    }
+
+        #divUpLoad .fileUpload input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            background-color: #fff;
+            filter: alpha(opacity=0);
+        }
+
+    #divUpLoad .filenameupload {
+        width: 98%;
+    }
+
+    #divUpLoad #upload_prev {
+        padding: 5px;
+    }
+
+        #divUpLoad #upload_prev span {
+            display: flex;
+            padding: 0 5px;
+            font-size: 13px;
+            margin: 5px;
+        }
+
+            #divUpLoad #upload_prev span:hover {
+                background-color: #e6f7ff;
+            }
+
+    #divUpLoad p.close {
+        cursor: pointer;
+        font-size: 15px;
+    }
+</style>
+<div style="padding:10px">
+    @using (Html.BeginForm("Edit", "SuCo", FormMethod.Post, new { id = "frmEdit", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.DonViId)
+        @Html.HiddenFor(model => model.NgayTao)
+        @Html.HiddenFor(model => model.NguoiTao)
+
+        @*@Html.HiddenFor(model => model.IsGianDoan)*@
+        <div class="row">
+            <div class="col-md-4">
+                <label class="control-label" for="CapDienAp">Cấp điện áp (kV)</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.LstDienAp != null)
+                {
+                    @Html.DropDownListFor(model => model.CapDienAp, (SelectList)ViewBag.LstDienAp, "Chọn cấp điện áp", new { @class = "selectoption" })
+                }
+                else
+                {
+                    <select id="CapDienAp" name="CapDienAp" class="selectoption">
+                        <option value="">Chọn cấp điện áp</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.CapDienAp, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" for="CapDienAp">Tài sản</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.LstDienAp != null)
+                {
+                    @Html.DropDownListFor(model => model.IsTaiSan, (SelectList)ViewBag.LstTaiSan, "Chọn loại tài sản", new { @class = "selectoption" })
+                }
+                else
+                {
+                    <select id="TaiSan" name="TaiSan" class="selectoption">
+                        <option value="">Chọn tài sản thuộc</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.IsTaiSan, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" for="CapDienAp">Điện lực bị sự cố</label>
+                <div class="clearfix"></div>
+                <select class="form-control" id="lstDonViSuCoId" name="lstDonViSuCoId"
+                        multiple="multiple" data-plugin-multiselect data-plugin-options='{ "includeSelectAllOption": true }'>
+                    @try
+                    {
+                        @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(null))
+                    }
+                    catch { }
+                </select>
+                @Html.ValidationMessageFor(model => model.lstDonViSuCoId, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div>
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Phân loại sự cố</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.LoaiSuCo != null)
+                {
+                    @Html.DropDownListFor(model => model.LoaiSuCoId, (SelectList)ViewBag.LoaiSuCo, new { @class = "selectoption" })
+                }
+                else
+                {
+                    <select id="MaHSX" name="MaHSX" class="selectoption">
+                        <option value="">Chọn loại sự cố</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.LoaiSuCoId, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Tính chất <b style="color:red;">(*)</b></label>
+                <div class="clearfix"></div>
+                @if (ViewBag.TinhChat != null)
+                {
+                    @Html.DropDownListFor(model => model.TinhChatId, (SelectList)ViewBag.TinhChat, "Chọn tính chất", new { @class = "selectoption", @onchange = "TinhChat_OnChange(this)" })
+                }
+                else
+                {
+                    <select id="TinhChat" name="TinhChat" class="selectoption">
+                        <option value="">Chọn tính chất</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.TinhChatId, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Nguyên nhân <b style="color:red;">(*)</b></label>
+                <div class="clearfix"></div>
+                @if (ViewBag.NguyenNhan != null)
+                {
+                    @Html.DropDownListFor(model => model.NguyenNhanId, (SelectList)ViewBag.NguyenNhan, "Chọn nguyên nhân", new { @class = "selectoption" })
+                }
+                else
+                {
+                    <select id="NguyenNhan" name="NguyenNhan" class="selectoption">
+                        <option value="">Chọn nguyên nhân</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.NguyenNhanId, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" for="MaHSX">Lý do</label>
+                <div class="clearfix"></div>
+                @if (ViewBag.LyDo != null)
+                {
+                    @Html.DropDownListFor(model => model.LyDoId, (SelectList)ViewBag.LyDo, "Chọn lý do", new { @class = "selectoption", @style = "width:270px" })
+                }
+                else
+                {
+                    <select id="NguyenNhan" name="NguyenNhan" class="selectoption">
+                        <option value="">Chọn lý do</option>
+                    </select>
+                }
+                @Html.ValidationMessageFor(model => model.LyDoId, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="control-label" for="MaHSX">Chọn sự cố miễn trừ\không được miễn trừ</label>
+                    <div class="clearfix"></div>
+                    @if (ViewBag.MienTru != null)
+                    {
+                        @Html.DropDownListFor(model => model.IsMienTru, (SelectList)ViewBag.MienTru, new { @class = "selectoption" })
+                    }
+                    else
+                    {
+                        <select id="TaiSan" name="TaiSan" class="selectoption">
+                            <option value="">Chọn tài sản thuộc</option>
+                        </select>
+                    }
+                    @Html.ValidationMessageFor(model => model.IsMienTru, null, new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-6">
+                <label class="control-label" for="TenThietBi">Tên đường dây, trạm bị sự cố</label>
+                @Html.TextBoxFor(model => model.TenThietBi, new { @class = "form-control", @placeholder = "Nhập Tên đường dây, trạm bị sự cố ..." })
+                @Html.ValidationMessageFor(model => model.TenThietBi, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        @*<div class="row" style="margin-top:10px">
+                <div class="col-md-12">
+                    <label class="control-label" for="DienBienSuCo">Diễn biến sự cố</label>
+                    @Html.TextAreaFor(model => model.DienBienSuCo, new { @class = "form-control", @placeholder = "Nhập diễn biến sự cố ...", @rows = 7 })
+                    @Html.ValidationMessageFor(model => model.DienBienSuCo, null, new { @class = "text-danger" })
+                </div>
+            </div>*@
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-12">
+                <label class="control-label" for="TomTat">Tóm tắt nguyên nhân</label>
+                @Html.TextAreaFor(model => model.TomTat, new { @class = "form-control", @placeholder = "Nhập tóm tắt ...", @rows = 7 })
+                @Html.ValidationMessageFor(model => model.TomTat, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-12">
+                <label class="control-label" for="ThoiTiet">Thời tiết khi xảy ra sự cố</label>
+                @Html.TextAreaFor(model => model.ThoiTiet, new { @class = "form-control", @placeholder = "Nhập thời tiết ...", @rows = 2 })
+                @Html.ValidationMessageFor(model => model.ThoiTiet, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-12">
+                <label class="control-label" for="ThoiTiet">Ghi chú</label>
+                @Html.TextAreaFor(model => model.GhiChu, new { @class = "form-control", @placeholder = "Nhập ghi chú ...", @rows = 2 })
+                @Html.ValidationMessageFor(model => model.GhiChu, null, new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="divUpLoad" class="row" style="margin-bottom:5px;padding-left:15px;margin-top:10px">
+                    <label class="control-label">
+                        Biên bản điều tra sự cố
+                    </label>
+                    <div class="fileUpload btn btn-primary btn-sm">
+                        <i class="fa fa-upload mr-5"></i>
+                        <span>Chọn file</span>
+                        <input id="uploadBtn" type="file" class="upload" multiple="multiple" name="browsefile" />
+                    </div>
+                    <div id="upload_prev">
+                        @foreach (var tl in lstTaiLieu)
+                        {
+                            <span id="@lstTaiLieu.IndexOf(tl)">
+                                <div class="filenameupload">
+                                    <a href="@Url.Action("DownloadFile", "SuCo", new { URL = tl.Url, fileName = tl.Description })"><i class="fa fa-paperclip" style="margin-right:5px"></i>@tl.Description tài liệu</a>
+                                </div>
+                            </span>
+                        }
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div id="divUpLoad" class="row" style="margin-bottom:5px;padding-left:15px;margin-top:10px">
+                    <label class="control-label">
+                        Hình ảnh sự cố
+                    </label>
+                    <div class="fileUpload btn btn-primary btn-sm">
+                        <i class="fa fa-upload mr-5"></i>
+                        <span>Chọn file</span>
+                        <input id="uploadBtnHinhAnh" type="file" class="upload" multiple="multiple" name="browsefileHA" />
+                    </div>
+                    <div id="upload_prevHinhAnh">
+                        @foreach (var tl in lstHinhAnh)
+                        {
+                            <span id="@lstHinhAnh.IndexOf(tl)">
+                                <div class="filenameupload">
+                                    <a href="@Url.Action("DownloadFile", "SuCo", new { URL = tl.Url, fileName = tl.Description})"><i class="fa fa-paperclip" style="margin-right:5px"></i>@tl.Description</a>
+                                </div>
+                            </span>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-6">
+                <div class="col-sm-12 text-center">
+                    <code for="ThoiGianXuatHien">
+                        Thời gian xuất hiện sự cố
+                    </code>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.ThoiGianXuatHien, new { @class = "datePicker", @placeholder = "Ngày xuất hiện sự cố" })
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                            <input id="GioXuatHien" name="GioXuatHien" value="@Model.GioXuatHien" type="text" data-plugin-timepicker class="form-control" data-plugin-options='{ "showMeridian": false }'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-sm-12 text-center">
+                    <code for="ThoiGianXuatHien">
+                        Thời gian bắt đầu khắc phục sự cố
+                    </code>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.ThoiGianBatDauKhacPhuc, new { @class = "datePicker", @placeholder = "Ngày bắt đầu khắc phục sự cố" })
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                            <input id="GioBDKhacPhuc" name="GioBDKhacPhuc" value="@Model.GioBDKhacPhuc" type="text" data-plugin-timepicker class="form-control" data-plugin-options='{ "showMeridian": false }'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-sm-12 text-center">
+                    <code for="ThoiGianXuatHien">
+                        Thời gian khắc phục xong sự cố
+                    </code>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.ThoiGianKhacPhucXong, new { @class = "datePicker", @placeholder = "Ngày khắc phục xong sự cố" })
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                            <input id="GioKhacPhucXong" name="GioKhacPhucXong" value="@Model.GioKhacPhucXong" type="text" data-plugin-timepicker class="form-control" data-plugin-options='{ "showMeridian": false }'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="col-sm-12 text-center">
+                    <code for="ThoiGianXuatHien">
+                        Thời gian khôi phục đóng điện
+                    </code>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.ThoiGianKhoiPhuc, new { @class = "datePicker", @placeholder = "Ngày khôi phục đóng điện" })
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                            @*@Html.TextBoxFor(model => model.ThoiGianKhoiPhuc_Gio, new {@id="GioKhoiPhuc", @class = "form-control", @placeholder = "Ngày khôi phục đóng điện", @data_plugin_timepicker="", @data_plugin_options="{'showMeridian': false }" })*@
+                            <input id="GioKhoiPhuc" name="GioKhoiPhuc" value="@Model.GioKhoiPhuc" type="text" data-plugin-timepicker class="form-control" data-plugin-options='{ "showMeridian": false }'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="row" style="margin-top:10px">
+                <div class="col-md-6">
+                    Gián đoạn cung cấp điện cho khách hàng (có/không) @Html.CheckBoxFor(model => model.IsGianDoan.Value) &nbsp;
+                </div>
+            </div>*@
+    }
+</div>
+
+<script>
+    $(function () {
+
+    $(document).on('click', '.modal-dismiss', function (e) {
+            e.preventDefault();
+            $.magnificPopup.close();
+        });
+
+
+
+        //$("#ThoiGianKhoiPhuc").kendoDatePicker({
+        //    format: 'dd/MM/yyyy hh:mm tt',
+        //}).data("kendoDatePicker
+        $("#CapDienAp").select2();
+        $("#LoaiSuCoId").select2();
+        $("#TinhChatId").select2();
+        $("#LyDoId").select2();
+
+        $(".datePicker").kendoDatePicker({
+            format: 'dd/MM/yyyy'
+        }).data("kendoDatePicker");
+
+
+        // Spinner
+        (function ($) {
+
+
+            'use strict';
+
+            if ($.isFunction($.fn['spinner'])) {
+
+                $(function () {
+                    $('[data-plugin-spinner]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions)
+                            opts = pluginOptions;
+
+                        $this.themePluginSpinner(opts);
+                    });
+                });
+            }
+
+            if ($.isFunction($.fn['maxlength'])) {
+
+                $(function () {
+                    $('[data-plugin-maxlength]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions)
+                            opts = pluginOptions;
+
+                        $this.themePluginMaxLength(opts);
+                    });
+                });
+            }
+
+            if ( $.isFunction($.fn[ 'timepicker' ]) ) {
+
+		        $(function() {
+			        $('[data-plugin-timepicker]').each(function() {
+				        var $this = $( this ),
+					        opts = {};
+
+				        var pluginOptions = $this.data('plugin-options');
+				        if (pluginOptions)
+					        opts = pluginOptions;
+
+				        $this.themePluginTimePicker(opts);
+			        });
+		        });
+
+            }
+
+
+            if ( $.isFunction($.fn[ 'datepicker' ]) ) {
+
+		        $(function() {
+			        $('[data-plugin-datepicker]').each(function() {
+				        var $this = $( this ),
+					        opts = {};
+
+				        var pluginOptions = $this.data('plugin-options');
+				        if (pluginOptions)
+					        opts = pluginOptions;
+
+				        $this.themePluginDatePicker(opts);
+			        });
+		        });
+	        }
+
+        }).apply(this, [jQuery]);
+
+        $(document).on('click', '.close', function () {
+            $(this).parents('span').remove();
+            var fileInput = $('#uploadBtn')[0].files[$(this).parents('span').attr("id")];
+            //clear all selected files from the file input field
+            var newFileList = Array.from($('#uploadBtn')[0].files);
+            newFileList.splice($(this).parents('span').attr("id"), 1);
+        })
+
+        document.getElementById('uploadBtn').onchange = uploadOnChange;
+
+
+        $(document).on('click', '.close', function () {
+            $(this).parents('span').remove();
+            var fileInput = $('#uploadBtnHinhAnh')[0].files[$(this).parents('span').attr("id")];
+            //clear all selected files from the file input field
+            var newFileList = Array.from($('#uploadBtnHinhAnh')[0].files);
+            newFileList.splice($(this).parents('span').attr("id"), 1);
+        })
+
+        document.getElementById('uploadBtnHinhAnh').onchange = uploadOnChangeHA;
+
+        @if(Model.IsChuyenNPC.GetValueOrDefault())
+        {
+            @:$("#IsMienTru").prop("disabled", true);
+        }
+
+         // MultiSelect
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['multiselect'])) {
+
+                $(function () {
+                    $('[data-plugin-multiselect]').each(function () {
+
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions)
+                            opts = pluginOptions;
+
+                        $this.themePluginMultiSelect(opts);
+
+                    });
+                });
+
+            }
+
+        }).apply(this, [jQuery]);
+
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['placeholder'])) {
+
+                $('input[placeholder]').placeholder();
+
+            }
+
+        }).apply(this, [jQuery]);
+
+        @if(Model.lstDonViSuCoId!=null && Model.lstDonViSuCoId.Count()>0)
+        {
+            foreach(var it in Model.lstDonViSuCoId)
+            {
+                @:$("#lstDonViSuCoId option[value='@it']").prop("selected", true);
+            }
+        }
+
+
+    });
+
+    function uploadOnChange() {
+        var files = $('#uploadBtn')[0].files;
+        $("#upload_prev").html('');
+        for (var i = 0; i < files.length; i++) {
+            //$("#upload_prev").append('<span id='+i+'>' + '<div class="filenameupload"><i class="fa fa-paperclip mr-5"></i>' + files[i].name + '</div>' + '<p class="close" ><i class="fa fa-trash"></i></p></span>');
+            $("#upload_prev").append('<span id=' + i + '>' + '<div class="filenameupload"><i class="fa fa-paperclip" style="margin-right:5px"></i>' + files[i].name + '</div></span>');
+        }
+    }
+
+    function uploadOnChangeHA() {
+        var files = $('#uploadBtnHinhAnh')[0].files;
+        $("#upload_prevHinhAnh").html('');
+        for (var i = 0; i < files.length; i++) {
+            //$("#upload_prev").append('<span id='+i+'>' + '<div class="filenameupload"><i class="fa fa-paperclip mr-5"></i>' + files[i].name + '</div>' + '<p class="close" ><i class="fa fa-trash"></i></p></span>');
+            $("#upload_prevHinhAnh").append('<span id=' + i + '>' + '<div class="filenameupload"><i class="fa fa-paperclip" style="margin-right:5px"></i>' + files[i].name + '</div></span>');
+        }
+    }
+
+     function TinhChat_OnChange() {
+        var id = $("#TinhChatId").val();
+
+        //console.log(id);
+        //if (id == 4) {
+        //    $('#LyDoId').val('').trigger('change');
+        //    $('#LyDoId').html('');
+        //    $('#LyDoId').html($('#drlNguyenNhanHL_Temp').html());
+        //}
+        //else {
+        //    $('#LyDoId').val('').trigger('change');
+        //     $('#LyDoId').html('');
+        //    $('#LyDoId').html($('#drlNguyenNhan_Temp').html());
+        //}
+         $('#LyDoId').val('').trigger('change');
+            $.ajax({
+            url: "/Admin/SuCo/GetLyDoByTinhChat",
+            data: {
+                tc: id
+            },
+            type: 'GET',
+            dataType: "json",
+            success: function (response) {
+                 var render = "";
+                render += "<option value=''>" + 'Chọn lý do...' + "</option>";
+                $.each(response, function (i, item) {
+                   render += "<option value='" + item.Id + "'>" + item.Ten + "</option>";
+                });
+                $('#LyDoId').html(render);
+            }
+        });
+    }
+
+</script>

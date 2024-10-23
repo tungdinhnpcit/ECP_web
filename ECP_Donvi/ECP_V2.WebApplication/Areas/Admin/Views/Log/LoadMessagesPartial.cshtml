@@ -1,0 +1,69 @@
+﻿@model List<ECP_V2.DataAccess.Message>
+
+@if (Model != null)
+{
+    <li>
+        <a class="dropdown-toggle notification-icon" data-toggle="dropdown">
+
+            @if (Model.Where(x => x.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead).Count() > 0)
+            {
+                <i class="fa fa-bell"></i>
+                <span class="badge">@Model.Where(x => x.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead).Count()</span>
+            }
+            else
+            {
+                <i class="fa fa-bell"></i>
+                <span class="badge" style="display: none;">0</span>
+            }
+
+        </a>
+
+        <div class="dropdown-menu notification-menu">
+            <div class="notification-title">
+                <span class="pull-right label label-default">@Model.Where(x => x.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead).Count()</span>
+                Thông Báo
+            </div>
+
+            <div class="content">
+                <ul>
+                    @foreach (var item in Model)
+                    {
+                        if (item.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead)
+                        {
+                            <li>
+                                <a class="clearfix"href="@Url.Action("ChiTietPhienLV", "PhienLV", new { id = item.PhienLamViecId, messageId = item.Id })">
+                                    <div class="image">
+                                        <i class="fa fa-info bg-success"></i>
+                                    </div>
+                                    <span class="title">@item.NoiDung</span>
+                                    <span class="message">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayTao)</span>
+                                </a>
+                                <a href="javascript:;" id="btnMarkAsRead" title="Đánh dấu đã đọc" data-id="@item.Id"><span class="fa fa-circle" style="color: #959595"></span></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="read">
+                                <a class="clearfix"href="@Url.Action("ChiTietPhienLV", "PhienLV", new { id = item.PhienLamViecId, messageId = item.Id })">
+                                    <div class="image">
+                                        <i class="fa fa-info bg-success"></i>
+                                    </div>
+                                    <span class="title">@item.NoiDung</span>
+                                    <span class="message">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayTao)</span>
+                                </a>
+                            </li>
+                        }
+                    }
+
+                </ul>
+
+                <hr />
+
+                <div class="text-right">
+                    <a href="/Admin/Log/Index" class="view-more">Xem Tất Cả</a>
+                </div>
+            </div>
+
+        </div>
+    </li>
+}

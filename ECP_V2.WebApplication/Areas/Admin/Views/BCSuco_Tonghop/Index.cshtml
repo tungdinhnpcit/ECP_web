@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo tổng hợp sự cố THA và Hư hỏng MBA";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<h3><span class="fa fa-align-left"></span>  Biểu TH SC THA và Hư hỏng MBA</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label for="cbodonvi">Đơn vị:</label>
+                    <select class="form-control" id="cboDonvi">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label for="cboThang" id="lbThang">Tháng:</label>
+                    <select class="form-control" id="cboThang">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="cboNam">Năm:</label>
+                    <select class="form-control" id="cboNam">
+                        <option>2022</option>
+                        <option>2023</option>
+                        <option>2024</option>
+                        <option>2025</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group" style="padding-top:28px;float:right;">
+                    <button type="button" class="btn btn-primary" id="btnSave" onclick="sc_thop.loadData();">Xem</button>
+                    <button type="button" class="btn btn-primary" id="btnExcel" onclick="sc_thop.exportData();">Xuất Excel</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="row" style="padding-top:10px;">
+            <div class="col-lg-12">
+                <table class="table table-bordered table-responsive table-striped" id="tblSucos">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="text-align:center;">STT</th>
+                            <th rowspan="2" style="text-align:center;">Loại hình sự cố/Đơn vị quản lý</th>
+                            <th colspan="3" style="text-align:center;">Đường dây trung áp</th>
+                            <th rowspan="2" style="text-align:center;">TBA</th>
+                            <th rowspan="2" style="text-align:center;">ĐZ 0,4kV</th>
+                            <th rowspan="2" style="text-align:center;">Tổng</th>
+                            <th colspan="3" style="text-align:center;">Hư hỏng MBA</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:center;">TQ</th>
+                            <th style="text-align:center;">KD1</th>
+                            <th style="text-align:center;">KD2</th>
+                            <th style="text-align:center;">BT</th>
+                            <th style="text-align:center;">TT</th>
+                            <th style="text-align:center;">Tổng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+}
+
+@section scriptsAdd {
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+    @*nghiệp vụ*@
+    <script src="~/Scripts/BCSC/sc_report.js"></script>
+}
+<style>
+    .borders div {
+        border-right: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+
+    tr.group,
+    tr.group:hover {
+        background-color: #74b9ff !important;
+    }
+</style>

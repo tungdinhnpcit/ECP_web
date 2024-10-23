@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.tblImage>
+
+    @if (Model != null && Model.Count() > 0)
+    {
+        foreach (var item in Model)
+        {
+            <tr class="tr@(item.Id)">
+                <td style="text-align: left">
+                    <div>
+                        <span style="display:none; width:50px; float:left; margin-right:4px" id="btnSaveAllDes@(item.Id)" class="btn btn-primary" onclick="javascript:SaveAllDesInTable(@(item.Id))">
+                            <i class="icon-plus icon-white"></i>
+                            <span>Lưu</span>
+                        </span>
+                        <span id="btnShowAllDes@(item.Id)" class="btn btn-success fileinput-button btn-edit" onclick="javascript:ShowAllDes(@(item.Id))">
+                            <i class="icon-plus icon-white"></i>
+                            <span>Sửa</span>
+                        </span>
+                        <span class="btn btn-danger" onclick="javascript:DeleteImage(@item.Id)">
+                            <i class="icon-trash icon-white"></i>
+                            <span>Xóa</span>
+                        </span>
+                    </div>
+                </td>
+                <td style="width: 155px">
+                    <div class="@(item.isVideo == 1 ? "gallery-item-play" : "")" style="width: 240px; height: 240px; overflow: hidden; background: #000 url(/Files/AnyOne/@(item.Url)) no-repeat center center; background-size: 100%;position: relative;">
+                        <span class="playvideo" style="display:none">
+                        </span>
+                    </div>
+                </td>
+                <td style="text-align: left; width:185px">
+                    <div>
+                        <span class="showinfotemp@(item.Id)">@(item.NgayCapNhat != null ? item.NgayCapNhat.ToString("HH:mm dd/MM/yyyy") : "")</span>
+                    </div>
+                    <select id="slgroup@(item.Id)" name="slgroup@(item.Id)" class="slgroup" data-id="@(item.Id)">
+                        <option value="5" @((item.GroupId == 5 || item.GroupId == null) ? "selected" : "")>Chưa xác định</option>
+                        <option value="1" @((item.GroupId == 1) ? "selected" : "")>Số phương án thực hiện</option>
+                        <option value="2" @((item.GroupId == 2) ? "selected" : "")>Lực lượng lao động</option>
+                        <option value="3" @((item.GroupId == 3) ? "selected" : "")>Các biện pháp kiểm tra an toàn</option>
+                        <option value="4" @((item.GroupId == 4) ? "selected" : "")>Tổng kết phiên làm việc</option>
+                    </select>
+                </td>
+                <td style="text-align: left"><textarea id="txtnode@(item.Id)" name="txtnode@(item.Id)" style="height:40px; border:0px; background: transparent; resize: none" class="input@(item.Id) inputstyletd">@(item.Note)</textarea></td>
+                <td style="text-align: left"><textarea id="txtcomment@(item.Id)" name="txtcomment@(item.Id)" style="height:40px; border:0px; background: transparent; resize: none " class="input@(item.Id) inputstyletd">@(item.Comment)</textarea></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <p>Không có dữ liệu.</p>
+    }

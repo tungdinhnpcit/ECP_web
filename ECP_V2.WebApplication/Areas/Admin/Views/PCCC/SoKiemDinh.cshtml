@@ -1,0 +1,432 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.pccc_ThietBiPCCCViewModels
+@{
+    ViewBag.Title = "Sổ theo dõi thiết bị phòng cháy chữa cháy";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent" style="margin-top:-45px">
+    <h1>
+        <a href="#modalAnimThemKD" class="mb-xs mt-xs mr-xs btn btn-primary addkd" style="cursor:pointer">
+            <i class="fa fa-plus"></i> &nbsp; Thêm TN, kiểm định, kiểm tra
+        </a>
+    </h1>
+    <div class="clear">
+    </div>
+</div>
+
+<div class="row" style="padding-left:20px;padding-right:20px;padding-bottom:30px;">
+    <div class="row">
+        <h1 style="text-align:center">SỔ THEO DÕI TRẠNG THÁI THIẾT BỊ PHÒNG CHÁY CHỮA CHÁY</h1>
+        <p>Tên (số hiệu) trang thiết bị dụng cụ: <strong>@Model.TenThietBi</strong></p>
+        <div class="row" style="margin:0;padding:0">
+            <p style="float:left;margin-right:50px">Mã hiệu, quy cách: <strong>@Model.MaHieu</strong></p>
+            <p style="float:left;margin-right:50px">Nước SX: <strong>@Model.TenNSX</strong></p>
+            <p style="float:left">Năm SX: <strong>@Model.NamSX</strong></p>
+        </div>
+        <p>Ngày, tháng, năm đưa vào sử dụng: <strong>@string.Format("{0:dd/MM/yyyy}", Model.NgayDuaVaoSuDung)</strong></p>
+        <p>Đơn vị được giao quản lý, sử dụng: <strong>@Model.TenPB</strong></p>
+    </div>
+
+    <div class="row show-grid list">
+      
+    </div>
+
+</div>
+
+<div id="modalAnimThemKD" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title"></h2>
+        </header>
+        <div class="panel-body" style="padding:0">
+            <div class="modal-wrapper" style="padding:0">
+
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="LuuThemKiemDinh()" id="modal-confirm">Lưu</button>
+                    <button class="btn btn-default modal-dismiss" onclick="$.magnificPopup.close();" id="modal-dismiss">Thoát</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimDelete" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Thông báo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-question-circle"></i>
+                </div>
+                <div class="modal-text">
+                    <h3>Bạn có chắc muốn xóa bản ghi này ?</h3>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="DeleteModalConfirm()" id="modal-confirm">Có</button>
+                    <button class="btn btn-default modal-dismiss" onclick="$.magnificPopup.close();" id="modal-dismiss">Không</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<div id="modalAnimSua" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title"></h2>
+        </header>
+        <div class="panel-body" style="padding:0">
+            <div class="modal-wrapper" style="padding:0">
+
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary modal-confirm" onclick="LuuSuaCCDC()" id="modal-confirm">Lưu</button>
+                    <button class="btn btn-default modal-dismiss" onclick="$.magnificPopup.close();" id="modal-dismiss">Thoát</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+<script type="text/javascript">
+    var IdDelete = 0;
+    $(function () {
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        $('a.addkd').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(function () {
+            ThemKiemDinh(@Model.ID);
+        });
+
+        Paging();
+
+    });
+
+    function ThemKiemDinh(id) {
+
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        $.ajax({
+            type: "GET",
+            url: '/Admin/PCCC/CreateKD',
+            data: {
+                id: id
+            },
+            success: function (json) {
+
+                $('#modalAnimThemKD .modal-wrapper').html('');
+                $('#modalAnimThemKD .modal-wrapper').html(json);
+                $('#modalAnimThemKD .panel-title').text('Thêm thông tin TN, kiểm định, kiểm tra');
+
+                $.validator.unobtrusive.parse($('#frmCreateKD'));
+                $('#frmCreateKD').submit(function () {
+                    // inside event callbacks 'this' is the DOM element so we first
+                    // wrap it in a jQuery object and then invoke ajaxSubmit
+                    if ($(this).valid())
+                        $(this).ajaxSubmit(optionskd);
+
+                    // !!! Important !!!
+                    // always return false to prevent standard browser submit and page navigation
+                    return false;
+                });
+
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+
+    }
+
+    var optionskd = {
+        // target element(s) to be updated with server response
+        beforeSubmit: showRequestkd,  // pre-submit callback
+        success: showResponsekd,  // post-submit callback
+        dataType: 'json',
+        resetForm: false
+    };
+    function showRequestkd(formData, jqForm, options) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        return true;
+    }
+    function showResponsekd(responseText, statusText, xhr, $form) {
+        if (responseText.split("|")[0] != "") {
+
+            Paging();
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Thêm bản ghi thành công',
+                type: 'success'
+            });
+            $.magnificPopup.close();
+        }
+        else {
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Có lỗi xảy ra khi thêm bản ghi: ' + responseText.split("|")[1],
+                type: 'error'
+            });
+        }
+        unloading();
+    }
+
+    function LuuThemKiemDinh() {
+
+        if ($("#NgayKiemTra").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Ngày TN, kiểm định, kiểm tra không được để trống !'
+            });
+            $("#NgayKiemTra").focus();
+            return;
+        }
+
+        if ($("#BienBanSo").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Biên bản số không được để trống !'
+            });
+            $("#BienBanSo").focus();
+            return;
+        }
+
+        if ($("#NguoiKiemTra").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Người kiểm tra không được để trống !'
+            });
+            $("#NguoiKiemTra").focus();
+            return;
+        }
+
+        if ($("#DonViKiemTra").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Đơn vị thí nghiệm, kiểm định ,kiểm tra không được để trống !'
+            });
+            $("#DonViKiemTra").focus();
+            return;
+        }
+
+        $('#frmCreateKD').submit();
+
+
+    }
+
+    function Paging() {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        var scriptUrl = "/Admin/PCCC/ListSoKiemDinh";
+        $.ajax({
+            url: scriptUrl,
+            data: {
+                id: @Model.ID,
+            },
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $(".list").html("");
+                $(".list").html(data);
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+    }
+
+    function DeleteModalConfirm() {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/PCCC/DeleteKiemDinh",
+            dataType: "json",
+            data: {
+                id: IdDelete
+            },
+            async: true,
+            success: function (json) {
+                if (json.type == "success") {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'success'
+                    });
+                    Paging();
+                }
+                else {
+                    new PNotify({
+                        title: 'Thông báo',
+                        text: json.mess,
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                new PNotify({
+                    title: 'Thông báo',
+                    text: 'Có lỗi xảy ra khi xóa bản ghi',
+                    type: 'error'
+                });
+            }
+        });
+        $.magnificPopup.close();
+    }
+
+    function SuaKD(id) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        $.ajax({
+            type: "GET",
+            url: '/Admin/PCCC/EditKD',
+            async: true,
+            data: {
+                id: id
+            },
+            success: function (json) {
+
+                $('#modalAnimSua .modal-wrapper').html('');
+                $('#modalAnimSua .modal-wrapper').html(json);
+                $('#modalAnimSua .panel-title').text('Sửa thông tin TN, kiểm định, kiểm tra');
+
+                $.validator.unobtrusive.parse($('#frmEditKD'));
+                $('#frmEditKD').submit(function () {
+                    // inside event callbacks 'this' is the DOM element so we first
+                    // wrap it in a jQuery object and then invoke ajaxSubmit
+                    if ($(this).valid())
+                        $(this).ajaxSubmit(options2);
+
+                    // !!! Important !!!
+                    // always return false to prevent standard browser submit and page navigation
+                    return false;
+                });
+
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });
+    }
+    var options2 = {
+        // target element(s) to be updated with server response
+        beforeSubmit: showRequest2,  // pre-submit callback
+        success: showResponse2,  // post-submit callback
+        dataType: 'json',
+        resetForm: false
+    };
+    function showRequest2(formData, jqForm, options) {
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        return true;
+    }
+    function showResponse2(responseText, statusText, xhr, $form) {
+        if (responseText.split("|")[0] != "") {
+            Paging();
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Sửa bản ghi thành công',
+                type: 'success'
+            });
+            $.magnificPopup.close();
+        }
+        else {
+            new PNotify({
+                title: 'Thông báo',
+                text: 'Có lỗi xảy ra khi sửa bản ghi: ' + responseText.split("|")[1],
+                type: 'error'
+            });
+        }
+        unloading();
+    }
+
+    function LuuSuaCCDC() {
+
+        if ($("#NgayKiemTra").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Ngày TN, kiểm định, kiểm tra không được để trống !'
+            });
+            $("#NgayKiemTra").focus();
+            return;
+        }
+
+        if ($("#BienBanSo").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Biên bản số không được để trống !'
+            });
+            $("#BienBanSo").focus();
+            return;
+        }
+
+        if ($("#NguoiKiemTra").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Người kiểm tra không được để trống !'
+            });
+            $("#NguoiKiemTra").focus();
+            return;
+        }
+
+        if ($("#DonViKiemTra").val() == '') {
+            new PNotify({
+                title: 'Cảnh báo',
+                text: 'Đơn vị thí nghiệm, kiểm định ,kiểm tra không được để trống !'
+            });
+            $("#DonViKiemTra").focus();
+            return;
+        }
+
+        $('#frmEditKD').submit();
+
+
+    }
+
+</script>

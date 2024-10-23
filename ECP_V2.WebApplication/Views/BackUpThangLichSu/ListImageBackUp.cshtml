@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ECP_V2.DataAccess.S_THANG_LVIEC>
+
+
+@if (Model != null)
+{
+<ul class="list-file-bak" style="border: 1px solid #808080; height: 100px; overflow: auto; list-style-type: none;">
+
+    @foreach (var item in Model)
+    {
+        if (item.PhanHe.Equals(ECP_V2.Common.Helpers.PhanHe.PhanHeImage))
+        {
+            <li>
+                <i class="fa fa-list-alt"></i> Tháng hiện tại phân hệ hình ảnh @Html.Raw(item.Thang + "/" + item.Nam)
+            </li>
+        }
+        else if (item.PhanHe.Equals(ECP_V2.Common.Helpers.PhanHe.PhanHePhienLamViec))
+        {
+            <li>
+                <i class="fa fa-list-alt"></i> Tháng hiện tại phân hệ lịch công tác @Html.Raw(item.Thang + "/" + item.Nam)
+            </li>
+        }
+        else if (item.PhanHe.Equals(ECP_V2.Common.Helpers.PhanHe.PhanHePhieuCongTac))
+        {
+            <li>
+                <i class="fa fa-list-alt"></i> Tháng hiện tại phân hệ phiếu công tác @Html.Raw(item.Thang + "/" + item.Nam)
+            </li>
+        }
+    }
+</ul>
+}

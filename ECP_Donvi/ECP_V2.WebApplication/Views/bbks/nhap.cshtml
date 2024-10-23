@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Nhập biên bản khảo sát hiện trường";
+    Layout = "~/Views/Shared/_LayoutAdminIndex.cshtml";
+}
+<input type="text" value="@Session["DonViID"]" id="DonViID" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["PhongBanId"]" id="PhongBanId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["HoTen"]" id="HoTen" style="display:none">
+
+<button onclick="bbks.Addbbks()">Thêm mới</button>
+
+<table id="tbldanhmuc" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+    <thead>
+        <tr>
+            <th style="width: 10%">Tên biên bản</th>
+            @*<th style="width: 10%">Tình trạng</th>*@
+            <th style="width: 10%">Thao tác</th>
+            @*<th style="width: 10%">Tên nhóm</th>
+        <th style="width: 10%">Thao tác</th>
+        <th style="width: 10%">Tên nhóm</th>
+        <th style="width: 10%">Thao tác</th>*@
+            @*<th style="width: 10%">Tên nhóm</th>
+        <th style="width: 10%">Thao tác</th>*@
+        </tr>
+    </thead>
+</table>
+
+@section scripts2 {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/bienbankhaosat/js/service.js"></script>
+    <script src="~/Scripts/bienbankhaosat/js/util.js"></script>
+    <script src="~/Scripts/bienbankhaosat/js/model_bbks.js"></script>
+    <script src="~/Scripts/bienbankhaosat/js/bbks.js"></script>
+}
+

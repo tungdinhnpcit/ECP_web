@@ -1,0 +1,249 @@
+﻿@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    //Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<link href="~/Content/Loader/jquery.loader.css" rel="stylesheet" />
+<style type="text/css">
+    .hero-unit {
+        position: relative;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+
+       function FixChuKySo() {
+
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        @*$.ajax({
+            type: "GET",
+            url: '/Admin/CCDC/Create',
+            data: {
+                MaNhom: @ViewBag.MaNhom,
+            },
+            success: function (json) {
+
+                $('#modalAnimThem .modal-wrapper').html('');
+                $('#modalAnimThem .modal-wrapper').html(json);
+                $('#modalAnimThem .panel-title').text('Thêm công cụ dụng cụ an toàn');
+
+                $.validator.unobtrusive.parse($('#frmCreate'));
+                $('#frmCreate').submit(function () {
+                    // inside event callbacks 'this' is the DOM element so we first
+                    // wrap it in a jQuery object and then invoke ajaxSubmit
+                    if ($(this).valid())
+                        $(this).ajaxSubmit(options);
+
+                    // !!! Important !!!
+                    // always return false to prevent standard browser submit and page navigation
+                    return false;
+                });
+
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });*@
+
+    }
+
+    /*Kiểm tra chữ kí số
+    Bỏ ra khỏi phiên bản 24.02.2020*/
+    //$(window).load(function () {
+    //    var x = CheckChuKySo();
+    //    if (x == false) {
+    //         $.magnificPopup.open({
+    //        items: {
+    //            src: '#modalAnimThem'
+    //        },
+    //        type: 'inline',
+    //        fixedContentPos: false,
+    //        fixedBgPos: true,
+    //        overflowY: 'auto',
+    //        closeBtnInside: true,
+    //        preloader: false,
+    //        midClick: true,
+    //        removalDelay: 300,
+    //        mainClass: 'my-mfp-zoom-in',
+    //        modal: true
+    //      }, 0);
+    //    }
+    //});
+
+    $(function () {
+
+        //Menu Collapsed Layout
+        $('html').addClass('sidebar-left-collapsed');
+
+        LoadLogAuto();
+        setInterval(function () {
+            LoadLogAuto();
+        }, 300000); //5p
+
+        //LoadBangTongHopLoaiHinhCongViec();
+    });
+
+    function LoadLogAuto() {
+        $('#divlog').append('<div class="loader overlay" style="display: block;"><div class="loader-load"></div><div class="loader-overlay"></div></div>');
+        $.ajax({
+            url: "/Admin/Log/LoadLogAuto",
+            data: {
+            },
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                window.setTimeout(function () {
+                    $('#divlog').html("");
+                    $('#divlog').html(data);
+                }, 1000);
+            }
+        });
+    }
+
+    function ReLoadKeHoachTuan() {
+        $.ajax({
+            url: '/Admin/PhienLV/ReLoadKeHoachTuan',
+            type: 'GET',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+                $("#divMainKeHoachTuan").html(data);
+            }
+        });
+    }
+
+    //function LoadBangTongHopLoaiHinhCongViec() {
+    //    $.ajax({
+    //        url: '/Admin/PhienLV/BangTongHopLoaiHinhCongViec',
+    //        type: 'GET',
+    //        dataType: 'html',
+    //        async: true,
+    //        success: function (data) {
+    //            $("#divBangTongHopLoaiHinhCongViec").html(data);
+    //        }
+    //    });
+    //}
+
+    //Bỏ ra khỏi phiên bản 24.02.2020
+    //function CheckChuKySo() {
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: '/Admin/TaiKhoan/CheckChuKySo',
+    //        data: null,
+    //                cache: false,
+    //                contentType: false,
+    //                processData: false,
+    //                success: function (data) {
+    //                    if (data.success == true) {
+    //                        return true;
+    //                    }
+    //                },
+    //        error: function (e) {
+    //            return false;
+    //                }
+    //    });
+    //}
+</script>
+
+<div id="divMainKeHoachTuan">
+    @Html.Partial("KeHoachTuan", false)
+</div>
+<br />
+
+@*<div id="divBangTongHopLoaiHinhCongViec">
+    <div class="block-fluid" style="margin-top:40px">
+        <div class="panel panel-visible">
+            <div class="panel-heading br-b-n" style="height:50px">
+                <div class="panel-title hidden-xs" style="margin-top:-5px">
+                    <div class="pull-left">
+                        <span class="glyphicon glyphicon-tasks"></span> BẢNG TỔNG HỢP CÁC LOẠI HÌNH CÔNG VIỆC
+                    </div>
+                    <div class="pull-right">
+                        <button onclick="In()" class="btn btn-sm" data-toggle="tooltip" data-placement="top" data-title="In" data-original-title="" title=""><i class="fa fa-print"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body pn">
+                <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <div class="row datatables-header form-inline">
+                        <div class="col-md-2">
+                            <span>Từ ngày: &nbsp;</span>
+                            <input id="BTHCV_GioBd" type="text" placeholder="Thời gian bắt đầu">
+                        </div>
+                        <div class="col-md-2" id="content-denngay">
+                            <span>Đến ngày: </span>
+                            <input id="BTHCV_GioKt" type="text" placeholder="Thời gian kết thúc">
+                        </div>
+                    </div>
+                    <div id="BTHCV_table" class="table-responsive">
+                        <p style="text-align: center;font-weight: bold;height:100px;font-size:15px">Đang tải dữ liệu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<br />
+@*<div id="divlog" class="hero-unit"></div>*@
+
+@Html.Partial("BDPhienLVTheoNgayTrongTuan")
+
+<br />
+@*@Html.Partial("~/Views/Shared/_PartialQuickMenu.cshtml")*@
+@Html.Action("GetQuickMenu", "Home", new { area = "" })
+
+<br />
+<hr />
+@*@Html.Partial("~/Views/Shared/_PartialListDocument.cshtml")*@
+@Html.Action("GetTaiLieuDonVi", "Home", new { area = "" })
+
+@*@Html.Action("TieuChiXetThuong", "Home", new { area = "" })*@
+
+
+<div id="modalAnimThem" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        @using (Html.BeginForm("UpdateChuKySo", "TaiKhoan", FormMethod.Post, new { id = "frmChuKySo", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+        {
+            <div class="callout callout-info mb-20">
+                <p>
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })
+                    @*@Html.HiddenFor(m => m.Id)*@
+                </p>
+            </div>
+            <header class="panel-heading">
+                <h2 class="panel-title">
+                    Thay đổi chữ ký
+                </h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper" style="padding:0;text-align:center;">
+                    <div style="margin-left: 100px;margin-top: 10px;">
+                        @*@Html.EditorFor(m => m.ChuKySo)*@
+                        XYZ
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="LuuChuKySo()" id="modal-confirm">Lưu</button>
+                        <button class="btn btn-success" onclick="FormSubmit()" type="submit">Lưu lại</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        }
+    </section>
+</div>

@@ -1,0 +1,31 @@
+﻿<div id="modal-add-edit" class="bootbox modal fade modal-darkorange in" tabindex="" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Quản lý Nước sản xuất</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" id="frmMaintainance">
+
+                        <div class="form-group row">
+                            <input type="hidden" id="hidIdM" value="0" />
+                            <label for="txtNameM" class="col-sm-3 col-form-label">Tên <label style="color:red; margin-left:3px">*</label></label>
+                            <div class="col-sm-9">
+                                <input type="text" name="txtNameM" class="form-control" id="txtNameM">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right" style="float:right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
+                                <button type="button" id="btnSave" class="btn btn-primary float-right" style="margin-right:15px; float:right"><i class="fa fa-floppy-o" style="margin-right:6px"></i>Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,720 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.DonViChiTieuSuCoViewModels
+
+<div class="row">
+    <div class="pull-left" style="margin-top:10px;padding-left:15px">
+        <h3>Chỉ tiêu năm: <strong>@Model.ChiTieuNam</strong></h3>
+    </div>
+
+</div>
+<div class="row" style="padding-left:10px">
+
+</div>
+<div class="table-responsive">
+    <table cellspacing="0" id="dtGridHLLDCA" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+        <thead>
+            <tr>
+                <th style="vertical-align:middle" class="text-center"></th>
+                <th style="vertical-align:middle" class="text-center">NĂM</th>
+                <th style="vertical-align:middle" class="text-center">T1</th>
+                <th style="vertical-align:middle" class="text-center">T2</th>
+                <th style="vertical-align:middle" class="text-center">T3</th>
+                <th style="vertical-align:middle" class="text-center">T4</th>
+                <th style="vertical-align:middle" class="text-center">T5</th>
+                <th style="vertical-align:middle" class="text-center">T6</th>
+                <th style="vertical-align:middle" class="text-center">T7</th>
+                <th style="vertical-align:middle" class="text-center">T8</th>
+                <th style="vertical-align:middle" class="text-center">T9</th>
+                <th style="vertical-align:middle" class="text-center">T10</th>
+                <th style="vertical-align:middle" class="text-center">T11</th>
+                <th style="vertical-align:middle" class="text-center">T12</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="text-align:center">
+                <td style="vertical-align:middle;font-weight:bold">
+                    Kế hoạch
+                    <input type="hidden" id="hidMaDV" value="@Model.MA_DVIQLY" />
+                    <input type="hidden" id="txtinputSuatNam" value="@Model.ChiTieuNam" />
+                    <input type="hidden" id="hidIdT1" value="@Model.IdT1" />
+                    <input type="hidden" id="hidIdT2" value="@Model.IdT2" />
+                    <input type="hidden" id="hidIdT3" value="@Model.IdT3" />
+                    <input type="hidden" id="hidIdT4" value="@Model.IdT4" />
+                    <input type="hidden" id="hidIdT5" value="@Model.IdT5" />
+                    <input type="hidden" id="hidIdT6" value="@Model.IdT6" />
+                    <input type="hidden" id="hidIdT7" value="@Model.IdT7" />
+                    <input type="hidden" id="hidIdT8" value="@Model.IdT8" />
+                    <input type="hidden" id="hidIdT9" value="@Model.IdT9" />
+                    <input type="hidden" id="hidIdT10" value="@Model.IdT10" />
+                    <input type="hidden" id="hidIdT11" value="@Model.IdT11" />
+                    <input type="hidden" id="hidIdT12" value="@Model.IdT12" />
+                </td>
+                <td style="vertical-align:middle;font-weight:bold" id="lblTongKeHoach">
+                    <p>@string.Format("{0:#,0.##}", Model.ChiTieuNam.GetValueOrDefault())</p>
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT1 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT1.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT1" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT1.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT1.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT2 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT2.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT2" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT2.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT2.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT3 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT3.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT3" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT3.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT3.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT4 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT4.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT4" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT4.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT4.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT5 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT5.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT5" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT5.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT5.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT6 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT6.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT6" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT6.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT6.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT7 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT7.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT7" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT7.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT7.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT8 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT8.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT8" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT8.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT8.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT9 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT9.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT9" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT9.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT9.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT10 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT10.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT10" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT10.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT10.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT11 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT11.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT11" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT11.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT11.GetValueOrDefault())</p>
+                    }
+                </td>
+                <td style="vertical-align:middle;font-weight:bold">
+                    @if (Model.ChiTieuT12 == null)
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotalkehoach()" @(Model.NPCIsOpenT12.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT12" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT12.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotalkehoach()" @(Model.NPCIsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT12.GetValueOrDefault())</p>
+                    }
+                </td>
+            </tr>
+            <tr style="text-align:center">
+                <td style="vertical-align:middle;font-weight:bold">
+                    Thực hiện
+                </td>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT1.GetValueOrDefault() + Model.SoVuTruocMTT2.GetValueOrDefault() + Model.SoVuTruocMTT3.GetValueOrDefault() + Model.SoVuTruocMTT4.GetValueOrDefault() + Model.SoVuTruocMTT5.GetValueOrDefault() + Model.SoVuTruocMTT6.GetValueOrDefault()
+                + Model.SoVuTruocMTT7.GetValueOrDefault() + Model.SoVuTruocMTT8.GetValueOrDefault() + Model.SoVuTruocMTT9.GetValueOrDefault() + Model.SoVuTruocMTT10.GetValueOrDefault() + Model.SoVuTruocMTT11.GetValueOrDefault() + Model.SoVuTruocMTT12.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT1.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT2.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT3.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT4.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT5.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT6.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT7.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT8.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT9.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT10.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT11.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @string.Format("{0:#,0.##}", Model.SoVuTruocMTT12.GetValueOrDefault())
+                </th>
+            </tr>
+            @*<tr style="text-align:center">
+                    <td style="vertical-align:middle;font-weight:bold">
+                        Thực hiện sau miễn trừ
+                    </td>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT1.GetValueOrDefault() + Model.SoVuSauMTT2.GetValueOrDefault() + Model.SoVuSauMTT3.GetValueOrDefault() + Model.SoVuSauMTT4.GetValueOrDefault() + Model.SoVuSauMTT5.GetValueOrDefault() + Model.SoVuSauMTT6.GetValueOrDefault()
+                        + Model.SoVuSauMTT7.GetValueOrDefault() + Model.SoVuSauMTT8.GetValueOrDefault() + Model.SoVuSauMTT9.GetValueOrDefault() + Model.SoVuSauMTT10.GetValueOrDefault() + Model.SoVuSauMTT11.GetValueOrDefault() + Model.SoVuSauMTT12.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT1.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT2.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT3.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT4.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT5.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT6.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT7.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT8.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT9.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT10.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT11.GetValueOrDefault())
+                    </th>
+                    <th style="vertical-align:middle" class="text-center">
+                        @string.Format("{0:#,0.##}", Model.SoVuSauMTT12.GetValueOrDefault())
+                    </th>
+                </tr>*@
+            <tr style="text-align:center">
+                <td style="vertical-align:middle;font-weight:bold">
+                    Kế hoạch sau điều chuyển
+                </td>
+                <th style="vertical-align:middle" class="text-center" id="lblTongKeHoachDC">
+                    @string.Format("{0:#,0.##}", Model.ChiTieuT1SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT2SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT3SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT4SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT5SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT6SauDieuChuyen.GetValueOrDefault()
+                    + Model.ChiTieuT7SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT8SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT9SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT10SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT11SauDieuChuyen.GetValueOrDefault() + Model.ChiTieuT12SauDieuChuyen.GetValueOrDefault())
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT1 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT1SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT1.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT1" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT1SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT1.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT2 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT2SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT2.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT2" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT2SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT2.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT3 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT3SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT3.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT3" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT3SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT3.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT4 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT4SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT4.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT4" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT4SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT4.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT5 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT5SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT5.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT5" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT5SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT5.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT6 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT6SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT6.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT6" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT6SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT6.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT7 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT7SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT7.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT7" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT7SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT7.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT8 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT8SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT8.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT8" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT8SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT8.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT9 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT9SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT9.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT9" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT9SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT9.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT10 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT10SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT10.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT10" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT10SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT10.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT11 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT11SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT11.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT11" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT11SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT11.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+                <th style="vertical-align:middle" class="text-center">
+                    @if (Model.ChiTieuT12 == null)
+                    {
+                        <p>@string.Format("{0:#,0.##}", Model.ChiTieuT12SauDieuChuyen)</p>
+                    }
+                    else
+                    {
+                        <div data-plugin-spinner data-plugin-options='{ "value":0, "min": 0, "max": 999999 }'>
+                            <div class="input-group input-small">
+                                <input onkeyup="updatetotal()" @(Model.NPCIsOpenT12.GetValueOrDefault() ? "" : "disabled") id="txtinputSuatT12" type="text" onClick="this.select();" style="text-align:center" class="spinner-input form-control" value="@Model.ChiTieuT12SauDieuChuyen.GetValueOrDefault()">
+                                <div class="spinner-buttons input-group-btn btn-group-vertical">
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-up btn-xs btn-default">
+                                        <i class="fa fa-angle-up"></i>
+                                    </button>
+                                    <button onclick="updatetotal()" @(Model.NPCIsOpenT12.GetValueOrDefault() ? "" : "disabled") type="button" class="btn spinner-down btn-xs btn-default">
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Spinner
+    (function ($) {
+
+        'use strict';
+
+        if ($.isFunction($.fn['spinner'])) {
+
+            $(function () {
+                $('[data-plugin-spinner]').each(function () {
+                    var $this = $(this),
+                        opts = {};
+
+                    var pluginOptions = $this.data('plugin-options');
+                    if (pluginOptions)
+                        opts = pluginOptions;
+
+                    $this.themePluginSpinner(opts);
+                });
+            });
+
+        }
+
+    }).apply(this, [jQuery]);
+
+
+    $(function () {
+        @if((Model.ChiTieuNam??0)==0)
+        {
+            @:$("#btnSave").css("display","none");
+        }
+    });
+
+</script>
+

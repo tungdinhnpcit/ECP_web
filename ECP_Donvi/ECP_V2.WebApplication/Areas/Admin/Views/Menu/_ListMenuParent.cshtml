@@ -1,0 +1,4 @@
+﻿@if (ViewBag.MenuParent != null)
+{
+    @Html.DropDownList("MenuParent", (IEnumerable<SelectListItem>)ViewBag.MenuParent, "Chọn mục cha ...", new { @class = "form-control", @id = "drlMenuParent" })
+}

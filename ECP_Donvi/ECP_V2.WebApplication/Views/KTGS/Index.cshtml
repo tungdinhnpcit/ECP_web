@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdminIndex.cshtml";
+}
+
+
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+
+<h4>Thống kê tình hình lập biên bản</h4>
+
+<div style="margin: 3px;">
+    <div style="display:inline">
+        <label class="input-group-text" for="inputGroupSelect01">Chọn đơn vị</label>
+    </div>
+    <select class="custom-select" id="cbodonvi">
+        <option selected value="-1">Tất cả</option>
+        <option value="PA01">
+            CÔNG TY ĐIỆN LỰC NAM ĐỊNH
+        </option>
+        <option value="PA02">
+            CÔNG TY ĐIỆN LỰC PHÚ THỌ
+        </option>
+        <option value="PA03">
+            CÔNG TY ĐIỆN LỰC QUẢNG NINH
+        </option>
+        <option value="PA04">
+            CÔNG TY ĐIỆN LỰC THÁI NGUYÊN
+        </option>
+        <option value="PA05">
+            CÔNG TY ĐIỆN LỰC BẮC GIANG
+        </option>
+        <option value="PA07">
+            CÔNG TY ĐIỆN LỰC THANH HÓA
+        </option>
+        <option value="PA09">
+            CÔNG TY ĐIỆN LỰC THÁI BÌNH
+        </option>
+        <option value="PA10">
+            CÔNG TY ĐIỆN LỰC YÊN BÁI
+        </option>
+        <option value="PA11">
+            CÔNG TY ĐIỆN LỰC LẠNG SƠN
+        </option>
+        <option value="PA12">
+            CÔNG TY ĐIỆN LỰC TUYÊN QUANG
+        </option>
+        <option value="PA13">
+            CÔNG TY ĐIỆN LỰC NGHỆ AN
+        </option>
+        <option value="PA14">
+            CÔNG TY ĐIỆN LỰC CAO BẰNG
+        </option>
+        <option value="PA15">
+            CÔNG TY ĐIỆN LỰC SƠN LA
+        </option>
+        <option value="PA16">
+            CÔNG TY ĐIỆN LỰC HÀ TĨNH
+        </option>
+        <option value="PA17">
+            CÔNG TY ĐIỆN LỰC HOÀ BÌNH
+        </option>
+        <option value="PA18">
+            CÔNG TY ĐIỆN LỰC LÀO CAI
+        </option>
+        <option value="PA19">
+            CÔNG TY ĐIỆN LỰC ĐIỆN BIÊN
+        </option>
+        <option value="PA20">
+            CÔNG TY ĐIỆN LỰC HÀ GIANG
+        </option>
+        <option value="PA22">
+            CÔNG TY ĐIỆN LỰC BẮC NINH
+        </option>
+        <option value="PA23">
+            CÔNG TY ĐIỆN LỰC HƯNG YÊN
+        </option>
+        <option value="PA24">
+            CÔNG TY ĐIỆN LỰC HÀ NAM
+        </option>
+        <option value="PA25">
+            CÔNG TY ĐIỆN LỰC VĨNH PHÚC
+        </option>
+        <option value="PA26">
+            CÔNG TY ĐIỆN LỰC BẮC KẠN
+        </option>
+        <option value="PA29">
+            CÔNG TY ĐIỆN LỰC LAI CHÂU
+        </option>
+        <option value="PAT1">
+            CÔNG TY THÍ NGHIỆM ĐIỆN MIỀN BẮC
+        </option>
+        <option value="PAX1">
+            CÔNG TY DỊCH VỤ ĐIỆN LỰC MIỀN BẮC
+        </option>
+        <option value="PH">
+            CÔNG TY ĐIỆN LỰC HẢI PHÒNG
+        </option>
+        <option value="PM">
+            CÔNG TY ĐIỆN LỰC HẢI DƯƠNG
+        </option>
+        <option value="PN">
+            CÔNG TY ĐIỆN LỰC NINH BÌNH
+        </option>
+
+    </select>
+
+
+    <div style="display:inline">
+        <label class="input-group-text">Tháng</label>
+    </div>
+    <select class="custom-select" id="cbothang">
+        <option selected value="1">1</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Năm</label>
+    </div>
+    <select class="custom-select" id="cbonam">
+        <option selected value="2021">2021</option>
+        <option value="2022">2022</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Có tồn tại</label>
+    </div>
+    <select class="custom-select" id="cbotontai">
+        <option selected value="-1">Tất cả</option>
+        <option value="co">Có tồn tại</option>
+        <option value="khong">Không tồn tại</option>
+    </select>
+
+    <div style="display:inline">
+        <label class="input-group-text">Khắc phục</label>
+    </div>
+    <select class="custom-select" id="cbokpngay">
+        <option selected value="-1">Tất cả</option>
+        <option value="kpn">Khắc phục ngay</option>
+        <option value="dkp">Đã khắc phục</option>
+        <option value="ckp">Chưa khắc phục</option>
+    </select>
+
+    <a onclick="ktgs.loaddata()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Thông kê</a>
+    <a onclick="ktgs.excel()" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o mr-5"></i>Xuất excel</a>
+</div>
+
+<div>
+
+    <table id="tblktgs" class="dataTable table table-striped table-bordered table-hover" cellspacing="0" style="width: 100%!important;">
+        <thead>
+            <tr>
+                <th style="width: 50%">Đơn vị</th>
+                <th style="width: 15%">Tổng số biên bản</th>
+                <th style="width: 15%">Số biên bản tồn tại</th>
+                <th style="width: 15%">Số biên bản tồn tại đã khắc phục</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_ds_ktgs.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_bb_ctiet.js"></script>
+    <script src="~/Scripts/KTGS/js/modal_kptt.js"></script>
+    <script src="~/Scripts/KTGS/js/ktgs.js"></script>
+}
+<style>
+    select {
+        display: inline !important;
+    }
+
+    .body-content {
+        background-color: #ffffff;
+    }
+
+    .imgthump {
+        height: 128px;
+        width: 128px;
+        padding: 2px;
+        background-color: #cecece;
+    }
+</style>
+
+

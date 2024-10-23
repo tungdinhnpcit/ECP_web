@@ -1,0 +1,549 @@
+﻿@model ECP_V2.Common.Helpers.PageData<ECP_V2.Business.Repository.SuCoModel>
+@{
+    <script type="text/javascript">
+        $(function () {
+            $('a.delete').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdDelete = $(this).attr("id").split("_")[1];
+            });
+
+            $('a.edit').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                SuaLoaiCCDC($(this).attr("id").split("_")[1]);
+
+            });
+
+
+            $('a.kiennghi').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                IdDelete = $(this).attr("id").split("_")[1];
+                $("#txtNoiDungKienNghi").val('');
+                document.getElementById("uploadBtnKienNghi").value = "";
+                $("#upload_prevKienNghi").html('');
+            });
+
+            $('a.detail').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                ChiTietSuCo($(this).attr("id").split("_")[1]);
+
+            });
+
+            $('.prev').on('click', function (e) {
+                e.preventDefault();
+                Paging(1, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+            $('.page-number').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).html());
+                Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+            $('.next').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($("#btnLast").data("sum"));
+                Paging(page, $("#drlPageSize").val(), $("#txtSearch").val());
+            });
+
+        });
+    </script>
+
+    <style>
+        .DuyetNPC {
+            color: #000eb6;
+            font-weight: bold;
+        }
+    </style>
+
+    <div class="table-responsive">
+        <table style="width:6000px" cellspacing="0" id="dtGridPhienLV" class="table table-bordered table-congviec table-striped mb-none dataTable no-footer" role="grid" aria-describedby="datatable-default_info">
+            <thead>
+                <tr>
+                    <th style="text-align:center;padding-left:5px;padding-right:5px" rowspan="2">
+                        <div class="checkbox-custom" style="padding-left:0;text-align:center">
+                            <input id="dtGridPhienLVcheckAll" type="checkbox" onclick="checkall(this)" class="checkAll">
+                            <label for="dtGridPhienLVcheckAll"></label>
+                        </div>
+                    </th>
+                    <th style="text-align:center" rowspan="2">
+                        #
+                    </th>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("DieuDo") || User.IsInRole("Master"))
+                    {
+                        <th rowspan="2">
+                            Thao tác
+                        </th>
+                    }
+                    <th rowspan="2">
+                        Điện lực bị sự cố
+                    </th>
+                    <th rowspan="2">
+                        Điện lực tạo sự cố
+                    </th>
+                    <th rowspan="2">
+                        Cấp điện áp
+                    </th>
+                    <th rowspan="2">
+                        Tên đường dây, trạm bị sự cố
+                    </th>
+                    @*<th rowspan="2">
+            Diễn biến sự cố
+        </th>*@
+                    <th rowspan="2" style="width:500px">
+                        Tóm tắt nguyên nhân
+                    </th>
+                    <th rowspan="2">
+                        Loại sự cố
+                    </th>
+                    <th colspan="2">
+                        Hồ sơ điều tra sự cố (BBĐTSC và hình ảnh)
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Thời gian xuất hiện sự cố
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Thời gian bắt đầu giao thiết bị khắc phục sự cố
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Thời gian khắc phục xong sự cố
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Thời gian khôi phục đóng điện
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Khoảng thời gian từ lúc xuất hiện sự cố đến lúc bắt đầu khắc phục (phút)
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Khoảng thời gian từ lúc đầu khắc phục sự cố đến lúc khắc phục xong (phút)
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Khoảng thời gian từ lúc khắc phục xong đến lúc khôi phục đóng điện (phút)
+                    </th>
+                    <th rowspan="2" style="width:200px">
+                        Tổng thời gian mất điện do sự cố (phút)
+                    </th>
+                    <th rowspan="2">
+                        Tài sản điện lực/ khách hàng
+                    </th>
+                    <th rowspan="2">
+                        Trạng thái
+                    </th>
+                    <th rowspan="2">
+                        Trạng thái nhập
+                    </th>
+                    <th rowspan="2">
+                        Miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Duyệt Miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Người duyệt Miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Ngày duyệt Miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Phản hồi duyệt Miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Tính chất
+                    </th>
+                    <th rowspan="2">
+                        Người kiến nghị miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Ngày kiến nghị miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Tài liệu kiến nghị miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Nội dung kiến nghị miễn trừ
+                    </th>
+                    <th rowspan="2">
+                        Thời tiết khi xảy ra sự cố
+                    </th>
+                    <th rowspan="2">
+                        Ghi chú
+                    </th>
+                    @*<th rowspan="2">
+            Gián đoạn cung cấp điện cho khách hàng (có/không)
+        </th>*@
+
+                </tr>
+                <tr>
+                    <th>
+                        BBĐTSC
+                    </th>
+                    <th>
+                        Hình ảnh phần tử sự cố
+                    </th>
+                </tr>
+                <tr>
+                    <th style="text-align:center">
+                    </th>
+                    <th style="text-align:center">
+                        1
+                    </th>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("DieuDo") || User.IsInRole("Master"))
+                    {
+                        <th style="text-align:center">
+                            2
+                        </th>
+                    }
+                    <th style="text-align:center">
+                        3
+                    </th>
+                    <th style="text-align:center">
+                        4
+                    </th>
+                    <th style="text-align:center">
+                        5
+                    </th>
+                    <th style="text-align:center">
+                        6
+                    </th>
+                    <th style="text-align:center">
+                        7
+                    </th>
+                    <th style="text-align:center">
+                        8
+                    </th>
+                    <th style="text-align:center">
+                        9
+                    </th>
+                    <th style="text-align:center">
+                        10
+                    </th>
+                    <th style="text-align:center">
+                        11
+                    </th>
+                    <th style="text-align:center">
+                        12
+                    </th>
+                    <th style="text-align:center">
+                        13
+                    </th>
+                    <th style="text-align:center">
+                        14
+                    </th>
+                    <th style="text-align:center">
+                        15
+                    </th>
+                    <th style="text-align:center">
+                        16
+                    </th>
+                    <th style="text-align:center">
+                        17
+                    </th>
+                    <th style="text-align:center">
+                        18
+                    </th>
+                    <th style="text-align:center">
+                        19
+                    </th>
+                    <th style="text-align:center">
+                        20
+                    </th>
+                    <th style="text-align:center">
+                        21
+                    </th>
+                    <th style="text-align:center">
+                        22
+                    </th>
+                    <th style="text-align:center">
+                        23
+                    </th>
+                    <th style="text-align:center">
+                        24
+                    </th>
+                    <th style="text-align:center">
+                        25
+                    </th>
+                    <th style="text-align:center">
+                        26
+                    </th>
+                    <th style="text-align:center">
+                        27
+                    </th>
+                    <th style="text-align:center">
+                        28
+                    </th>
+                    <th style="text-align:center">
+                        29
+                    </th>
+                    <th style="text-align:center">
+                        30
+                    </th>
+                    <th style="text-align:center">
+                        31
+                    </th>
+                    <th style="text-align:center">
+                        32
+                    </th>
+                    <th style="text-align:center">
+                        33
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    double sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0;
+                }
+                @foreach (var item in Model.Data)
+                {
+                    string style = "";
+                    var gianDoan = item.IsGianDoan == true ? "Có" : "Không";
+                    var taisan = item.IsTaiSan == true ? "Điện lực" : "Khách hàng";
+                    var mientru = item.IsMienTru == true ? "Có" : "Không";
+                    var urlBaoCao = "";
+                    var urlHinhAnh = "";
+                    var duyet = "";
+                    if (item.TrangThai != null)
+                    {
+                        if (item.TrangThai == 2)
+                        {
+                            duyet = "<i class='fa fa-check'></i>";
+                        }
+                        else
+                        {
+                            duyet = "";
+                        }
+                    }
+
+
+                    sum1 = sum1 + (item.T_XuatHienBatDauKhacPhuc != null ? item.T_XuatHienBatDauKhacPhuc.Value : 0);
+                    sum2 = sum2 + (item.T_BatDauDenKhacPhucXong != null ? item.T_BatDauDenKhacPhucXong.Value : 0);
+                    sum3 = sum3 + (item.T_KhacPhucXongDenKhoiPhuc != null ? item.T_KhacPhucXongDenKhoiPhuc.Value : 0);
+                    sum4 = sum4 + (item.T_TongThoiGianMatDien != null ? item.T_TongThoiGianMatDien.Value : 0);
+
+
+
+                    if (item.TinhTrangBienBan.HasValue)
+                    {
+                        using (ECP_V2.Business.Repository.sc_TaiLieuRepository _tlieu_SuCo_ser = new ECP_V2.Business.Repository.sc_TaiLieuRepository())
+                        {
+                            var tl = _tlieu_SuCo_ser.GetTaiLieuBySuCoId(item.Id);
+                            if (tl != null && !String.IsNullOrEmpty(tl.Url))
+                            {
+                                urlBaoCao = Url.Content("~/DocumentFiles/TaiLieuSuCo/" + tl.Url);
+                            }
+                            else
+                            {
+                                urlBaoCao = "";
+                            }
+                        }
+                    }
+
+                    if (item.HinhAnhSuCo.HasValue)
+                    {
+                        using (ECP_V2.Business.Repository.sc_TaiLieuRepository _tlieu_SuCo_ser = new ECP_V2.Business.Repository.sc_TaiLieuRepository())
+                        {
+                            var tl = _tlieu_SuCo_ser.GetHinhAnhBySuCoId(item.Id);
+                            if (tl != null && !String.IsNullOrEmpty(tl.Url))
+                            {
+                                urlHinhAnh = Url.Content("~/DocumentFiles/TaiLieuSuCo/" + tl.Url);
+                            }
+                            else
+                            {
+                                urlHinhAnh = "";
+                            }
+                        }
+                    }
+
+                    if (item.IsChuyenNPC == true)
+                    {
+                        style = "DuyetNPC";
+                    }
+
+                    <tr class="@style">
+                        @if (item.IsChuyenNPC != null && item.IsChuyenNPC == true)
+                        {
+                            <td class="imgNoiDung" style="min-width:80px;max-width:80px;width:80px;text-align:center">
+                                @*<div class="checkbox-custom" style="margin-left:22px">
+                                        <input id="@item.Id" value="@item.Id" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
+                                        <label for="@item.Id"></label>
+                                    </div>*@
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="min-width:30px;max-width:30px;width:30px;text-align:center">
+                                <div class="checkbox-custom" style="@(Model.Data.Count(o=>o.IsChuyenNPC.GetValueOrDefault())>0?"margin-left:22px":"margin-left:-3px")">
+                                    <input id="@item.Id" value="@item.Id" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
+                                    <label for="@item.Id"></label>
+                                </div>
+                            </td>
+                        }
+                        <td style="text-align:center">@(Model.Data.IndexOf(item) + 1)</td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("DieuDo") || User.IsInRole("Master"))
+                        {
+                            <td>
+                                <a id="Detail_@item.Id" href="#modalChiTiet" title="Chi tiết" class="on-default detail-row detail"><i class="fa fa-search" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                                <a id="Edit_@item.Id" href="#modalAnimSua" title="Sửa" class="on-default edit-row edit"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                                <a id="VTTB_@item.Id" data-id="@item.Id" href="#" title="Thêm Vật tư, thiết bị bị sự cố" class="on-default btn-vttb"><i class="fa fa-wrench" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                                @if (item.IsChuyenNPC.GetValueOrDefault() == false)
+                                {
+                                    <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer;color:black"></i></a>
+                                }
+                                else if (item.IsChuyenNPC.GetValueOrDefault())
+                                {
+                                    <a id="KienNghi_@item.Id" href="#modalAnimKienNghi" title="Kiến nghị miễn trừ" class="on-default kiennghi"><i class="fa fa-mail-reply-all" style="font-size:25px;cursor:pointer;color:black"></i></a>
+                                }
+                            </td>
+                        }
+                        <td>@item.lstDonViSuCoId</td>
+                        <td>@item.TenDvi</td>
+                        <td>@item.CapDienAp (kV)</td>
+                        <td>@item.TenThietBi</td>
+                        @*<td>@item.DienBienSuCo</td>*@
+                        <td>@item.TomTat</td>
+                        <td>@item.LoaiSuCo</td>
+                        <td style="text-align:center">
+                            @if (!String.IsNullOrEmpty(urlBaoCao))
+                            {
+                                <a href="@urlBaoCao" target="_blank">Có</a>
+                            }
+                            else
+                            {
+                                <p style="color:red;">Không</p>
+                            }
+                        </td>
+                        <td style="text-align:center">
+                            @if (!String.IsNullOrEmpty(urlHinhAnh))
+                            {
+                                <a href="@urlHinhAnh" target="_blank">Có</a>
+                            }
+                            else
+                            {
+                                <p style="color:red;">Không</p>
+                            }
+                        </td>
+                        <td>@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.ThoiGianXuatHien)</td>
+                        <td>@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.ThoiGianBatDauKhacPhuc)</td>
+                        <td>@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.ThoiGianKhacPhucXong)</td>
+                        <td>@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.ThoiGianKhoiPhuc)</td>
+                        <td>@item.T_XuatHienBatDauKhacPhuc</td>
+                        <td>@item.T_BatDauDenKhacPhucXong</td>
+                        <td>@item.T_KhacPhucXongDenKhoiPhuc</td>
+                        <td>@item.T_TongThoiGianMatDien</td>
+                        <td>@taisan</td>
+                        <td style="text-align:center">
+                            @Html.Raw(@duyet)
+                        </td>
+                        <td>@item.TrangThaiNhap</td>
+                        <td>@mientru</td>
+                        <td>
+                            @if (item.NPCIsDuyetMT == true)
+                            {
+                                <span>Có</span>
+                            }
+                            else if (item.NPCIsDuyetMT == false)
+                            {
+                                <span style="color:red">Không</span>
+                            }
+                        </td>
+                        <td>@item.NPCTenNguoiDuyetMT</td>
+                        <td>@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NPCNgayDuyetMT)</td>
+                        <td>@item.NPCCommentMT</td>
+                        <td>@item.TinhChat</td>
+                        <td>@item.NguoiKienNghi</td>
+                        <td>@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayKienNghi)</td>
+                        <td style="text-align:center">
+                            @if (item.lstTLKN != null && item.lstTLKN.Count() > 0)
+                            {
+                                foreach (var it in item.lstTLKN)
+                                {
+                                    <p style="font-size:15px"><a href="~/DocumentFiles/TaiLieuKienNghi/@it.Url" target="_blank">@it.Description</a></p>
+                                }
+                            }
+
+                        </td>
+                        <td>@item.NoiDungKienNghi</td>
+                        <td>@item.ThoiTiet</td>
+                        <td>@item.GhiChu</td>
+
+                    </tr>
+                }
+
+                <tr>
+                    <th style="text-align:center" colspan="13">
+                        Tổng hợp số thời gian
+                    </th>
+
+                    <th style="text-align:left">
+                        @sum1
+                    </th>
+                    <th style="text-align:left">
+                        @sum2
+                    </th>
+                    <th style="text-align:left">
+                        @sum3
+                    </th>
+                    <th style="text-align:left">
+                        @sum4
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("Pager", Model.Page)
+}

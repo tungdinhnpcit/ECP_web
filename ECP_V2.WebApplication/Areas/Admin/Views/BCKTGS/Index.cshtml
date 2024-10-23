@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"].ToString()" id="DonViID" style="display:none">
+<h4><i class="fa fa-bar-chart-o"> </i> Báo cáo Kiểm tra giám sát</h4>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="form-group">
+                <label for="cbodonvi">Đơn vị:</label>
+                <select class="form-control" id="cboDonvi">
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="cboLoai">Loại báo cáo:</label>
+                <select class="form-control" id="cboLoai">
+                    <option value="1">Tháng</option>
+                    <option value="2">Năm</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-1">
+            <div class="form-group">
+                <label for="cboThang" id="lbThang">Tháng:</label>
+                <select class="form-control" id="cboThang">
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label for="cboNam">Năm:</label>
+                <select class="form-control" id="cboNam">
+                    <option>2022</option>
+                    <option selected>2023</option>
+                    <option>2024</option>
+                    <option>2025</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group" style="padding-top:28px;float:right;">
+                <button type="button" class="btn btn-primary" id="btnSave" onclick="bc_ktgs.loadData();">Xem</button>
+                <button type="button" class="btn btn-success" id="btnExcel" onclick="Export();"><i class="fa fa-file-excel-o"></i> Xuất Excel</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top:10px;">
+        <table class="table table-bordered table-responsive table-striped" id="tblKtgs" style="width:100%;">
+            <thead>
+                <tr>
+                    <th width="20%"></th>
+                    @*<th>Tên đơn vị</th>
+                    <th>Tên nhóm</th>
+                    <th>Tên</th>*@
+                    <th width="10%">Tháng</th>
+                    <th width="10%">Chỉ tiêu</th>
+                    <th width="10%">Đã kiểm tra</th>
+                    <th width="10%">Có tồn tại</th>
+                    <th width="10%">Đã khắc phục</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+}
+
+@section scriptsAdd {
+    $('#cboLoai').change(hideMonth);
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/bc_ktgs.js"></script>
+}
+<style>
+    .borders div {
+        border-right: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+
+    tr.group,
+    tr.group:hover {
+        background-color: #74b9ff !important;
+    }
+</style>

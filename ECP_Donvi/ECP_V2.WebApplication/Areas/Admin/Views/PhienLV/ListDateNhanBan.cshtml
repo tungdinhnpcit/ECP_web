@@ -1,0 +1,17 @@
+﻿@model List<DateTime>
+
+@if(Model != null)
+{
+
+    <ul style="list-style-type: none;">
+
+        @foreach (var item in Model)
+        {
+            <li>
+                <input type="checkbox" class="chkDate" value="@string.Format("{0:dd/MM/yyyy}", item)" /> @ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(item)
+            </li>
+        }
+
+    </ul>
+
+}

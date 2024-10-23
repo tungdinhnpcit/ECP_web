@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Index3";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<div class="head" id="ndContent">
+    <!-- Modal Animation -->
+    <div id="modalAnim" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn xóa dữ liệu?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span> Phiên làm việc
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline">
+                    <div class="col-sm-12 col-md-6">                        
+                        <div class="col-sm-4 col-md-4">
+                            <select data-plugin-selectTwo class="form-control populate" style="width: 75px;" id="drlPageSize">
+                                <option value="5">5</option>
+                                <option value="10" selected="selected">10</option>
+                                <option value="15">15</option>
+                                <option value="20">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>                  
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div id="datatable-default_filter" class="dataTables_filter">
+                            <label>
+                                @*<input type="search" class="form-control" placeholder="Tìm kiếm" aria-controls="datatable-default">*@
+                                <input class="form-control" type="text" placeholder="Tìm kiếm..." value="@ViewBag.CurrentFilter" id="txtSearch" onkeypress="txtSearch_onKeyPress(event,this)"
+                                       onkeyup="txtSearch_onkeyup(event,this)" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        Đơn vị
+                    </div>
+                    <div class="col-sm-7">
+                        @*@if((IEnumerable<SelectListItem>)ViewBag.ListDvi!=null)
+                        @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDvi, "Chọn đơn vị ...", new { @class = "form-control populate", @id = "drlDvi" })*@
+                        <select class="form-control" id="cmbDonViID" style="margin-left:0px" onchange="donvi_change(this)">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+                    </div>               
+               
+                </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        Phòng ban
+                    </div>
+                    <div class="col-sm-7">
+                        @*@Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPBan, "Chọn phòng ban ...", new { @class = "form-control populate", @id = "drlPhongBan" })*@
+                        <select style="margin-left:-5px" class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                    </div>
+                </div>
+                <div class="listRolesName list">
+                    @{Html.RenderAction("List", "EPhienLV", new { page = 1, pageSize = 5, sortOrder = "", filter = "" });}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    a.glyphicon:hover {
+        text-decoration: none;
+    }
+</style>
+@section JavaScriptOnePgae{
+    <script type="text/javascript">        
+
+        $(function () {
+
+            var pageSize = 10;
+
+            $("#drlPageSize").change(function () {
+                var optionSelected = $(this).find("option:selected");
+                var valueSelected = optionSelected.val();
+                var textSelected = optionSelected.text();
+                pageSize = valueSelected;
+                var page = parseInt($(".page-number-Current").html());
+                var currentSearh = $('#txtSearch').val();
+                var curentSort = null;
+                var scriptUrl = "/EPhienLV/List?page=" + page + "&pageSize=" + pageSize + "&sortOrder=" + curentSort + "&currentFilter=" + currentSearh;
+                $.ajax({
+                    url: scriptUrl,
+                    type: 'get',
+                    dataType: 'html',
+                    async: false,
+                    success: function (data) {
+                        $(".list").html("");
+                        $(".list").html(data);
+                        $("#drlPageSize").val(pageSize);
+                    }
+                });
+            });        
+        });
+
+        function donvi_change(el) {            
+            LoadPhongBanByDonVi(el.value);
+            //Paging(1, 10, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#GioBd').val(), $('#GioKt').val(), el.value, $('#cmbPhongBan').val());
+        }
+
+        function LoadPhongBanByDonVi(DonViId) {
+
+            $.ajax({
+                url: "/EPhienLV/CmbPhongBan",
+                data: {
+                    DonViId: DonViId
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+
+                    $('#cmbPhongBan').html("");
+                    $('#cmbPhongBan').html(data);
+
+                }
+            });
+        }
+
+        
+    </script>
+}

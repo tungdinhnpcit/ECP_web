@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<h2>Chọn chức năng</h2>
+<div class="col-sm-3 col-sm-offset-4 clearfix" style="min-height:100%">
+    <section style="padding:5px 5px;">
+        <a class="btn btn-default" style="width:100%;" href="@Url.Action("Home","Index")">Trang chủ</a>                
+    </section>
+    <section style="padding:5px 5px;">
+        <a class="btn btn-success" style="width:100%;" href="@Url.Action("UploadPLviec","Index")">Tải ảnh theo phiên làm việc</a>
+    </section>
+    <section style="padding:5px 5px;">
+        <a class="btn btn-primary" style="width:100%;" href="@Url.Action("FileUpload","Index")">Tải ảnh không theo phiên</a>
+    </section>
+</div>
+<div class="clear">
+
+</div>
+

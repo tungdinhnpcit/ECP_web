@@ -1,0 +1,206 @@
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.pccc_ThietBiPCCCViewModels
+@{
+    Layout = null;
+}
+
+<link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
+<style>
+    select {
+        height: 40px;
+        padding: 0;
+    }
+    #divUpLoad .fileUpload {
+        position: relative;
+        overflow: hidden;
+    }
+
+        #divUpLoad .fileUpload input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            background-color: #fff;
+            filter: alpha(opacity=0);
+        }
+
+    #divUpLoad .filenameupload {
+        width: 98%;
+    }
+
+    #divUpLoad #upload_prev {
+        padding: 5px;
+    }
+
+        #divUpLoad #upload_prev span {
+            display: flex;
+            padding: 0 5px;
+            font-size: 13px;
+            margin: 5px;
+        }
+
+            #divUpLoad #upload_prev span:hover {
+                background-color: #e6f7ff;
+            }
+
+    #divUpLoad p.close {
+        cursor: pointer;
+        font-size: 15px;
+    }
+</style>
+<div style="padding:10px">
+    @using (Html.BeginForm("CreateKD", "PCCC", FormMethod.Post, new { id = "frmCreateKD", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="row">
+            <div class="col-md-3">
+                <label class="control-label" for="LanKiemTra">Lần TN, kiểm định, kiểm tra</label>
+                <div class="clearfix"></div>
+                <div data-plugin-spinner data-plugin-options='{ "value":1, "min": 1, "max": 9999 }'>
+                    <div class="input-group input-small">
+                        @Html.TextBoxFor(model => model.LanKiemTra, new { @class = "spinner-input form-control", @onClick = "this.select();", @style = "width:100px" })
+                        <div class="spinner-buttons input-group-btn btn-group-vertical" style="float:left;width:22px">
+                            <button type="button" class="btn spinner-up btn-xs btn-default">
+                                <i class="fa fa-angle-up"></i>
+                            </button>
+                            <button type="button" class="btn spinner-down btn-xs btn-default">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @Html.ValidationMessageFor(model => model.LanKiemTra)
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="NgayKiemTra">Ngày TN, kiểm định, kiểm tra</label>
+                <div class="clearfix"></div>
+                @Html.TextBoxFor(model => model.NgayKiemTra, new { })
+                @Html.ValidationMessageFor(model => model.NgayKiemTra)
+               
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="BienBanSo">Biên bản số</label>
+                @Html.TextBoxFor(model => model.BienBanSo, new { @class = "form-control", @placeholder = "Nhập biên bản số ..." })
+                @Html.ValidationMessageFor(model => model.BienBanSo)
+            </div>
+            <div class="col-md-3">
+                <label class="control-label">Kết quả</label>
+                <div class="checkbox-custom">
+                    <input type="checkbox" id="KetQua" name="KetQua" onclick="ChangeCheckBox()" value='@(Model.KetQua.GetValueOrDefault()?"true":"false")'>
+                    <label for="KetQua">Đạt/ Không đạt</label>
+                </div>
+                @Html.ValidationMessageFor(model => model.KetQua)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label class="control-label" for="NguoiKiemTra">Người kiểm tra</label>
+                @Html.TextBoxFor(model => model.NguoiKiemTra, new { @class = "form-control", @placeholder = "Nhập người kiểm tra ..." })
+                @Html.ValidationMessageFor(model => model.NguoiKiemTra)
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="DonViKiemTra">Đơn vị thí nghiệm, kiểm định ,kiểm tra</label>
+                @Html.TextBoxFor(model => model.DonViKiemTra, new { @class = "form-control", @placeholder = "Nhập đơn vị thí nghiệm, kiểm định ,kiểm tra ..." })
+                @Html.ValidationMessageFor(model => model.DonViKiemTra)
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-12">
+                <label class="control-label" for="GhiChu">Ghi chú</label>
+                @Html.TextAreaFor(model => model.GhiChu, new { @class = "form-control", @placeholder = "Nhập ghi chú ..." })
+                @Html.ValidationMessageFor(model => model.GhiChu)
+            </div>
+        </div>
+        <div id="divUpLoad" class="row" style="margin-bottom:5px;padding-left:15px;margin-top:10px">
+            <label class="control-label">
+                Tài liệu đính kèm
+            </label>
+            <div class="fileUpload btn btn-primary btn-sm">
+                <i class="fa fa-upload mr-5"></i>
+                <span>Chọn file</span>
+                <input id="uploadBtn" type="file" class="upload" multiple="multiple" name="browsefile" />
+            </div>
+            <div id="upload_prev"></div>
+        </div>
+    }
+</div>
+
+<script>
+    $(function () {
+
+        $("#NgayKiemTra").kendoDatePicker({
+            format: 'dd/MM/yyyy',
+        }).data("kendoDatePicker");
+
+
+        // Spinner
+        (function ($) {
+
+            'use strict';
+
+            if ($.isFunction($.fn['spinner'])) {
+
+                $(function () {
+                    $('[data-plugin-spinner]').each(function () {
+                        var $this = $(this),
+                            opts = {};
+
+                        var pluginOptions = $this.data('plugin-options');
+                        if (pluginOptions)
+                            opts = pluginOptions;
+
+                        $this.themePluginSpinner(opts);
+                    });
+                });
+
+            }
+
+        }).apply(this, [jQuery]);
+
+        @if (Model.KetQua.GetValueOrDefault())
+        {
+            @:$('#KetQua').attr('checked', true);
+        }
+        else
+        {
+            @:$('#KetQua').attr('checked', false);
+                }
+
+        $(document).on('click', '.close', function () {
+            $(this).parents('span').remove();
+            var fileInput = $('#uploadBtn')[0].files[$(this).parents('span').attr("id")];
+            //clear all selected files from the file input field
+            var newFileList = Array.from($('#uploadBtn')[0].files);
+            newFileList.splice($(this).parents('span').attr("id"), 1);
+
+
+
+        })
+
+        document.getElementById('uploadBtn').onchange = uploadOnChange;
+
+    });
+
+    function uploadOnChange() {
+        var files = $('#uploadBtn')[0].files;
+        $("#upload_prev").html('');
+        for (var i = 0; i < files.length; i++) {
+            //$("#upload_prev").append('<span id='+i+'>' + '<div class="filenameupload"><i class="fa fa-paperclip mr-5"></i>' + files[i].name + '</div>' + '<p class="close" ><i class="fa fa-trash"></i></p></span>');
+            $("#upload_prev").append('<span id=' + i + '>' + '<div class="filenameupload"><i class="fa fa-paperclip" style="margin-right:5px"></i>' + files[i].name + '</div></span>');
+        }
+
+    }
+
+    function ChangeCheckBox() {
+        var items = document.getElementById('KetQua');
+        if (items.checked)
+            items.value = true;
+        else
+            items.value = false;
+    }
+</script>

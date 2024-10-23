@@ -1,0 +1,940 @@
+﻿@using Microsoft.AspNet.Identity
+@if (User.Identity.IsAuthenticated == false)
+{
+    Response.Redirect("/Account/Login");
+}
+
+@if (Session["UserId"] == null)
+{
+    Response.Redirect("/Account/Login");
+}
+
+<!doctype html>
+<html class="fixed">
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <title>ECP - Hệ thống kiểm soát an toàn lao động</title>
+    <meta name="keywords" content="VNIT TECH, KSTAT, ECP" />
+    <meta name="description" content="Phần mềm được phát triển bởi công ty TNHH VNIT TECH">
+    <meta name="author" content="vnit-tech.com">
+    <link rel="shortcut icon" type="image/x-icon" href="~/Images/ImageDesign/logo.ico" />
+    <!-- Web Fonts  -->
+    @*<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">*@
+    @Styles.Render("~/Content/themes/admindesign/css")
+    @Styles.Render("~/Content/kendo/kendo.common.min.css")
+    @Styles.Render("~/Content/kendo/kendo.default.min.css")
+    @Styles.Render("~/Scripts/fbphotobox/css/fbphotobox.css")
+    @Styles.Render("~/Scripts/ChatBox/ChatBox.css")
+
+    <script src="@Url.Content("~/Scripts/jquery-1.10.2.js")"></script>
+
+    @if (ViewBag.NoScript != null)
+    {
+        <script src="@Url.Content("~/Content/GS/jquery.min.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/GS/jquery-ui.min.js")" type="text/javascript"></script>
+
+        <link href="@Url.Content("~/Content/Bootstrap/bootstrap.min.css")" rel="stylesheet" />
+
+        <link href="@Url.Content("~/Content/Bootstrap/bootstrap-responsive.min.css")" rel="stylesheet" />
+
+        <link href="@Url.Content("~/Content/Bootstrap/bootstrap-image-gallery.min.css")" rel="stylesheet" />
+
+        <link href="@Url.Content("~/Content/FileUpload/jquery.fileupload-ui.css")" rel="stylesheet" />
+
+        <script src="@Url.Content("~/Content/FileUpload/tmpl.min.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/canvas-to-blob.min.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/load-image.min.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/Bootstrap/bootstrap-image-gallery.min.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/Bootstrap/bootstrap.min.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/jquery.iframe-transport.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/jquery.fileupload.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/jquery.fileupload-ip.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/jquery.fileupload-ui.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/locale.js")" type="text/javascript"></script>
+
+        <script src="@Url.Content("~/Content/FileUpload/main.js")" type="text/javascript"></script>
+    }
+    else
+    {
+        <!-- Mobile Metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <script src="~/Scripts/AdminPanel/assets/vendor/modernizr/modernizr.js"></script>
+    }
+    <style>
+        body::after {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            z-index: -1;
+            content: url('../../../Images/ImageDesign/logo1.png');
+        }
+
+        .imgNoiDung {
+            background-image: url('../../../Images/ImageDesign/logo1.png');
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            background-size: 50px 50px;
+        }
+
+        .stack-bottomcenter {
+            right: 30% !important;
+            bottom: 25px;
+            top: auto;
+        }
+
+        .signature-pad > canvas {
+            display: block;
+            width: 300px;
+            height: 150px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    @if (Session["Version"] != null)
+    {
+        <div id="modalAnimVersion" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">
+                        Những thay đổi trong phiên bản mới
+                    </h2>
+                </header>
+                <div class="panel-body" style="padding:0">
+                    <div class="modal-wrapper" style="padding-left: 50px; height: 400px; overflow-y: auto;">
+                        @Html.Raw(Session["Version"].ToString())
+                    </div>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </div>
+    }
+
+    <section class="body" id="divWrap">
+
+        <!-- start: header -->
+        <header class="header">
+            <div class="logo-container">
+
+                @if (Session["DonViID"] != null)
+                {
+                    ECP_V2.Business.Repository.DonViRepository donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+                    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+
+                    if (donVi != null)
+                    {
+                        if (!string.IsNullOrEmpty(donVi.DviCha) && !donVi.DviCha.ToUpper().Equals("PA"))
+                        {
+                            if (Session["DonViID"].ToString().ToUpper().Equals("PH") || Session["DonViID"].ToString().ToUpper().Equals("PN") || Session["DonViID"].ToString().ToUpper().Equals("PM"))
+                            {
+                                <a href="@Url.Action("Index","Home")" class="logo" style=" text-decoration:none;">
+                                    <img src="~/Images/ImageDesign/logo2.png" height="55" alt="@donVi.Id" />
+                                    <span class="text-uppercase" style="color: #0088cc; font-size: 20px;">@donVi.TenDonVi</span>
+                                </a>
+                            }
+                            else
+                            {
+                                var donViCha = donViRepository.GetById(donVi.DviCha);
+                                if (donViCha != null)
+                                {
+                                    <a href="@Url.Action("Index","Home")" class="logo" style=" text-decoration:none;">
+                                        <img style="margin-top: -14px;" src="~/Images/ImageDesign/logo2.png" height="55" alt="@donVi.Id" />
+                                        <p class="text-uppercase" style="color: #0088cc; font-size: 20px; display: inline-block; font-weight: bold;">
+                                            @donViCha.TenDonVi
+                                            <br />
+                                            <span style="font-size: 15px;">@donVi.TenDonVi</span>
+                                        </p>
+                                    </a>
+                                }
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(donVi.DviCha) && donVi.DviCha.ToUpper().Equals("PA"))
+                        {
+                            <a href="@Url.Action("Index","Home")" class="logo" style=" text-decoration:none;">
+                                <img src="~/Images/ImageDesign/logo2.png" height="55" alt="@donVi.Id" />
+                                <span class="text-uppercase" style="color: #0088cc; font-size: 20px;">@donVi.TenDonVi</span>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Index","Home")" class="logo" style="text-decoration:none;">
+                            <img src="~/Images/ImageDesign/logo2-bak.png" height="55" alt="ECP_HPPC" />
+                        </a>
+                    }
+                }
+                else
+                {
+                    <a href="@Url.Action("Index","Home")" class="logo" style="text-decoration:none;">
+                        <img src="~/Images/ImageDesign/logo2-bak.png" height="55" alt="ECP_HPPC" />
+                    </a>
+                }
+
+                <div style="cursor:pointer;" class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                    <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                </div>
+            </div>
+
+            <!-- start: search & user box -->
+            <div class="header-right">
+
+                @*<form action="pages-search-results.html" class="search nav-form">
+                        <div class="input-group input-search">
+                            <input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>*@
+                @if (Session["PublishDate"] != null)
+                {
+                    <div class="search nav-form" style="width:260px !important">
+                        <a href="#modalAnimVersion" id="btnViewVersion" style="color: #0476ef;font-size:15px;cursor:pointer">Phiên bản cập nhật ngày @Session["PublishDate"].ToString()</a>
+                    </div>
+                }
+                <span class="separator"></span>
+
+                <ul class="notifications">
+                    @{
+                        ECP_V2.Business.Repository.MessagesRepository messagesRepository = new ECP_V2.Business.Repository.MessagesRepository();
+                        ECP_V2.Business.Repository.NhanVienRepository nvr = new ECP_V2.Business.Repository.NhanVienRepository();
+                        ECP_V2.DataAccess.tblNhanVien nv = nvr.GetByUserName(User.Identity.Name);
+
+                        try
+                        {
+                            List<ECP_V2.DataAccess.Message> messageList = messagesRepository.ListMessageByPosition(1).Where(x => x.MaTaiKhoan == nv.Id && x.MA_DVIQLY == nv.DonViId).OrderByDescending(x => x.NgayTao).Take(20).ToList();
+                            <li>
+                                <a class="dropdown-toggle notification-icon" data-toggle="dropdown">
+
+                                    @if (messageList.Where(x => x.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead).Count() > 0)
+                                    {
+                                        <i class="fa fa-bell"></i>
+                                        <span class="badge">@messageList.Where(x => x.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead).Count()</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-bell"></i>
+                                        <span class="badge" style="display: none;">0</span>
+                                    }
+
+                                </a>
+
+                                <div class="dropdown-menu notification-menu">
+                                    <div class="notification-title">
+                                        <span class="pull-right label label-default">@messageList.Where(x => x.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead).Count()</span>
+                                        Thông Báo
+                                    </div>
+
+                                    <div class="content">
+                                        <ul>
+                                            @foreach (var item in messageList)
+                                            {
+
+                                                if (item.TrangThai == (int)ECP_V2.Common.Helpers.TrangThaiMessage.UnRead)
+                                                {
+                                                    <li>
+                                                        <a class="clearfix" href="@Url.Action("ChiTietPhienLV", "PhienLV", new { Area = "Admin", id = item.PhienLamViecId, messageId = item.Id })">
+                                                            <div class="image">
+                                                                <i class="fa fa-info bg-success"></i>
+                                                            </div>
+                                                            <span class="title">@item.NoiDung</span>
+                                                            <span class="message">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayTao)</span>
+                                                        </a>
+                                                        <a href="javascript:;" id="btnMarkAsRead" title="Đánh dấu đã đọc" data-id="@item.Id"><span class="fa fa-circle" style="color: #959595"></span></a>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li class="read">
+                                                        <a class="clearfix" href="@Url.Action("ChiTietPhienLV", "PhienLV", new { Area = "Admin", id = item.PhienLamViecId, messageId = item.Id })">
+                                                            <div class="image">
+                                                                <i class="fa fa-info bg-success"></i>
+                                                            </div>
+                                                            <span class="title">@item.NoiDung</span>
+                                                            <span class="message">@string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.NgayTao)</span>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+
+                                        </ul>
+
+                                        <hr />
+
+                                        <div class="text-right">
+                                            <a href="/Admin/Log/Index" class="view-more">Xem Tất Cả</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </li>
+                        }
+                        catch (Exception ex) { }
+                    }
+                </ul>
+
+                <span class="separator"></span>
+
+                @Html.Partial("~/Views/Shared/_PaticalStateLogin.cshtml")
+
+                <span class="separator"></span>
+                <div id="userbox" class="userbox">
+                    <a style="cursor:pointer" onclick="ShowChat()">
+                        <figure class="profile-picture">
+                            <img src="~/Content/images/chat.png" alt="" class="img-circle" />
+                        </figure>
+                    </a>
+                </div>
+
+            </div>
+            <!-- end: search & user box -->
+        </header>
+        <!-- end: header -->
+
+        <div class="inner-wrapper">
+            <!-- start: sidebar -->
+            @Html.Partial("~/Views/Shared/_PartialSideBarLeft_V2.cshtml")
+            <!-- end: sidebar -->
+
+            <section role="main" class="content-body">
+                <header class="page-header">
+
+                    <a href="@Url.Action("Index","Home")">
+                        <h2>
+                            Trang chủ
+                        </h2>
+                    </a>
+
+                    <div class="right-wrapper pull-right rightcount">
+                        <a href="/Home/ViewBienBanXTAT" target="_blank">
+                            <ol class="breadcrumbs" style="padding-right:20px">
+                                <li><span style="color: greenyellow;font-weight: bold;"><i>Biên bản XTAT</i>&nbsp;&nbsp;</span></li>
+                            </ol>
+                        </a>
+                        <a id="btnShowBieuDoXTAT" href="#modalBieuDoXTAT">
+                            <ol class="breadcrumbs" style="padding-right:20px">
+                                <li><span style="color: #ffd800;font-weight: bold;"><i>(Phiên bản thử nghiệm)</i>&nbsp;&nbsp;</span></li>
+                                <li><span style="color: #ffffff;font-weight: bold;">Tổng số tiêu chí chưa đạt: <i style="color:#ff0000" class="tongsotieuchichuadat"></i>  &nbsp;&nbsp;</span></li>
+                                <li><span style="color: #ffffff;font-weight: bold;">Tổng số điểm bị trừ: <i style="color:#ff0000" class="tongsodiembitru"></i> &nbsp;&nbsp;&nbsp;</span></li>
+                            </ol>
+                            <span class="chamdiemjs">
+
+                            </span>
+                        </a>
+                    </div>
+                    <script>
+                        $('.chamdiemjs').load('/Admin/Report/TCXTThongTinCoBan');
+                    </script>
+                    @*<div class="right-wrapper pull-right">
+                            <ol class="breadcrumbs">
+                                <li>
+                                    <a href="@Url.Action("Index", "Home")">
+                                        <i class="fa fa-home"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <span>
+                                        <a href="@Url.Action("Index", HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString())">
+                                            @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString()
+                                        </a>
+                                    </span>
+                                </li>
+                                <li><span>@ViewBag.Title</span></li>
+                            </ol>
+
+                            <a data-open="sidebar-right" class="sidebar-right-toggle"><i class="fa fa-chevron-left"></i></a>
+                        </div>*@
+                </header>
+
+                <!-- start: page -->
+                <div class="container-fluid" id="divContent">
+                    @RenderBody()
+                </div>
+                <!-- end: page -->
+            </section>
+        </div>
+        @Html.Partial("_PartialChat")
+
+    </section>
+
+    <div id="modalBieuDoXTAT" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Biểu đồ điểm xét thưởng an toàn</h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper" style="padding:0">
+                    <div id="chartXTAT" class="chart chart-md" style="cursor:zoom-in"></div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-default modal-dismiss" onclick="new function () { $.magnificPopup.close(); }" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+    @if (ViewBag.NoScript == null)
+    {
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/jqueryvalAjax")
+        <!-- Vendor -->
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery/jquery.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap/js/bootstrap.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/nanoscroller/nanoscroller.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/magnific-popup/magnific-popup.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+        <!-- Specific Page Vendor -->
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/select2/select2.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/pnotify/pnotify.custom.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-appear/jquery.appear.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-easypiechart/jquery.easypiechart.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/flot/jquery.flot.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/flot-tooltip/jquery.flot.tooltip.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/flot/jquery.flot.pie.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/flot/jquery.flot.categories.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/flot/jquery.flot.resize.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-sparkline/jquery.sparkline.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/raphael/raphael.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/morris/morris.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/gauge/gauge.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/snap-svg/snap.svg.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/liquid-meter/liquid.meter.js"></script>
+
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/fuelux/js/spinner.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/dropzone/dropzone.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-markdown/js/markdown.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/ios7-switch/ios7-switch.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js"></script>
+
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-datatables/extras/TableTools/js/dataTables.tableTools.min.js"></script>
+        <script src="~/Scripts/AdminPanel/assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
+
+
+        @*<script src="~/Scripts/AdminPanel/assets/javascripts/theme.admin.extension.js"></script>*@
+        <!-- Theme Base, Components and Settings -->
+        <script src="~/Scripts/AdminPanel/assets/javascripts/theme.js"></script>
+        <!-- Theme Custom -->
+        <script src="~/Scripts/AdminPanel/assets/javascripts/theme.custom.js"></script>
+
+        <!-- Theme Initialization Files -->
+        <script src="~/Scripts/AdminPanel/assets/javascripts/theme.init.js"></script>
+        @Scripts.Render("~/Scripts/jquery-ui-1.11.4.min.js")
+        @Scripts.Render("~/Content/kendo/kendo.all.min.custom.js")
+
+        <!-- Form -->
+        @Scripts.Render("~/Scripts/validation/jquery.form.min.js")
+        <!-- Validation -->
+        @Scripts.Render("~/Scripts/validation/jquery.validate.min.js")
+        @Scripts.Render("~/Scripts/validation/jquery.validate.unobtrusive.min.js")
+        @Scripts.Render("~/Scripts/moment.min.js")
+        @Scripts.Render("~/Scripts/fbphotobox/js/fbphotobox.js")
+        @Scripts.Render("~/Scripts/jQueryRotate.js")
+
+        <script src="~/Scripts/AdminPanel/assets/vendor/fuelux/js/spinner.js"></script>
+        @Scripts.Render("~/Scripts/ChatBox/ChatBox.js")
+        @Scripts.Render("~/Scripts/ChatHub/ChatHub.js")
+    }
+    <style>
+        .menuActive {
+            color: #ed9c28 !important;
+        }
+
+        .legendLabel {
+            padding-left: 5px;
+        }
+    </style>
+    <script>
+        var showchat = false;
+        function ShowChat()
+        {
+            if (!showchat) {
+                $(".sidebar-right").css("margin-right","0px");
+                showchat = true;
+            }
+            else {
+                $(".sidebar-right").css("margin-right", "-300px");
+                showchat = false;
+            }
+        }
+
+        function registerEvents(chatHub) {
+            var manv = '';
+            var name = '';
+            var anhdaidien = '';
+            var donviid = '';
+            @try
+            {
+                @:name = '@Session["HoTen"].ToString()';
+                            @:manv = '@Session["UserId"].ToString()';
+                            @:anhdaidien = '@Session["UrlImage"].ToString()';
+                            @:donviid='@Session["DonViID"].ToString()';
+                        }catch (Exception ex){ }
+
+            if (name != '') {
+                chatHub.server.connect(manv, name, anhdaidien, donviid);
+
+            }
+
+        }
+
+        function txtSearch_onKeyPress(e, el, userId) {
+
+            var key;
+            if (window.event)
+                key = window.event.keyCode;     //IE
+            else
+                key = e.which;     //firefox
+
+            if (key == 13) {
+
+                if (typeof (el.value) !== "undefined" && el.value) {
+                    chatHub.server.sendPrivateMessage(userId.replace("chatbox_", ""), el.value);
+
+                    $('#' + userId + "_body").append('<li class="pl-2 pr-2 text-center timesend mb-1">' + '@string.Format("{0:HH:mm, dd}", DateTime.Now)' + ' Tháng ' + '@string.Format("{0:MM, yyyy}", DateTime.Now)' + '</li>');
+                    $('#' + userId + "_body").append('<li class="p-1 rounded mb-1"><div class="send-msg"><div class="send-msg-desc  text-center mt-1 ml-1 pl-2 pr-2"><p class="pl-2 pr-2 rounded">' + el.value + '</p></div></div></li>');
+
+                    $(el).val("");
+
+                    $("#" + userId + " .popup-messages").scrollTop($("#" + userId + " .popup-messages")[0].scrollHeight);
+                }
+            }
+        }
+        (function ($) {
+            $.extend({
+                playSound: function () {
+                    return $(
+                           '<audio class="sound-player" autoplay="autoplay" style="display:none;">'
+                             + '<source src="' + arguments[0] + '" />'
+                             + '<embed src="' + arguments[0] + '" hidden="true" autostart="true" loop="false"/>'
+                           + '</audio>'
+                         ).appendTo('body');
+                },
+                stopSound: function () {
+                    $(".sound-player").remove();
+                }
+            });
+        })(jQuery);
+        $(function () {
+            $.validator.methods.date = function (value, element) {
+                return this.optional(element) || moment(value, "DD/MM/YYYY", true).isValid() || moment(value, "DD/MM/YYYY HH:mm", true).isValid();
+            }
+        });
+        $(document).ready(function () {
+
+            $('#sidebar li a').each(function () {
+                var path = window.location.pathname;
+                //alert(path);
+                if (path.indexOf('?') > 0) {
+                    var current = path.indexOf('?');
+                }
+                else {
+                    var current = path;
+                }
+
+                var url = $(this).attr('href');
+
+                if (typeof (url) !== 'undefined') {
+                    var currenturl = url.substring(url.lastIndexOf('.') + 1);
+                    if (currenturl.toLowerCase() == current.toLowerCase()) {
+                        $(this).addClass('menuActive');
+                        var par = $(this).parent().parent().parent().addClass('waves-effect active subdrop');
+                    }
+                }
+            });
+
+            //$("#NotificationBox").fadeIn(1000);
+
+            //if ($("#NotificationAutoHide").val() == "true") {
+            //    $("#NotificationBox").delay(7000).slideUp(700);
+            //}
+
+            //$('.notifications').on('click', "#btnMarkAsRead", function () {
+
+            //    var id = $(this).data('id');
+
+            //    $.ajax({
+            //        url: '/Log/UpdateMessage',
+            //        type: 'POST',
+            //        contentType: 'application/json',
+            //        data: JSON.stringify({
+            //            id: id
+            //        }),
+            //        success: function (data) {
+
+            //            if (data.success == true) {
+            //                var container = $('.notifications');
+            //                var notifyCount = $('.notifications li .badge');
+            //                container.html(data.responseText);
+            //                notifyCount.html(data.countIsRead);
+
+            //                if (parseInt(data.countIsRead) > 0) {
+            //                    notifyCount.show();
+            //                }
+            //                else {
+            //                    notifyCount.hide();
+            //                }
+            //            }
+            //        },
+            //        error: function (e) {
+
+            //        }
+            //    });
+
+            //    return false;
+            //});
+
+            //DialogRequestPermission();
+
+            //function DialogRequestPermission() {
+            //    if (window.Notification && Notification.permission === 'default') {
+            //        Notification.requestPermission(function (e) {
+            //            //console.log(e);
+            //        });
+            //    }
+            //}
+
+            //Tạm đóng phiên bản 24.02.2020
+            //$.ajax({
+            //    type: "GET",
+            //    contentType: "application/json; charset=utf-8",
+            //    url: '/Admin/AdminMessage/GetMessageAdminNotify',
+            //    data:
+            //            {
+            //            },
+            //    dataType: "json",
+            //    beforeSend: function () {//alert(id);
+            //    },
+            //    success: function (data) {
+            //        if (data.success) {
+
+            //            var stack = { dir1: "left", dir2: "left", firstpos1: 25, firstpos2: 25 };
+
+            //            new PNotify({
+            //                title: 'Thông báo!',
+            //                text: data.message,
+            //                type: 'error',
+            //                sticker: true,
+            //                hide: false,
+            //                addclass: 'stack-bottomcenter',
+            //                stack: stack,
+            //                width: "380px"
+            //            });
+            //        }
+            //    },
+            //    error: function (err) {
+            //        console.log(err);
+            //    }
+
+            //});
+
+            $('#btnShowBieuDoXTAT').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                ShowBieuDoXTAT();
+
+            });
+        });
+
+        @*function setUserData(facebookId) {
+            $.ajax({
+                type: 'POST',
+                url: "/Account/FacebookLogin",
+                data:
+                    {
+                        FacebookId: facebookId
+                    },
+                success: function (data) {
+                    if (data.success) {
+                        var element = document.getElementById('facebook-status');
+
+                        if (element != null) {
+                            element.innerHTML = '<div class="already-login"><span><i class="fa fa-check"></i> Đã kết nối</span></div>';
+                        }
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        window.fbAsyncInit = function () {
+            //SDK loaded, initialize it
+            FB.init({
+                appId: '@System.Configuration.ConfigurationManager.AppSettings["FacebookAppId"]',
+                cookie: true,
+                xfbml: true,
+                version: 'v3.0'
+            });
+
+            //check user session and refresh it
+            FB.getLoginStatus(function (response) {
+
+                if (response.status === 'connected') {
+                    //user is authorized
+                    var element = document.getElementById('facebook-status');
+
+                    if (element != null) {
+                        element.innerHTML = '<div class="already-login"><span><i class="fa fa-check"></i> Đã kết nối</span></div>';
+                    }
+
+                    //setUserData(response.authResponse.userID);
+                }
+                else {
+                    //user is not authorized
+                }
+            });
+        };*@
+
+        //load the JavaScript SDK
+        //(function (d, s, id) {
+        //    var js, fjs = d.getElementsByTagName(s)[0];
+        //    if (d.getElementById(id)) { return; }
+        //    js = d.createElement(s); js.id = id;
+        //    js.src = "https://connect.facebook.net/en_US/sdk.js";
+        //    fjs.parentNode.insertBefore(js, fjs);
+        //}(document, 'script', 'facebook-jssdk'));
+
+        //add event listener to login button
+
+        //var btnLoginFacebook = document.getElementById('btnLoginFacebook');
+
+        //if (btnLoginFacebook != null) {
+        //    btnLoginFacebook.addEventListener('click', function () {
+        //        //do the login
+        //        FB.login(function (response) {
+        //            if (response.authResponse) {
+        //                //user just authorized your app
+        //                setUserData(response.authResponse.userID);
+        //            }
+        //        }, { scope: 'email,public_profile', return_scopes: true });
+        //    }, false);
+        //}
+
+        function ShowBieuDoXTAT() {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '@System.Configuration.ConfigurationManager.AppSettings["TieuChiXetThuongAPI"]/GetDataBieuDoTron/@DateTime.Now.Month/@DateTime.Now.Year/@Session["DonViID"]',
+
+                success: function (json) {
+                    var piedata = [];
+                    $.each(json, function (i, item) {
+                        piedata.push({
+                            label: item.TenLoaiTC + " (" + item.TongDiemTru + ")",
+                            data: item.TongDiemTru,
+                            ID: item.Id
+                        });
+                    });
+
+                    function labelFormatter(label, series) {
+                        return "<div style='font-size:10pt; text-align:center; padding:2px; color:black;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+                    }
+
+                    $.plot('#chartXTAT', piedata, {
+                        series: {
+                            pie: {
+                                show: true,
+                                radius: 0.9,
+                                label: {
+                                    show: true,
+                                    radius: 2 / 3,
+                                    formatter: labelFormatter,
+                                    threshold: 0.1
+                                }
+                            }
+                        },
+                        grid: {
+                            hoverable: true,
+                            clickable: true
+                        }
+                    });
+
+                    $('#chartXTAT').bind("plotclick", function (event, pos, obj) {
+                        if (!obj) { return; }
+
+                        GoToURL(obj.series.ID);
+                    });
+
+                    unloading();
+                },
+                error: function () {
+                    unloading();
+                }
+            });
+
+
+        }
+        function GoToURL(ID) {
+
+            var url = "/Home/ListTongHopKetQuaXTAT?MaLoai="
+                + ID
+            ;
+
+            var win = window.open(url, '_blank');
+            win.focus();
+
+
+        }
+    </script>
+
+
+
+
+    @Scripts.Render("~/bundles/datatables")
+
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+
+    <script src="~/Scripts/signature_pad.min.js"></script>
+    <script src="~/Scripts/SignaturePadInit.js"></script>
+
+    @RenderSection("JavaScriptOnePgae", required: false)
+
+    <script src="~/Scripts/jquery.signalR-2.2.3.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
+    @*<script type="text/javascript">
+
+            //var $ = jQuery.noConflict();
+
+            $(document).ready(function () {
+                var ticker = $.connection.messagesHub;
+
+                $.connection.hub.logging = true;
+                $.connection.hub.url = "/signalr";
+                //$j.connection.hub.url = "http://localhost:8686/signalr";
+                $.connection.hub.start().done(function () {
+                    ticker.server.connectToMessages('@Session["DonViID"]');
+                });
+                $.extend(ticker.client, {
+                    addNotifyMessages(donViId, messageList) {
+
+                        $.ajax({
+                            url: '/Log/GetNewMessages',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                messageList: messageList
+                            }),
+                            success: function (data) {
+
+                                if (data.success == true) {
+                                    var container = $('.notifications .content ul');
+                                    var notifyCount = parseInt($('.notifications li .badge').html());
+                                    var totalCount = notifyCount + parseInt(data.countIsRead);
+
+                                    container.prepend(data.responseText);
+                                    $('.notifications li .badge').html(totalCount);
+
+                                    if (totalCount > 0) {
+                                        $('.notifications li .badge').show();
+                                    } else {
+                                        $('.notifications li .badge').hide();
+                                    }
+                                }
+                            },
+                            error: function (e) {
+
+                            }
+                        });
+                    },
+                    addNotificationBrowserToUser(userPushNotificationWeb, noti) {
+
+                        var check = userPushNotificationWeb.filter(function (item) {
+                            return item === "@User.Identity.Name";
+                        });
+
+                        if (check.length > 0) {
+
+                            if (Notification.permission === 'granted') {
+
+                                var notify = new Notification(noti.title, {
+                                    body: noti.body,
+                                    icon: 'http://' + window.location.host + '/Images/ImageDesign/logo1.png',
+                                    tag: noti.tag,
+                                    //data: response.users,
+                                });
+
+                                if (noti.link != '') {
+                                    notify.onclick = function () {
+                                        window.location.href = noti.link;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+
+        </script>*@
+
+    @RenderSection("ScriptSignalR", required: false)
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-120302209-1');
+    </script>
+</body>
+</html>

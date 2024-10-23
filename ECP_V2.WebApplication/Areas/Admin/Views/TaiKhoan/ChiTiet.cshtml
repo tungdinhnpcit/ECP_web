@@ -1,0 +1,774 @@
+﻿@using ECP_V2.Common.Helpers
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using ECP_V2.WebApplication.Models;
+@model ECP_V2.WebApplication.Models.NhanVienModel
+
+@{
+    ViewBag.Title = "ChiTiet";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@{
+    var aspNetUserRepository = new ECP_V2.Business.Repository.AspNetUserRepository();
+    var user = aspNetUserRepository.GetById(Model.Id);
+}
+
+<style>
+    ul.simple-todo-list li {
+        padding-left: 5px;
+    }
+
+    .already-login {
+        padding: 3px 7px;
+        background: #4cff00;
+        color: #fff;
+        width: 100px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .signature-pad > canvas {
+        border: 1px dashed #000000;
+        display: block;
+        width: 300px;
+        height: 150px;
+        margin-bottom: 5px;
+    }
+</style>
+
+<header class="page-header">
+    <h2>Hồ sơ người dùng</h2>
+
+    @*<div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Pages</span></li>
+                <li><span>User Profile</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>*@
+</header>
+
+<!-- start: page -->
+
+
+<div class="row">
+    <div class="col-md-4 col-lg-3" style="padding: 0;">
+
+        <section class="panel">
+            <div class="panel-body">
+                <div class="thumb-info mb-md">
+                    @if (!string.IsNullOrEmpty(Model.UrlImage))
+                    {
+                        <img src="@Model.UrlImage" class="rounded img-responsive" alt="@Model.TenNhanVien" id="image-user-profile">
+                    }
+                    else
+                    {
+                        <img src="~/Images/ImageDesign/logo-User.jpg" class="rounded img-responsive" alt="@Model.TenNhanVien" id="image-user-profile" />
+                    }
+
+                    <div class="thumb-info-title">
+                        <span class="thumb-info-inner">@Model.TenNhanVien</span>
+                        <span class="thumb-info-type">@Model.ChucVu</span>
+                    </div>
+                </div>
+
+                <div class="widget-toggle-expand mb-md">
+                    @*<div class="widget-header">
+                            <h6>Profile Completion</h6>
+                            <div class="widget-toggle">+</div>
+                        </div>
+                        <div class="widget-content-collapsed">
+                            <div class="progress progress-xs light">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                    60%
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="widget-content-expanded">
+                        <ul class="simple-todo-list">
+                            <li>Hòm thư: @Model.Email</li>
+                            <li @*class="completed"*@>Điện thoại: @Model.SoDT</li>
+                            <li>Tên tài khoản: @Model.UserName</li>
+                            <li><a href="javascript:;" id="btnChangeImageProfile" class="btn btn-primary">Đổi ảnh đại diện</a></li>
+                            <li style="display: none;"><input type="file" name="txtUserImageChange" accept="image/*" id="txtUserImageChange" /></li>
+                        </ul>
+                    </div>
+                </div>
+
+                @*<hr class="dotted short">
+
+                    <h6 class="text-muted">About</h6>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis vulputate quam. Interdum et malesuada</p>
+                    <div class="clearfix">
+                        <a class="text-uppercase text-muted pull-right" href="#">(View All)</a>
+                    </div>
+
+                    <hr class="dotted short">
+
+                    <div class="social-icons-list">
+                        <a rel="tooltip" data-placement="bottom" target="_blank" href="http://www.facebook.com" data-original-title="Facebook"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                        <a rel="tooltip" data-placement="bottom" href="http://www.twitter.com" data-original-title="Twitter"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                        <a rel="tooltip" data-placement="bottom" href="http://www.linkedin.com" data-original-title="Linkedin"><i class="fa fa-linkedin"></i><span>Linkedin</span></a>
+                    </div>*@
+
+            </div>
+        </section>
+
+    </div>
+    <div class="col-md-8 col-lg-9" style="padding: 0 0 0 10px;">
+
+        <div class="tabs">
+            <ul class="nav nav-tabs tabs-primary">
+                <li class="active">
+                    <a href="#details" data-toggle="tab">Thông tin chi tiết</a>
+                </li>
+                <li>
+                    <a href="#lichsu" data-toggle="tab">Lịch sử</a>
+                </li>
+                <li>
+                    <a href="#danhsachquyen" data-toggle="tab">Danh sách quyền</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="details" class="tab-pane active">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <h2 class="panel-title">Thông tin tài khoản</h2>
+                        </header>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Đơn vị quản lý:</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("DonViId", (IEnumerable<SelectListItem>)ViewBag.ListDvi, "Chọn đơn vị ...", new { @class = "form-control", @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Phòng ban:</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("PhongBanId", (IEnumerable<SelectListItem>)ViewBag.ListPban, "Chọn phòng ban/đội ...", new { @class = "form-control", @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Tên người dùng:</label>
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(x => x.TenNhanVien, new { @class = "form-control", id = "txtName", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Số điện thoại
+                                </label>
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(x => x.SoDT, new { @class = "form-control", id = "txtSDT", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Chức vụ
+                                </label>
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(x => x.ChucVu, new { @class = "form-control", id = "txtChucVu", @readonly = "readonly" })                                  
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Bậc an toàn
+                                </label>
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(x => x.BacAnToan, new { @class = "form-control", id = "txtBacAnToan", @readonly = "readonly" })                                
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Hòm thư
+                                </label>
+                                <div class="col-sm-8">
+                                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control", id = "txtEmail", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Địa chỉ
+                                </label>
+                                <div class="col-sm-8">
+                                    @Html.TextAreaFor(x => x.DiaChi, new { @class = "form-control", id = "txtWebsite", rows = "3", @readonly = "readonly" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Kết nối facebook
+                                </label>
+                                <div class="col-sm-8" id="facebook-status">
+                                    <button class="btn btn-primary" id="btnLoginFacebook">
+                                        <span><i class="fa fa-facebook"></i> Kết nối</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    Chữ ký số
+                                </label>
+                                <div class="col-sm-8">
+                                    @Html.DisplayFor(model => model.ChuKySo)
+                                    @*@Html.EditorFor(model => model.ChuKySo)*@
+                                    <a href="#modalAnimThem" class="mb-xs mt-xs mr-xs btn btn-primary add" style="cursor:pointer">
+                                        <i class="fa fa-plus"></i> &nbsp; Sửa lại
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <header class="panel-heading">
+                            <h2 class="panel-title">Công việc liên quan</h2>
+                        </header>
+                        <div class="panel-body">
+                            <h1>
+                                <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" onclick="ShowWeekBack()">
+                                    <i class="fa fa-mail-reply"></i> &nbsp; Tuần trước
+                                </a>
+                                <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" onclick="ShowWeekToday()">
+                                    <i class="fa fa-level-down"></i> &nbsp; Tuần hiện tại
+                                </a>
+                                <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer" onclick="ShowWeekNext()">
+                                    <i class="fa fa-mail-forward"></i> &nbsp; Tuần kế tiếp
+                                </a>
+                            </h1>
+
+                            <div class="panel panel-visible">
+                                <span>Từ ngày : &nbsp;</span>
+                                <input id="GioBd" type="text" placeholder="Thời gian bắt đầu">
+                                <span>&nbsp; Đến ngày : &nbsp;</span>
+                                <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+
+                                @*<div class="panel-heading br-b-n">
+                                        <div class="panel-title hidden-xs">
+                                            <span class="glyphicon glyphicon-tasks"></span> Danh sách phiên làm việc
+                                        </div>
+                                        <div class="panel-title fulltable" style="position: absolute; top: 17px; right: 20px; cursor:pointer">
+                                                <span class="glyphicon glyphicon-fullscreen"></span>
+                                            </div>
+                                            <div class="panel-title nonetable hide" style="position: fixed; top: 0px; right: 18px; z-index: 99999999; cursor: pointer; color: #fff;">
+                                                <span class="glyphicon glyphicon-resize-small" style="background: red; display: block; height: 32px; width: 32px; padding: 6px;"></span>
+                                            </div>
+                                    </div>*@
+                                <div class="panel-body pn">
+                                    <div id="datatable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                        <div class="row datatables-header form-inline">
+                                        </div>
+                                        <div class="listRolesName list">
+                                            @{Html.RenderAction("ListCongViec", "TaiKhoan", new { id = Model.Id, type = "" });}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>
+                <div id="lichsu" class="tab-pane">
+
+                </div>
+                <div id="danhsachquyen" class="tab-pane">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <h2 class="panel-title">Danh sách quyền</h2>
+                        </header>
+                        <div class="panel-body">
+
+                            @if (ViewBag.TotalRoles != null)
+                            {
+                                List<string> totalRoles = (List<string>)ViewBag.TotalRoles;
+
+                                foreach (var item in totalRoles)
+                                {
+                                    RoleManager<ApplicationRole> _roleManager = new RoleManager<ApplicationRole>(new RoleStore<ApplicationRole>(new ApplicationDbContext()));
+                                    var role = _roleManager.FindByName(item);
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">@item - @role.Description</label>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: page -->
+
+
+<div id="modalAnimThem" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+    <section class="panel">
+        @using (Html.BeginForm("UpdateChuKySo", "TaiKhoan", FormMethod.Post, new { id = "frmChuKySo", @role = "form", @class = "form-horizontal mt-6", enctype = "multipart/form-data" }))
+        {
+            <div class="callout callout-info mb-20">
+                <p>
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.Id)                           
+                </p>
+            </div>
+            <header class="panel-heading">
+                <h2 class="panel-title">
+                    Thay đổi chữ ký
+                </h2>
+            </header>
+            <div class="panel-body" style="padding:0">
+                <div class="modal-wrapper" style="padding:0;text-align:center;">
+                    <div style="margin-left: 100px;margin-top: 10px;">
+                        @Html.EditorFor(m => m.ChuKySo)
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="LuuChuKySo()" id="modal-confirm">Lưu lại</button>
+                        @*<button class="btn btn-success" onclick="FormSubmit()" type="submit">Lưu lại</button>*@
+                        <button class="btn btn-default modal-dismiss" id="modal-dismiss">Thoát</button>
+                    </div>
+                </div>
+            </footer>
+        }
+    </section>
+</div>
+
+@section JavaScriptOnePgae{
+    <script src="~/Scripts/signature_pad.min.js"></script>
+    <script src="~/Scripts/SignaturePadInit.js"></script>
+
+    <script type="text/javascript">
+
+        var IdDelete = 0;
+        var NoiDungDelete = 0;
+        var IdCancel = 0;
+        var typeshow = "";
+
+         function LuuChuKySo() {    
+            //$('#frmChuKySo').submit();             
+             var formData = new FormData();
+
+             formData.append('Id', '@Model.Id');
+             formData.append('ChuKySo', '@Model.ChuKySo');
+                //$.each($(this).get(0).files, function (i, file) {
+                //    formData.append('file', file);
+                //});
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/TaiKhoan/UpdateChuKySo',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success == true) {
+                            //$('#image-user-profile').prop('src', data.responseText);
+                            alert("OK");
+                        }
+                    },
+                    error: function (e) {
+                    }
+                });
+        }
+
+        function FixChuKySo() {
+
+        loading('Đang tải dữ liệu...', 1);
+        $("#preloader").unbind("click");
+        $('#preloader').click(function () {
+            unloading();
+        })
+
+        @*$.ajax({
+            type: "GET",
+            url: '/Admin/CCDC/Create',
+            data: {
+                MaNhom: @ViewBag.MaNhom,
+            },
+            success: function (json) {
+
+                $('#modalAnimThem .modal-wrapper').html('');
+                $('#modalAnimThem .modal-wrapper').html(json);
+                $('#modalAnimThem .panel-title').text('Thêm công cụ dụng cụ an toàn');
+
+                $.validator.unobtrusive.parse($('#frmCreate'));
+                $('#frmCreate').submit(function () {
+                    // inside event callbacks 'this' is the DOM element so we first
+                    // wrap it in a jQuery object and then invoke ajaxSubmit
+                    if ($(this).valid())
+                        $(this).ajaxSubmit(options);
+
+                    // !!! Important !!!
+                    // always return false to prevent standard browser submit and page navigation
+                    return false;
+                });
+
+                unloading();
+            },
+            error: function () {
+                unloading();
+            }
+        });*@
+
+        }
+
+        $(function () {
+             $('a.add').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+            }).click(function () {
+                FixChuKySo();
+            });
+
+            var start = $("#GioBd").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+            }).data("kendoDatePicker");
+
+            var end = $("#GioKt").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                change: end_chage
+            }).data("kendoDatePicker");
+
+            //Menu Collapsed Layout
+            $('html').addClass('sidebar-left-collapsed');
+
+            // khai bao cho Popup
+            $('#ImportKH').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+            // khai bao cho Popup
+            $('#ImportBS').magnificPopup({
+                type: 'inline',
+
+                fixedContentPos: false,
+                fixedBgPos: true,
+
+                overflowY: 'auto',
+
+                closeBtnInside: true,
+                preloader: false,
+
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-slide-bottom',
+                modal: true
+            }).click(function () {
+
+            });
+
+
+            $("#NgayBoSung").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                value:new Date()
+            }).data("kendoDatePicker");
+
+            $('#btnChangeImageProfile').click(function () {
+                $('#txtUserImageChange').click();
+            });
+
+            $('#txtUserImageChange').change(function () {
+
+                var formData = new FormData();
+
+                formData.append('id', '@Model.Id');
+
+                $.each($(this).get(0).files, function (i, file) {
+                    formData.append('file', file);
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/TaiKhoan/ChangeImageProfile',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success == true) {
+                            $('#image-user-profile').prop('src', data.responseText);
+                        }
+                    },
+                    error: function (e) {
+
+                    }
+                });
+
+            });
+
+        });
+
+        function end_chage() {
+            PagingDateRange(1, 20, $('#GioBd').val(), $('#GioKt').val());
+        }
+
+        function PagingDateRange(page, pageSize, startDate, endDate) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/TaiKhoan/ListCongViecDateRanger";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    page: page,
+                    pageSize: pageSize,
+                    id: '@Model.Id',
+                    startDate: startDate,
+                    endDate: endDate
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    // TimePicker
+                    (function ($) {
+
+                        'use strict';
+
+                        if ($.isFunction($.fn['timepicker'])) {
+
+                            $(function () {
+                                $('[data-plugin-timepicker]').each(function () {
+                                    var $this = $(this),
+                                        opts = {
+                                            showMeridian: false
+                                        };
+                                    $this.themePluginTimePicker(opts);
+                                });
+                            });
+
+                        }
+
+                    }).apply(this, [jQuery]);
+
+                    unloading();
+
+                }
+            });
+        }
+
+        function Paging(type) {
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            var scriptUrl = "/Admin/TaiKhoan/ListCongViec";
+            $.ajax({
+                url: scriptUrl,
+                data: {
+                    id: '@Model.Id',
+                    type: type
+                },
+                type: 'GET',
+                dataType: 'html',
+                async: false,
+                success: function (data) {
+                    $(".list").html("");
+                    $(".list").html(data);
+
+                    // TimePicker
+                    (function ($) {
+
+                        'use strict';
+
+                        if ($.isFunction($.fn['timepicker'])) {
+
+                            $(function () {
+                                $('[data-plugin-timepicker]').each(function () {
+                                    var $this = $(this),
+                                        opts = {
+                                            showMeridian: false
+                                        };
+                                    $this.themePluginTimePicker(opts);
+                                });
+                            });
+
+                        }
+
+                    }).apply(this, [jQuery]);
+
+                    unloading();
+
+                }
+            });
+        }
+
+        function ExpandCollapse() {
+            $('#dtGridPhienLV tbody tr:not(.group-header, .group-header-l2)').toggle();
+        }
+
+        function MoveTable(type) {
+            if (type == "Right")
+                $('.table-responsive').scrollLeft($('#dtGridPhienLV').width())
+            else
+                $('.table-responsive').scrollLeft(-$('#dtGridPhienLV').width())
+        }
+
+        function ShowWeekBack() {
+            typeshow = "TT";
+            Paging(typeshow);
+        }
+
+        function ShowWeekToday() {
+            typeshow = "";
+            Paging(typeshow);
+        }
+
+        function ShowWeekNext() {
+            typeshow = "TK";
+            Paging(typeshow);
+        }
+
+        //var currentObj = null;
+        function initMultiSelect() {
+            $('select.multiselect-add').multiselect({
+                includeSelectAllOption: true,
+                selectAllValue: 'select-all-value'
+            });
+        }
+
+        function SetSelectionPosition(forParent) {
+            console.log(forParent);
+
+            $("select.multiselect-add").html($("#" + sourceIdName).html());
+
+            $('select.multiselect-add').multiselect('destroy');
+            initMultiSelect();
+
+            $("select.multiselect-add").multiselect("clearSelection");
+
+            $(".empdata").appendTo($(forParent).find(".multiselect-wap"));
+            setTimeout(function () {
+                var attr = $(currentInputRuning).attr("dataempid");
+                console.log(attr);
+                if (typeof attr !== typeof undefined && attr !== false) {
+                    var splitValue = $(currentInputRuning).attr("dataempid");
+                    $("select.multiselect-add").val(splitValue.split(','));
+                    $("select.multiselect-add").multiselect("refresh");
+                }
+                $(".multiselect-wap .btn-group").addClass("open");
+                $(".multiselect-wap .btn-default").attr("aria-expanded", "true");
+            }, 300);
+        }
+
+        var currentInputRuning = null;
+        var sourceIdName = null;
+
+        $(document).on("focus", ".NguoiDuyet_SoPa_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiChiHuy_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".GiamSatVien_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiKiemSoat_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".NguoiKiemTraPhieu_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("focus", ".LanhDaoTrucBan_SelectEmp", function () {
+            sourceIdName = $(this).attr("datasourceidname");
+            currentInputRuning = $(this);
+            SetSelectionPosition($(this).parent().parent());
+        });
+
+        $(document).on("change", ".multiselect-add", function () {
+            $(currentInputRuning).val('');
+            $(currentInputRuning).attr("dataempid", '');
+
+            var newSelect = $(this).val();
+            if (newSelect != null) {
+                var indexEmp = 0;
+                $(newSelect).each(function (eachIndex, curVal) {
+                    var textSelect = $(".multiselect-add").find("option[value = '" + curVal + "']").text();
+                    console.log(textSelect);
+                    if (indexEmp == 0) {
+                        console.log(textSelect);
+                        $(currentInputRuning).val(textSelect);
+                        $(currentInputRuning).attr("dataempid", curVal);
+                    } else {
+                        var oldValue = $(currentInputRuning).val();
+                        $(currentInputRuning).val(oldValue + ", " + textSelect);
+                        $(currentInputRuning).attr("dataempid", $(currentInputRuning).attr("dataempid") + "," + curVal);
+                    }
+                    indexEmp++;
+                });
+            }
+        });
+
+        $(document).on("click", ".fulltable", function () {
+            $(".table-responsive").addClass("wap-scroll");
+            $("body").addClass("body-scoll-none");
+            $(".nonetable").removeClass("hide");
+            $(this).addClass("hide");
+        });
+
+        $(document).on("click", ".nonetable", function () {
+            $(".table-responsive").removeClass("wap-scroll");
+            $("body").removeClass("body-scoll-none");
+            $(".fulltable").removeClass("hide");
+            $(this).addClass("hide");
+        });
+    </script>
+}
+
