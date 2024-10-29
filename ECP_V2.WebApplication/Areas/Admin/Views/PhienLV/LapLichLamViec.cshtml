@@ -408,13 +408,13 @@
 </div>
 <div id="selectdayofweek">
     <ul>
+        <li><a rowname="Monday" class="todayofweek" id="style@(DayOfWeek.Monday)">T2</a></li>
         <li><a rowname="Tuesday" class="todayofweek" id="style@(DayOfWeek.Tuesday)">T3</a></li>
         <li><a rowname="Wednesday" class="todayofweek" id="style@(DayOfWeek.Wednesday)">T4</a></li>
         <li><a rowname="Thursday" class="todayofweek" id="style@(DayOfWeek.Thursday)">T5</a></li>
         <li><a rowname="Friday" class="todayofweek" id="style@(DayOfWeek.Friday)">T6</a></li>
         <li><a rowname="Saturday" class="todayofweek" id="style@(DayOfWeek.Saturday)">T7</a></li>
         <li><a rowname="Sunday" class="todayofweek" id="style@(DayOfWeek.Sunday)">CN</a></li>
-        <li><a rowname="Monday" class="todayofweek" id="style@(DayOfWeek.Monday)">T2</a></li>
     </ul>
     <script>
         $('#style@(DateTime.Now.DayOfWeek)').attr('style', 'background:#006a9e !important;');
@@ -842,6 +842,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
 
@@ -1506,9 +1507,11 @@
                         //
                         if (updateDataId > 0) {
                             $(".wap-scroll").scrollTop($("#spanNoiDung_" + updateDataId).offset().top + 50);
+                            unloading();
                         }
                         else {
                             $(".wap-scroll").scrollTop(oldScroll + 500);
+                            unloading();
                         }
                     }
                 },

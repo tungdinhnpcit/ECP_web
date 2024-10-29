@@ -261,8 +261,13 @@ namespace ECP_V2.Business.Repository
                     string start1 = "";
                     string end1 = "";
 
+                    //int offset = DateTime.Now.DayOfWeek - DayOfWeek.Monday;
+                    //if (offset < 0) offset += 7; // Đảm bảo thứ Hai là đầu tuần
+
                     DateTime dts = new DateTime();
                     DateTime dte = new DateTime();
+                    //dts = DateTime.Now.AddDays(-offset).Date; // Ngày đầu tuần (thứ Hai)
+                    //dte = dts.AddDays(6); // Ngày cuối tuần (Chủ Nhật)
                     GetDateStartEnd_FromDateNow(ref dts, ref dte, DateTime.Now);
                     if (type == "TT")
                     {
@@ -1171,38 +1176,38 @@ namespace ECP_V2.Business.Repository
 
             if (dayI == 1)
             {
-                DateStart = date.AddDays(1);
-                DateEnd = date.AddDays(7);
-            }
-            else if (dayI == 2)
-            {
                 DateStart = date;
                 DateEnd = date.AddDays(6);
             }
-            else if (dayI == 3)
+            else if (dayI == 2)
             {
                 DateStart = date.AddDays(-1);
                 DateEnd = date.AddDays(5);
             }
-            else if (dayI == 4)
+            else if (dayI == 3)
             {
                 DateStart = date.AddDays(-2);
                 DateEnd = date.AddDays(4);
             }
-            else if (dayI == 5)
+            else if (dayI == 4)
             {
                 DateStart = date.AddDays(-3);
                 DateEnd = date.AddDays(3);
             }
-            else if (dayI == 6)
+            else if (dayI == 5)
             {
                 DateStart = date.AddDays(-4);
                 DateEnd = date.AddDays(2);
             }
-            else if (dayI == 0)
+            else if (dayI == 6)
             {
                 DateStart = date.AddDays(-5);
                 DateEnd = date.AddDays(1);
+            }
+            else if (dayI == 0)
+            {
+                DateStart = date.AddDays(-6);
+                DateEnd = date.AddDays(7);
             }
 
         }
