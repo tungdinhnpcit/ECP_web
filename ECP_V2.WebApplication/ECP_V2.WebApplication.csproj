@@ -2603,12 +2603,6 @@
     <Content Include="Content\wordsstyle.css" />
     <Content Include="DLL\GoogleDirections.dll" />
     <Content Include="favicon.ico" />
-    <Content Include="Files\AnyOne\1\20160617160732173_w240.png" />
-    <Content Include="Files\AnyOne\1\20160617160732173_w640.png" />
-    <Content Include="Files\AnyOne\1\20160617160732173_w960.png" />
-    <Content Include="Files\AnyOne\1\20160617165155595_w240.png" />
-    <Content Include="Files\AnyOne\1\20160617165155595_w640.png" />
-    <Content Include="Files\AnyOne\1\20160617165155595_w960.png" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\AnhViPhamDemo\vipham1.jpg" />
@@ -5052,7 +5046,9 @@
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
     <Content Include="Scripts\jquery-3.6.3.js" />
     <Content Include="Scripts\jquery-2.0.0.min.map" />
-    <Content Include="Scripts\jquery-unified-export-file-1.0.min.js" />
+    <Content Include="Scripts\jquery-unified-export-file-1.0.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\jQuery.FileUpload\canvas-to-blob.min.js" />
     <Content Include="Scripts\jQuery.FileUpload\cors\jquery.postmessage-transport.js" />
     <Content Include="Scripts\jQuery.FileUpload\cors\jquery.xdr-transport.js" />

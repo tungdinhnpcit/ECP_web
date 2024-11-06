@@ -648,7 +648,7 @@
     @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
     <script type="text/javascript">
 
-        $.datepicker.setDefaults({
+        $.datepicker?.setDefaults({
             showOn: "both",
             buttonImageOnly: true,
             buttonImage: "calendar.gif",
@@ -1129,7 +1129,6 @@
         };
 
         function add(el, NgayLamViec, TT_Phien) {
-            console.log(NgayLamViec);
 
             ControllScrollLeft();
 
@@ -1329,7 +1328,6 @@
             //if(ll_lviec.idpmis[id] == null){
             //    idpmis = ll_lviec.idpmis[id]
             //}
-            console.log(NgayLamViec);
 
             loading('Đang xử lý...', 1);
 
@@ -1340,7 +1338,7 @@
             var tr = $(el).parents('tr:first');
             if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
                 console.log("thực hiện " + id + " " + NgayLamViec +" "+ TT_Phien);
-                console.log($("#PhongBanID_" + id).html());
+                //console.log($("#PhongBanID_" + id).html());
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
@@ -1372,20 +1370,21 @@
                             "LanhDaoTrucBan_Id": $("#LanhDaoTrucBan_" + id).attr("dataempid"),
 
                             "LanhDaoCongViec_Id": $("#LanhDaoCongViec_" + id).attr("dataempid"),
-                        "LanhDaoCongViec": $("#LanhDaoCongViec_" + id).val(),
-                        "NguoiCapPhieu_Id": $("#NguoiCapPhieu_" + id).attr("dataempid"),
-                        "NguoiCapPhieu": $("#NguoiCapPhieu_" + id).val(),
+                            "LanhDaoCongViec": $("#LanhDaoCongViec_" + id).val(),
+                            "NguoiCapPhieu_Id": $("#NguoiCapPhieu_" + id).attr("dataempid"),
+                            "NguoiCapPhieu": $("#NguoiCapPhieu_" + id).val(),
 
                             "PhieuLenh": $("#PhieuLenh_" + id).attr("dataempid"),
                             "CatDien": $("#CatDien_" + id).attr("dataempid"),
                             "TiepDia": $("#TiepDia_" + id).attr("dataempid"),
-                             "TinhChat": $("#TinhChat_" + id).attr("dataempid"),
+                            "TinhChat": $("#TinhChat_" + id).attr("dataempid"),
                         }),
                     dataType: "json",
                     beforeSend: function () {
                         //alert(id);
                     },
                     success: function (response) {
+                        //console.log('check success', response);
 
                         if (response.success > 0) {
                             updateDataId = response.success;
@@ -1429,6 +1428,8 @@
                     type: 'error'
                 });
             }
+            unloading();
+
         };
 
         function Paginglv(type) {
@@ -1519,6 +1520,7 @@
                     unloading();
                 },
             });
+            unloading();
         }
 
         function ExpandCollapse() {
@@ -1597,6 +1599,7 @@
             }
 
             $.magnificPopup.close();
+            unloading();
         }
 
         function ImportKHModalDismiss() {
@@ -1794,8 +1797,9 @@
             currentInputRuning = $(this);
             SetSelectionPosition($(this).parent().parent());
         });
-
+        console.log('check vào đây111222', document)
         $(document).on("focus", ".PhieuLenh_SelectEmp", function () {
+            console.log('check vào đây')
             sourceIdName = $(this).attr("datasourceidname");
             currentInputRuning = $(this);
             SetSelectionPosition($(this).parent().parent());
@@ -2050,12 +2054,12 @@
             @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiCapPhieu" });}
         </optgroup>
     </div>
-    <div id="listphieulenh">
+    <select  id="listphieulenh">
         <optgroup label="Phiếu/Lệnh công tác">
             <option value="1">Phiếu công tác</option>
             <option value="2">Lệnh công tác</option>
         </optgroup>
-    </div>
+    </select>
     <div id="listcatdien">
         @if (listThuocTinhPhienLV3 != null && listThuocTinhPhienLV3.Count > 0)
         {
