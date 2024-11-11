@@ -9697,7 +9697,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
             }
 
-
+            Console.WriteLine("check isExportExcel:    ", isExportExcel);
             if (isExportExcel ?? false)
                 ExportExcelFromList_Cty(modelTotal, tcphien, DateFrom, DateTo);
 
@@ -9717,6 +9717,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     donviId = Session["DonViID"].ToString();
                 }
                 catch { }
+
+                Console.WriteLine("check đơn vị: " + donviId);
+                Console.WriteLine("check DateFrom: " , DateFrom);
 
                 var donVi = _dvi_ser.GetById(donviId);
                 var donViCha = _dvi_ser.List().Where(x => x.Id == donVi.DviCha).FirstOrDefault();
@@ -10748,7 +10751,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
                 }
 
-
+                Console.WriteLine("isExportExcel::: ", isExportExcel);
                 if (isExportExcel ?? false)
                     ExportExcelFromListBS(modelTotal, DateFrom);
 

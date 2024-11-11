@@ -18,8 +18,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script>
-    
-    $(function () {        
+
+    $(function () {
         $("#datepicker").datepicker();
     });
 </script>
@@ -263,7 +263,8 @@
                                                     <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo tuần
                                                 </a>
 
-                                                <a href="#modalAnimExportBS_Cty" id="ExportBS_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+                                                @*<a href="#modalAnimExportBS_Cty" id="ExportBS_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">*@
+                                                <a href="#modalAnimExportBS_Cty" id="ExportTuan_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
                                                     <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo ngày (bổ sung, thay đổi)
                                                 </a>
                                             </div>
@@ -305,7 +306,8 @@
                                                     <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo tuần
                                                 </a>
 
-                                                <a href="#modalAnimExportBS_Cty" id="ExportBS_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
+                                                @*<a href="#modalAnimExportBS_Cty" id="ExportBS_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">*@
+                                                <a href="#modalAnimExportBS_Cty" id="ExportTuan_Cty" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer">
                                                     <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo ngày (bổ sung, thay đổi)
                                                 </a>
                                             </div>
@@ -334,16 +336,16 @@
                 buttonImage: "calendar.gif",
                 regional: "vn"
             });
-           
+
             //Menu Collapsed Layout
             $('html').addClass('sidebar-left-collapsed');
-            
+
             var start = $("#GioBd").datepicker({
-                dateFormat: 'dd/mm/yy' 
+                dateFormat: 'dd/mm/yy'
             }).value;
 
             var end = $("#GioKt").datepicker({
-                dateFormat: 'dd/mm/yy' 
+                dateFormat: 'dd/mm/yy'
             }).value;
 
             //Xuất báo cáo tuần theo mẫu NPC
@@ -386,6 +388,7 @@
                     });
             });
 
+            // Export bổ sung theo mẫu NPC
             $('#btnexportBS').bind('click', function () {
                 $.UnifiedExportFile(
                     {
@@ -399,40 +402,7 @@
                     });
             });
 
-            //Popup lịch báo cáo tuần công ty
-            $('#ExportTuan_Cty').magnificPopup({
-                type: 'inline',
-                fixedContentPos: false,
-                fixedBgPos: true,
-                overflowY: 'auto',
-                closeBtnInside: true,
-                preloader: false,
-                midClick: true,
-                removalDelay: 300,
-                mainClass: 'my-mfp-zoom-in',
-                modal: true
-            }).click(function () {
-            });
 
-            //khai bao Popup cho nut them comment
-            $('#ExportBS').magnificPopup({
-                type: 'inline',
-                fixedContentPos: false,
-                fixedBgPos: true,
-                overflowY: 'auto',
-                closeBtnInside: true,
-                preloader: false,
-                midClick: true,
-                removalDelay: 300,
-                mainClass: 'my-mfp-zoom-in',
-                modal: true
-            }).click(function () {
-            });
-
-            $("#ExNgayBoSung").kendoDatePicker({
-                format: 'dd/MM/yyyy',
-                value: new Date()
-            }).data("kendoDatePicker");
 
             //Export bổ sung theo mẫu công ty
             $('#btnexportBS_Cty').bind('click', function () {
@@ -450,6 +420,45 @@
                     });
             });
 
+            //Popup lịch báo cáo tuần NPC
+            $('#ExportBS').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+            });
+
+            //Popup lịch báo cáo tuần công ty
+            $('#ExportTuan_Cty').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+            });
+
+
+
+            $("#ExNgayBoSung").kendoDatePicker({
+                format: 'dd/MM/yyyy',
+                value: new Date()
+            }).data("kendoDatePicker");
+
+
             //khai bao Popup cho nut them comment
             $('#ExportBS_Cty').magnificPopup({
                 type: 'inline',
@@ -463,6 +472,7 @@
                 mainClass: 'my-mfp-zoom-in',
                 modal: true
             }).click(function () {
+
             });
 
             $("#ExNgayBoSung_Cty").kendoDatePicker({
