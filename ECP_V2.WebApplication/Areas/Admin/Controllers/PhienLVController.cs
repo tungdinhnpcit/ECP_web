@@ -9697,7 +9697,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
             }
 
-            Console.WriteLine("check isExportExcel:    ", isExportExcel);
             if (isExportExcel ?? false)
                 ExportExcelFromList_Cty(modelTotal, tcphien, DateFrom, DateTo);
 

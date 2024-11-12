@@ -633,7 +633,7 @@
                     {
                         <a id="Edit_@item.Id" data-status="@item.TrangThai" onclick="edit(this)" title="Sửa phiên làm việc" class="on-default edit-row"><i class="fa fa-pencil" style="font-size:25px;cursor:pointer"></i></a>
                     }
-
+                     
                     @if (((User.IsInRole("Manager") && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin")))
                     {
                         <a id="HuyBo_@item.Id" onclick="huybo(this)" title="Hủy bỏ phiên làm việc" class="on-default huyBoCongViec"><i class="fa fa-ban" style="font-size:25px;cursor:pointer"></i></a>
