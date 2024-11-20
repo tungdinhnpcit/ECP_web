@@ -186,13 +186,13 @@
 
         var yNgay = '@(DateTime.Now)'.split(' ')[0];
         var start = $("#GioBd").datepicker({
-            dateFormat: 'dd/mm/yy',
+            dateFormat: 'dd/MM/yy',
         }).val(yNgay);
 
         //start.value(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
         var xNgay = '@(DateTime.Now.AddDays(1))'.split(' ')[0];
         var end = $("#GioKt").datepicker({
-            dateFormat: 'dd/mm/yy',
+            dateFormat: 'dd/MM/yy',
             onSelect: function () {
                 end_chage();
             }

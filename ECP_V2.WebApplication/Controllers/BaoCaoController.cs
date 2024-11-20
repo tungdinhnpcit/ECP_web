@@ -143,9 +143,9 @@ namespace ECP_V2.WebApplication.Controllers
 
             ViewBag.dviId = dviId;
 
-            DisposeAll();
 
             return PartialView("_List", ListNewsPageSize);
+            DisposeAll();
         }
 
         public ActionResult Add()

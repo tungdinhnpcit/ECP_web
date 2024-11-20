@@ -288,7 +288,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             int pagelength1 = page * pageSize;
             int Count = 0;
             int Duyet = 0;
-
             string donviId = null;
             try
             {
@@ -9716,10 +9715,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     donviId = Session["DonViID"].ToString();
                 }
                 catch { }
-
-                Console.WriteLine("check đơn vị: " + donviId);
-                Console.WriteLine("check DateFrom: " , DateFrom);
-
+                
                 var donVi = _dvi_ser.GetById(donviId);
                 var donViCha = _dvi_ser.List().Where(x => x.Id == donVi.DviCha).FirstOrDefault();
 

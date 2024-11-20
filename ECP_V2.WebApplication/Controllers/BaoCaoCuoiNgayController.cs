@@ -72,7 +72,10 @@ namespace ECP_V2.WebApplication.Controllers
             }
             else
             {
-                var listDonViCon = _faculty_ser.List().Where(x => x.DviCha.Equals(Session["DonViID"].ToString())).Select(x => x.Id).ToList();
+                var listDonViCon = _faculty_ser.List()
+                    .Where(x => x.DviCha?.Equals(Session["DonViID"].ToString()) ?? false)
+                    .Select(x => x.Id)
+                    .ToList();
                 var listDvi = _faculty_ser.List().Where(x => x.Id.Equals(Session["DonViID"].ToString()) || (listDonViCon != null && listDonViCon.Count() > 0 && listDonViCon.Contains(x.Id))).OrderBy(p => p.ViTri).ToList();
                 ViewBag.ListDvi = listDvi.Select(r => new SelectListItem { Value = r.Id.ToString(), Text = r.TenDonVi });
             }
@@ -112,7 +115,10 @@ namespace ECP_V2.WebApplication.Controllers
                 }
                 else
                 {
-                    var listDonViCon = _faculty_ser.List().Where(x => x.DviCha.Equals(Session["DonViID"].ToString())).Select(x => x.Id).ToList();
+                    var listDonViCon = _faculty_ser.List()
+                        .Where(x => x.DviCha?.Equals(Session["DonViID"].ToString()) ?? false)
+                        .Select(x => x.Id)
+                        .ToList();
 
                     rtnList = rtnList.Where(s => s.DonViId == Session["DonViID"].ToString() || (listDonViCon != null && listDonViCon.Count() > 0 && listDonViCon.Contains(s.DonViId))).ToList();
                 }

@@ -334,19 +334,24 @@
                 showOn: "both",
                 buttonImageOnly: true,
                 buttonImage: "calendar.gif",
-                regional: "vn"
+                regional: "vn",
+                dateFormat: 'dd/mm/yy'
             });
+
+            $.datepicker?.setDefaults($.datepicker.regional['vn']);
+
 
             //Menu Collapsed Layout
             $('html').addClass('sidebar-left-collapsed');
-
             var start = $("#GioBd").datepicker({
-                dateFormat: 'dd/mm/yy'
-            }).value;
+                dateFormat: 'dd/mm/yy',
+                regional: 'vn'
+            }).val();
 
             var end = $("#GioKt").datepicker({
-                dateFormat: 'dd/mm/yy'
-            }).value;
+                dateFormat: 'dd/mm/yy',
+                regional: 'vn'
+            }).val();
 
             //Xuất báo cáo tuần theo mẫu NPC
             $('#export').bind('click', function () {

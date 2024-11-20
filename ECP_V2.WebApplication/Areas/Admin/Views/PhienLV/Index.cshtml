@@ -801,7 +801,7 @@
                 buttonImageOnly: true,
                 //buttonImage: "calendar.gif",
                 regional: "vn",
-                dateFormat: 'dd/MM/yyyy'
+                dateFormat: 'dd/mm/yyyy'
             });
 
             //Menu Collapsed Layout
@@ -812,10 +812,18 @@
             var start = $("#GioBd").datepicker({
                 dateFormat: 'dd/mm/yy'
             }).val(yNgay);
+              var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
+
+            var end = $("#GioKt").datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+            end_chage();
+            }}).val(xNgay);
+
 
             ////var denNgay = kendo.toString(kendo.parseDate('@(ViewBag.DenNgay!=null?ViewBag.DenNgay:DateTime.Now)', 'dd/MM/yyyy'), 'dd/MM/yyyy');
             //var end = $("#GioKt").kendoDatePicker({
-            //    format: 'dd/MM/yyyy',
+            //    format: 'dd/mm/yyyy',
             //    change: end_chage
             //}).data("kendoDatePicker").value(denNgay);
 
@@ -824,14 +832,7 @@
             @*var denNgay = moment('@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)').format('dd/MM/yyyy');
             alert('@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)');*@
 
-            var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
 
-            var end = $("#GioKt").datepicker({
-                dateFormat: 'dd/mm/yy',
-                onSelect: function () {
-                    end_chage();
-                }
-            }).val(xNgay);
 
             //khai bao Popup cho nut duyet
             $('#DuyetAll').magnificPopup({
@@ -899,7 +900,7 @@
             var dNgay = '@(DateTime.Now)'.split(' ')[0];
 
             $("#txtNgayTongHop").datepicker({
-                dateFormat: 'dd/mm/yy'
+                dateFormat: 'dd/MM/yy'
             }).val(dNgay);
 
             $('a#btnTongHopBaoCaoCuoiNgayAlert').magnificPopup({
@@ -1706,7 +1707,7 @@
 
                 });
             }
-
+            unloading();
             $.magnificPopup.close();
         }
 
@@ -2203,6 +2204,7 @@
         }
 
     </script>
+    <script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>
     <script src="~/Scripts/KTGS/js/util_camera.js"></script>
     <script src="~/Scripts/KTGS/js/service.js"></script>
     <script src="~/Scripts/KTGS/js/camera.js?v=13"></script>
