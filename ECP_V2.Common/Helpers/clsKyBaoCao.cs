@@ -83,8 +83,8 @@ namespace ECP_V2.Common.Helpers
                 case 1: //Tuan nay
                         //DateFrom = dateNow.AddDays(1 - (int)dateNow.DayOfWeek);
                         //DateTo = dateNow.AddDays(7 - (int)dateNow.DayOfWeek);
-                    DateFrom = dateNow.AddDays(2 - (int)dateNow.DayOfWeek);
-                    DateTo = dateNow.AddDays(8 - (int)dateNow.DayOfWeek);
+                    DateFrom = dateNow.AddDays(1 - (int)dateNow.DayOfWeek);
+                    DateTo = dateNow.AddDays(7 - (int)dateNow.DayOfWeek);
                     break;
                 case 2: //Dau tuan den hien tai
                     //DateFrom = dateNow.AddDays(1 - (int)dateNow.DayOfWeek);

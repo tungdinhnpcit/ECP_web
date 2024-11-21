@@ -1217,13 +1217,13 @@ namespace ECP_V2.Business.Repository
             DateTime today = DateTime.Today;
             int currentDayOfWeek = (int)today.DayOfWeek;
             DateTime sunday = today.AddDays(-currentDayOfWeek);
-            DateTime tueday = sunday.AddDays(2);
+            //DateTime tueday = sunday.AddDays(2);
 
-            if (currentDayOfWeek == 0)
-            {
-                tueday = tueday.AddDays(-8);
-            }
-            var dates = Enumerable.Range(0, 7).Select(days => tueday.AddDays(days)).ToList();
+            //if (currentDayOfWeek == 0)
+            //{
+            //    tueday = tueday.AddDays(-8);
+            //}
+            var dates = Enumerable.Range(1, 7).Select(days => sunday.AddDays(days)).ToList();
             foreach (var item in dates)
             {
                 lstdate.Add(string.Format("{0:dd/MM/yyyy}", item));

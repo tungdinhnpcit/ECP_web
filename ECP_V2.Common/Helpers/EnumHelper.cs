@@ -47,6 +47,7 @@ namespace ECP_V2.Common.Helpers
 
     public enum TrangThaiPhienLV
     {
+        ToanBo=0,
         VuaTao = 1,
         DaDuyet = 2,
         DaXong = 3,

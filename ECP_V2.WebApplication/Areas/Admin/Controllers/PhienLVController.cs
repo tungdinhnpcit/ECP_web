@@ -359,14 +359,17 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             if (Duyet == 0)
                             {
                                 model = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaDuyet, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                                List<PhienLVModel> modelVuaTao = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.VuaTao, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
                                 List<PhienLVModel> modelDaXong = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaXong, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
                                 List<PhienLVModel> modelHuyBo = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.HuyBo, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
 
                                 Count = _plviec_ser.CountTotalPhienLV(filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaDuyet, chuyenNPC ?? -1, phieuky ?? -1, "");
                                 int CountDaXong = _plviec_ser.CountTotalPhienLV(filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaXong, chuyenNPC ?? -1, phieuky ?? -1, "");
                                 int CountHuyBo = _plviec_ser.CountTotalPhienLV(filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.HuyBo, chuyenNPC ?? -1, phieuky ?? -1, "");
+                                int CountVuaTao = _plviec_ser.CountTotalPhienLV(filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.VuaTao, chuyenNPC ?? -1, phieuky ?? -1, "");
 
-                                Count += (CountDaXong + CountHuyBo);
+                                Count += (CountDaXong + CountHuyBo + CountVuaTao);
+                                model.AddRange(modelVuaTao);
                                 model.AddRange(modelDaXong);
                                 model.AddRange(modelHuyBo);
                             }

@@ -117,38 +117,38 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             if (dayI == 1)
             {
-                DateStart = date.AddDays(1);
-                DateEnd = date.AddDays(7);
-            }
-            else if (dayI == 2)
-            {
                 DateStart = date;
                 DateEnd = date.AddDays(6);
             }
-            else if (dayI == 3)
+            else if (dayI == 2)
             {
                 DateStart = date.AddDays(-1);
                 DateEnd = date.AddDays(5);
             }
-            else if (dayI == 4)
+            else if (dayI == 3)
             {
                 DateStart = date.AddDays(-2);
                 DateEnd = date.AddDays(4);
             }
-            else if (dayI == 5)
+            else if (dayI == 4)
             {
                 DateStart = date.AddDays(-3);
                 DateEnd = date.AddDays(3);
             }
-            else if (dayI == 6)
+            else if (dayI == 5)
             {
                 DateStart = date.AddDays(-4);
                 DateEnd = date.AddDays(2);
             }
-            else if (dayI == 0)
+            else if (dayI == 6)
             {
                 DateStart = date.AddDays(-5);
                 DateEnd = date.AddDays(1);
+            }
+            else if (dayI == 0)
+            {
+                DateStart = date.AddDays(-6);
+                DateEnd = date.AddDays(7);
             }
 
         }
