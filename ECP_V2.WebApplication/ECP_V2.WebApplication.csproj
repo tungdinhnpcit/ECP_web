@@ -359,6 +359,7 @@
     <Compile Include="Areas\Admin\Controllers\BaoCaoLichSuController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_NoiDungController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_TonThatController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BCKHLLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCKTGSController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCSuco_ChitietController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCSuco_ThNamController.cs" />
@@ -4785,6 +4786,7 @@
     <Content Include="Areas\Admin\Views\Dmloaidtsuco\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Dmchitieu\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Dmloaitbgsuco\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BCKHLLV\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

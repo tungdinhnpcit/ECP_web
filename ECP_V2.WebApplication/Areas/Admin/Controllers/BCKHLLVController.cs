@@ -49,7 +49,7 @@ using static System.Net.WebRequestMethods;
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
     [Authorize]
-    public class PhienLVController : UTController
+    public class BCKHLLVController : UTController
     {
 
         //
@@ -1349,7 +1349,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> CreatePhienLv(string PhongBanID, int TT_Phien, string NoiDung, string DiaDiem, string NgayLamViec, string GioBd, string GioKt, string NgayKt, string NguoiDuyet_SoPa, string NguoiChiHuy, string GiamSatVien, string NguoiKiemSoat, string NguoiKiemTraPhieu, string LanhDaoTrucBan,
             string LyDoThayDoi, string NguoiDuyet_SoPa_Id, string NguoiChiHuy_Id, string GiamSatVien_Id, string NguoiKiemSoat_Id, string NguoiKiemTraPhieu_Id, string LanhDaoTrucBan_Id,
-            string LanhDaoCongViec_Id,
+                        string LanhDaoCongViec_Id,
             string LanhDaoCongViec,
             string NguoiCapPhieu_Id,
             string NguoiCapPhieu,
@@ -1500,8 +1500,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 kt = _plviec_ser.PhienLamViec_AddNew(plv);
                 if (kt > 0)
                 {
-                    // Thêm mới vào bảng Kế hoạch lịch làm việc
-                    //var check = _plviec_ser.plv_Ke
                     bool save_tbl_NhanVien_PhienLamViec = false;
                     if (!string.IsNullOrEmpty(NguoiDuyet_SoPa_Id))
                     {
@@ -9720,7 +9718,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     donviId = Session["DonViID"].ToString();
                 }
                 catch { }
-                
+
                 var donVi = _dvi_ser.GetById(donviId);
                 var donViCha = _dvi_ser.List().Where(x => x.Id == donVi.DviCha).FirstOrDefault();
 
@@ -17585,74 +17583,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
         #endregion
-
-    }
-}
-public class DataSign
-
-{
-    public DataSign()
-    {
-        this.CommentSign = "Ky so";
-    }
-
-    public byte[] FileDataSign { set; get; } // data file
-    public string TypeSign { set; get; } // BigImage(Ky nhay), Text(khong anh), MiniImage(Ky thuong), CODAU,table
-    public string Provider { set; get; } // vt, vn,evnca,usb
-    public string DinhDanhKy { set; get; }  // so dien thoai ky
-    public string KeyWord { get; set; }
-    public byte[] ImageSign { set; get; } // anh ky
-                                          //public int NV_ID { set; get; }
-                                          //public string FullName { set; get; } // tọa độ ký số
-
-    //public string FileType { set; get; } //' loai file (pdf hoac doc,docx)// neu la doc se tu dong convert
-
-    public byte[] SignatureData { set; get; } // 
-    public string Cer { set; get; }
-    public string CommentSign { set; get; } // tin nhắn ký báo về cho điện thoại
-                                            //public string NDung_Ky { set; get; } // cho nội dung chỉ đạo ký
-
-    //public string LinkQrCode { set; get; }
-
-    //public string SignPosition { set; get; } // Sign tren, Sign Duoi // defaul SignDuoi
-
-    public string APPID { set; get; }  // APP ID
-
-    public string Password { set; get; }  // password
-    public KetQuaTimKiem k { set; get; }
-
-    public string LoaiHThi { set; get; }
-    public string MESSAGE { set; get; }
-
-
-}
-public class KetQuaTimKiem
-{
-    public int X { set; get; }
-    public int Y { set; get; }
-    public int Height { set; get; }
-    public int Width { set; get; }
-    public int PageNumber { set; get; }
-    public int PageHeight { set; get; }
-    public int PageWidth { set; get; }
-    //public string Tag { set; get; }
-    //public string FieldName { set; get; }
-}
-
-public class ResponseDataX
-{
-    public bool State;
-    public object Data;
-    public String Mess;
-    public static ResponseData ReturnSucess(object d)
-    {
-        return new ResponseData() { State = 1, Data = d, Mess = "" };
-
-    }
-
-    public static ResponseData ReturnFail(string mess)
-    {
-        return new ResponseData() { State = 0, Data = null, Mess = mess };
 
     }
 }
