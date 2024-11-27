@@ -77,6 +77,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         private ThangLamViecRepository _thanglamviec_ser = new ThangLamViecRepository();
         private d_LoaiCongViecRepository loaicv_ser = new d_LoaiCongViecRepository();
         private TramRepository tramRepository = new TramRepository();
+        private KeHoachLichLamViecRepository _keHoachLichLamViecRepository = new KeHoachLichLamViecRepository();
         private string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
 
         SafeTrainRepository safeTrainRepository = new SafeTrainRepository();
@@ -1353,6 +1354,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string LanhDaoCongViec,
             string NguoiCapPhieu_Id,
             string NguoiCapPhieu,
+            int? HinhThucKiemTra, string DaiDienTruongDoanKT,
             int CatDien = 0, int TiepDia = 0, int TinhChat = 0, int PhieuLenh = 0)
         {
             int kt = 0;
@@ -1501,7 +1503,21 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 if (kt > 0)
                 {
                     // Thêm mới vào bảng Kế hoạch lịch làm việc
-                    //var check = _plviec_ser.plv_Ke
+                    if(HinhThucKiemTra != null)
+                    {
+                        var input_dataKHLLV = new plv_KeHoachLichLamViec
+                        {
+                            PhienLamViecId = kt,
+                            HinhThucKiemTra = HinhThucKiemTra,
+                            NguoiDaiDienKT_Id = LanhDaoCongViec_Id,
+                            NguoiDaiDienKT = DaiDienTruongDoanKT,
+                            LyDoHoanHuy = "NULL"
+                        };
+
+                    var check = _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
+                    }
+
+
                     bool save_tbl_NhanVien_PhienLamViec = false;
                     if (!string.IsNullOrEmpty(NguoiDuyet_SoPa_Id))
                     {
@@ -9720,7 +9736,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     donviId = Session["DonViID"].ToString();
                 }
                 catch { }
-                
+
                 var donVi = _dvi_ser.GetById(donviId);
                 var donViCha = _dvi_ser.List().Where(x => x.Id == donVi.DviCha).FirstOrDefault();
 

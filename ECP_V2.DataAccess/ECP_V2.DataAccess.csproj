@@ -340,6 +340,7 @@
     <Compile Include="pkg_get_loai_ktras_Result.cs">
       <DependentUpon>ECP_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="plv_KeHoachLichLamViec.cs" />
     <Compile Include="plv_LichSuCapSoPhieu.cs">
       <DependentUpon>ECP_Model.tt</DependentUpon>
     </Compile>

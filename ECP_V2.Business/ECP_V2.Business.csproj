@@ -112,6 +112,7 @@
     <Compile Include="Repository\sc_TaiLieuRepository.cs" />
     <Compile Include="Repository\sc_TaiNanSuCoRepository.cs" />
     <Compile Include="Repository\sc_ChiTieuSuCoTHASauMTRepository.cs" />
+    <Compile Include="Repository\KeHoachLichLamViecRepository.cs" />
     <Compile Include="Repository\TramRepository.cs" />
     <Compile Include="Repository\TrangThaiCCDCRepository.cs" />
     <Compile Include="Repository\TaiLieuSoCCDCRepository.cs" />
