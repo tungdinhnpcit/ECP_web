@@ -29,8 +29,8 @@ namespace ECP_V2.Business.Repository
             int kt = 0;
             try
             {
-                Context.plv_KeHoachLichLamViec.Add(input);
-                Context.SaveChanges();
+                //    Context.plv_KeHoachLichLamViec.Add(input);
+                //    Context.SaveChanges();
                 kt = 1;
             }
             catch (DbEntityValidationException ex)
