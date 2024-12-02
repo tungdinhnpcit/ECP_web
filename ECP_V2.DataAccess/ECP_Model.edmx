@@ -2275,17 +2275,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Property Name="NgayTao" Type="datetime" />
           <Property Name="NguoiTao" Type="nvarchar" MaxLength="128" />
         </EntityType>
-		 <EntityType Name="plv_KeHoachLichLamViec">
-			 <Key>
-				 <PropertyRef Name="Id" />
-			 </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="PhienLamViecId" Type="int" Nullable="false" />
-		  <Property Name="HinhThucKiemTra" Type="int" Nullable="false" />
-          <Property Name="NguoiDaiDienKT_Id" Type="nvarchar" MaxLength="256" />
-		  <Property Name="NguoiDaiDienKT" Type="nvarchar" MaxLength="256" />
-		  <Property Name="LyDoHoanHuy" Type="nvarchar" MaxLength="256" />
-        </EntityType>
+		
         <EntityType Name="tblPhienLamViec_ThuocTinh_His">
           <Key>
             <PropertyRef Name="PhienLamViecId" />
