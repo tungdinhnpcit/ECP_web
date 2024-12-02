@@ -1245,7 +1245,7 @@
 
                 // Đại diện đoàn kiểm tra
                 '<td onlyone="1"><span>' +
-                '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaocongviec"  class="LanhDaoCongViec_SelectEmp form-control" rows="2" id="LanhDaoCongViec_' + index + '" placeholder="Đại diện đoàn kiểm tra" class = "form-control" ></textarea>' +
+                '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaocongviec"  class="LanhDaoCongViec_SelectEmp form-control" rows="2" id="NguoiDaiDienKT' + index + '" placeholder="Đại diện đoàn kiểm tra" class = "form-control" ></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
                 // dung pv thêm action lưu thiết bị lao động
@@ -1347,9 +1347,10 @@
             var str = $(el).attr("id").split("_");
             var id = str[1];
             var tr = $(el).parents('tr:first');
+            console.log('check hình thức kiểm tra', $("#HinhThucKiemTra_" + id).attr("dataempid"));
+            console.log('check đại diện đoàn kiểm tra', $("#NguoiDaiDienKT" + id).val());
+
             if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
-                console.log("thực hiện " + id + " " + NgayLamViec +" "+ TT_Phien);
-                //console.log($("#PhongBanID_" + id).html());
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
@@ -1389,10 +1390,13 @@
                             "CatDien": $("#CatDien_" + id).attr("dataempid"),
                             "TiepDia": $("#TiepDia_" + id).attr("dataempid"),
                             "TinhChat": $("#TinhChat_" + id).attr("dataempid"),
-                            "DaiDienTruongDoanKT": $("#LanhDaoCongViec_" + id).attr("dataempid"),
+
+                            //param của báo cáo kế hoạch lịch làm việc
+                            "NguoiDaiDienKT": $("#NguoiDaiDienKT" + id).val(),
+                            "NguoiDaiDienKT_Id": $("#NguoiDaiDienKT" + id).attr("dataempid"),
                             "HinhThucKiemTra": $("#HinhThucKiemTra_" + id).attr("dataempid"),
 
-                                
+
 
                         }),
                     dataType: "json",
@@ -1452,7 +1456,7 @@
             var oldScroll = 0;
             if (!$(".nonetable").hasClass("hide")) {
                 oldScroll = $(".wap-scroll").scrollTop();
-                console.log(oldScroll);
+                //console.log(oldScroll);
             }
             loading('Đang tải dữ liệu...', 1);
             $("#preloader").unbind("click");
@@ -1813,9 +1817,7 @@
             currentInputRuning = $(this);
             SetSelectionPosition($(this).parent().parent());
         });
-        console.log('check vào đây111222', document)
         $(document).on("focus", ".PhieuLenh_SelectEmp", function () {
-            console.log('check vào đây')
             sourceIdName = $(this).attr("datasourceidname");
             currentInputRuning = $(this);
             SetSelectionPosition($(this).parent().parent());
@@ -1846,15 +1848,15 @@
         });
 
         $(document).on("chosen", ".multiselect-add" , function () {
-            console.log("chosen");
-            console.log($(this));
+            //console.log("chosen");
+            //console.log($(this));
         });
 
         $(document).on("change", ".multiselect-add", function () {
             var oldSelected = "";
             var arrayOld = null;
             if ($(currentInputRuning).attr("dataempid")) {
-                console.log($(currentInputRuning).attr("dataempid"));
+                //console.log($(currentInputRuning).attr("dataempid"));
                 oldSelected = $(currentInputRuning).attr("dataempid");
                 arrayOld = oldSelected.split(",");
             } else {
@@ -1864,7 +1866,7 @@
             $(currentInputRuning).attr("dataempid", '');
 
             if ($(this).parents("td").attr("onlyone") == "1") {
-                console.log("onlyone");
+                //console.log("onlyone");
                 if ($(this).closest('select').find('option').filter(':selected').length > 0) {
                     var arrayNew = $(this).val();
                     var latest_value = "";
@@ -1876,9 +1878,9 @@
                         if (jQuery.inArray(el, arrayOld) == -1) diffItem.push(el);
                     });
 
-                    console.log("arrayOld " + arrayOld);
-                    console.log("arrayNew " + arrayNew);
-                    console.log("diff " + diffItem);
+                    //console.log("arrayOld " + arrayOld);
+                    //console.log("arrayNew " + arrayNew);
+                    //console.log("diff " + diffItem);
 
                     var latest_value = "";
                     var latest_text = "";
@@ -1888,7 +1890,7 @@
                     }
 
                     if (latest_value != "undefined") {
-                        console.log("set onlyone");
+                        //console.log("set onlyone");
                         $(currentInputRuning).val(latest_text);
                         $(currentInputRuning).attr("dataempid", latest_value);
 
@@ -1902,9 +1904,9 @@
                     var indexEmp = 0;
                     $(newSelect).each(function (eachIndex, curVal) {
                         var textSelect = $(".multiselect-add").find("option[value = '" + curVal + "']").text();
-                        console.log(textSelect);
+                        //console.log(textSelect);
                         if (indexEmp == 0) {
-                            console.log(textSelect);
+                            //console.log(textSelect);
                             $(currentInputRuning).val(textSelect);
                             $(currentInputRuning).attr("dataempid", curVal);
                         } else {

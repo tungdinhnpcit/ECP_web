@@ -1354,7 +1354,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string LanhDaoCongViec,
             string NguoiCapPhieu_Id,
             string NguoiCapPhieu,
-            int? HinhThucKiemTra, string DaiDienTruongDoanKT,
+            int? HinhThucKiemTra, string NguoiDaiDienKT, string NguoiDaiDienKT_Id,
             int CatDien = 0, int TiepDia = 0, int TinhChat = 0, int PhieuLenh = 0)
         {
             int kt = 0;
@@ -1509,8 +1509,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             PhienLamViecId = kt,
                             HinhThucKiemTra = HinhThucKiemTra,
-                            NguoiDaiDienKT_Id = LanhDaoCongViec_Id,
-                            NguoiDaiDienKT = DaiDienTruongDoanKT,
+                            NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
+                            NguoiDaiDienKT = NguoiDaiDienKT,
                             LyDoHoanHuy = "NULL"
                         };
 
