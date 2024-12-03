@@ -2075,6 +2075,13 @@ namespace ECP_V2.Business.Repository
         public string NguoiCNPCT { get; set; }
 
         public int? IsCamera { set; get; }
+
+        // Tham chiếu bảng plv_KeHoachLichLamViec
+        public int? KeHoachLV_Id { set; get; }
+        public int? HinhThucKiemTra { set; get; }
+        public string NguoiDaiDienKT { set; get; }
+        public string NguoiDaiDienKT_Id { set; get; }
+        public string LyDoHoanHuy { set; get; }
     }
     public class PhienLVTuan
     {

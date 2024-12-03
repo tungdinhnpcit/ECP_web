@@ -7,6 +7,7 @@
     List<plv_ThuocTinhPhien> listThuocTinhPhienLV = ViewBag.ListThuocTinhPhien;
 
     List<plv_PhieuCongTac> listPhieuCongTac = null;
+    
     if (ViewBag.PhieuLenh != null)
     {
         listPhieuCongTac = ViewBag.PhieuLenh;
@@ -487,6 +488,22 @@
                                     }
                                 }
 
+                                //Kế hoạch lịch kiểm tra
+                                string tenHinhThucKT = "";
+                                if (item.HinhThucKiemTra != null)
+                                {
+                                  
+                                        if (item.HinhThucKiemTra == 1)
+                                        {
+                                            tenHinhThucKT = "Công tác đầu giờ";
+                                        }
+                                        else if (item.HinhThucKiemTra == 2)
+                                        {
+                                            tenHinhThucKT = "Công tác giữa giờ";
+                                        }
+                                    
+                                }
+
             <tr class="r@(group.Key.ToString("yyyyMMdd") + loaiPhien) @style" data-phienlvid="@item.Id">
                 <td>
                     @(rowIndex)
@@ -626,20 +643,24 @@
                     <span id="spanLyDoThayDoi_@item.Id">@item.LyDoThayDoi</span>
                     @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
                 </td>
-                @*<td class="radioStyle" onlyone="2">
-                    <span id="spanPhieuLenh_@item.Id">@(tenPhieuLenh)</span>
+
+                @*2 cột kế hoạch lịch làm việc*@
+                <td class="radioStyle" onlyone="2">
+                    <span id="spanPhieuLenh_@item.Id">@(tenHinhThucKT)</span>
                     <span>
-                        @Html.TextArea("PhieuLenh_" + (string)item.Id.ToString(), tenPhieuLenh, new { @class = "PhieuLenh_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Hình thức kiểm tra hiện trường", @datasourceidname = "listphieulenh", @dataempid = (loaiPhieuLenh > 0 ? loaiPhieuLenh.ToString() : "") })
+                        @Html.TextArea("HinhThucKiemTra_" + (string)item.Id.ToString(), tenPhieuLenh, new { @class = "PhieuLenh_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Hình thức kiểm tra hiện trường", @datasourceidname = "listphieulenh", @dataempid = (loaiPhieuLenh > 0 ? loaiPhieuLenh.ToString() : "") })
                     </span>
                     <div class="multiselect-wap"></div>
                 </td>
                 <td class="@(LanhDaoCongViec_Error)" onlyone="2">
-                    <span id="spanLanhDaoCongViec_@item.Id">@item.LanhDaoCongViec</span>
+                    <span id="spanNguoiDaiDienKT_@item.Id">@item.NguoiDaiDienKT</span>
                     <span>
-                        @Html.TextArea("LanhDaoCongViec_" + (string)item.Id.ToString(), (string)item.LanhDaoCongViec, new { @class = "LanhDaoCongViec_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Đại diện Đoàn KT hiện trường", @datasourceidname = "listlanhdaocongviec", @dataempid = item.LanhDaoCongViec_Id, @searchbox = "1" })
+                        @Html.TextArea("NguoiDaiDienKT" + (string)item.Id.ToString(), (string)item.LanhDaoCongViec, new { @class = "LanhDaoCongViec_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Đại diện Đoàn KT hiện trường", @datasourceidname = "listlanhdaocongviec", @dataempid = item.LanhDaoCongViec_Id, @searchbox = "1" })
                     </span>
                     <div class="multiselect-wap"></div>
-                </td>*@
+                </td>
+                @*end kế hoạch*@
+
                 <td class="text-center" style="text-align:center">
                     <span id="spanTrangThai_@item.TrangThai">@(trangThaiPhienLV.Any(x => x.Id == item.TrangThai) ? trangThaiPhienLV.SingleOrDefault(x => x.Id == item.TrangThai).Name : "")</span>
                 </td>
