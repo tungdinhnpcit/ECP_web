@@ -1364,6 +1364,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             tblPhienLamViec plv = new tblPhienLamViec();
             try
             {
+
                 if (PhieuLenh == 0)
                 {
                     DisposeAll();
@@ -1514,7 +1515,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             LyDoHoanHuy = "NULL"
                         };
 
-                    var check = _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
+                    var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
                     }
 
 
