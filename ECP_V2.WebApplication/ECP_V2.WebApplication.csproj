@@ -78,6 +78,9 @@
       <HintPath>..\packages\CKSource.FileSystem.1.0.0\lib\net45\CKSource.FileSystem.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="DelegateDecompiler, Version=1.0.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
       <HintPath>..\packages\DelegateDecompiler.0.18.1\lib\net40-Client\DelegateDecompiler.dll</HintPath>
       <Private>True</Private>
