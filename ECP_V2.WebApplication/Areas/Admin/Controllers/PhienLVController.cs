@@ -592,6 +592,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string LanhDaoCongViec,
             string NguoiCapPhieu_Id,
             string NguoiCapPhieu,
+
+            // Update bảng plv_KeHoachLichLamViec
+            int? HinhThucKiemTra, string NguoiDaiDienKT, string NguoiDaiDienKT_Id,
             int CatDien = 0, int TiepDia = 0, int TinhChat = 0, int PhieuLenh = 0)
         {
             int kt = 0;
@@ -805,6 +808,22 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     try
                     {
+                        #region Update plv_KeHoachLichLamViec
+                        if (HinhThucKiemTra != null)
+                        {
+                            var input_dataKHLLV = new plv_KeHoachLichLamViec
+                            {
+                                PhienLamViecId = kt,
+                                HinhThucKiemTra = HinhThucKiemTra,
+                                NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
+                                NguoiDaiDienKT = NguoiDaiDienKT,
+                                LyDoHoanHuy = "NULL"
+                            };
+
+                            var check = await _keHoachLichLamViecRepository.Update_Plv_KeHoachLichLamViec(input_dataKHLLV);
+                        }
+
+                        #endregion Update plv_KeHoachLichLamViec
                         string errorChinhSua = "";
                         var chinhSuaPhienLamViec = new tblPhienLamViec_ChinhSua();
                         var user = aspNetUserRepository.GetByUserName(User.Identity.GetUserName());
@@ -1354,6 +1373,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string LanhDaoCongViec,
             string NguoiCapPhieu_Id,
             string NguoiCapPhieu,
+            //insert bảng plv_KeHoachLichLamViec
             int? HinhThucKiemTra, string NguoiDaiDienKT, string NguoiDaiDienKT_Id,
             int CatDien = 0, int TiepDia = 0, int TinhChat = 0, int PhieuLenh = 0)
         {
@@ -1503,8 +1523,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 kt = _plviec_ser.PhienLamViec_AddNew(plv);
                 if (kt > 0)
                 {
-                    // Thêm mới vào bảng Kế hoạch lịch làm việc
-                    if(HinhThucKiemTra != null)
+                    #region Insert_plv_KeHoachLichLamViec
+                    if (HinhThucKiemTra != null)
                     {
                         var input_dataKHLLV = new plv_KeHoachLichLamViec
                         {
@@ -1517,7 +1537,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
                     }
-
+                    #endregion
 
                     bool save_tbl_NhanVien_PhienLamViec = false;
                     if (!string.IsNullOrEmpty(NguoiDuyet_SoPa_Id))
@@ -2286,6 +2306,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     try
                     {
+                        // Xóa Kế hoạch lịch làm việc
+                        var check = await _keHoachLichLamViecRepository.Delete_Plv_KeHoachLichLamViec(int.Parse(Id));
+
+
                         var listDelete = _plviec_ser.Context.tbl_NhanVien_PhienLamViec.Where(x => x.PhienLamViecId == plv.Id);
                         if (listDelete != null)
                         {

@@ -858,6 +858,8 @@
             id = str[1];
 
             var tr = $(el).parents('tr:first');
+            tr.find('#spanPhongBanID_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id + ', #spanLyDoThayDoi_' + id + ', #spanNgayKt_' + id + '' + ', #spanHinhThucKiemTra_' + id + '' + ', #spanNguoiDaiDienKT_' + id + '').hide();
+            tr.find('#PhongBanID_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '' + ', #HinhThucKiemTra_' + id + '' + ', #NguoiDaiDienKT_' + id + '').show();
 
             //if (status != '' && parseInt(status) == 2) {
 
@@ -870,8 +872,8 @@
             //}
 
 
-            tr.find('#spanPhongBanID_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id +  ', #spanLyDoThayDoi_' + id + ', #spanNgayKt_' + id + '').hide();
-            tr.find('#PhongBanID_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '').show();
+            //tr.find('#spanPhongBanID_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id +  ', #spanLyDoThayDoi_' + id + ', #spanNgayKt_' + id + '').hide();
+            //tr.find('#PhongBanID_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '').show();
 
 
             $(el).hide();
@@ -926,12 +928,12 @@
             id = str[1];
 
             var tr = $(el).parents('tr:first');
-            tr.find('#spanNoiDung_' + id + ',#spanPhongBanID_' + id + ', #spanDiaDiem_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id +  ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id + ',#spanLyDoThayDoi_' + id + ',#spanNgayKt_' + id + '').show();
-            tr.find('#NoiDung_' + id + ', #PhongBanID_' + id + ', #DiaDiem_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id +  ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '').hide();
+            tr.find('#spanNoiDung_' + id + ',#spanPhongBanID_' + id + ', #spanDiaDiem_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id + ',#spanLyDoThayDoi_' + id + ',#spanNgayKt_' + id + '' + ', #spanHinhThucKiemTra_' + id + '' + ', #spanNguoiDaiDienKT_' + id + '').show();
+            tr.find('#NoiDung_' + id + ', #PhongBanID_' + id + ', #DiaDiem_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '' + ', #HinhThucKiemTra_' + id + '' + ', #NguoiDaiDienKT_' + id + '').hide();
 
+            $("#Edit_" + id).show();
             $(el).hide();
             $("#Update_" + id).hide();
-            $("#Edit_" + id).show();
 
         };
 
@@ -954,7 +956,8 @@
             loading('Đang xử lý...', 1);
 
             ReturnSelectionPosition();
-
+            //console.log('check hình thức kiểm tra', $("#HinhThucKiemTra_" + id).attr("dataempid"));
+            //console.log('check đại diện đoàn kiểm tra', $("#NguoiDaiDienKT" + id).val());
             //return selection
 
             //
@@ -1017,7 +1020,13 @@
                             "PhieuLenh": $("#PhieuLenh_" + id).attr("dataempid"),
                             "CatDien": $("#CatDien_" + id).attr("dataempid") || 0,
                             "TiepDia": $("#TiepDia_" + id).attr("dataempid") || 0,
-                            "TinhChat": $("#TinhChat_" + id).attr("dataempid") || 0
+                            "TinhChat": $("#TinhChat_" + id).attr("dataempid") || 0,
+
+                            //Update bảng plv_KeHoachLichLamViec
+                             "NguoiDaiDienKT": $("#NguoiDaiDienKT_" + id).val(),
+                             "NguoiDaiDienKT_Id": $("#NguoiDaiDienKT_" + id).attr("dataempid"),
+                             "HinhThucKiemTra": $("#HinhThucKiemTra_" + id).attr("dataempid"),
+
                         }),
                     dataType: "json",
                     beforeSend: function () {//alert(id);
@@ -1245,7 +1254,7 @@
 
                 // Đại diện đoàn kiểm tra
                 '<td onlyone="1"><span>' +
-                '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaocongviec"  class="LanhDaoCongViec_SelectEmp form-control" rows="2" id="NguoiDaiDienKT' + index + '" placeholder="Đại diện đoàn kiểm tra" class = "form-control" ></textarea>' +
+                '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaocongviec"  class="LanhDaoCongViec_SelectEmp form-control" rows="2" id="NguoiDaiDienKT_' + index + '" placeholder="Đại diện đoàn kiểm tra" class = "form-control" ></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
                 // dung pv thêm action lưu thiết bị lao động
@@ -1347,8 +1356,7 @@
             var str = $(el).attr("id").split("_");
             var id = str[1];
             var tr = $(el).parents('tr:first');
-            console.log('check hình thức kiểm tra', $("#HinhThucKiemTra_" + id).attr("dataempid"));
-            console.log('check đại diện đoàn kiểm tra', $("#NguoiDaiDienKT" + id).val());
+           
 
             if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
                 $.ajax({

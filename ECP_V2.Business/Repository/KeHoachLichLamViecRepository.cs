@@ -40,7 +40,7 @@ namespace ECP_V2.Business.Repository
             {
                 using (var connectionDB = new SqlConnection(connection))
                 {
-                   await connectionDB.OpenAsync();
+                    await connectionDB.OpenAsync();
 
                     var sql = @"INSERT INTO dbo.plv_KeHoachLichLamViec (PhienLamViecId, HinhThucKiemTra, NguoiDaiDienKT_Id, NguoiDaiDienKT)
                                 values(@PhienLamViecId, @HinhThucKiemTra, @NguoiDaiDienKT_Id, @NguoiDaiDienKT)
@@ -56,7 +56,53 @@ namespace ECP_V2.Business.Repository
             }
         }
 
+        public async Task<dynamic> Update_Plv_KeHoachLichLamViec(plv_KeHoachLichLamViec input)
+        {
+            try
+            {
+                using (var connectionDB = new SqlConnection(connection))
+                {
+                    await connectionDB.OpenAsync();
 
+                    var sql = @"update plv_KeHoachLichLamViec set 
+                                HinhThucKiemTra= @HinhThucKiemTra,
+                                NguoiDaiDienKT= @NguoiDaiDienKT,
+                                NguoiDaiDienKT_Id= @NguoiDaiDienKT_Id,
+                                LyDoHoanHuy= @LyDoHoanHuy
+                                OUTPUT inserted.Id
+                                where PhienLamViecId= @PhienLamViecId";
+                    return await connectionDB.QueryAsync<int>(sql, new { input.PhienLamViecId, input.HinhThucKiemTra, input.NguoiDaiDienKT_Id, input.NguoiDaiDienKT, input.LyDoHoanHuy });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi chung, ví dụ: lỗi kết nối, lỗi không xác định
+                Console.WriteLine("Lỗi: " + ex.Message);
+                return Enumerable.Empty<Task>();
+            }
+        }
+
+        public async Task<dynamic> Delete_Plv_KeHoachLichLamViec(int Id)
+        {
+            try
+            {
+                using (var connectionDB = new SqlConnection(connection))
+                {
+                    await connectionDB.OpenAsync();
+
+                    var sql = @"DELETE FROM plv_KeHoachLichLamViec
+                                WHERE PhienLamViecId = @Id;
+                                SELECT @@ROWCOUNT;";
+                    return await connectionDB.ExecuteScalarAsync<int>(sql, new {Id });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi chung, ví dụ: lỗi kết nối, lỗi không xác định
+                Console.WriteLine("Lỗi: " + ex.Message);
+                return Enumerable.Empty<Task>();
+            }
+        }
 
         public override object Create(plv_KeHoachLichLamViec entity, ref string strError)
         {
