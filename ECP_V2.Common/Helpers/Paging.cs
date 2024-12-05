@@ -17,6 +17,13 @@ namespace ECP_V2.Common.Helpers
         public int Next { get; set; }
         public int Prev { get; set; }
         public string RecordsName { get; set; }
+
+        // Tham chiếu bảng plv_KeHoachLichLamViec
+        public int? KeHoachLV_Id { set; get; }
+        public int? HinhThucKiemTra { set; get; }
+        public string NguoiDaiDienKT { set; get; }
+        public string NguoiDaiDienKT_Id { set; get; }
+        public string LyDoHoanHuy { set; get; }
     }
     public class PageData<T> where T : class
     {

@@ -723,7 +723,8 @@
                           DonViId = (ViewBag.DonViID != null) ? ViewBag.DonViID : Session["DonViID"].ToString(),
                           ttPhien = 0,
                           chuyenNPC = -1,
-                          phieuky = -1
+                          phieuky = -1,
+                          isShowBtnHoanHuy = false
                       });}
                 </div>
             </div>
@@ -1018,6 +1019,7 @@
                     ttPhien: ttPhien,
                     chuyenNPC: chuyenNPC,
                     phieuky: phieuky,
+                    isShowBtnHoanHuy: false,
                     LoaiBieuDo: $('#drlLoaiBieuDo').val()
                 },
                 type: 'GET',

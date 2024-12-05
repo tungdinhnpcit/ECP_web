@@ -2082,6 +2082,7 @@ namespace ECP_V2.Business.Repository
         public string NguoiDaiDienKT { set; get; }
         public string NguoiDaiDienKT_Id { set; get; }
         public string LyDoHoanHuy { set; get; }
+        public Boolean isShowBtnHoanHuy { set; get; }
     }
     public class PhienLVTuan
     {

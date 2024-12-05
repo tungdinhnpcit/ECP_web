@@ -468,14 +468,12 @@
                     </div>
                     <div class="col-md-4">
                         <span>TC Phiên : &nbsp;</span>
-                        <select class="form-control" id="cmbTCPhien" onchange="tcphien_change(this)">
+                        <select class="form-control" id="cmbTCPhien" onchange="tcphien_change(this) ">
                             <option value="0">Tất cả</option>
-                            @*<option value="CÔNG VIỆC THEO ĐĂNG KÝ KẾ HOẠCH">CÔNG VIỆC THEO ĐĂNG KÝ KẾ HOẠCH</option>
-                                <option value="CÔNG VIỆC THEO ĐĂNG KÝ BỔ SUNG">CÔNG VIỆC THEO ĐĂNG KÝ BỔ SUNG</option>*@
                             @if (ViewBag.ListTCPhien != null)
                             {
                                 var listTCPhien = (List<ECP_V2.DataAccess.plv_TinhChatPhien>)ViewBag.ListTCPhien;
-
+                                <option value="0">Tất cả</option>
                                 foreach (var item in listTCPhien)
                                 {
                                     <option value="@item.Id">@item.Name</option>
@@ -707,24 +705,20 @@
                     @{Html.RenderAction("List", "PhienLV", new
                         {
                             page = 1,
-                            pageSize = @*(Session["drlPageSize"] != null) ? int.Parse(Session["drlPageSize"].ToString()) :*@ /**/
-                            /**/
-                            /**/
-                            /**/
-                            /**/
-                            500,
-                          filter = "",
-                          tcphien = ViewBag.TinhChat,
-                          catdien = 0,
-                          tiepdia = 0,
-                          khac = 0,
-                          DateFrom = ViewBag.TuNgay,
-                          DateTo = ViewBag.DenNgay,
-                          DonViId = (ViewBag.DonViID != null) ? ViewBag.DonViID : Session["DonViID"].ToString(),
-                          ttPhien = 0,
-                          chuyenNPC = -1,
-                          phieuky = -1
-                      });}
+                            pageSize = 500,
+                            filter = "",
+                            tcphien = ViewBag.TinhChat,
+                            catdien = 0,
+                            tiepdia = 0,
+                            khac = 0,
+                            DateFrom = ViewBag.TuNgay,
+                            DateTo = ViewBag.DenNgay,
+                            DonViId = (ViewBag.DonViID != null) ? ViewBag.DonViID : Session["DonViID"].ToString(),
+                            ttPhien = 0,
+                            chuyenNPC = -1,
+                            phieuky = -1,
+                            isShowBtnHoanHuy= true
+                        });}
                 </div>
             </div>
         </div>
@@ -793,7 +787,6 @@
         var IdUpdateSoPhieu = 0;
         var NoiDungDelete = 0;
         var IdSign = 0;
-
         $(function () {
 
             $.datepicker?.setDefaults({
@@ -933,7 +926,7 @@
 
             $("#cmbTCPhien option[value='@Html.Raw(ViewBag.TinhChat)']").attr("selected", true);
             $('#cmbTCPhien').trigger("chosen:updated");
-            $("#cmbTCPhien").val('@Html.Raw(ViewBag.TinhChat)').change();
+            ////$("#cmbTCPhien").val('@Html.Raw(ViewBag.TinhChat)').change();
 
         });
 
@@ -946,20 +939,17 @@
         }
 
         function donvi_change(el) {
-
             LoadPhongBanByDonVi(el.value);
-
-                Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), el.value, $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), el.value, $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
         }
 
         function tcphien_change(el) {
-
             Paging(1, 500, $('#txtSearch').val(), el.value, $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
         }
 
         function ttphien_change(el) {
 
-                Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+            Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
 
         }
 
@@ -1018,6 +1008,7 @@
                     ttPhien: ttPhien,
                     chuyenNPC: chuyenNPC,
                     phieuky: phieuky,
+                    isShowBtnHoanHuy:true,
                     LoaiBieuDo: $('#drlLoaiBieuDo').val()
                 },
                 type: 'GET',

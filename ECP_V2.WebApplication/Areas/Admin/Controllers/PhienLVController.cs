@@ -282,7 +282,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #region List
         [HttpGet]
         public ActionResult List(int page, int pageSize, string filter, int tcphien, int catdien, int tiepdia,
-            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky, string LoaiBieuDo = "DS")
+            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky, Boolean? isShowBtnHoanHuy,
+            string LoaiBieuDo = "DS")
         {
             filter = filter.Trim().ToUpper();
             int page1 = (page - 1) * pageSize;
@@ -411,6 +412,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
 
             var ListNewsPageSize = new PageData<PhienLVModel>();
+            
             if (model.Count() > 0)
             {
                 ListNewsPageSize.Data = model;
@@ -492,6 +494,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             item.NguoiDuyetPCT = objPCT.NguoiDuyet;
                             item.NgayDuyetPCT = objPCT.NgayDuyet;
                             item.MaYeuCauCRM = objPCT.MaYeuCauCRM;
+                            item.isShowBtnHoanHuy = isShowBtnHoanHuy ?? false;
                         }
                     }
                     catch (Exception ex)
@@ -505,6 +508,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             {
                 foreach (var item in ListNewsPageSize.Data)
                 {
+                    item.isShowBtnHoanHuy = isShowBtnHoanHuy ?? false;
                     // lay location tu dia diem
                     try
                     {
