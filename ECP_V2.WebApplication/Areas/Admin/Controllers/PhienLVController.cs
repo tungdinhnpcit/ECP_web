@@ -416,6 +416,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             if (model.Count() > 0)
             {
                 ListNewsPageSize.Data = model;
+                // Nếu isShowBtnHoanHuy (xem trnag ở chức năng Kế hoạch lịch làm việc thì chỉ lấy ra data có trạng thái là Đã duyệt)
+                if ((bool)isShowBtnHoanHuy)
+                {
+                    ListNewsPageSize.Data = model.FindAll(m=>m.TrangThai==2);
+                }
                 ListNewsPageSize.Page = new Page()
                 {
                     RecordsName = "Phiên làm việc",
@@ -3892,6 +3897,89 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             return Json(kt, JsonRequestBehavior.AllowGet);
 
         }
+        #endregion
+
+
+        #region Update Hoãn hủy kế hoạch làm việc
+        [HttpGet]
+        public ActionResult UpdateHoanHuy(int Id)
+        {
+
+            tblComment c = new tblComment();
+            c.PhienLamViecId = Id;
+
+            DisposeAll();
+
+            return View(c);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult UpdateHoanHuy(int PhienLamViecId, string CommentContent)
+        {
+            string kt = "";
+
+            if (string.IsNullOrEmpty(CommentContent))
+            {
+                DisposeAll();
+
+                return Json("Bạn chưa nhập lý do !", JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                //tblPhienLamViec plv = _plviec_ser.GetById(PhienLamViecId);
+
+                //tblComment cm = new tblComment();
+                //cm.PhienLamViecId = PhienLamViecId;
+                //cm.Priority = 1;
+                //cm.CommentContent = CommentContent;
+                //cm.CreateTime = DateTime.Now;
+                //cm.Username = User.Identity.Name;
+                //cm.Description = "";
+
+                //CommentRepository cmr = new CommentRepository();
+                //kt = cmr.Comment_Add(cm);
+
+                //List<tblImage> lstImg = _plviec_ser.GetImageByPhienLVId(PhienLamViecId, "");
+                //if (!(plv.IsKiemTra.HasValue && plv.IsKiemTra == true))
+                //{
+                //    try
+                //    {
+                //        if (lstImg.Count > 0)
+                //        {
+                //            foreach (var item in lstImg)
+                //            {
+                //                if (item.GroupId > 2)
+                //                {
+                //                    string strError = "";
+                //                    _plviec_ser.UpdateKiemTraPLV(PhienLamViecId, ref strError);
+                //                    break;
+                //                }
+                //            }
+
+                //        }
+
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                DisposeAll();
+                kt = "";
+            }
+            DisposeAll();
+
+            return Json(kt, JsonRequestBehavior.AllowGet);
+
+        }
+     
+
+
+
         #endregion
 
         #region DetailHinhAnhPhienLv

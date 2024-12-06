@@ -364,6 +364,40 @@
             </div>
         </section>
     </div>
+
+    @*Modal cập nhật hoãn hủy*@
+    <div id="modalCancel" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style=" background-color:white ">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Hoãn hủy kế hoạch làm việc</h2>
+            </header>
+            <div style="margin-left: 5px; margin-right: 5px;">
+                @using (Html.BeginForm("UpdateHoanHuy", "PhienLV", FormMethod.Post, new { id = "UpdateHoanHuy", @class = "form-horizontal form-bordered" }))
+                {
+                    @Html.ValidationSummary(true)
+
+                    <!-- Trường ẩn chứa giá trị donviId -->
+                    @Html.Hidden("PhienLamViecId", "")
+
+                    <div class="control-group">
+                        <label for="textfield" class="control-label">Lý do hoãn hủy</label>
+                        <div class="controls">
+                            <textarea id="commentContent" name="CommentContent" class="input-block-level" placeholder="Nhập..." rows="3"></textarea>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary modal-confirm" type="submit" id="modal-confirm">Lưu</button>
+                                <button class="btn btn-default modal-dismiss" type="button" onclick="ModalDismissComment()" id="modal-dismiss">Thoát</button>
+                            </div>
+                        </div>
+                    </footer>
+                }
+            </div>
+
+        </section>
+    </div>
     <div class="clear">
     </div>
 </div>
@@ -530,7 +564,9 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-2">
+                </div>
+                <div class="row ">
+                    <div class="col-md-2 ">
                         <span> &nbsp; Khác: &nbsp;</span>
                         <select class="form-control" id="cmbTTPhienKhac" onchange="ttphienkhac_change(this)">
                             <option value="0">Tất cả</option>
@@ -545,8 +581,16 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-2">
-                    </div>
+
+                    @*<div class="col-md-2">
+                        <span> &nbsp; Hình thức kiểm tra: &nbsp;</span>
+                        <select class="form-control" id="cmbTTPhienKhac123" onchange="ttphienkhac_change(this)">
+                            <option value="0">Tất cả</option>
+                            <option value="1">Công tác đầu giờ</option>
+                            <option value="2">Công tác giữa giờ</option>
+
+                        </select>
+                    </div>*@
                 </div>
                 <hr class="mt-md mb-md">
                 @*<div class="row show-grid">
@@ -565,17 +609,8 @@
                         <div class="col-md-2">
                             <span>Trạng thái: &nbsp;</span>
                             <br />
-                            <select class="form-control" id="cmbTTPhien" onchange="ttphien_change(this)">
-                                <option value="0">Tất cả</option>
-                                @if (ViewBag.ListTTPhien != null)
-                                {
-                                    var listTTPhien = (List<ECP_V2.DataAccess.plv_TrangThaiPhien>)ViewBag.ListTTPhien;
-
-                                    foreach (var item in listTTPhien)
-                                    {
-                                        <option value="@item.Id">@item.Name</option>
-                                    }
-                                }
+                            <select class="form-control" id="cmbTTPhien" onchange="ttphien_change(this)" disabled>
+                                <option value="0">Đã duyệt</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -717,7 +752,7 @@
                             ttPhien = 0,
                             chuyenNPC = -1,
                             phieuky = -1,
-                            isShowBtnHoanHuy= true
+                            isShowBtnHoanHuy = true
                         });}
                 </div>
             </div>
@@ -1133,7 +1168,6 @@
         }
 
         function AddComment(PhienLvId) {
-
             loading('Đang tải dữ liệu...', 1);
             $("#preloader").unbind("click");
             $('#preloader').click(function () {
@@ -1165,6 +1199,41 @@
             });
 
         }
+        // Update Hoãn hủy kế hoạch làm việc
+        function UpdateHoanHuy(PhienLvId) {
+
+            loading('Đang tải dữ liệu...', 1);
+            $("#preloader").unbind("click");
+            $('#preloader').click(function () {
+                unloading();
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/Admin/PhienLV/UpdateHoanHuy?Id=' + PhienLvId,
+                success: function (json) {
+
+                    $('#modalCancel .modal-wrapper').html('');
+                    $('#modalCancel .modal-wrapper').html(json);
+
+                    $.validator.unobtrusive.parse($('#UpdateHoanHuy'));
+                    $('#UpdateHoanHuy').submit(function () {
+                        // inside event callbacks 'this' is the DOM element so we first
+                        // wrap it in a jQuery object and then invoke ajaxSubmit
+                        if ($(this).valid())
+                            $(this).ajaxSubmit(options4);
+
+                        // !!! Important !!!
+                        // always return false to prevent standard browser submit and page navigation
+                        return false;
+                    });
+
+                    unloading();
+                }
+            });
+
+        }
+
         var options4 = {
             // target element(s) to be updated with server response
             beforeSubmit: showRequest4,  // pre-submit callback
@@ -1210,6 +1279,9 @@
 
         function ModalConfirmComment(el) {
             $("#AddComment").submit();
+        }
+        function ModalConfirmCommentHoanHuy(el) {
+            $("#UpdateHoanHuy").submit();
         }
 
         function LoadPhongBanByDonVi(DonViId) {
@@ -1624,6 +1696,11 @@
             $.magnificPopup.close();
         }
 
+        function AddHoanHuy(obj) {
+            PhienLamViecId = $(obj).attr("id").split("_")[1];
+
+            document.getElementById('PhienLamViecId').value = PhienLamViecId;
+        }
 
         function checkall(obj) {
 
