@@ -1289,6 +1289,7 @@
                                 type: 'error'
                             });
                         }
+
                     },
                     error: function (e) {
                         new PNotify({
@@ -1297,8 +1298,9 @@
                             type: 'error'
                         });
                     }
-
                 });
+                unloading();
+
             }
 
             $.magnificPopup.close();

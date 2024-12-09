@@ -64,13 +64,39 @@ namespace ECP_V2.Business.Repository
                 {
                     await connectionDB.OpenAsync();
 
-                    var sql = @"update plv_KeHoachLichLamViec set 
-                                HinhThucKiemTra= @HinhThucKiemTra,
-                                NguoiDaiDienKT= @NguoiDaiDienKT,
-                                NguoiDaiDienKT_Id= @NguoiDaiDienKT_Id,
-                                LyDoHoanHuy= @LyDoHoanHuy
-                                OUTPUT inserted.Id
-                                where PhienLamViecId= @PhienLamViecId";
+                    var sql = @"IF NOT EXISTS (SELECT 1 FROM plv_KeHoachLichLamViec WHERE PhienLamViecId = @PhienLamViecId)
+                        BEGIN
+                -- Nếu không tồn tại bản ghi, thực hiện INSERT
+                     INSERT INTO plv_KeHoachLichLamViec
+                         (
+                         PhienLamViecId,
+                         HinhThucKiemTra,
+                         NguoiDaiDienKT,
+                         NguoiDaiDienKT_Id,
+                         LyDoHoanHuy
+                          )
+                    VALUES
+                          (
+                        @PhienLamViecId,
+                        @HinhThucKiemTra,
+                        @NguoiDaiDienKT,
+                        @NguoiDaiDienKT_Id,
+                        @LyDoHoanHuy
+                           )
+                            select SCOPE_IDENTITY();
+                       END
+                    ELSE
+                       BEGIN
+              -- Nếu tồn tại bản ghi, thực hiện UPDATE
+                UPDATE plv_KeHoachLichLamViec
+                        SET 
+                        HinhThucKiemTra = @HinhThucKiemTra,
+                        NguoiDaiDienKT = @NguoiDaiDienKT,
+                        NguoiDaiDienKT_Id = @NguoiDaiDienKT_Id,
+                        LyDoHoanHuy = @LyDoHoanHuy
+                        OUTPUT inserted.Id
+                    WHERE PhienLamViecId = @PhienLamViecId;
+                    END";
                     return await connectionDB.QueryAsync<int>(sql, new { input.PhienLamViecId, input.HinhThucKiemTra, input.NguoiDaiDienKT_Id, input.NguoiDaiDienKT, input.LyDoHoanHuy });
                 }
             }
@@ -93,7 +119,7 @@ namespace ECP_V2.Business.Repository
                     var sql = @"DELETE FROM plv_KeHoachLichLamViec
                                 WHERE PhienLamViecId = @Id;
                                 SELECT @@ROWCOUNT;";
-                    return await connectionDB.ExecuteScalarAsync<int>(sql, new {Id });
+                    return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id });
                 }
             }
             catch (Exception ex)

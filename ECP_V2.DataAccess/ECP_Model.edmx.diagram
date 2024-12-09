@@ -12457,6 +12457,24 @@
         <AssociationConnector Association="ECP_V2Model.FK_tblNhanVien_tblPhongBan" />
         <AssociationConnector Association="ECP_V2Model.FK_tblPhienLamViec_TheoDoi_tblNhanVien" />
         <EntityTypeShape EntityType="ECP_V2Model.plv_PhieuCongTac_Sign" Width="1.5" PointX="11.469770734882806" PointY="17.840097793303475" />
+        <EntityTypeShape EntityType="ECP_V2Model.plv_bbanksat_sign" Width="1.5" PointX="8.9090217151255455" PointY="2.5207171749885742" />
+        <EntityTypeShape EntityType="ECP_V2Model.plv_bbanksat_upload" Width="1.5" PointX="2.3619390718461659" PointY="25.630952757611382" />
+        <EntityTypeShape EntityType="ECP_V2Model.plv_PhieuCongTac_hientruong" Width="1.5" PointX="1.0222388007781649" PointY="19.487769433990014" />
+        <EntityTypeShape EntityType="ECP_V2Model.plv_PhieuCT_CongViec_hientruong" Width="1.5" PointX="9.8549780668015483" PointY="28.00586294941877" />
+        <EntityTypeShape EntityType="ECP_V2Model.plv_PhieuCT_NhanVien_hientruong" Width="1.5" PointX="6.0441595344078536" PointY="20.923877099959121" />
+        <EntityTypeShape EntityType="ECP_V2Model.OracleGGCleanupJobStatu" Width="1.5" PointX="1.5460881970571765" PointY="10.691673030467552" />
+        <EntityTypeShape EntityType="ECP_V2Model.OracleGGExtractCheckpoint" Width="1.5" PointX="9.28763185128925" PointY="0.98034763381832635" />
+        <EntityTypeShape EntityType="ECP_V2Model.OracleGGTranTable" Width="1.5" PointX="3.9069942328645819" PointY="18.433995583296753" />
+        <EntityTypeShape EntityType="ECP_V2Model.OracleGGVersion" Width="1.5" PointX="7.5675417257321733" PointY="20.913064325653512" />
+        <EntityTypeShape EntityType="ECP_V2Model.OracleGGCleanupJobStatus1" Width="1.5" PointX="7.6915833259427835" PointY="22.484228830078724" />
+        <EntityTypeShape EntityType="ECP_V2Model.OracleGGExtractCheckpoint1" Width="1.5" PointX="8.7761637944617146" PointY="14.550313762645382" />
+        <EntityTypeShape EntityType="ECP_V2Model.plv_KeHoachLichLamViec" Width="1.5" PointX="4.7358953341543186" PointY="0.47267214975909894" />
+        <EntityTypeShape EntityType="ECP_V2Model.SU_CO" Width="1.5" PointX="10.904817245390646" PointY="29.627435891715546" />
+        <EntityTypeShape EntityType="ECP_V2Model.V_plv_PhieuCongTac_all" Width="1.5" PointX="9.36327320773307" PointY="5.0598012828546581" />
+        <EntityTypeShape EntityType="ECP_V2Model.V_tblDonVi" Width="1.5" PointX="5.4563402745203771" PointY="29.410718871937469" />
+        <EntityTypeShape EntityType="ECP_V2Model.V_tblImage_all" Width="1.5" PointX="8.2392413393777062" PointY="27.564124373516126" />
+        <EntityTypeShape EntityType="ECP_V2Model.V_tblPhienLamViec" Width="1.5" PointX="7.375282682187521" PointY="12.308263665208715" />
+        <EntityTypeShape EntityType="ECP_V2Model.V_tblPhienLamViec_all" Width="1.5" PointX="4.88605607342257" PointY="14.432680449650009" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
