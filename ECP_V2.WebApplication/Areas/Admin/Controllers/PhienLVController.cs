@@ -1693,6 +1693,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         phieuCongTac.NgayTao = DateTime.Now;
                         phieuCongTac.NguoiTao = User.Identity.Name;
                         phieuCongTac.DonViId = plv.DonViId;
+                        phieuCongTac.NguoiCapPhieu = NguoiCapPhieu;
+                        phieuCongTac.NguoiCapPhieu_Id = NguoiCapPhieu_Id;
 
                         _plviec_ser.Context.plv_PhieuCongTac.Add(phieuCongTac);
                         _plviec_ser.Context.SaveChanges();
@@ -2728,7 +2730,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     DisposeAll();
 
-                    return Json("Người dùng chưa được cấp số EVNCA.", JsonRequestBehavior.AllowGet);
+                    return Json("NOT EVNCA", JsonRequestBehavior.AllowGet);
                 }
 
                 if (!string.IsNullOrWhiteSpace(nvien.Hsm_serial))
@@ -2762,7 +2764,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     {
                         DisposeAll();
 
-                        return Json("Người dùng không được ký Phiên làm việc này.", JsonRequestBehavior.AllowGet);
+                        return Json("Not permission", JsonRequestBehavior.AllowGet);
                     }
 
                 }

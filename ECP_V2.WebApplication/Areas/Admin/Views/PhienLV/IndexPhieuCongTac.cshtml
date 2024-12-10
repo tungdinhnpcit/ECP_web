@@ -1970,6 +1970,7 @@ chuyenNPC = -1
                 success: function (data) {
                     unloading();
                     if (data == "") {
+                    console.log("chekc data1", data)
                         new PNotify({
                             title: 'Thông báo!',
                             text: 'Ký số thành công',
@@ -2052,6 +2053,30 @@ chuyenNPC = -1
                             text: 'Phiếu đã hoàn thiện ký!',
                             type: 'error'
                         });
+                    }else if (data == "Not permission") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalAnimKyso'
+                            }
+                        });
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Người dùng không có quyền ký với phiếu này!',
+                            type: 'error'
+                        });
+                    } else if (data == "OK") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalAnimKyso'
+                            }
+                        });
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Ký số thành công!',
+                            type: 'success'
+                        });
                     } else
                        {
                         //var json = JSON.parse(data.Result);
@@ -2084,8 +2109,8 @@ chuyenNPC = -1
 
                         new PNotify({
                             title: 'Thông báo!',
-                            text: 'Ký số thành công',
-                            type: 'success'
+                            text: 'Lỗi ký số',
+                            type: 'error'
                         });
                     }
 
