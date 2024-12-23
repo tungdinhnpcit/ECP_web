@@ -412,14 +412,14 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
 
             var ListNewsPageSize = new PageData<PhienLVModel>();
-            
+
             if (model.Count() > 0)
             {
                 ListNewsPageSize.Data = model;
-                // Nếu isShowBtnHoanHuy (xem trnag ở chức năng Kế hoạch lịch làm việc thì chỉ lấy ra data có trạng thái là Đã duyệt)
+                // Nếu isShowBtnHoanHuy (xem trang ở chức năng Kế hoạch lịch làm việc thì chỉ lấy ra data có trạng thái là Đã duyệt và có Hình thức kiểm tra đầu/ cuối giờ)
                 if ((bool)isShowBtnHoanHuy)
                 {
-                    ListNewsPageSize.Data = model.FindAll(m=>m.TrangThai==2);
+                    ListNewsPageSize.Data = model.FindAll(m => m.TrangThai == 2 && m.HinhThucKiemTra != null);
                 }
                 ListNewsPageSize.Page = new Page()
                 {
@@ -1544,7 +1544,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             LyDoHoanHuy = "NULL"
                         };
 
-                    var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
+                        var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
                     }
                     #endregion
 
@@ -2804,7 +2804,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 DisposeAll();
-                return Json("OK", JsonRequestBehavior.AllowGet);
+                return Json("ERROR", JsonRequestBehavior.AllowGet);
             }
         }
         #endregion
@@ -3978,7 +3978,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             return Json(kt, JsonRequestBehavior.AllowGet);
 
         }
-     
+
 
 
 

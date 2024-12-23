@@ -875,7 +875,7 @@
                                                             @*// Thêm theo biểu mẫu 02*@
                                                             <td style="text-align: center; vertical-align: middle;">
                                                                 <span id="spanLyDoThayDoi_@item.Id">
-                                                                    @(item.HinhThucKiemTra == 1 ? "Kiểm tra đầu giờ" : "Kiểm tra cuối giờ")
+                                                                    @(item.HinhThucKiemTra == 1 ? "Kiểm tra đầu giờ" : item.HinhThucKiemTra == 1? "Kiểm tra cuối giờ" : " ")
                                                                 </span>
                                                             </td>
                                                             <td style="text-align: center;vertical-align: middle;">
