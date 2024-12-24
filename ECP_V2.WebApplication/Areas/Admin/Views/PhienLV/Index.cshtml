@@ -1278,38 +1278,45 @@
                             });
 
                             Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-                            // Gọi API Push Notification khi duyệt thành công
-                            $.ajax({
-                                type: "POST",
-                                url: "http://10.21.48.5:8202/api/v1.0/Notify/PushNotificationByUser",
-                                contentType: "application/json; charset=utf-8",
-                                dataType: "json",
-                                data: JSON.stringify({
-                                    "IDConect": "PN",
-                                    "userId": "9047e6dd-0408-4e2d-8f99-a665c9f0920e",  
-                                    "title": "NPCIT CNPM gửi thông báo",
-                                    "subtitle": "NPCIT CNPM sub",
-                                    "content": "NPCIT CNPM content",
-                                    "header": "NPCIT CNPM header"
-                                }),
-                                success: function (response) {
-                                    // Kiểm tra kết quả của push notification
-                                    if (response.Success) {
-                                        console.log("Thông báo đã được gửi thành công");
-                                    } else {
-                                        console.log("Gửi thông báo thất bại: " + response.Error);
-                                    }
-                                },
-                                error: function (e) {
-                                    // Xử lý lỗi khi gọi API push notification
-                                    console.log("Lỗi khi gọi API PushNotificationByUser", e);
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: 'Không thể gửi thông báo',
-                                        type: 'error'
-                                    });
-                                }
-                            });
+                             //Gọi API Push Notification khi duyệt thành công
+                            //$.ajax({
+                            //    type: "POST",
+                            //    url: "http://10.21.3.48:8084/api/v1.0/Notify/PushNotificationByUser",
+                            //    contentType: "application/json; charset=utf-8",
+                            //    dataType: "json",
+                            //    data: JSON.stringify({
+                            //        "IDConect": "PN",
+                            //        "userId": "9047e6dd-0408-4e2d-8f99-a665c9f0920e",
+                            //        "title": "title",
+                            //        "name": "NPCIT",
+                            //        "header": "header",
+                            //        "subtitle": "NPCIT nội dung",
+                            //        "contents": "NPCIT test  vào 10:40 AM - 24/12"
+                            //        ,
+                            //        "include_aliases": {
+                            //            "onesignal_id": [
+                            //                "ac7a3567-4076-42c4-b8f5-99b73388cd73"
+                            //            ]
+                            //        }
+                            //    }),
+                            //    success: function (response) {
+                            //         //Kiểm tra kết quả của push notification
+                            //        if (response.Success) {
+                            //            console.log("Thông báo đã được gửi thành công");
+                            //        } else {
+                            //            console.log("Gửi thông báo thất bại: " + response.Error);
+                            //        }
+                            //    },
+                            //    error: function (e) {
+                            //         //Xử lý lỗi khi gọi API push notification
+                            //        console.log("Lỗi khi gọi API PushNotificationByUser", e);
+                            //        new PNotify({
+                            //            title: 'Thông báo!',
+                            //            text: 'Không thể gửi thông báo',
+                            //            type: 'error'
+                            //        });
+                            //    }
+                            //});
 
                         }
                         else {

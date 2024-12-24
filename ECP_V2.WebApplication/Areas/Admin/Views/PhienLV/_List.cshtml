@@ -95,7 +95,6 @@
                 modal: true
             }).click(function () {
 
-
                 IdDetail = $(this).attr("id").split("_")[1];
                 AddComment(IdDetail);
 
@@ -115,6 +114,8 @@
                 modal: true
             }).click(function () {
                 IdDuyet = $(this).attr("id").split("_")[1];
+                console.log("check ID duyệt:   ", this)
+
             });
 
             //khai bao Popup cho nut xoa du lieu
@@ -527,7 +528,7 @@
                                                             {
                                                                 if (item.NguoiDuyet == null && item.TrangThai == 1)
                                                                 {
-                                                                    <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
+                                                                    <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc1" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
                                                             }
 
                                                             @if (User.IsInRole("Manager"))
@@ -923,7 +924,7 @@
                                                                     {
                                                                         if (item.NguoiDuyet == null && item.TrangThai == 1)
                                                                         {
-                                                                            <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
+                                                                            <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc2" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
                                                                     }
                                                                     if (User.IsInRole("DuyetNPC"))
                                                                     {
@@ -1166,7 +1167,7 @@
                                                             {
                                                                 if (item.NguoiDuyet == null && item.TrangThai == 1)
                                                                 {
-                                                                    <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
+                                                                    <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc3" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
                                                             }
 
                                                             @if (User.IsInRole("Manager"))
@@ -1522,7 +1523,7 @@
                                                                 {
                                                                     if (item.NguoiDuyet == null && item.TrangThai == 1)
                                                                     {
-                                                                        <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
+                                                                        <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc4" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
                                                                 }
                                                                 @if (User.IsInRole("DuyetNPC"))
                                                                 {
