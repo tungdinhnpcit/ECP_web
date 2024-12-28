@@ -4791,7 +4791,8 @@
     <Content Include="Areas\Admin\Views\Dmchitieu\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Dmloaitbgsuco\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BCKHLLV\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra.cshtml" />
+    <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra_OLD.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\DanhSachPLVChuaKiemTra.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

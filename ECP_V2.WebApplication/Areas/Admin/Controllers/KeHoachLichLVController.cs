@@ -96,7 +96,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
        
 
-        public ActionResult DanhSachPLVChuaKiemTra(string NgayLamViec)
+        public ActionResult DanhSachPLVChuaKiemTra_OLD(string NgayLamViec)
         {
             List<PhienLVModel> PhienLV = null;
             try

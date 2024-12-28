@@ -43,6 +43,45 @@
 
             });
 
+            //khai bao Popup cho nut sửa kế hoạch llv
+            $('a.editKhLLV').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                var selectedDate = $(this).attr('value');
+                PhienLamViecId = $(this).attr("data");
+                document.getElementById('IdKeHoachHuy').value = PhienLamViecId;
+                var date = new Date(selectedDate.split(" ")[0].split("/").reverse().join("-"));
+                date = date.toISOString().split("T")[0];
+                AddHoanHuy(date)
+            });
+
+            //khai bao Popup cho nut xoa du lieu kế hoạch llv
+            $('a.deleteKhLLV').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                PhienLamViecId = $(this).attr("value");
+                document.getElementById('IdKeHoachHuy').value = PhienLamViecId;
+            });
+
+
             $('a.detailPCT').magnificPopup({
                 type: 'inline',
                 fixedContentPos: false,
@@ -894,11 +933,11 @@
                                                                 @*Hoãn- Hủy kế hoạch làm việc*@
                                                                 @if (item.isShowBtnHoanHuy)
                                                                 {
-                                                                    <a id="Detail0_@item.Id" href="#modalCancel" title="Hoãn/ Hủy kế hoạch" class="on-default remove-row detail" onclick="AddHoanHuy(this)">
+                                                                    <a id="khllvDLT_" href="#modalAnimDeleteKHLLV"  title="Hoãn/ Hủy kế hoạch" value="@item.Id" class="on-default remove-row deleteKhLLV" )">
                                                                         <i class="fa fa-times" style="font-size: 25px; cursor: pointer; color: red;"></i>
                                                                     </a>
-                                                                    <a id="Detail0_@item.Id" href="#modalCancel" title="Sửa kế hoạch" class="on-default remove-row detail" onclick="AddHoanHuy(this)">
-                                                                        <i class="fa fa-pencil" style="font-size: 25px; cursor: pointer; color: blue;"></i>
+                                                                    <a id="khllv_" href="#modalCanCel" title="Sửa kế hoạch" class="on-default remove-row editKhLLV" data="@item.Id" value="@item.NgayLamViec" >
+                                                                        <i class="fa fa-pencil" style="font-size: 25px; cursor: pointer; color: blue;" ></i>
                                                                     </a>
 
                                                                 }

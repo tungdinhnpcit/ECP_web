@@ -42,17 +42,18 @@ namespace ECP_V2.Business.Repository
                 {
                     await connectionDB.OpenAsync();
 
-                    var sql = @"INSERT INTO dbo.plv_KeHoachLichLamViec (PhienLamViecId, HinhThucKiemTra, NguoiDaiDienKT_Id, NguoiDaiDienKT)
-                                values(@PhienLamViecId, @HinhThucKiemTra, @NguoiDaiDienKT_Id, @NguoiDaiDienKT)
+                    var sql = @"INSERT INTO dbo.plv_KeHoachLichLamViec (PhienLamViecId, HinhThucKiemTra, NguoiDaiDienKT_Id, NguoiDaiDienKT, TrangThai)
+                                values(@PhienLamViecId, @HinhThucKiemTra, @NguoiDaiDienKT_Id, @NguoiDaiDienKT, 1)
                                 SELECT SCOPE_IDENTITY();";
-                    return await connectionDB.QueryFirstOrDefaultAsync<int>(sql, new { input.PhienLamViecId, input.HinhThucKiemTra, input.NguoiDaiDienKT_Id, input.NguoiDaiDienKT });
+                    var data= await connectionDB.QueryFirstOrDefaultAsync<int>(sql, new { input.PhienLamViecId, input.HinhThucKiemTra, input.NguoiDaiDienKT_Id, input.NguoiDaiDienKT, TrangThai = 1 });
+                    return data;
                 }
             }
             catch (Exception ex)
             {
                 // Xử lý lỗi chung, ví dụ: lỗi kết nối, lỗi không xác định
                 Console.WriteLine("Lỗi: " + ex.Message);
-                return Enumerable.Empty<Task>();
+                return 0; // Trả về 0 nếu có lỗi
             }
         }
 
@@ -117,6 +118,28 @@ namespace ECP_V2.Business.Repository
                     await connectionDB.OpenAsync();
 
                     var sql = @"DELETE FROM plv_KeHoachLichLamViec
+                                WHERE PhienLamViecId = @Id;
+                                SELECT @@ROWCOUNT;";
+                    return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi chung, ví dụ: lỗi kết nối, lỗi không xác định
+                Console.WriteLine("Lỗi: " + ex.Message);
+                return Enumerable.Empty<Task>();
+            }
+        }
+
+        public async Task<dynamic> Update_TrangThai_Plv_KeHoachLichLamViec(int Id)
+        {
+            try
+            {
+                using (var connectionDB = new SqlConnection(connection))
+                {
+                    await connectionDB.OpenAsync();
+
+                    var sql = @"UPDATE plv_KeHoachLichLamViec set TrangThai = 0
                                 WHERE PhienLamViecId = @Id;
                                 SELECT @@ROWCOUNT;";
                     return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id });
