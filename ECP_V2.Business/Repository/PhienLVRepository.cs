@@ -62,8 +62,10 @@ namespace ECP_V2.Business.Repository
                 }
 
             }
-            catch (Exception ex){                
-                return null; }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public override List<tblPhienLamViec> List()
@@ -78,7 +80,7 @@ namespace ECP_V2.Business.Repository
         public tblPhienLamViec GetByMaPhieuCongTac(int maPhieuCongTac)
         {
             try
-            {                
+            {
                 return Context.tblPhienLamViecs.Where(p => p.MaPCT == maPhieuCongTac).FirstOrDefault();
             }
             catch { return null; }
@@ -94,7 +96,7 @@ namespace ECP_V2.Business.Repository
         }
 
         #region AdvancedSearchPhienLv
-        public IEnumerable<PhienLVModel> AdvancedSearchPhienLv(int page, int pagelength, string filter, int tcphien, int catdien, int tiepdia, int khac, string DateFrom, string DateTo, string DonViID, string PhongBanID, int Duyet, int chuyenNPC,int phieuky, string roleName)
+        public IEnumerable<PhienLVModel> AdvancedSearchPhienLv(int page, int pagelength, string filter, int tcphien, int catdien, int tiepdia, int khac, string DateFrom, string DateTo, string DonViID, string PhongBanID, int Duyet, int chuyenNPC, int phieuky, string roleName)
         {
             try
             {
@@ -853,7 +855,7 @@ namespace ECP_V2.Business.Repository
                    new SqlParameter("@NgayBD", start1),
                    new SqlParameter("@NgayKT", end1)).ToList();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw ex;
                 return new List<PhienLVModel>();
@@ -910,12 +912,12 @@ namespace ECP_V2.Business.Repository
                 SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
-                    cameraid = rdr["cameraid"].ToString();                   
+                    cameraid = rdr["cameraid"].ToString();
                 }
             }
 
             return cameraid;
-       
+
         }
 
         public List<Camera> GetDsCamera(string madvql)
@@ -945,7 +947,7 @@ namespace ECP_V2.Business.Repository
         }
 
         public void addCameraToPhien(string madvql, string idphien, string idcamera)
-        {            
+        {
             using (SqlConnection conn = new SqlConnection(connection))
             {
                 conn.Open();
@@ -1318,7 +1320,7 @@ namespace ECP_V2.Business.Repository
         {
             try
             {
-                
+
                 var datacache = MemoryCacheHelper.GetValue("Get_KeHoachTuan_" + DonViID);
                 if (datacache == null)
                 {
@@ -1658,7 +1660,7 @@ namespace ECP_V2.Business.Repository
             catch (Exception ex)
             { return new List<PhienLVModel>(); }
         }
-        
+
 
         public int CountTotalPhieuCongTac_His(string filter, int tcphien, int catdien, int tiepdia, int khac, string DateFrom, string DateTo, string DonViID, string PhongBanID, int Duyet, int chuyenNPC, string roleName, string loaiCV)
         {
@@ -1719,7 +1721,61 @@ namespace ECP_V2.Business.Repository
         }
         #endregion
 
+        #region Get plv theo ngày
+        //public List<tblNhanVien> Get_Plv_ChuaKiemTra_TheoNgay(string NgayLamViec)
+        //{
+        //    try
+        //    {
+        //        using (var connectionDB = new SqlConnection(connection))
+        //        {
+        //            await connectionDB.OpenAsync();
 
+        //            var sql = @"SELECT p.* 
+        //                FROM tblPhienLamViec p 
+        //                LEFT JOIN plv_KeHoachLichLamViec k 
+        //                ON p.Id = k.PhienLamViecId
+        //                WHERE p.NgayLamViec = @NgayLamViec
+        //                AND k.PhienLamViecId IS NULL
+        //                ORDER BY p.Id DESC;";
+
+        //            var result = await connectionDB.QueryAsync<PhienLVModel>(sql, new { NgayLamViec });
+
+        //            return result.ToList(); // Trả về danh sách nếu có kết quả
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Ghi log lỗi
+        //        Console.WriteLine($"Lỗi khi thực hiện Get_Plv_ChuaKiemTra_TheoNgay: {ex.Message}");
+        //        Console.WriteLine(ex.StackTrace);
+
+        //        return new List<PhienLVModel>(); // Trả về danh sách rỗng khi gặp lỗi
+        //    }
+        //}
+        public List<PhienLVModel> Get_Plv_ChuaKiemTra_TheoNgay(string NgayLamViec)
+        {
+            try
+            {
+
+                using (var db = new ECP_V2Entities())
+                {
+                    var result = db.Database.SqlQuery<PhienLVModel>(@"SELECT p.* 
+                        FROM tblPhienLamViec p 
+                        LEFT JOIN plv_KeHoachLichLamViec k 
+                        ON p.Id = k.PhienLamViecId
+                        WHERE p.NgayLamViec = @NgayLamViec
+                        AND k.PhienLamViecId IS NULL
+                        ORDER BY p.Id DESC;",
+                new SqlParameter("@NgayLamViec", NgayLamViec)).ToList();
+
+                    return result;
+                }
+                //}
+            }
+            catch (Exception ex) { return null; }
+        }
+
+        #endregion
 
 
         #region Get_TongSoPhienLV_ByTrangThai

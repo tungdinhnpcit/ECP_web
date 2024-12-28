@@ -408,6 +408,7 @@
     <Compile Include="Areas\Admin\Controllers\pccc_LoaiThietBiController.cs" />
     <Compile Include="Areas\Admin\Controllers\PCTTTKCNController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhaDatKhongDatController.cs" />
+    <Compile Include="Areas\Admin\Controllers\KeHoachLichLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhienLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhienXLSCController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhieuCongTacController.cs" />
@@ -4790,6 +4791,7 @@
     <Content Include="Areas\Admin\Views\Dmchitieu\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Dmloaitbgsuco\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BCKHLLV\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

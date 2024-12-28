@@ -385,6 +385,40 @@
                             <textarea id="commentContent" name="CommentContent" class="input-block-level" placeholder="Nhập..." rows="3"></textarea>
                         </div>
                     </div>
+                    <!-- Select 1 -->
+                    <div class="control-group">
+                        <label for="select1" class="control-label">Lịch làm việc thay thế</label>
+                        <select id="123" name="456" class="form-control">
+                            <option value="">Không</option>
+                            <optgroup label="Lịch đã duyệt">
+                                @{ Html.RenderAction("DanhSachPLVChuaKiemTra", "KeHoachLichLV", new { NgayLamViec = "2024-12-23" }); }
+                            </optgroup>
+                        </select>
+
+                    </div>
+
+                    <!-- Select 2 -->
+                    <div class="control-group">
+                        <label for="select2" class="control-label">Hình thức kiểm tra</label>
+                        <div class="controls">
+                            <select id="select2" name="Select2" class="form-control">
+                                <option value="">Không</option>
+                                <option value="2">Kiểm tra đầu giờ</option>
+                                <option value="3">Kiểm tra giữa giờ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Select 3 -->
+                    <div class="control-group">
+                        <label for="select3" class="control-label">Đại diện đoàn KT hiện trường</label>
+                        <select id="lanhDaoCongViecSelect" name="LanhDaoCongViec" class="form-control">
+                            <option value="">Không</option>
+                            <optgroup label="Lãnh đạo công việc">
+                                @{ Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "LanhDaoCongViec" }); }
+                            </optgroup>
+                        </select>
+                    </div>
                     <footer class="panel-footer">
                         <div class="row">
                             <div class="col-md-12 text-right">
@@ -583,14 +617,14 @@
                     </div>
 
                     @*<div class="col-md-2">
-                        <span> &nbsp; Hình thức kiểm tra: &nbsp;</span>
-                        <select class="form-control" id="cmbTTPhienKhac123" onchange="ttphienkhac_change(this)">
-                            <option value="0">Tất cả</option>
-                            <option value="1">Công tác đầu giờ</option>
-                            <option value="2">Công tác giữa giờ</option>
+                            <span> &nbsp; Hình thức kiểm tra: &nbsp;</span>
+                            <select class="form-control" id="cmbTTPhienKhac123" onchange="ttphienkhac_change(this)">
+                                <option value="0">Tất cả</option>
+                                <option value="1">Công tác đầu giờ</option>
+                                <option value="2">Công tác giữa giờ</option>
 
-                        </select>
-                    </div>*@
+                            </select>
+                        </div>*@
                 </div>
                 <hr class="mt-md mb-md">
                 @*<div class="row show-grid">
@@ -1214,7 +1248,7 @@
             })
 
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: '/Admin/PhienLV/UpdateHoanHuy?Id=' + PhienLvId,
                 success: function (json) {
 
@@ -1316,390 +1350,6 @@
 
 
 
-        function DuyetModalConfirm() {
-
-            if (IdDuyet != "") {
-
-                loading('Đang xử lý...', 1);
-
-                $.ajax({
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/DuyetPhienLv',
-                    data:
-                    {
-                        "Id": IdDuyet
-                    },
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data.success) {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'success'
-                            });
-
-                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-
-                        }
-                        else {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'error'
-                            });
-                        }
-                    },
-                    error: function (e) {
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Không thể duyệt phiên làm việc này',
-                            type: 'error'
-                        });
-                    }
-
-                });
-            }
-
-            $.magnificPopup.close();
-        };
-
-        function ChuyenHoanModalConfirm() {
-
-            if (IdDuyet != "") {
-
-                loading('Đang xử lý...', 1);
-
-                $.ajax({
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/ChuyenHoanPhienLv',
-                    data:
-                    {
-                        "Id": IdDuyet
-                    },
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data.success) {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'success'
-                            });
-
-                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-
-                        }
-                        else {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'error'
-                            });
-                        }
-                    },
-                    error: function (e) {
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Không thể duyệt phiên làm việc này',
-                            type: 'error'
-                        });
-                    }
-
-                });
-            }
-
-            $.magnificPopup.close();
-        };
-
-
-        function NPCModalConfirm() {
-
-            if (IdDuyet != "") {
-
-                loading('Đang xử lý...', 1);
-
-                $.ajax({
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/GuiNPCPhienLv',
-                    data:
-                    {
-                        "Id": IdDuyet
-                    },
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data.success) {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'success'
-                            });
-
-                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-                        }
-                        else {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'error'
-                            });
-                        }
-                    },
-                    error: function (e) {
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Không thể duyệt phiên làm việc này',
-                            type: 'error'
-                        });
-                    }
-
-                });
-            }
-
-            $.magnificPopup.close();
-        };
-
-        function DuyetAllModalConfirm() {
-
-            var items = document.getElementsByClassName('chkbox');
-
-
-            if (items.length == 0) {
-                alert("Vui lòng chọn phiện làm việc !");
-
-            }
-            else if (items.length > 0) {
-                loading('Đang xử lý...', 1);
-                var listId = [];
-
-                for (i = 0; i < items.length; i++) {
-                    if (items[i].checked) {
-                        listId.push(items[i].value);
-                        //sleep(200);
-                    }
-                }
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/DuyetAllPhienLv',
-                    data: JSON.stringify({
-                        "listId": listId
-                    }),
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data != null) {
-
-                            if (data.success) {
-                                new PNotify({
-                                    title: 'Thông báo!',
-                                    text: data.responseText,
-                                    type: 'success'
-                                });
-                            } else {
-
-                                if (data.isDuyet == null) {
-
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: data.responseText,
-                                        type: 'error'
-                                    });
-                                }
-                                else {
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: data.responseText,
-                                        type: 'warning'
-                                    });
-                                }
-                            }
-
-                            Paging(/*parseInt($(".page-number-Current").html())*/ 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-                        }
-                        else {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Duyệt phiên làm việc không thành công',
-                                type: 'error'
-                            });
-                        }
-                    }
-
-                });
-
-            }
-            $.magnificPopup.close();
-
-        }
-
-        function DeleteMultipleModalConfirm() {
-
-            var items = document.getElementsByClassName('chkbox');
-
-
-            if (items.length == 0) {
-                alert("Vui lòng chọn phiện làm việc !");
-
-            }
-            else if (items.length > 0) {
-                loading('Đang xử lý...', 1);
-                var listId = [];
-
-                for (i = 0; i < items.length; i++) {
-                    if (items[i].checked) {
-                        listId.push(items[i].value);
-                        //sleep(200);
-                    }
-                }
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/DeleteMultiple',
-                    data: JSON.stringify({
-                        "listId": listId
-                    }),
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data != null) {
-
-                            $.each(data, function (index, item) {
-
-                                if (item.success) {
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: item.responseText,
-                                        type: 'success'
-                                    });
-                                } else {
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: 'Lỗi : ' + item.responseText,
-                                        type: 'error'
-                                    });
-                                }
-
-                            });
-
-                            Paging(/*parseInt($(".page-number-Current").html())*/ 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-                        }
-                        else {
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Xóa phiên làm việc không thành công',
-                                type: 'error'
-                            });
-                        }
-                    }
-
-                });
-
-            }
-            $.magnificPopup.close();
-
-        }
-
-        function GuiNPCAllModalConfirm() {
-
-            var items = document.getElementsByClassName('chkbox');
-
-
-            if (items.length == 0) {
-                alert("Vui lòng chọn phiện làm việc !");
-
-            }
-            else if (items.length > 0) {
-
-                loading('Đang xử lý...', 1);
-
-                var listId = [];
-
-                for (i = 0; i < items.length; i++) {
-                    if (items[i].checked) {
-                        listId.push(items[i].value);
-                        //sleep(200);
-                    }
-                }
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/GuiListNPCPhienLv',
-                    data: JSON.stringify({
-                        "listId": listId
-                    }),
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data != null) {
-
-                            $.each(data, function (index, item) {
-
-                                if (item.success) {
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: item.responseText,
-                                        type: 'success'
-                                    });
-                                } else {
-                                    new PNotify({
-                                        title: 'Thông báo!',
-                                        text: 'Lỗi : ' + item.responseText,
-                                        type: 'error'
-                                    });
-                                }
-                            });
-
-                            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-
-                        }
-                        else {
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Duyệt phiên làm việc NPC không thành công',
-                                type: 'error'
-                            });
-                        }
-                    }
-
-                });
-
-            }
-            $.magnificPopup.close();
-        }
 
         function AddHoanHuy(obj) {
             PhienLamViecId = $(obj).attr("id").split("_")[1];
@@ -1789,49 +1439,7 @@
             $.magnificPopup.close();
         }
 
-        function UpdateVuaTaoModalConfirm() {
-            if (IdUpdateVuaTao != "") {
 
-                loading('Đang xử lý...', 1);
-
-                $.ajax({
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Admin/PhienLV/CapNhatTrangThaiVuaTao',
-                    data:
-                    {
-                        "Id": IdUpdateVuaTao
-                    },
-                    dataType: "json",
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data.success) {
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: data.responseText,
-                                type: 'success'
-                            });
-
-                            Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-
-                        }
-                        else {
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Lỗi : ' + data.responseText,
-                                type: 'error'
-                            });
-                        }
-                    }
-
-                });
-            }
-
-            $.magnificPopup.close();
-        }
 
         function UpdateSoPhieuModalDismiss() {
             $.magnificPopup.close();
@@ -1842,232 +1450,13 @@
             $.magnificPopup.close();
         }
 
-        function UpdateSoPhieuModalConfirm() {
 
-            var soPhieu = $('#txtUpdateSoPhieuCT').val();
-
-            if (soPhieu == '' || parseInt(soPhieu) <= 0) {
-                new PNotify({
-                    title: 'Thông báo!',
-                    text: 'Số phiếu không được để trống và lớn hơn 0',
-                    type: 'error'
-                });
-
-                return false;
-            }
-
-            if (soPhieu.length > 50) {
-                new PNotify({
-                    title: 'Thông báo!',
-                    text: 'Số phiếu không được quá 50 ký tự',
-                    type: 'error'
-                });
-
-                return false;
-            }
-
-            $.magnificPopup.close();
-
-            //if (IdUpdateSoPhieu != "") {
-
-            //    loading('Đang xử lý...', 1);
-
-            //    $.ajax({
-            //        type: "GET",
-            //        contentType: "application/json; charset=utf-8",
-            //        url: '/Admin/PhienLV/CapNhatSoPhieuPhienLV',
-            //        data:
-            //        {
-            //            Id: IdUpdateSoPhieu,
-            //            SoPhieu: soPhieu
-            //        },
-            //        dataType: "json",
-            //        beforeSend: function () {//alert(id);
-            //        },
-            //        success: function (data) {
-            //            unloading();
-            //            if (data.success) {
-            //                new PNotify({
-            //                    title: 'Thông báo!',
-            //                    text: data.responseText,
-            //                    type: 'success'
-            //                });
-
-            //                Paging(1, 200, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
-            //                $('#txtUpdateSoPhieuCT').val('');
-            //            }
-            //            else {
-            //                new PNotify({
-            //                    title: 'Thông báo!',
-            //                    text: 'Lỗi : ' + data.responseText,
-            //                    type: 'error'
-            //                });
-
-            //                $('#txtUpdateSoPhieuCT').val('');
-            //            }
-            //        },
-            //        error: function (e) {
-            //            unloading();
-            //            new PNotify({
-            //                title: 'Thông báo!',
-            //                text: 'Đã có lỗi xảy ra',
-            //                type: 'error'
-            //            });
-
-            //            $('#txtUpdateSoPhieuCT').val('');
-            //        }
-            //    });
-            //}
-
-
-
-        }
-
-        function ModalConfirmTongHop() {
-
-            //var ngayTongHop = $('#txtNgayTongHop').val();
-
-            var ngayTongHop = '@DateTime.Now.ToString("dd/MM/yyyy")';
-
-            if (ngayTongHop == '') {
-                new PNotify({
-                    title: 'Thông báo!',
-                    text: 'Chọn ngày tổng hợp báo cáo',
-                    type: 'error'
-                });
-
-                return false;
-            }
-
-            var scriptUrl = "/BaoCaoCuoiNgayCongTy/ValidateBaoCaoCuoiNgayTongHopPhienLV?ngayTongHop=" + ngayTongHop;
-            $.ajax({
-                url: scriptUrl,
-                type: 'GET',
-                dataType: 'json',
-                beforeSend: function () {
-                    //$.magnificPopup.close();
-                    loading('Đang xử lý...', 1);
-                },
-                success: function (data) {
-                    if (data.success == 1) {
-                        $('#modalAnimTongHop .modal-text h3').html('Hiện phần báo cáo cuối ngày đã được chương trình tự động thực hiện từ 15h -> 15h30 chiều hàng ngày. Để cập nhật báo cáo này bạn nhấn vào đường dẫn dưới đây.<br /><a href="' + data.url + '" style="color: blue;">Báo cáo cuối ngày ' + ngayTongHop + '</a>');
-                        //setTimeout(function () { $('a#btnTongHopBaoCaoCuoiNgayAlert').click(); }, 500);
-                        unloading();
-                    } else {
-                        $('#modalAnimTongHop .modal-text h3').html('Hiện phần báo cáo cuối ngày đã được chương trình tự động thực hiện từ 15h -> 15h30 chiều hàng ngày. Để cập nhật báo cáo này bạn nhấn vào đường dẫn dưới đây.<br /><span style="color: #f00;">(Chưa có dữ liệu báo cáo cuối ngày ' + ngayTongHop + ')</span>');
-                        //setTimeout(function () { $('a#btnTongHopBaoCaoCuoiNgayAlert').click(); }, 500);
-                        unloading();
-                    }
-                        //else if (data.success == -1) {
-                    //    new PNotify({
-                    //        title: 'Thông báo!',
-                    //        text: data.responseText,
-                    //        type: 'error'
-                    //    });
-                    //    unloading();
-                    //}
-                    //else if (data.success == 0) {
-                    //    $.ajax({
-                    //        url: "/BaoCaoCuoiNgayCongTy/TongHopPhienLV?ngayTongHop=" + ngayTongHop,
-                    //        type: 'GET',
-                    //        dataType: 'json',
-                    //        success: function (data) {
-                    //            if (data.success) {
-                    //                new PNotify({
-                    //                    title: 'Thông báo!',
-                    //                    text: 'Tổng hợp báo cáo thành công',
-                    //                    type: 'success'
-                    //                });
-                    //                unloading();
-                    //                window.location.href = '/BaoCaoCuoiNgayCongTy/Detail/' + data.id;
-                    //            } else {
-                    //                new PNotify({
-                    //                    title: 'Thông báo!',
-                    //                    text: 'Tổng hợp báo cáo không thành công',
-                    //                    type: 'error'
-                    //                });
-
-                    //                unloading();
-                    //            }
-                    //        },
-                    //        error: function () {
-                    //            new PNotify({
-                    //                title: 'Thông báo!',
-                    //                text: 'Không tổng hợp được báo cáo',
-                    //                type: 'error'
-                    //            });
-
-                    //            unloading();
-                    //        }
-                    //    });
-                    //}
-                },
-                error: function () {
-                    new PNotify({
-                        title: 'Thông báo!',
-                        text: 'Không tổng hợp được báo cáo',
-                        type: 'error'
-                    });
-
-                    unloading();
-                }
-            });
-        }
 
         function ModalDismissTongHop() {
             $.magnificPopup.close();
         }
 
-        function ModalConfirmTongHopAlert() {
 
-            var ngayTongHop = $('#txtNgayTongHop').val();
-
-            if (ngayTongHop == '') {
-                new PNotify({
-                    title: 'Thông báo!',
-                    text: 'Chọn ngày tổng hợp báo cáo',
-                    type: 'error'
-                });
-
-                return false;
-            }
-
-            var scriptUrl = "/BaoCaoCuoiNgayCongTy/TongHopPhienLV?ngayTongHop=" + ngayTongHop;
-            $.ajax({
-                url: scriptUrl,
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    if (data.success) {
-                        $.magnificPopup.close();
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Tổng hợp báo cáo thành công',
-                            type: 'success'
-                        });
-
-                        window.location.href = '/BaoCaoCuoiNgayCongTy/Detail/' + data.id;
-                    } else {
-                        $.magnificPopup.close();
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Tổng hợp báo cáo không thành công',
-                            type: 'error'
-                        });
-                    }
-                },
-                error: function () {
-                    new PNotify({
-                        title: 'Thông báo!',
-                        text: 'Không tổng hợp được báo cáo',
-                        type: 'error'
-                    });
-                }
-            });
-
-            $.magnificPopup.close();
-        }
 
         function ModalDismissTongHopAlert() {
             $.magnificPopup.close();
@@ -2173,107 +1562,6 @@
                 }
 
             });
-        }
-
-        ///Hàm gọi link Camera để hiển thị trên iframe
-        var pathCam = "";
-        function LoadLinkCamera(PhienId) {
-
-            $.ajax({
-                url: "/Admin/PhienLV/GetLinkCameraAsync",
-                data: {
-                    Id: PhienId
-                },
-                type: 'GET',
-                dataType: 'html',
-                async: false,
-                success: function (data) {
-                    const obj = JSON.parse(data);
-                    document.getElementById('ifCamera').src = obj.responseText;
-                    $("#lbPhien").empty();
-                    $("#lbPhien").append(" Phiên:" + PhienId);
-                    $("#idphien").val(PhienId);
-                }
-            });
-        }
-
-        //Add camera to phienId
-        function ModalSaveCamera(PhienId, CameraId) {
-            var table = $('#tblCamera').DataTable();
-
-            //tblSelect.row.add({ AssetDesc: '1', DonViId: '2', DoiId: '3', AssetId: '4', TypeId: '5', Id: '6', x: '1' });
-            //tblSelect.draw();
-            //var data = table.rows().data();
-            var cameraid = "";
-            var phienid = $("#idphien").val();
-            table.$('input[type="checkbox"]').each(function () {
-                // If checkbox is checked
-                if (this.checked) {
-                    cameraid = $(this).val();
-                }
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: '/Admin/PhienLV/addCameraToPhien',
-                dataType: 'json',
-                data: JSON.stringify({ Id: phienid, CameraId: cameraid}),
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    if (response.success) {
-                        alert('Cập nhật thành công!');
-                        var magnificPopup = $.magnificPopup.instance;
-                        // save instance in magnificPopup variable
-                        magnificPopup.close();
-                    }
-                },
-                error: function (ex) {
-                    alert('Không thể thêm Camera cho Phiên');
-                }
-            })
-        }
-
-        function LoadDsCamera() {
-            $.ajax({
-                url: "/Admin/PhienLV/GetDsCamera",
-                type: 'GET',
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    $('#tblCamera').dataTable().fnClearTable();
-                    if (response.length > 0) {
-                        var table = $('#tblCamera').DataTable({
-                            "language": {
-                                "lengthMenu": "Hiển thị _MENU_ dòng mỗi trang",
-                                "zeroRecords": "Không có dữ liệu",
-                                "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
-                                "infoEmpty": "",
-                                "paginate": {
-                                    "next": ">>",
-                                    "previous": "<<"
-                                },
-                                search: "",
-                                searchPlaceholder: "Tìm kiếm...",
-                                "processing": "ĐANG XỮ LÝ..."
-                            },
-                            "destroy": true,
-                            "data": response,
-                            "columns": [{ 'data': 'CamId' },{ 'data': 'CamId' },
-                            { 'data': 'CamDesc' },
-                            ],
-                            "columnDefs": [{
-                                'targets': 0,
-                                'searchable': false,
-                                'orderable': false,
-                                'className': 'td-body-center',
-                                'render': function (data, type, full, meta) {
-                                    return '<input type="checkbox" name="id[]" value="' + full.CamId + '">';
-                                }
-                            }]
-                        });
-                    }
-                }
-            })
         }
 
     </script>
