@@ -2320,10 +2320,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     try
                     {
-                        // Xóa Kế hoạch lịch làm việc
-                        var check = await _keHoachLichLamViecRepository.Delete_Plv_KeHoachLichLamViec(int.Parse(Id));
-
-
                         var listDelete = _plviec_ser.Context.tbl_NhanVien_PhienLamViec.Where(x => x.PhienLamViecId == plv.Id);
                         if (listDelete != null)
                         {
@@ -3942,8 +3938,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     LyDoHoanHuy = "NULL"
                 };
 
+                int check2 = await _keHoachLichLamViecRepository.Update_TrangThai_Plv_KeHoachLichLamViec((int)input.Id, input.LyDoHoanHuy);
                 int check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
-                int check2 = await _keHoachLichLamViecRepository.Delete_Plv_KeHoachLichLamViec((int)input.Id);
 
                 if (check > 0)
                 {

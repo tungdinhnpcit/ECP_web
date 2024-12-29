@@ -1759,12 +1759,12 @@ namespace ECP_V2.Business.Repository
 
                 using (var db = new ECP_V2Entities())
                 {
-                    var result = db.Database.SqlQuery<PhienLVModel>(@"SELECT p.* 
+                    var result = db.Database.SqlQuery<PhienLVModel>(@"SELECT distinct p.* 
                         FROM tblPhienLamViec p 
                         LEFT JOIN plv_KeHoachLichLamViec k 
                         ON p.Id = k.PhienLamViecId
                         WHERE p.NgayLamViec = @NgayLamViec
-                        AND k.PhienLamViecId IS NULL
+                        AND (k.PhienLamViecId IS NULL or k.TrangThai=0)
                         ORDER BY p.Id DESC;",
                 new SqlParameter("@NgayLamViec", NgayLamViec)).ToList();
 

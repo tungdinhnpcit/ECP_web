@@ -45,7 +45,7 @@ namespace ECP_V2.Business.Repository
                     var sql = @"INSERT INTO dbo.plv_KeHoachLichLamViec (PhienLamViecId, HinhThucKiemTra, NguoiDaiDienKT_Id, NguoiDaiDienKT, TrangThai)
                                 values(@PhienLamViecId, @HinhThucKiemTra, @NguoiDaiDienKT_Id, @NguoiDaiDienKT, 1)
                                 SELECT SCOPE_IDENTITY();";
-                    var data= await connectionDB.QueryFirstOrDefaultAsync<int>(sql, new { input.PhienLamViecId, input.HinhThucKiemTra, input.NguoiDaiDienKT_Id, input.NguoiDaiDienKT, TrangThai = 1 });
+                    var data = await connectionDB.QueryFirstOrDefaultAsync<int>(sql, new { input.PhienLamViecId, input.HinhThucKiemTra, input.NguoiDaiDienKT_Id, input.NguoiDaiDienKT, TrangThai = 1 });
                     return data;
                 }
             }
@@ -118,7 +118,7 @@ namespace ECP_V2.Business.Repository
                     await connectionDB.OpenAsync();
 
                     var sql = @"DELETE FROM plv_KeHoachLichLamViec
-                                WHERE PhienLamViecId = @Id;
+                                WHERE Id = @Id;
                                 SELECT @@ROWCOUNT;";
                     return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id });
                 }
@@ -131,7 +131,7 @@ namespace ECP_V2.Business.Repository
             }
         }
 
-        public async Task<dynamic> Update_TrangThai_Plv_KeHoachLichLamViec(int Id)
+        public async Task<dynamic> Update_TrangThai_Plv_KeHoachLichLamViec(int Id, string LyDoHoanHuy)
         {
             try
             {
@@ -139,10 +139,11 @@ namespace ECP_V2.Business.Repository
                 {
                     await connectionDB.OpenAsync();
 
-                    var sql = @"UPDATE plv_KeHoachLichLamViec set TrangThai = 0
-                                WHERE PhienLamViecId = @Id;
+                    var sql = @"
+                            UPDATE plv_KeHoachLichLamViec set TrangThai = 0, LyDoHoanHuy= @LyDoHoanHuy
+                                WHERE Id = @Id;
                                 SELECT @@ROWCOUNT;";
-                    return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id });
+                    return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id, LyDoHoanHuy });
                 }
             }
             catch (Exception ex)

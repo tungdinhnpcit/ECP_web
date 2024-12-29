@@ -58,7 +58,9 @@
             }).click(function () {
                 var selectedDate = $(this).attr('value');
                 PhienLamViecId = $(this).attr("data");
-                document.getElementById('IdKeHoachHuy').value = PhienLamViecId;
+                IdKeHoachHuy = $(this).attr("data-id");
+                document.getElementById('IdPLV').value = PhienLamViecId;
+                document.getElementById('IdKeHoachHuy').value = IdKeHoachHuy;
                 var date = new Date(selectedDate.split(" ")[0].split("/").reverse().join("-"));
                 date = date.toISOString().split("T")[0];
                 AddHoanHuy(date)
@@ -77,8 +79,9 @@
                 mainClass: 'my-mfp-zoom-in',
                 modal: true
             }).click(function () {
-                PhienLamViecId = $(this).attr("value");
-                document.getElementById('IdKeHoachHuy').value = PhienLamViecId;
+                IdKeHoachHuy = $(this).attr("data");
+                console.log("check ID hủy", IdKeHoachHuy)
+                document.getElementById('IdKeHoachHuy').value = IdKeHoachHuy;
             });
 
 
@@ -915,7 +918,7 @@
                                                             @*// Thêm theo biểu mẫu 02*@
                                                             <td style="text-align: center; vertical-align: middle;">
                                                                 <span id="spanLyDoThayDoi_@item.Id">
-                                                                    @(item.HinhThucKiemTra == 1 ? "Kiểm tra đầu giờ" : item.HinhThucKiemTra == 1? "Kiểm tra cuối giờ" : " ")
+                                                                    @(item.HinhThucKiemTra == 1 ? "Kiểm tra đầu giờ" : item.HinhThucKiemTra == 2? "Kiểm tra giữa giờ" : " ")
                                                                 </span>
                                                             </td>
                                                             <td style="text-align: center;vertical-align: middle;">
@@ -933,10 +936,10 @@
                                                                 @*Hoãn- Hủy kế hoạch làm việc*@
                                                                 @if (item.isShowBtnHoanHuy)
                                                                 {
-                                                                    <a id="khllvDLT_" href="#modalAnimDeleteKHLLV"  title="Hoãn/ Hủy kế hoạch" value="@item.Id" class="on-default remove-row deleteKhLLV" )">
+                                                                    <a id="khllvDLT_" href="#modalAnimDeleteKHLLV"  title="Xóa kế hoạch" data="@item.KeHoachLV_Id" class="on-default remove-row deleteKhLLV" )">
                                                                         <i class="fa fa-times" style="font-size: 25px; cursor: pointer; color: red;"></i>
                                                                     </a>
-                                                                    <a id="khllv_" href="#modalCanCel" title="Sửa kế hoạch" class="on-default remove-row editKhLLV" data="@item.Id" value="@item.NgayLamViec" >
+                                                                    <a id="khllv_" href="#modalCanCel" title="Sửa kế hoạch" class="on-default remove-row editKhLLV" data="@item.Id"  data-id="@item.KeHoachLV_Id" value="@item.NgayLamViec" >
                                                                         <i class="fa fa-pencil" style="font-size: 25px; cursor: pointer; color: blue;" ></i>
                                                                     </a>
 
