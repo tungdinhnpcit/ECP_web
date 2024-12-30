@@ -928,7 +928,7 @@
                                                             </td>
                                                             <td style="text-align: center;vertical-align: middle;">
                                                                 <span id="spanLyDoThayDoi_@item.Id">
-                                                                    @item.LyDoHoanHuy
+                                                                    @item.LyDoHoanHuy_KHLLV
                                                                 </span>
                                                             </td>
 
@@ -936,13 +936,15 @@
                                                                 @*Hoãn- Hủy kế hoạch làm việc*@
                                                                 @if (item.isShowBtnHoanHuy)
                                                                 {
-                                                                    <a id="khllvDLT_" href="#modalAnimDeleteKHLLV"  title="Xóa kế hoạch" data="@item.KeHoachLV_Id" class="on-default remove-row deleteKhLLV" )">
-                                                                        <i class="fa fa-times" style="font-size: 25px; cursor: pointer; color: red;"></i>
-                                                                    </a>
-                                                                    <a id="khllv_" href="#modalCanCel" title="Sửa kế hoạch" class="on-default remove-row editKhLLV" data="@item.Id"  data-id="@item.KeHoachLV_Id" value="@item.NgayLamViec" >
-                                                                        <i class="fa fa-pencil" style="font-size: 25px; cursor: pointer; color: blue;" ></i>
-                                                                    </a>
-
+                                                                    if (item.TrangThai_KHLLV == 1)
+                                                                    {
+                                                                        <a id="khllvDLT_" href="#modalAnimDeleteKHLLV" title="Xóa kế hoạch" data="@item.KeHoachLV_Id" class="on-default remove-row deleteKhLLV" )">
+                                                                            <i class="fa fa-times" style="font-size: 25px; cursor: pointer; color: red;"></i>
+                                                                        </a>
+                                                                        <a id="khllv_" href="#modalCanCel" title="Sửa kế hoạch" class="on-default remove-row editKhLLV" data="@item.Id" data-id="@item.KeHoachLV_Id" value="@item.NgayLamViec">
+                                                                            <i class="fa fa-pencil" style="font-size: 25px; cursor: pointer; color: blue;"></i>
+                                                                        </a>
+                                                                    }
                                                                 }
                                                                 else
                                                                 {
