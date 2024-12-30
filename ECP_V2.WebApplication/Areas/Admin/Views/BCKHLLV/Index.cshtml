@@ -260,41 +260,47 @@
                                 <option value="1">Đã chuyển NPC</option>
                             </select>
                         </div>
-                        @if (donVi != null)
-                        {
-                            if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                        @*@if (donVi != null)
                             {
+                                if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+                                {
 
+                                }
+                                else
+                                {
+                                    <div class="col-md-2">
+                                        <a href="#modalAnimDuyetAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
+                                            <i class="fa fa-check-circle"></i> &nbsp; Báo cáo
+                                        </a>
+                                    </div>
+                                }
                             }
-                            else
+
+                            @if (User.IsInRole("DuyetNPC"))
                             {
                                 <div class="col-md-2">
-                                    <a href="#modalAnimDuyetAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
-                                        <i class="fa fa-check-circle"></i> &nbsp; Duyệt lịch làm việc
+                                    <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                                        <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
                                     </a>
                                 </div>
-                            }
-                        }
-
-                        @if (User.IsInRole("DuyetNPC"))
-                        {
-                            <div class="col-md-2">
-                                <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
-                                    <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
+                            }*@
+                        @*<div class="col-md-2">
+                                <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
+                                    <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
                                 </a>
-                            </div>
-                        }
+                            </div>*@
                         <div class="col-md-2">
-                            <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
-                                <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
-                            </a>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="#modalAnimDeleteMultiple123123" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
+                            <a href="#modalAnimDeleteMultiple123123" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="123">
                                 <i class="fa fa-file-excel-o"></i> &nbsp; Xuất excel
                             </a>
                         </div>
+                        <div class="col-md-2">
+                            <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;width:200px;height:28px;line-height:0; float: right;" id="export_tuan_cty">
+                                <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo giao ban AT
+                            </a>
+                        </div>
                     </div>
+
 
                 }
                 else
