@@ -261,37 +261,43 @@
                             </select>
                         </div>
                         @*@if (donVi != null)
-                            {
-                                if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
-                                {
+        {
+            if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+            {
 
-                                }
-                                else
-                                {
-                                    <div class="col-md-2">
-                                        <a href="#modalAnimDuyetAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
-                                            <i class="fa fa-check-circle"></i> &nbsp; Báo cáo
-                                        </a>
-                                    </div>
-                                }
-                            }
+            }
+            else
+            {
+                <div class="col-md-2">
+                    <a href="#modalAnimDuyetAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
+                        <i class="fa fa-check-circle"></i> &nbsp; Báo cáo
+                    </a>
+                </div>
+            }
+        }
 
-                            @if (User.IsInRole("DuyetNPC"))
-                            {
-                                <div class="col-md-2">
-                                    <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
-                                        <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
-                                    </a>
-                                </div>
-                            }*@
+        @if (User.IsInRole("DuyetNPC"))
+        {
+            <div class="col-md-2">
+                <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                    <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
+                </a>
+            </div>
+        }*@
                         @*<div class="col-md-2">
-                                <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
-                                    <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
-                                </a>
-                            </div>*@
+            <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
+                <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
+            </a>
+        </div>*@
                         <div class="col-md-2">
                             <a href="#" class="mb-xs mt-xs mr-xs btn btn-primary" onclick="xuatExcel()" style="cursor:pointer;padding: 3px 9px;" id="xuatexcel123">
                                 <i class="fa fa-file-excel-o"></i> &nbsp; Xuất excel
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            @*<a href="#modalAnimUpdateSoPhieu" title="Cập nhật phiếu công tác" class="on-default updateSoPhieu"><i class="fa fa-bookmark" style="font-size: 25px; cursor: pointer"></i>*@
+                            <a class="mb-xs mt-xs mr-xs btn btn-primary viewDocBC" href="#modalAnimUpdateSoPhieu" style="cursor:pointer;padding: 3px 9px;" id="xuatdoc123">
+                                <i class="fa fa-file-excel-o"></i> &nbsp; Xuất doc
                             </a>
                         </div>
                         <div class="col-md-2">
@@ -305,53 +311,54 @@
                 }
                 else
                 {
-                    <div class="row show-grid">
-                        @if (User.IsInRole("Manager") || User.IsInRole("Leader") || User.IsInRole("Admin") || User.IsInRole("Master") || User.IsInRole("AdminDonVi"))
-                        {
-                            <div class="col-md-2">
-                                <span>Trạng thái: &nbsp;</span>
-                                <br />
-                                <select class="form-control" id="cmbTTPhien" onchange="ttphien_change(this)">
-                                    <option value="0">Tất cả</option>
-                                    @if (ViewBag.ListTTPhien != null)
-                                    {
-                                        var listTTPhien = (List<ECP_V2.DataAccess.plv_TrangThaiPhien>)ViewBag.ListTTPhien;
+            <div class="row show-grid">
+                @if (User.IsInRole("Manager") || User.IsInRole("Leader") || User.IsInRole("Admin") || User.IsInRole("Master") || User.IsInRole("AdminDonVi"))
+                {
+                    <div class="col-md-2">
+                        <span>Trạng thái: &nbsp;</span>
+                        <br />
+                        <select class="form-control" id="cmbTTPhien" onchange="ttphien_change(this)">
+                            <option value="0">Tất cả</option>
+                            @if (ViewBag.ListTTPhien != null)
+                            {
+                                var listTTPhien = (List<ECP_V2.DataAccess.plv_TrangThaiPhien>)ViewBag.ListTTPhien;
 
-                                        foreach (var item in listTTPhien)
-                                        {
-                                            <option value="@item.Id">@item.Name</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <span>Duyệt NPC: &nbsp;</span>
-                                <br />
-                                <select class="form-control" id="cmbDuyetNPC" @*onchange="cmbDuyetNPC_change(this)"*@>
-                                    <option value="-1">Tất cả</option>
-                                    <option value="0">Chưa chuyển NPC</option>
-                                    <option value="1">Đã chuyển NPC</option>
-                                </select>
-                            </div>
-
-                        }
-                        @if (User.IsInRole("DuyetNPC"))
-                        {
-                            <div class="col-md-2">
-                                <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
-                                    <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
-                                </a>
-                            </div>
-                        }
-
-                        <div class="col-md-2">
-                            <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
-                                <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
-                            </a>
-                        </div>
-
+                                foreach (var item in listTTPhien)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
                     </div>
+
+                    <div class="col-md-2">
+                        <span>Duyệt NPC: &nbsp;</span>
+                        <br />
+                        <select class="form-control" id="cmbDuyetNPC" @*onchange="cmbDuyetNPC_change(this)"*@>
+                            <option value="-1">Tất cả</option>
+                            <option value="0">Chưa chuyển NPC</option>
+                            <option value="1">Đã chuyển NPC</option>
+                        </select>
+                    </div>
+
+                }
+                @if (User.IsInRole("DuyetNPC"))
+                {
+                    <div class="col-md-2">
+                        <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                            <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
+                        </a>
+                    </div>
+                }
+
+                <div class="col-md-2">
+                    <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
+                        <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
+                    </a>
+                </div>
+
+
+            </div>
                 }
 
                 <div class="listRolesName list" style="margin-top: 5px;">
@@ -376,6 +383,19 @@
             </div>
         </div>
     </div>
+</div>
+<div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style="max-width: 1200px; height: 750px;margin: 5px auto;">
+    <section class="panel" style="width:100%; height:100%">
+        <header class="panel-heading">
+            <h2 class="panel-title">CẬP NHẬT: PHIẾU/LỆNH CÔNG TÁC</h2>
+            <button class="btn btn-default modal-dismiss" onclick="ClosePhieuCongTac()" id="modal-dismiss" style="position: absolute; right: 10px; top: 10px; font-size: 14px; font-weight: bold;">x</button>
+        </header>
+        <div class="panel-body" style="width:100%; height:100%; padding:5px 0 0 0">
+            <div class="modal-wrapper" style="width:100%; height:100%; padding:0">
+                <iframe id="baocaoctwords" src="" width="100%" height="100%" style="background:url(/Content/Customs/loading-blue.gif) no-repeat center center; border:none;"></iframe>
+            </div>
+        </div>
+    </section>
 </div>
 
 <div id="modalAnimDeleteKHLLV" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
@@ -451,6 +471,9 @@
                 regional: "vn",
                 dateFormat: 'dd/mm/yyyy'
             });
+
+          
+
 
             //Menu Collapsed Layout
             $('html').addClass('sidebar-left-collapsed');
@@ -569,10 +592,33 @@
             $('#cmbTCPhien').trigger("chosen:updated");
             ////$("#cmbTCPhien").val('@Html.Raw(ViewBag.TinhChat)').change();
 
+            $('a.viewDocBC').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+
+                DateFrom = $('#GioBd').val();
+                DateTo = $('#GioKt').val();
+                DonViId = $('#cmbDonViID').val();
+                $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + DonViId);
+            });
+
         });
 
         function loaibieudo_change(el) {
             Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+        }
+        function ClosePhieuCongTac() {
+            $("#baocaoctwords").attr("src", "");
+            $.magnificPopup.close();
         }
 
         function end_chage() {
@@ -596,29 +642,17 @@
 
         function xuatExcel() {
 
-          console.log('abc',$('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
             XuatExcelFunction( $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val())
         }
 
-        ////Xuất báo cáo tuần theo mẫu công ty
-        //$('#export_tuan_cty').bind('click', function () {
-        //    $.UnifiedExportFile(
-        //        {
-        //            action: "/Admin/PhienLV/Export_Cty",
-        //            data: {
-        //                filter: '',
-        //                tcphien: $('#cmbTCPhien').val() || 0,
-        //                trangThai: $('#cmbTTPhien').val() || 0,
-        //                DateFrom: $('#GioBd').val(),
-        //                DateTo: $('#GioKt').val(),
-        //                DonViId: $('#cmbDonViID').val() || '',
-        //                PhongBanId: $('#cmbPhongBan').val() || 0,
-        //                isExportExcel: true
-        //            },
-        //            downloadType: 'Progress',
-        //            ajaxLoadingSelector: '#loading'
-        //        });
-        //});
+        function xuatDoc() {
+
+
+           
+           /* XuatDocFunction($('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val())*/
+        }
+
+
 
         function ttphiencatdien_change(el) {
 
@@ -740,6 +774,26 @@
 
 
         };
+
+        function XuatDocFunction( DateFrom, DateTo, DonViId) {
+              loading('Đang xuất file...', 1);
+
+             
+
+             var scriptUrl = "/Admin/PhienLV/XuatBCKHLLVDoc";
+
+             $.UnifiedExportFile(
+                 {
+                     action: scriptUrl,
+                     data: {
+                         DateFrom: DateFrom,
+                         DateTo: DateTo,
+                         DonViId: DonViId
+                     },
+                     downloadType: 'Progress',
+                     ajaxLoadingSelector: '#loading'
+                 });
+         };
 
 
         function pagelength_change(el) {

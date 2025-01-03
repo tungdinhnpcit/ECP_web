@@ -488,6 +488,8 @@
     <Compile Include="Models\BaoCaoCuoiNgayModel.cs" />
     <Compile Include="Models\BaoCaoModel.cs" />
     <Compile Include="Models\DonViModel.cs" />
+    <Compile Include="Models\ExportModelDoc.cs" />
+    <Compile Include="Models\ExportModelExecl.cs" />
     <Compile Include="Models\FacebookLoginViewModel.cs" />
     <Compile Include="Models\FilesViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -508,6 +510,7 @@
     <Compile Include="Providers\AuthContext.cs" />
     <Compile Include="Providers\AuthorizationApiProvider.cs" />
     <Compile Include="Providers\AuthRepository.cs" />
+    <Compile Include="Service\BaoCaoService.cs" />
     <Compile Include="SignalRHub\ChatHub.cs" />
     <Compile Include="SignalRHub\MessagesHub.cs" />
     <Compile Include="Startup.cs" />
@@ -4294,6 +4297,8 @@
     <Content Include="Scripts\quanlyruiro\js\util.js" />
     <Content Include="Scripts\quanlyruiro\js\qlrr.js" />
     <Content Include="Scripts\validation\jquery.validate.unobtrusive.min.js" />
+    <Content Include="ThuVien\GemBox.Document.dll" />
+    <Content Include="ThuVien\GemBox.Spreadsheet.dll" />
     <Content Include="Views\Shared\_PartialSideBarLeft.cshtml" />
     <Content Include="Views\Shared\_PaticalStateLogin.cshtml" />
     <Content Include="Areas\Admin\Views\Menu\AddMenu.cshtml" />
@@ -4794,6 +4799,7 @@
     <Content Include="Areas\Admin\Views\BCKHLLV\Index.cshtml" />
     <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra_OLD.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachPLVChuaKiemTra.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\ViewBienBanQDKTKS.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -5079,6 +5085,7 @@
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
+    <Content Include="report_template\ExportDocKeHoachLichLamViec.docx" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />

@@ -1,0 +1,1543 @@
+﻿@using ECP_V2.DataAccess;
+@model ECP_V2.Business.Repository.PhienLVModel
+@{
+    tblDonVi DonViObj = new tblDonVi(); ;
+    if (ViewBag.DonVi != null)
+    {
+        DonViObj = ViewBag.DonVi;
+    }
+    tblDonVi DonViCha = new tblDonVi(); ;
+    if (ViewBag.DonViCha != null)
+    {
+        DonViCha = ViewBag.DonViCha;
+    }
+
+
+
+    string donViID = "";
+    if (ViewBag.DonViCha != null)
+    {
+        donViID = ViewBag.DonViId;
+    }
+
+
+
+    DateTime TuNgay = (DateTime)ViewBag.TuNgay;
+
+    DateTime DenNgay = (DateTime)ViewBag.DenNgay;
+
+
+    ECP_V2.Business.Repository.DonViRepository donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    ECP_V2.Business.Repository.d_LoaiCongViecRepository loaiCongViecRepository = new ECP_V2.Business.Repository.d_LoaiCongViecRepository();
+    ECP_V2.Business.Repository.NhanVienRepository nhanvienRepository = new ECP_V2.Business.Repository.NhanVienRepository();
+    ECP_V2.Business.Repository.TramRepository tramRepository = new ECP_V2.Business.Repository.TramRepository();
+
+
+
+    string sophieu = string.Empty;
+    string sophieu_thang = string.Empty;
+    string sophieu_nam = string.Empty;
+
+    List<tblNhanVien> nhanVien = new List<tblNhanVien>();
+    if (ViewBag.nhanVien != null)
+    {
+        nhanVien = (List<tblNhanVien>)ViewBag.nhanVien;
+    }
+    string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
+
+    string dieuKienAnToan = @"Yêu cầu cắt điện:
+Yêu cầu ĐVQLVH đặt (đóng) nối đất tại:
+Yêu cầu ĐVCT đặt nối đất tại:";
+
+    string chitietcatdien = @"
+- Những thiết bị, đường dây, đoạn đường dây đã cắt điện:
+……………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………
+- Đã đóng (đặt) nối đất tại:
+……………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………
+- Đã làm rào chắn:
+………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………
+- Đã treo biển báo tại:
+………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………
+";
+    //List<tblNhanVien> NhanVienDonVi = ViewBag.NhanVien;
+    //if (NhanVienDonVi == null)
+    //{
+    //    NhanVienDonVi = new List<tblNhanVien>();
+    //}
+}
+
+<link href="/Content/wordsstyle.css?v=@(DateTime.Now.ToString("HHmmssfff"))" rel="stylesheet" />
+@Styles.Render("~/Content/themes/admindesign/css")
+<link href="/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="/Scripts/fbphotobox/css/fbphotobox.css" rel="stylesheet" />
+
+<script src="/Scripts/jquery-1.10.2.js"></script>
+<script src="/Scripts/AdminPanel/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="/Scripts/bootstrap.min.js"></script>
+
+@Styles.Render("~/Content/themes/admindesign/css")
+@Scripts.Render("~/bundles/admin/jqueryIndex")
+
+<script src="/Scripts/autoresize.jquery.min.js"></script>
+
+<input type="hidden" id="phieucongtacid" name="phieucongtacid" value="@(ViewBag.phieucongtacid)">
+<input type="hidden" id="phienlvid" name="phienlvid" value="@(ViewBag.phienlvid)">
+
+<style>
+    * {
+        font-family: Times New Roman Arial !important;
+    }
+
+    .daky {
+        font-weight: bold;
+    }
+
+    .tbnXoaDong {
+        display: none;
+        background-color: orangered;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 112px;
+        line-height: 34px;
+        color: #fff;
+    }
+
+    .tbnThemDong {
+        display: none;
+        background: #00b000;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 112px;
+        line-height: 32px;
+        color: #fff;
+    }
+
+    .rheaderTB4:hover .tbnThemDongTB4 {
+        display: block !important;
+    }
+
+    .rheaderTB4:hover .tbnXoaDongTB4 {
+        display: block !important;
+    }
+
+    .rheaderTB5:hover .tbnThemDongTB5 {
+        display: block !important;
+    }
+
+    .rheaderTB5:hover .tbnXoaDongTB5 {
+        display: block !important;
+    }
+
+    @@media print {
+        .pagebreak {
+            page-break-before: always;
+        }
+    }
+
+    .table-resizable {
+        width: 99%;
+        height: 99%
+    }
+
+        .table-resizable .resizing {
+            cursor: col-resize;
+            user-select: none;
+        }
+
+        .table-resizable th {
+            position: relative;
+        }
+
+            .table-resizable th:before {
+                cursor: col-resize;
+                user-select: none;
+                content: '';
+                display: block;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 1em;
+            }
+
+            .table-resizable th:last-of-type:before {
+                display: none;
+            }
+
+
+        .table-resizable td {
+            max-width: 0;
+            /*overflow: hidden;*/
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+</style>
+
+<div class=Section1 style="width:800px; height:auto; margin:0 auto; background-color:white; padding:0px 50px 20px">
+    <p class=MsoNormal>
+        <a name="_GoBack"></a><b>
+            <span><o:p>&nbsp;</o:p></span>
+        </b>
+    </p>
+    <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0
+           style='border-collapse:collapse;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:none;mso-border-insidev:none'>
+        <tr>
+            <td valign=top style='width:280px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal align="center" style='text-align:left'>
+                    @if (DonViObj.DviCha == "PA")
+                    {
+                        <b>
+                            <textarea style="font-size:14px; width:220px;resize: none; font-weight:bold !important" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonViObj.TenDonVi??""))</textarea>
+                        </b>
+                    }
+                    else
+                    {
+                        <b>
+                            <textarea style="font-size:14px; width:220px;resize: none; font-weight:bold !important" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonViCha.TenDonVi??""))</textarea>
+                        </b>
+                        <br />
+                        <b>
+                            <textarea style="font-size:14px; width:220px;resize: none; font-weight:bold !important" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonViObj.TenDonVi??""))</textarea>
+                        </b>
+                       
+                    }
+
+
+                </p>
+
+            </td>
+            <td valign="top" style='width:400px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+                    <b style="text-align:center">
+                        <span style='font-size:17.0pt;color:black'>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </span>
+                        <span style='font-size:10.0pt;color:black'>
+                            Độc lập - Tự do - Hạnh phúc
+                        </span>
+                    </b>
+                </p>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td valign=top style='width:280px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal align="center" style='text-align:left'>
+                    <b>
+                        <span style='font-size:16px;'>
+                            Số: /BB-KHKT-
+
+                        </span>
+                    </b>
+                </p>
+
+            </td>
+            <td valign="top" style='width:400px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+                    <b style="text-align:center">
+                        <span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 0, 59)" value="@DateTime.Now.ToString("HH")" name="txtS62_phut" id="txtS62_phut" placeholder="……" searchbox="0" datasourceidname="listphut" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="59" min="0" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>tháng <span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@DateTime.Now.ToString("MM")" name="txtS62_thang" id="txtS62_thang" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>năm<span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="4" value="@DateTime.Now.ToString("yyyy")" name="txtS62_nam" maxlength="4" id="txtS62_nam" placeholder="………" searchbox="0" datasourceidname="listnam" class="S62_nam_SelectEmp1 input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>
+                    </b>
+                </p>
+
+            </td>
+
+        </tr>
+    </table>
+
+
+    <p class=MsoNormal id="divKLGBAT">
+        <b>
+
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                <span class="selectboxv1" onlyone="1">
+                    <input style="width: 345px;" value="1" data-id="1" name="txtS11" searchbox="1" datasourceidname="listloaiBienBan" class="loaiBienBan_SelectEmp input-style input-style1 selectbox-control" id="txtS11" type="text" placeholder="…………………………………………………………" autocomplete="off" />
+                    <span class="multiselect-wap"></span>
+                </span>
+                KẾT LUẬN GIAO BAN AN TOÀN
+                <span class="selectboxv1" onlyone="1">
+                    <input style="width: 345px;" value="1" data-id="1" name="txtS11" searchbox="1" datasourceidname="listloaithoigianbc" class="loaithoigianbc_SelectEmp input-style input-style1 selectbox-control" id="txtS11" type="text" placeholder="…………………………………………………………" autocomplete="off" />
+                    <span class="multiselect-wap"></span>
+                </span>:
+            </span>
+
+        </b>
+    </p>
+
+    <p class=MsoNormal>
+        <b>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>1. C&#7845;p cho:</span>
+        </b>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.1. Người lãnh đạo công việc <i>(nếu có)</i>:
+            <span class="selectboxv1" onlyone="1">
+                <input style="width: 345px;" value="@(Model.LanhDaoCongViec)" data-id="@(Model.LanhDaoCongViec_Id)" name="txtS11" searchbox="1" datasourceidname="listlanhdaocongviec" class="LanhDaoCongViec_SelectEmp input-style input-style1 selectbox-control" id="txtS11" type="text" placeholder="…………………………………………………………" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+        <span style='mso-bidi-font-size:12.0pt;float:right'>
+            Bậc ATĐ
+
+            @{
+                var nhanVien_LanhDaoCongViec = nhanvienRepository.GetById(Model.LanhDaoCongViec_Id);
+                if (nhanVien_LanhDaoCongViec != null)
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="@(nhanVien_LanhDaoCongViec.BacAnToan)" readonly name="txtS11_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS11_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
+                }
+                else
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="" readonly name="txtS11_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS11_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
+                }
+            }
+
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.2. Người chỉ huy trực tiếp:
+            <span class="selectboxv1" onlyone="1">
+                <input style="width:400px" value="@(Model.NguoiChiHuy)" data-id="@(Model.NguoiChiHuy_Id)" name="txtS12" searchbox="1" datasourceidname="listchihuytructiep" class="NguoiChiHuy_SelectEmp input-style input-style1 selectbox-control" id="txtS12" type="text" placeholder="…………………………………………………………………………" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+        <span style="color:black;float:right">
+            Bậc ATĐ
+            @{
+                var nhanVien_NguoiChiHuy = nhanvienRepository.GetById(Model.NguoiChiHuy_Id);
+                if (nhanVien_NguoiChiHuy != null)
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="@(nhanVien_NguoiChiHuy.BacAnToan)" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
+                }
+                else
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="@(" /5")" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
+                }
+            }
+
+        </span>
+    </p>
+
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold;mso-bidi-font-style:italic'>
+            Thuộc <i>(Công ty, Phân xưởng v.v) </i>
+            @*<span class="selectboxv1 radio-style" onlyone="1">
+                    <input style="width: 260px; font-size:12px" name="txtTop_phongban" value="@(phieuCongTac.PhongBan_PCT)" data-id="@(phieuCongTac.PhongBanID_PCT > 0 ? phieuCongTac.PhongBanID_PCT.ToString() : "")" searchbox="1" datasourceidname="listphongban" class="PhongBan_SelectEmp input-style input-style1 selectbox-control" id="txtTop_phongban" type="text" placeholder="………………………………………………………" autocomplete="off" />
+                    <span class="multiselect-wap"></span>
+                </span>*@
+            <span class="selectboxv1 radio-style" onlyone="1">
+                <input style="width:70%" name="txtS13_phongban" value="@(Model.TenPhongBan)" data-id="@(Model.PhongBanID)" searchbox="1" datasourceidname="listphongban" class="PhongBan_SelectEmp input-style input-style1 selectbox-control" id="txtS13_phongban" type="text" placeholder="………………………………………………………" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.4.<b> </b>&#272;&#7883;a &#273;i&#7875;m
+            (ho&#7863;c thi&#7871;t b&#7883;) ti&#7871;n hành công tác:<br> <span style='mso-bidi-font-style:italic'>
+                @*<textarea maxlength="1000" id="txtS14" name="txtS14" class="input-style input-style3" rows="2" placeholder="…………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.DiaDiem.Trim())</textarea>*@
+                @(Model.DiaDiem.Trim())
+            </span>
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>1.5.<b> </b>N&#7897;i dung công tác:<br><o:p></o:p></span>
+    </p>
+    <p class=MsoNormal style='text-align:justify;font-weight:bold'>
+        <span>
+            @*<textarea maxlength="1000" id="txtS15" name="txtS15" class="input-style input-style3" rows="2" placeholder="…………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.NoiDung.Trim())</textarea>*@
+            @(Model.NoiDung.Trim())
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.6.<b> </b>Th&#7901;i gian theo k&#7871;
+            ho&#7841;ch:<o:p></o:p>
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span>
+            - Bắt đầu công việc:
+            <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 0, 23)" value="@(Model.GioBd != null ? (Model.GioBd.Hour > 9 ? Model.GioBd.Hour.ToString() : "0" + Model.GioBd.Hour.ToString()) : "")" name="txtS16_giobd" id="txtS16_giobd" placeholder="……" searchbox="0" datasourceidname="listgio" class="GioBatDauCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="23" min="0" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>gi&#7901; <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 0, 59)" value="@(Model.GioBd != null ? (Model.GioBd.Minute > 9 ? Model.GioBd.Minute.ToString() : "0" + Model.GioBd.Minute.ToString()) : "")" name="txtS16_phutbd" id="txtS16_phutbd" placeholder="……" searchbox="0" datasourceidname="listphut" class="PhutBatDauCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="59" min="0" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>phút, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@(Model.GioBd != null ? (Model.GioBd.Day > 9 ? Model.GioBd.Day.ToString() : "0" + Model.GioBd.Day.ToString()) : "")" name="txtS16_ngaybd" id="txtS16_ngaybd" placeholder="……" searchbox="0" datasourceidname="listngay" class="NgayBatDauCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/ <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@(Model.GioBd != null ? (Model.GioBd.Month > 9 ? Model.GioBd.Month.ToString() : "0" + Model.GioBd.Month.ToString()) : "")" name="txtS16_thangbd" id="txtS16_thangbd" placeholder="……" searchbox="0" datasourceidname="listthang" class="ThangBatDauCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="4" value="@(Model.GioBd != null ? Model.GioBd.Year.ToString() : "")" name="txtS16_nambd" id="txtS16_nambd" placeholder="………" searchbox="0" datasourceidname="listnam" class="NamBatDauCongViec_SelectEmp input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span>
+            - Kết thúc công việc:
+            <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 0, 23)" value="@(Model.GioKt != null ? (Model.GioKt.Hour > 9 ? Model.GioKt.Hour.ToString() : "0" + Model.GioKt.Hour.ToString()) : "")" name="txtS16_giokt" id="txtS16_giokt" placeholder="……" searchbox="0" datasourceidname="listgio" class="GioKetThucCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="23" min="0" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>gi&#7901; <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 0, 59)" value="@(Model.GioKt != null ? (Model.GioKt.Minute > 9 ? Model.GioKt.Minute.ToString() : "0" + Model.GioKt.Minute.ToString()) : "")" name="txtS16_phutkt" id="txtS16_phutkt" placeholder="……" searchbox="0" datasourceidname="listphut" class="PhutKetThucCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="59" min="0" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>phút, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@(Model.GioKt != null ? (Model.GioKt.Day > 9 ? Model.GioKt.Day.ToString() : "0" + Model.GioKt.Day.ToString()) : "")" name="txtS16_ngaykt" id="txtS16_ngaykt" placeholder="……" searchbox="0" datasourceidname="listngay" class="NgayKetThucCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/ <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@(Model.GioKt != null ? (Model.GioKt.Month > 9 ? Model.GioKt.Month.ToString() : "0" + Model.GioKt.Month.ToString()) : "")" name="txtS16_thangkt" id="txtS16_thangkt" placeholder="……" searchbox="0" datasourceidname="listthang" class="ThangKetThucCongViec_SelectEmp input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="4" value="@(Model.GioKt != null ? Model.GioKt.Year.ToString() : "")" name="txtS16_namkt" id="txtS16_namkt" placeholder="………" searchbox="0" datasourceidname="listnam" class="NamKetThucCongViec_SelectEmp input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.7.<b> </b>&#272;i&#7873;u ki&#7879;n v&#7873;
+            an toàn &#273;i&#7879;n &#273;&#7875; ti&#7871;n hành công vi&#7879;c <i>
+                (ghi rõ c&#7855;t &#273;i&#7879;n m&#7897;t
+                ph&#7847;n hay hoàn toàn thi&#7871;t b&#7883;, &#273;&#432;&#7901;ng dây,
+                &#273;o&#7841;n &#273;&#432;&#7901;ng dây; các v&#7883; trí &#273;óng, &#273;&#7863;t
+                ti&#7871;p &#273;&#7845;t)
+            </i>:<o:p></o:p>
+        </span>
+    </p>
+    @*<p class=MsoNormal>
+            Yêu cầu cắt điện................................
+        </p>
+        <p class=MsoNormal>
+            Yêu cầu ĐVQLVH đặt (đóng) nối đất tại................................
+        </p>
+        <p class=MsoNormal>
+            Yêu cầu ĐVCT đặt nối đất tại................................
+        </p>*@
+
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.8. Các đơn vị QLVH khác có liên quan đến công việc <i>
+                (Đơn vị thực hiện các BPAT phối hợp và ghi  Giấy bàn giao - nếu có)
+            </i>
+            :
+            <br />
+
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.9. Người giám sát an toàn điện <i>(nếu có)</i>:
+            <span class="selectboxv1" onlyone="1">
+                <input style="width: 330px;" value="@(Model.GiamSatVien)" data-id="@(Model.GiamSatVien_Id)" name="txtS19" id="txtS19" searchbox="1" datasourceidname="listgiamsatantoan" class="GiamSatAnToan_SelectEmp input-style input-style1 selectbox-control" type="text" placeholder="…………………………………………………………" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+        <span style='mso-bidi-font-size:12.0pt;float:right'>
+            Bậc ATĐ
+            <span class="selectboxv1 radio-style" onlyone="1">
+                @{
+                    var nhanVien_GiamSatVien = nhanvienRepository.GetById(Model.GiamSatVien_Id);
+                    if (nhanVien_GiamSatVien != null)
+                    {
+                        <input value="@(nhanVien_GiamSatVien.BacAnToan + "/5")" readonly name="txtgiamsatantoan_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="GiamSatAnToan_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="GiamSatAnToan_BAT_1" type="text" autocomplete="off" />
+                    }
+                    else
+                    {
+                        <input value="" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
+                    }
+                }
+                <span class="multiselect-wap"></span>
+            </span>/5
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            1.10. Người cảnh giới nếu có <i>(nếu có)</i>:
+            <span class="selectboxv1" onlyone="1">
+                <input style="width: 330px;" name="txtcg" id="txtcg" searchbox="1" datasourceidname="listgiamsatantoan" class="GiamSatAnToan_SelectEmp input-style input-style1 selectbox-control" type="text" placeholder="…………………………………………………………" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+        <span style='mso-bidi-font-size:12.0pt;float:right'>
+            Bậc ATĐ
+            <span class="selectboxv1 radio-style" onlyone="1">
+                <input value="" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtcg_bat" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/5
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size: 12.0pt; color:black;mso-bidi-font-weight:bold'>
+            Phiếu công tác cấp ngày<span class="selectboxv1 radio-style" onlyone="1">
+                <input style="width:20px" maxlength="2" value="@(Model.NgayDuyetPCT.HasValue ? Model.NgayDuyetPCT.Value.Day.ToString() : "")" name="txtngaycapphieu" placeholder="……" searchbox="0" datasourceidname="listngay" class="NgayCapPhieu_SelectEmp input-style input-style2 text-right selectbox-control" id="NgayCapPhieu_1" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/ <span class="selectboxv1 radio-style" onlyone="1">
+                <input style="width:20px" maxlength="2" value="@(Model.NgayDuyetPCT.HasValue ? Model.NgayDuyetPCT.Value.Month.ToString() : "")" name="txtthangcapphieu" placeholder="……" searchbox="0" datasourceidname="listthang" class="ThangCapPhieu_SelectEmp input-style input-style2 text-right selectbox-control" id="ThangCapPhieu_1" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/<span class="selectboxv1 radio-style" onlyone="1">
+                <input style="width:33px" maxlength="4" value="@(Model.NgayDuyetPCT.HasValue ? Model.NgayDuyetPCT.Value.Year.ToString() : "")" name="txtnamcapphieu" placeholder="………" searchbox="0" datasourceidname="listnam" class="NamCapPhieu_SelectEmp input-style input-style4 text-right selectbox-control" id="NamCapPhieu_1" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>. <b>Ng&#432;&#7901;i c&#7845;p phi&#7871;u</b> (<i style='mso-bidi-font-style:normal'>ký và ghi h&#7885;, tên</i>):
+
+
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <span class="selectboxv1" onlyone="1">
+            <input style="width: 450px;" value="@(Model.NguoiCapPhieu)" data-id="@(Model.NguoiCapPhieu_Id)" name="txtS110_nguoicapphieu" id="txtS110_nguoicapphieu" searchbox="1" datasourceidname="listnguoicapphieu" class="NguoiCapPhieu_SelectEmp input-style input-style1 selectbox-control" type="text" placeholder="………………………………………………………" autocomplete="off" />
+            <span class="multiselect-wap"></span>
+        </span>
+    </p>
+    <p class=MsoNormal>
+        <b>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>2. Cho phép làm vi&#7879;c<o:p></o:p></span>
+        </b>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            2.1. Người cho phép:
+            <span class="selectboxv1" onlyone="1">
+                <input style="width: 300px;" value="" data-id="" name="txtS21" searchbox="1" datasourceidname="listnguoichophep" class="NguoiChoPhep_SelectEmp input-style input-style1 selectbox-control" id="txtS21" type="text" placeholder="………………………………………………………………………………………………………………………………………………………………………" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </span>
+
+        <span style='mso-bidi-font-size:12.0pt;float:right'>
+            Chức vụ ......................... Bậc ATĐ
+            <span class="selectboxv1 radio-style" onlyone="1">
+                <input name="txtS21_bat" value="5" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS21_bat" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>/5
+        </span>
+    </p>
+    <p class=MsoNormal>
+        @*@Model.TenDonVi*@
+        thuộc đơn vị QLVH <span class="tentodoithuchien" style="">………………………………………………………………………………………</span> đã nhận đủ Giấy bàn giao của các đơn vị QLVH có liên quan (nếu có):
+    </p>
+    <table style="width:100%">
+        <tbody>
+            <tr style="height:32px">
+                <td style="width:50%">
+                    <p class=MsoNormal>
+                        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+                            2.1.1. …..……………………………………<span></span><o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+                <td style="width:50%">
+                    <p class=MsoNormal>
+                        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+                            2.1.2. …..……………………………………<span></span><o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+            </tr>
+            <tr style="height:30px">
+                <td style="width:50%">
+                    <p class=MsoNormal>
+                        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+                            2.1.3. …..……………………………………<span></span><o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+                <td style="width:50%">
+                    <p class=MsoNormal>
+                        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+                            2.1.4. …..……………………………………<span></span><o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            2.2. Những BPAT điện đã thực hiện
+        </span>
+    </p>
+
+
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            2.3. Phạm vi được phép làm việc:
+        </span>
+    </p>
+
+
+
+
+
+    <p class=MsoNormal style='text-align:justify'>
+        <span style="mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold">
+            Người cho phép (ghi họ, tên): ...................................................................... Chức vụ: ............................................ Chữ ký .............................. <span></span><o:p></o:p>
+        </span>
+    </p>
+    <p class=MsoNormal style='text-align:justify'>
+        <span style="mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold">
+            Người chỉ huy trực tiếp nhận bàn giao (ghi họ, tên): .......................................................... Chức vụ: ......................... Chữ ký ............................. <span></span><o:p></o:p>
+        </span>
+    </p>
+    <p class=MsoNormal style='text-align:justify'>
+        <span style="mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold">
+            Người giám sát an toàn điện (ghi họ, tên - nếu có): .......................................................... Chức vụ: ......................... Chữ ký .............................. <span></span><o:p></o:p>
+        </span>
+    </p>
+
+    <p class=MsoNormal>
+        <b>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                3. Tiếp nhận nơi làm việc, thực hiện BPAT và tiến hành công việc
+            </span>
+        </b>
+    </p>
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            3.1. Đã kiểm tra những biện pháp an toàn tại hiện trường do người cho phép giao:
+        </span>
+    </p>
+    <p class=MsoNormal style='text-align:justify'>
+        <span class="selectboxv1" onlyone="0">
+            <textarea data-plugin-maxlength maxlength="2000" id="txtS31" name="txtS31" class="S31_SelectEmp input-style input-style3" rows="3" placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………" searchbox="1" datasourceidname=""></textarea>
+            <span class="multiselect-wap"></span>
+        </span>
+    </p>
+
+    <p class=MsoNormal>
+        <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
+            3.2. Đã làm nối đất tại:
+        </span>
+    </p>
+
+
+
+    <p class=MsoNormal style='text-align:justify'>
+        <span style="mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold">
+            Người lãnh đạo công việc (ghi họ, tên - nếu có): .............................................. Chức vụ: ........................................... Chữ ký .............................. <span></span><o:p></o:p>
+        </span>
+    </p>
+
+    <p class=MsoNormal style='text-align:justify'>
+        <span style="mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold">
+            Người chỉ huy trực tiếp (ghi họ, tên): .......................................................... Chức vụ: ............................................ Chữ ký .............................. <span></span><o:p></o:p>
+        </span>
+    </p>
+
+    <p class=MsoNormal style='text-align:justify'>
+        <span style="mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold">
+            Người giám sát an toàn điện (ghi họ, tên - nếu có): .......................................................... Chức vụ: ......................... Chữ ký .............................. <span></span><o:p></o:p>
+        </span>
+    </p>
+
+    <p class=MsoNormal style='margin-bottom:3.0pt'>
+        <b>
+            <span style='mso-bidi-font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span>
+        </b>
+    </p>
+
+    @*<p class=MsoNormal style='margin-bottom:3.0pt'>
+            <b>
+                <span style='mso-bidi-font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span>
+            </b>
+        </p>
+
+        <p class=MsoNormal style='margin-bottom:3.0pt'>
+            <b>
+                <span style='mso-bidi-font-size:12.0pt;color:black'><o:p>&nbsp;</o:p></span>
+            </b>
+        </p>*@
+    <p class=MsoNormal style='margin-bottom:3.0pt'>
+        <b>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                4. Sau khi nghe ph&#7893; bi&#7871;n các bi&#7879;n pháp an toàn t&#7841;i
+                n&#417;i chu&#7849;n b&#7883; làm vi&#7879;c, các nhân viên &#273;&#417;n v&#7883;
+                công tác ký xác nh&#7853;n theo danh sách nhân viên &#273;&#417;n v&#7883; công
+                tác (
+            </span>
+        </b><i>
+            <span style='mso-bidi-font-size:
+12.0pt;
+color:black;mso-bidi-font-weight:bold'>&#273;&#432;&#7907;c phép l&#7853;p s&#7861;n</span>
+        </i><b>
+            <span>
+                ) và thay &#273;&#7893;i
+                ng&#432;&#7901;i
+            </span>
+        </b><i>
+            <span>
+                (n&#7871;u
+                có)
+            </span>
+        </i><b>
+            <span>:</span>
+        </b><span><o:p></o:p></span>
+    </p>
+    <div class="rheaderTB4">
+        <div class="row" style="margin-left:6px">
+            <button class="tbnThemDong tbnThemDongTB4 col-md-3" onclick="addRowTB4()">Thêm dòng</button>
+            <button class="tbnXoaDong tbnXoaDongTB4 col-md-3" onclick="removeRowTB4()">Xóa dòng</button>
+        </div>
+        <div id="divtb4" align="center" style="margin-bottom:3px;margin-top:5px;font-size:17px;text-align:left; resize:both;overflow:auto;width:100%;height:300px">
+            <table id="tb4" class="MsoNormalTable table-resizable" border=1 cellspacing=0 cellpadding=0
+                   style='border-collapse:collapse;border:none;
+ mso-border-alt:solid windowtext .75pt;mso-yfti-tbllook:1184;mso-padding-alt: 0in 5.4pt 0in 5.4pt;mso-border-insideh:.75pt solid windowtext;mso-border-insidev: .75pt solid windowtext'>
+                <thead>
+                    <tr class="rheaderTB4" style='mso-yfti-irow:0;mso-yfti-firstrow:yes;page-break-inside:avoid;height:15.0pt'>
+                        <th width=75 rowspan=2 style='width:28.0pt;border:solid windowtext 1.0pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal style='margin-right:-19.1pt;margin-bottom:
+  0in;margin-left:0in;margin-bottom:.0001pt'>
+                                <span style='mso-bidi-font-size:
+  12.0pt;
+  color:black;mso-bidi-font-weight:bold'>TT<o:p></o:p></span>
+                            </p>
+                        </th>
+                        <th rowspan=2 style='width:200pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    H&#7885;,
+                                    tên<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th rowspan=2 style='width:20pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    B&#7853;c
+                                    AT&#272;<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=397 colspan=2 style='width:148.8pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Vào vị trí làm việc<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th colspan=2 style='position:relative; width:148.85pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Ra khỏi vị trí làm việc<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                    </tr>
+                    <tr class="rheaderTB4" style='mso-yfti-irow:1;page-break-inside:avoid;height:15.0pt'>
+                        <th width=246 style='width:75pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Th&#7901;i
+                                    gian<o:p></o:p>
+                                </span>
+                            </p>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    (gi&#7901;,
+                                    phút, ngày, tháng)<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=151 style='width:56.7pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Ký
+                                    tên<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=265 style='width:75pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Th&#7901;i
+                                    gian<o:p></o:p>
+                                </span>
+                            </p>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    (gi&#7901;,
+                                    phút, ngày, tháng)
+                                </span>
+                            </p>
+                        </th>
+                        <th width=132 style='position:relative; width:49.6pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Ký
+                                    tên
+                                </span>
+                            </p>
+                        </th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+    @*<center>
+            <button class="btn btn-primary modal-confirm" onclick="AddRow1()" id="modal-confirm">Thêm</button>
+        </center>*@
+    <p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>
+        <b>
+            <span>
+                5. Cho phép làm vi&#7879;c và
+                k&#7871;t thúc công tác hàng ngày:<o:p></o:p>
+            </span>
+        </b>
+    </p>
+    <div class="rheaderTB5">
+        <div class="row" style="margin-left:6px">
+            <button class="tbnThemDong tbnThemDongTB5 col-md-3" onclick="addRowTB5()">Thêm dòng</button>
+            <button class="tbnXoaDong tbnXoaDongTB5 col-md-3" onclick="removeRowTB5()">Xóa dòng</button>
+        </div>
+        <div id="divtb5" align="center" style="margin-bottom:3px;margin-top:5px;font-size:17px;text-align:left; resize:both;overflow:auto;width:100%;height:250px">
+            <table id="tb5" class="MsoNormalTable table-resizable" border=1 cellspacing=0 cellpadding=0
+                   style='width:100%;border-collapse:collapse;border:none;
+ mso-border-alt:solid windowtext .75pt;mso-yfti-tbllook:1184;mso-padding-alt:
+ 0in 5.4pt 0in 5.4pt;mso-border-insideh:.75pt solid windowtext;mso-border-insidev:
+ .75pt solid windowtext'>
+                <thead>
+                    <tr class="rheaderTB5" style='mso-yfti-irow:0;mso-yfti-firstrow:yes;page-break-inside:avoid;
+  height:15.0pt'>
+                        <th width=74 rowspan=2 style='width:27.8pt;border:solid windowtext 1.0pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='margin-right:-5.05pt;
+  margin-bottom:0in;margin-left:0in;margin-bottom:.0001pt;text-align:left'>
+                                <span>TT</span>
+                            </p>
+                        </th>
+                        <th width=308 rowspan=2 style='width:150pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    &#272;&#7883;a
+                                    &#273;i&#7875;m công tác<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=429 colspan=2 style='width:120pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Th&#7901;i
+                                    gian <i>(gi&#7901;, ngày, tháng)</i><o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=208 rowspan=2 style='width:120pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Ng&#432;&#7901;i
+                                    ch&#7881; huy tr&#7921;c ti&#7871;p <i>
+                                        (ký
+                                        và ghi rõ h&#7885;, tên)
+                                    </i><o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=208 rowspan=2 style='position:relative;width:120pt;border:solid windowtext 1.0pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
+  solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    Ng&#432;&#7901;i
+                                    cho phép <i>(ký và ghi rõ h&#7885;, tên)</i><o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                    </tr>
+                    <tr style='mso-yfti-irow:1;page-break-inside:avoid;height:15.0pt'>
+                        <th style='width:80pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    B&#7855;t
+                                    &#273;&#7847;u<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                        <th width=208 style='width:78.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+                            <p class=MsoNormal align=center style='text-align:center'>
+                                <span>
+                                    K&#7871;t
+                                    thúc<o:p></o:p>
+                                </span>
+                            </p>
+                        </th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+    <p class=MsoNormal style='margin-top:6.0pt'>
+        <b>
+            <span style='mso-bidi-font-size:
+12.0pt;
+color:black'>6. K&#7871;t thúc công tác:</span>
+        </b><span style='mso-bidi-font-size:
+12.0pt;
+color:black;mso-bidi-font-weight:bold'><o:p></o:p></span>
+    </p>
+
+    <p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>
+        <b>
+            <span>
+                Người chỉ huy trực tiếp
+            </span>
+        </b><i>
+            <span>
+                (ký và ghi họ, tên)
+            </span>
+        </i>:……………………………………………
+
+        @*<b class="chihuytructiep_name">
+                @(Model.NguoiChiHuy)
+            </b>
+            @if (phieuCongTac.CHTT_B6 == true)
+            {
+                <span class="daky">
+                    (Đã ký)
+                </span>
+            }*@
+    </p>
+
+    <p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>
+        <b>
+            <span>
+                Người lãnh đạo công việc
+            </span>
+        </b><i>
+            <span>
+                (ký và ghi họ, tên - nếu có)
+            </span>
+        </i>:……………………………………………
+
+        @*<b class="chihuytructiep_name">
+                @(Model.NguoiChiHuy)
+            </b>
+            @if (phieuCongTac.CHTT_B6 == true)
+            {
+                <span class="daky">
+                    (Đã ký)
+                </span>
+            }*@
+    </p>
+
+
+
+    <p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>
+        <b>
+            <span>
+                Người cho phép
+            </span>
+        </b><i>
+            <span>
+                (ký và ghi họ, tên)
+            </span>
+        </i>:……………………………………………………
+        @*<b class="nguoikiemsoat_name">
+                @(Model.NguoiKiemSoat)
+            </b>
+            @if (phieuCongTac.NGUOICP_B6 == true)
+            {
+                <span class="daky">
+                    (Đã ký)
+                </span>
+            }*@
+    </p>
+    <br />
+    <br />
+
+    <p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:3.0pt;
+margin-left:0in'>
+        <b>
+            <span>
+                Người cấp phiếu
+            </span>
+        </b>
+        <i>
+            <span>
+                (ký và ghi họ, tên)
+            </span>
+        </i>:……………………………………………………
+        @*<b class="nguoiduyet_name">
+                @(Model.NguoiDuyet_SoPa)
+            </b>
+            @if (phieuCongTac.NguoiTaoKT_B6 == true)
+            {
+                <span class="daky">
+                    (Đã ký)
+                </span>
+            }*@
+    </p>
+    @*<p class=MsoNormal style='text-align:justify'>
+            <span>
+                Ghi chú : Mẫu 4 Quy trình An toàn điện do EVN Việt Nam ban hành thực hiện 2018
+            </span>
+        </p>*@
+    <div style="height:300px"></div>
+</div>
+
+<div style="display:none" class="mytemp">
+    <div class="empdataparent">
+        <div class="empdata">
+            <select class="multiselect-add form-control" multiple="multiple" data-plugin-multiselect data-plugin-options='{ "enableCaseInsensitiveFiltering": true }'>
+                <optgroup label="Nhân viên">
+                    <option value="0">Tên Nhân Viên</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+
+    <div id="listnguoiduyet">
+        <optgroup label="Người duyệt">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiDuyetChucNang" });}
+        </optgroup>
+    </div>
+    <div id="listphutrachduyet">
+        <optgroup label="Người phụ trách duyệt">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiKiemTra" });}
+        </optgroup>
+    </div>
+    <div id="listchihuytructiep">
+        <optgroup label="Người chỉ huy trực tiếp">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "ChiHuyTrucTiep" });}
+        </optgroup>
+    </div>
+    <div id="listgiamsatantoan">
+        <optgroup label="Người giám sát">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiGiamSat" });}
+        </optgroup>
+    </div>
+    <div id="listkiemsoat">
+        <optgroup label="Người cho phép">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiKiemSoatDonViCongTac" });}
+        </optgroup>
+    </div>
+    <div id="listkiemtraphieu">
+        <optgroup label="Người kiểm tra phiếu">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiKiemTra" });}
+        </optgroup>
+    </div>
+    <div id="listlanhdaotrucban">
+        <optgroup label="Lãnh đạo trực ban">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "LanhDaoDonViTrucBanKiemSoat" });}
+        </optgroup>
+    </div>
+    <div id="listnhanviendonvicongtac">
+        <optgroup label="Nhân viên đơn vị công tác">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "ChiHuyTrucTiep" });}
+        </optgroup>
+    </div>
+
+    <div id="listlanhdaocongviec">
+        <optgroup label="Lãnh đạo công việc">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "LanhDaoCongViec" });}
+
+        </optgroup>
+    </div>
+    <div id="listnguoicapphieu">
+        <optgroup label="Người cấp phiếu">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiCapPhieu" });}
+
+        </optgroup>
+    </div>
+
+    <div id="listphieulenh">
+        <optgroup label="Phiếu/Lệnh công tác">
+            <option value="1">Phiếu công tác</option>
+            <option value="2">Lệnh công tác</option>
+        </optgroup>
+    </div>
+
+    <div id="listloaiBienBan">
+        <optgroup label="Đơn vị làm công việc">
+            <option value="1">"Biên Bản"</option>
+            <option value="2">"Thông báo"</option>
+        </optgroup>
+    </div>
+    <div id="listloaithoigianbc">
+        <optgroup label="Đơn vị làm công việc">
+            <option value="1">"Tuần"</option>
+            <option value="2">"Tháng"</option>
+        </optgroup>
+    </div>
+
+    <div id="listnhanviendonvicongtac">
+        <optgroup label="Nhân viên đơn vị công tác">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "" });}
+        </optgroup>
+    </div>
+
+
+    <div id="listbacantoan">
+        <optgroup label="Bậc An Toàn">
+            @for (int i = 1; i < 6; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listgio">
+        <optgroup label="Giờ">
+            @for (int i = 0; i < 23; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listphut">
+        <optgroup label="Phút">
+            @for (int i = 0; i < 59; i = i + 5)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listngay">
+        <optgroup label="Ngày">
+            @for (int i = 1; i < 32; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listthang">
+        <optgroup label="Tháng">
+            @for (int i = 1; i < 13; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listnam">
+        <optgroup label="Năm">
+            <option value="@(DateTime.Now.Year - 1)">@(DateTime.Now.Year - 1)</option>
+            <option value="@(DateTime.Now.Year)">@(DateTime.Now.Year)</option>
+            <option value="@(DateTime.Now.Year + 1)">@(DateTime.Now.Year + 1)</option>
+        </optgroup>
+    </div>
+    <div id="listnam2">
+        <optgroup label="Năm">
+            <option value="@((DateTime.Now.Year - 1).ToString().Substring(2))">@((DateTime.Now.Year - 1).ToString().Substring(2))</option>
+            <option value="@(DateTime.Now.Year.ToString().Substring(2))">@(DateTime.Now.Year.ToString().Substring(2))</option>
+            <option value="@((DateTime.Now.Year + 1).ToString().Substring(2))">@((DateTime.Now.Year + 1).ToString().Substring(2))</option>
+        </optgroup>
+    </div>
+    <div id="listsoluongnguoi">
+        <optgroup label="Số lượng người">
+            @for (int i = 1; i < 31; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+
+</div>
+<footer class="panel-footer" style="position:fixed; bottom:0;z-index:99999999; width:100%">
+    <div class="row">
+        <div class="col-md-12 text-right">
+
+            <a href="/Admin/PhienLV/PhieuCongTac?phieucongtacid=@(ViewBag.phieucongtacid)&phienlvid=@(ViewBag.phienlvid)&showprint=1#print" target="_blank">
+                <button class="btn btn-default modal-confirm">
+                    IN PHIẾU
+                </button>
+            </a>
+            <button class="btn btn-primary modal-confirm" onclick="UpdatePhieuCongTac()" id="modal-confirm">
+                @if (string.IsNullOrEmpty(sophieu))
+                {
+                    <span>Tạo phiếu và lưu</span>
+                }
+                else
+                {
+                    <span>Sửa phiếu và lưu</span>
+                }
+            </button>
+
+            <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Hủy</button>
+        </div>
+    </div>
+</footer>
+<table class="trtemp1" style="display:none">
+    <tr style='height:32px'>
+        <td>
+            <p class=MsoNormal align=center>
+                <span>1<o:p></o:p></span>
+            </p>
+        </td>
+        <td>
+            <p class=MsoNormal align=center>
+                <span><o:p>&nbsp;</o:p></span>
+            </p>
+        </td>
+        <td>
+            <p class=MsoNormal align=right>
+                <span>/5</span>
+            </p>
+        </td>
+        <td>
+            <p class=MsoNormal align=right>
+                <span></span>
+            </p>
+        </td>
+        <td>
+            <p class=MsoNormal align=right>
+                <span></span>
+            </p>
+        </td>
+        <td>
+            <p class=MsoNormal align=right>
+                <span></span>
+            </p>
+        </td>
+        <td>
+            <p class=MsoNormal align=right>
+                <span></span>
+            </p>
+        </td>
+    </tr>
+</table>
+
+<table class="trtemp4" style="display:none">
+    <tbody>
+        <tr class="rtb trnhanvien4" style="height:50px">
+            <td>
+                <p class="rstt MsoNormal" align=center>
+
+                </p>
+            </td>
+            <td>
+                <p class=MsoNormal align=center>
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input style="width:100%;" value="" data-id="" searchbox="1" datasourceidname="listnhanviendonvicongtac" class="NhanVienDonViCongTac_SelectEmp input-style input-style1 selectbox-control" type="text" placeholder="………………………………………………………………………………………………………………………………………………" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                </p>
+            </td>
+            <td>
+                <p class=MsoNormal align=right>
+                    <span>/5</span>
+                </p>
+            </td>
+            <td>
+                <p class=MsoNormal align=right>
+                    <span></span>
+                </p>
+            </td>
+            <td>
+                <p class=MsoNormal align=right>
+                    <span></span>
+                </p>
+            </td>
+            <td>
+                <p class=MsoNormal align=right>
+                    <span></span>
+                </p>
+            </td>
+            <td>
+                <p class=MsoNormal align=right>
+                    <span></span>
+                </p>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<table class="trtemp5" style="display:none">
+    <tbody>
+        <tr class="rtb" style="height:70px">
+            <td width=74 valign="middle" style='width:27.8pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;text-align: center;'>
+                <p class="rstt MsoNormal">
+                    1
+                </p>
+            </td>
+            <td width=308 valign=top style='width:115.65pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+
+                </p>
+            </td>
+            <td width=221 valign=top style='width:1.15in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+
+                </p>
+            </td>
+            <td width=208 valign=top style='width:78.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+
+                </p>
+            </td>
+            <td width=208 valign=top style='width:77.95pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+
+                </p>
+            </td>
+            <td width=208 valign=top style='width:77.95pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    setTimeout(function () {
+        if (document.location.href.indexOf("#print") > -1) {
+            $(".panel-footer").hide();
+            //$("#tb4 .selectboxv1").hide();
+            $("#txtTop_LoaiCviec").hide();
+            $("#txtTop_Tram").hide();
+
+            $("#btnSaveTable").show();
+            //$("#divMaYCKH").hide();
+        }
+    }, 1000);
+
+    function RunPrint() {
+        console.log("");
+        $("#btnPrint").hide();
+        $("#btnSaveTable").hide();
+        window.print();
+        $("#btnPrint").show();
+        $("#btnSaveTable").show();
+    }
+
+    $(function () {
+        var startX,
+            startWidth,
+            $handle,
+            $table,
+            pressed = false;
+
+        $(document).on({
+            mousemove: function (event) {
+                if (pressed) {
+                    $handle.width(startWidth + (event.pageX - startX));
+                }
+            },
+            mouseup: function () {
+                if (pressed) {
+                    $table.removeClass('resizing');
+                    pressed = false;
+                }
+            }
+        }).on('mousedown', '.table-resizable th', function (event) {
+            $handle = $(this);
+            pressed = true;
+            startX = event.pageX;
+            startWidth = $handle.width();
+
+            $table = $handle.closest('.table-resizable').addClass('resizing');
+        }).on('dblclick', '.table-resizable thead', function () {
+            // Reset column sizes on double click
+            $(this).find('th[style]').css('width', '');
+        });
+
+        LoadSizeTable();
+
+
+    });
+
+    function SaveTable() {
+        var from = document.referrer;
+        alert(from);
+        let xxx = httpGet(from);
+        alert(xxx);
+        //table 4
+        var w = $("#divtb4").width();
+        var h = $("#divtb4").height();
+
+
+        var i = 1;
+        $("#tb4 thead tr th").each(function () {
+            var wth = $(this).width();
+            var hth = $(this).height();
+
+            i = i + 1;
+        });
+
+        //table 5
+        var w2 = $("#divtb5").width();
+        var h2 = $("#divtb5").height();
+
+
+        var i2 = 1;
+        $("#tb5 thead tr th").each(function () {
+            var wth2 = $(this).width();
+            var hth2 = $(this).height();
+
+            i2 = i2 + 1;
+        });
+
+        alert("Lưu thành công");
+    }
+
+    function httpGet(theUrl) {
+        let xmlhttp;
+
+        if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else { // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                return xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET", theUrl, false);
+        xmlhttp.send();
+
+        return xmlhttp.response;
+    }
+
+    function LoadSizeTable() {
+
+        //table 4
+        var w = 0;
+        var h = 0;
+
+        if (w > 0)
+            $("#divtb4").css("width", w);
+        if (h > 0)
+            $("#divtb4").css("height", h);
+
+        var i = 1;
+        $("#tb4 thead tr th").each(function () {
+            var wth = 0;
+            var hth = 0;
+
+            if (wth > 0)
+                $(this).css("width", wth);
+            if (hth > 0)
+                $(this).css("height", hth);
+            i = i + 1;
+        });
+
+        //table 5
+        var w2 = 0;
+        var h2 = 0;
+
+        if (w2 > 0)
+            $("#divtb5").css("width", w2);
+        if (h2 > 0)
+            $("#divtb5").css("height", h2);
+
+        var i2 = 1;
+        $("#tb5 thead tr th").each(function () {
+            var wth2 = 0;
+            var hth2 = 0;
+
+            if (wth2 > 0)
+                $(this).css("width", wth2);
+            if (hth2 > 0)
+                $(this).css("height", hth2);
+            i2 = i2 + 1;
+        });
+
+    }
+
+</script>
+
+<button id="btnSaveTable" onclick="javascript:SaveTable()" type="button" style="display: none;
+        background-color: #1c6dff;
+        color: #fff;
+        font-size: 18px;
+        line-height: 50px;
+        height: 65px;
+        width: 150px;
+        position: fixed;
+        top: 0;
+        right: 160px">
+    LƯU BẢNG
+</button>
+<button id="btnPrint" onclick="javascript:RunPrint()" type="button" style="display:none; background-color:#1c6dff; color:#fff; font-size:18px; line-height:50px; height:65px; width:150px; position:fixed; top:0; right:0">
+    IN MẪU NÀY
+</button>
+
+<script src="/Scripts/phieucongtac.js?v=@(DateTime.Now.ToString("yyyyMMddHHmmssfff"))"></script>

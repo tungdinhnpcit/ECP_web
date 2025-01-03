@@ -11,6 +11,7 @@ using ECP_V2.WebApplication.Models;
 using ECP_V2.WebApplication.Util;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin;
 using Microsoft.Owin.Security.Twitter.Messages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,6 +49,7 @@ using static ECP_V2.WebApplication.Models.ImageModel;
 using static NPOI.HSSF.Util.HSSFColor;
 using static System.Net.WebRequestMethods;
 using Message = ECP_V2.DataAccess.Message;
+
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -92,6 +94,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         string path = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString() + "jxlsToFile";
         //Lấy file template từ database
         //[AreaAuthorization]
+
+
 
         private void DisposeAll()
         {
@@ -562,8 +566,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #region XuatExcelBCKHLLV
         [HttpGet]
         public ActionResult XuatExcelBCKHLLV(int tcphien, int catdien, int tiepdia,
-            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky, Boolean? isShowBtnHoanHuy,
-            string LoaiBieuDo = "DS")
+            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky)
         {
 
             int Count = 0;
@@ -661,6 +664,42 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             return null;
         }
+
+
+        [HttpGet]
+        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId)
+        {
+            try
+            {
+               
+                string format = "dd/MM/yyyy";
+                var donVi = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId);
+                if(donVi == null)
+                {
+                    return null;
+                }
+                ViewBag.DonVi = donVi;
+                ViewBag.DonViId = DonViId;
+                ViewBag.DonViCha = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == donVi.DviCha);
+                ViewBag.TuNgay = DateTime.ParseExact(DateFrom, format, CultureInfo.InvariantCulture);
+                ViewBag.DenNgay = DateTime.ParseExact(DateTo, format, CultureInfo.InvariantCulture);
+
+                List<tblNhanVien> nhanVien = _kh_ser.List();
+                if (nhanVien != null && nhanVien.Count > 0)
+                {
+                    ViewBag.nhanVien = nhanVien;
+                }
+                DisposeAll();
+                return View("ViewBienBanQDKTKS");
+
+            }
+            catch (Exception)
+            {
+                DisposeAll();
+                throw;
+            }
+        }
+
         #endregion
         #region EditPhienLv
         [HttpPost]
@@ -8135,7 +8174,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                                 rowTerminal = sheet.CreateRow(rowIndex);
 
-                                rowTerminal.CreateCell(0).SetCellValue($"{i}\n{item.SoPhieu??""}");
+                                rowTerminal.CreateCell(0).SetCellValue($"{i}\n{item.SoPhieu ?? ""}");
                                 rowTerminal.Cells[0].CellStyle = stylerow;
 
                                 rowTerminal.CreateCell(1).SetCellValue(item.NoiDung);
@@ -8199,7 +8238,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     rowTerminal.Cells[13].CellStyle = stylerow;
                                 }
-                                
+
 
                                 rowIndex++;
                             }
@@ -16657,6 +16696,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
 
+
+       
         public string NextID(string lastID, string prefixID, int MaLP, string TramId)
         {
             if (lastID == "")
