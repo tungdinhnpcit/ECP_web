@@ -290,7 +290,7 @@
                                 </a>
                             </div>*@
                         <div class="col-md-2">
-                            <a href="#modalAnimDeleteMultiple123123" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="123">
+                            <a href="#" class="mb-xs mt-xs mr-xs btn btn-primary" onclick="xuatExcel()" style="cursor:pointer;padding: 3px 9px;" id="xuatexcel123">
                                 <i class="fa fa-file-excel-o"></i> &nbsp; Xuất excel
                             </a>
                         </div>
@@ -594,6 +594,32 @@
 
         }
 
+        function xuatExcel() {
+
+          console.log('abc',$('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+            XuatExcelFunction( $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val())
+        }
+
+        ////Xuất báo cáo tuần theo mẫu công ty
+        //$('#export_tuan_cty').bind('click', function () {
+        //    $.UnifiedExportFile(
+        //        {
+        //            action: "/Admin/PhienLV/Export_Cty",
+        //            data: {
+        //                filter: '',
+        //                tcphien: $('#cmbTCPhien').val() || 0,
+        //                trangThai: $('#cmbTTPhien').val() || 0,
+        //                DateFrom: $('#GioBd').val(),
+        //                DateTo: $('#GioKt').val(),
+        //                DonViId: $('#cmbDonViID').val() || '',
+        //                PhongBanId: $('#cmbPhongBan').val() || 0,
+        //                isExportExcel: true
+        //            },
+        //            downloadType: 'Progress',
+        //            ajaxLoadingSelector: '#loading'
+        //        });
+        //});
+
         function ttphiencatdien_change(el) {
 
             Paging(1, 500, $('#txtSearch').val(), $('#cmbTCPhien').val(), el.value, $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
@@ -666,6 +692,54 @@
                 }
             });
         }
+
+
+        function XuatExcelFunction( tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, chuyenNPC, phieuky) {
+         loading('Đang xuất file...', 1);
+
+         var ttPhien = 0;
+         var cbTTPhienSelect = $('#cmbTTPhien').val();
+         var userRoleDuyet = '@(Request.IsAuthenticated && User.IsInRole("DuyetViec")) ? "true" : "false")';
+         if (userRoleDuyet && cbTTPhienSelect != "") {
+             ttPhien = cbTTPhienSelect;
+         }
+         else {
+
+             ttPhien = 0;
+         }
+
+            console.log('DonViId', DonViId)
+
+         if (typeof (ttPhien) === 'undefined') {
+             ttPhien = 0;
+         }
+
+            var scriptUrl = "/Admin/PhienLV/XuatExcelBCKHLLV";
+
+                $.UnifiedExportFile(
+                    {
+                        action: scriptUrl,
+                        data: {
+                            tcphien: tcphien,
+                            catdien: catdien,
+                            tiepdia: tiepdia,
+                            khac: khac,
+                            DateFrom: DateFrom,
+                            DateTo: DateTo,
+                            DonViId: DonViId,
+                            PhongBanId: PhongBanId,
+                            ttPhien: ttPhien,
+                            chuyenNPC: chuyenNPC,
+                            phieuky: phieuky,
+                            isShowBtnHoanHuy: true,
+                            LoaiBieuDo: $('#drlLoaiBieuDo').val()
+                        },
+                        downloadType: 'Progress',
+                        ajaxLoadingSelector: '#loading'
+                    });
+
+
+        };
 
 
         function pagelength_change(el) {

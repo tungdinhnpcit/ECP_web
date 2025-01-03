@@ -300,46 +300,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
             catch { }
 
-            //if (DonViId == "0")
-            //    DonViId = "";
-
-            ////if (User.IsInRole("DuyetViec"))
-            ////    Duyet = "Chưa Duyệt";
-            ////else
-            ////    Duyet = "Đã Duyệt";
-
-            //if (!String.IsNullOrEmpty(ttPhien))
-            //{
-            //    Duyet = ttPhien;
-            //}
-            //else
-            //{
-            //    Duyet = "all";
-            //}
 
             if (ttPhien > 0)
             {
                 Duyet = ttPhien;
             }
 
-            //if (donviId == null)
-            //{
-            //    model = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, DateFrom, DateTo, DonViId, PhongBanId, "Đã Duyệt").ToList();
-            //    Count = _plviec_ser.CountTotalPhienLV(filter, tcphien, DateFrom, DateTo, DonViId, PhongBanId, "Đã Duyệt");
-            //}
-            //else
-            //{
-            //    if (string.IsNullOrEmpty(DonViId))
-            //    {
-            //        model = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, DateFrom, DateTo, donviId.ToString(), PhongBanId, Duyet).ToList();
-            //        Count = _plviec_ser.CountTotalPhienLV(filter, tcphien, DateFrom, DateTo, donviId.ToString(), PhongBanId, Duyet);
-            //    }
-            //    else
-            //    {
-            //        model = _plviec_ser.AdvancedSearchPhienLv(page1, pagelength1, filter, tcphien, DateFrom, DateTo, DonViId, PhongBanId, Duyet).ToList();
-            //        Count = _plviec_ser.CountTotalPhienLV(filter, tcphien, DateFrom, DateTo, DonViId, PhongBanId, Duyet);
-            //    }
-            //}
+
             List<PhienLVModel> model;
             if (DonViId == null)
             {
@@ -473,11 +440,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 Session["DenNgay"] = "";
             }
 
-            //    ViewBag.PhienLVTong = model.Count;
-            //    ViewBag.PhienLVDaXong = model.Count(x => x.TrangThai == "Đã xong");
-            //    ViewBag.PhienLVDaDuyet = model.Count(x => x.TrangThai == "Đã Duyệt");
-            //    ViewBag.PhienLVChuaDuyet = model.Count(x => x.TrangThai != "Đã xong" && x.TrangThai != "Đã Duyệt");
-
             ViewBag.PhienLVTong = model.Count();
             ViewBag.PhienLVDaXong = model.Count(x => x.TrangThai == 3);
             ViewBag.PhienLVDaDuyet = model.Count(x => x.TrangThai == 2);
@@ -597,6 +559,109 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
         #endregion
 
+        #region XuatExcelBCKHLLV
+        [HttpGet]
+        public ActionResult XuatExcelBCKHLLV(int tcphien, int catdien, int tiepdia,
+            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky, Boolean? isShowBtnHoanHuy,
+            string LoaiBieuDo = "DS")
+        {
+
+            int Count = 0;
+            int Duyet = 0;
+            string donviId = null;
+            try
+            {
+                donviId = Session["DonViID"].ToString();
+            }
+            catch { }
+
+
+            if (ttPhien > 0)
+            {
+                Duyet = ttPhien;
+            }
+
+            List<PhienLVModel> model;
+            if (DonViId == null)
+            {
+                model = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                Count = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "");
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(DonViId))
+                {
+                    model = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                    Count = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "");
+                }
+                else
+                {
+                    var donVi = _dvi_ser.GetById(donviId);
+
+                    if (donVi != null)
+                    {
+                        if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")) && (User.IsInRole("Master") || User.IsInRole("Manager")))
+                        {
+                            if (Duyet == 0)
+                            {
+                                model = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaDuyet, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                                List<PhienLVModel> modelVuaTao = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.VuaTao, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                                List<PhienLVModel> modelDaXong = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaXong, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                                List<PhienLVModel> modelHuyBo = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.HuyBo, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+
+                                Count = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaDuyet, chuyenNPC ?? -1, phieuky ?? -1, "");
+                                int CountDaXong = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.DaXong, chuyenNPC ?? -1, phieuky ?? -1, "");
+                                int CountHuyBo = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.HuyBo, chuyenNPC ?? -1, phieuky ?? -1, "");
+                                int CountVuaTao = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, (int)TrangThaiPhienLV.VuaTao, chuyenNPC ?? -1, phieuky ?? -1, "");
+
+                                Count += (CountDaXong + CountHuyBo + CountVuaTao);
+                                model.AddRange(modelVuaTao);
+                                model.AddRange(modelDaXong);
+                                model.AddRange(modelHuyBo);
+                            }
+                            else if (Duyet == (int)TrangThaiPhienLV.DaXong || Duyet == (int)TrangThaiPhienLV.DaDuyet || Duyet == (int)TrangThaiPhienLV.HuyBo || Duyet == (int)TrangThaiPhienLV.VuaTao)
+                            {
+                                model = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                                Count = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "");
+                            }
+                            else
+                            {
+                                model = new List<PhienLVModel>();
+                                Count = 0;
+                            }
+                        }
+                        else
+                        {
+                            if (User.IsInRole("Leader"))
+                            {
+                                string phongBanID = Session["PhongBanId"].ToString();
+
+                                model = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, phongBanID, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "leader").ToList();
+                                Count = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, phongBanID, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "leader");
+                            }
+                            else
+                            {
+                                model = _plviec_ser.AdvancedSearchPhienLvAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "").ToList();
+                                Count = _plviec_ser.CountTotalPhienLVAll(tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, Duyet, chuyenNPC ?? -1, phieuky ?? -1, "");
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        model = new List<PhienLVModel>();
+                        Count = 0;
+                    }
+                }
+            }
+
+
+            ExportExcelKeHoachLichLamViec(model, tcphien, DateFrom, DateTo);
+
+
+            return null;
+        }
+        #endregion
         #region EditPhienLv
         [HttpPost]
         public async Task<ActionResult> EditPhienLv(string Id, string PhongBanID, int TT_Phien, string NoiDung, string DiaDiem, string NgayLamViec, string GioBd, string GioKt, string NgayKt, string NguoiDuyet_SoPa, string NguoiChiHuy, string GiamSatVien, string NguoiKiemSoat, string NguoiKiemTraPhieu, string LanhDaoTrucBan, string LyDoThayDoi, string NguoiDuyet_SoPa_Id, string NguoiChiHuy_Id, string GiamSatVien_Id, string NguoiKiemSoat_Id, string NguoiKiemTraPhieu_Id, string LanhDaoTrucBan_Id,
@@ -7458,6 +7523,781 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #endregion
 
         #region ExportToExcel Báo cáo theo mẫu Cty
+
+        private void ExportExcelKeHoachLichLamViec(IEnumerable<PhienLVModel> list, int tcphien, string DateFrom, string DateTo)
+        {
+            try
+            {
+                string donviId = Session["DonViID"].ToString();
+                var donVi = _dvi_ser.GetById(donviId);
+                var donViCha = _dvi_ser.List().Where(x => x.Id == donVi.DviCha).FirstOrDefault();
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet sheet = workbook.CreateSheet("Report");
+
+                // Thay đổi kích thước từng cột
+                sheet.SetColumnWidth(0, 1500);
+                sheet.SetColumnWidth(1, 6000);
+                sheet.SetColumnWidth(2, 3500);
+                sheet.SetColumnWidth(3, 5000);
+                sheet.SetColumnWidth(4, 3000);
+                sheet.SetColumnWidth(5, 3000);
+                sheet.SetColumnWidth(6, 4500);
+                sheet.SetColumnWidth(7, 4500);
+                sheet.SetColumnWidth(8, 4500);
+                sheet.SetColumnWidth(9, 4500);
+                sheet.SetColumnWidth(10, 4500);
+                sheet.SetColumnWidth(11, 3000);
+                sheet.SetColumnWidth(12, 3000);
+                sheet.SetColumnWidth(13, 3000);
+
+
+
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A1:K1"));
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A2:K2"));
+
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A4:D4"));
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A5:D5"));
+
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("E4:J4"));
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("E5:J5"));
+
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("H6:K6"));
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A7:M7"));
+                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A8:E8"));
+
+
+
+                IPrintSetup ps = sheet.PrintSetup;
+                ps.Landscape = true;
+                ps.PaperSize = (short)PaperSize.A4_Small;
+                sheet.FitToPage = true;
+                sheet.PrintSetup.FitWidth = 1;
+
+                var rowIndex = 0;
+                #region Report
+
+                ICellStyle styleHeader1 = workbook.CreateCellStyle();
+                IFont font1 = workbook.CreateFont();
+                font1.FontName = "Times New Roman";
+                font1.Boldweight = (short)FontBoldWeight.Bold;
+                font1.FontHeightInPoints = 13;
+                styleHeader1.SetFont(font1);
+                styleHeader1.VerticalAlignment = VerticalAlignment.Top;
+                styleHeader1.Alignment = HorizontalAlignment.Center;
+                styleHeader1.WrapText = true;
+
+                ICellStyle styleHeader2 = workbook.CreateCellStyle();
+                IFont font3 = workbook.CreateFont();
+                font3.FontName = "Times New Roman";
+                font3.FontHeightInPoints = 13;
+                font3.Boldweight = 700;
+                styleHeader2.SetFont(font3);
+                styleHeader2.VerticalAlignment = VerticalAlignment.Top;
+                styleHeader2.Alignment = HorizontalAlignment.Center;
+                styleHeader2.WrapText = true;
+
+
+                ICellStyle styleHeader3 = workbook.CreateCellStyle();
+                IFont font4 = workbook.CreateFont();
+                font4.FontName = "Times New Roman";
+                font4.FontHeightInPoints = 13;
+                font4.Boldweight = 700;
+                styleHeader3.SetFont(font4);
+                styleHeader3.VerticalAlignment = VerticalAlignment.Top;
+                styleHeader3.Alignment = HorizontalAlignment.Center;
+                styleHeader3.WrapText = true;
+
+
+                ICellStyle styleHeaderThuocTinh = workbook.CreateCellStyle();
+                IFont fontThuocTinh = workbook.CreateFont();
+                fontThuocTinh.FontName = "Times New Roman";
+                fontThuocTinh.Boldweight = (short)FontBoldWeight.Normal;
+                fontThuocTinh.FontHeightInPoints = 10;
+                styleHeaderThuocTinh.SetFont(fontThuocTinh);
+                styleHeaderThuocTinh.VerticalAlignment = VerticalAlignment.Top;
+                styleHeaderThuocTinh.Alignment = HorizontalAlignment.Left;
+                styleHeaderThuocTinh.WrapText = true;
+                styleHeaderThuocTinh.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeaderThuocTinh.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeaderThuocTinh.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeaderThuocTinh.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+
+                IRow rowTerminal = sheet.CreateRow(0);
+
+                rowTerminal.CreateCell(0).SetCellValue("PHỤ LỤC");
+                rowTerminal.Cells[0].Row.Height = 350;
+                rowTerminal.Cells[0].CellStyle = styleHeader1;
+
+
+
+                rowTerminal = sheet.CreateRow(1);
+                rowTerminal.CreateCell(0).SetCellValue("(Phụ lục 06 - ĐKKH - QĐKTKS - Về các biểu mẫu theo quy định)");
+                rowTerminal.Cells[0].Row.Height = 350;
+                rowTerminal.Cells[0].CellStyle = styleHeader1;
+
+
+
+
+
+                rowTerminal = sheet.CreateRow(3);
+
+
+                rowTerminal.CreateCell(0).SetCellValue("TỔNG CÔNG TY ĐIỆN LỰC MIỀN BẮC");
+                rowTerminal.Cells[0].CellStyle = styleHeader1;
+                rowTerminal.CreateCell(4).SetCellValue("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM");
+                rowTerminal.Cells[1].CellStyle = styleHeader1;
+
+
+                rowTerminal = sheet.CreateRow(4);
+
+                string tenDvi = _dvi_ser.GetById(donviId).TenDonVi;
+
+                rowTerminal.CreateCell(0).SetCellValue(tenDvi);
+                rowTerminal.Cells[0].CellStyle = styleHeader1;
+
+                rowTerminal.CreateCell(4).SetCellValue("Độc lập - Tự do - Hạnh phúc");
+                rowTerminal.Cells[1].CellStyle = styleHeader1;
+
+
+                rowTerminal = sheet.CreateRow(5);
+
+
+                rowTerminal.CreateCell(7).SetCellValue(".........., ngày " + DateTime.Now.Day + " tháng " + DateTime.Now.Month + " năm " + DateTime.Now.Year + "   ");
+                rowTerminal.Cells[0].CellStyle = styleHeaderThuocTinh;
+                //rowTerminal.Cells[7].CellStyle = styleHeader3;
+
+                rowTerminal = sheet.CreateRow(6);
+                rowTerminal.CreateCell(0).SetCellValue("ĐĂNG KÝ KẾ HOẠCH LỊCH LÀM VIỆC TRÊN LƯỚI ĐIỆN - KIỂM TRA HIỆN TRƯỜNG LÀM VIỆC ");
+                rowTerminal.Cells[0].Row.Height = 350;
+                rowTerminal.Cells[0].CellStyle = styleHeader1;
+
+
+                //Ngày tháng
+                ICellStyle styleHeader4 = workbook.CreateCellStyle();
+                IFont font5 = workbook.CreateFont();
+                font5.Boldweight = (short)FontBoldWeight.Bold;
+                font5.FontName = "Times New Roman";
+                font5.FontHeightInPoints = 13;
+                font5.IsItalic = true;
+                styleHeader4.SetFont(font5);
+                styleHeader4.VerticalAlignment = VerticalAlignment.Top;
+                styleHeader4.Alignment = HorizontalAlignment.Center;
+                styleHeader4.WrapText = true;
+
+
+                rowTerminal = sheet.CreateRow(7);
+                rowTerminal.CreateCell(0).SetCellValue("Từ ngày " + DateFrom + " đến ngày " + DateTo);
+                rowTerminal.Cells[0].Row.Height = 350;
+                rowTerminal.Cells[0].CellStyle = styleHeader4;
+
+
+
+
+
+
+                rowTerminal = sheet.CreateRow(9);
+
+
+                ICellStyle styleHeader = workbook.CreateCellStyle();
+                IFont font = workbook.CreateFont();
+                font.FontName = "Times New Roman";
+                font.Boldweight = (short)FontBoldWeight.Bold;
+                font.FontHeightInPoints = 11;
+                styleHeader.SetFont(font);
+                styleHeader.VerticalAlignment = VerticalAlignment.Top;
+                styleHeader.Alignment = HorizontalAlignment.Center;
+                styleHeader.WrapText = true;
+                styleHeader.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeader.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeader.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeader.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+
+
+                rowTerminal.CreateCell(0).SetCellValue("Công việc");
+                rowTerminal.Cells[0].Row.Height = 2000;
+                rowTerminal.Cells[0].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(1).SetCellValue("Nội dung công việc");
+                rowTerminal.Cells[1].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(2).SetCellValue("Đơn vị làm công việc");
+                rowTerminal.Cells[2].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(3).SetCellValue("Địa điểm (vị trí) công tác");
+                rowTerminal.Cells[3].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(4).SetCellValue("Ngày thực hiện");
+                rowTerminal.Cells[4].CellStyle = styleHeader;
+
+
+                rowTerminal.CreateCell(5).SetCellValue("Thời gian công tác");
+                rowTerminal.Cells[5].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(6).SetCellValue("Công việc có PA, KH, ĐX (ghi  duyệt)");
+                rowTerminal.Cells[6].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(7).SetCellValue("Người chỉ huy trực tiếp (số điện thoại DĐ + Video call)");
+                rowTerminal.Cells[7].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(8).SetCellValue("Người cho phép - SĐT");
+                rowTerminal.Cells[8].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(9).SetCellValue("Giám sát an toàn điện (nếu có) chức danh - số điện thoại DĐ");
+                rowTerminal.Cells[9].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(10).SetCellValue("Lãnh đạo được phân công kiểm soát (ghi số điện thoại DĐ + Video call)");
+                rowTerminal.Cells[10].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(11).SetCellValue("Hình thức kiểm tra hiện trường");
+                rowTerminal.Cells[11].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(12).SetCellValue("Đại diện Đoàn KT hiện trường (Họ tên, chức danh, đơn vị, số ĐT");
+                rowTerminal.Cells[12].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(13).SetCellValue("Hoãn hủy (cập nhật lý do)");
+                rowTerminal.Cells[13].CellStyle = styleHeader;
+
+
+
+                rowIndex = 10;
+                rowTerminal = sheet.CreateRow(rowIndex);
+
+
+                ICellStyle styleHeader0 = workbook.CreateCellStyle();
+                IFont font0 = workbook.CreateFont();
+                font0.FontName = "Times New Roman";
+                font0.Boldweight = (short)FontBoldWeight.Normal;
+                font0.FontHeightInPoints = 9;
+                styleHeader0.SetFont(font0);
+                styleHeader0.VerticalAlignment = VerticalAlignment.Top;
+                styleHeader0.Alignment = HorizontalAlignment.Center;
+                styleHeader0.WrapText = true;
+                styleHeader0.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeader0.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeader0.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleHeader0.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                rowTerminal.CreateCell(0).SetCellValue(1);
+                rowTerminal.Cells[0].Row.Height = 400;
+                rowTerminal.Cells[0].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(1).SetCellValue(2);
+                rowTerminal.Cells[1].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(2).SetCellValue(3);
+                rowTerminal.Cells[2].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(3).SetCellValue(4);
+                rowTerminal.Cells[3].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(4).SetCellValue(5);
+                rowTerminal.Cells[4].CellStyle = styleHeader0;
+
+
+                rowTerminal.CreateCell(5).SetCellValue(6);
+                rowTerminal.Cells[5].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(6).SetCellValue(7);
+                rowTerminal.Cells[6].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(7).SetCellValue(8);
+                rowTerminal.Cells[7].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(8).SetCellValue(9);
+                rowTerminal.Cells[8].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(9).SetCellValue(10);
+                rowTerminal.Cells[9].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(10).SetCellValue(11);
+                rowTerminal.Cells[10].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(11).SetCellValue(12);
+                rowTerminal.Cells[11].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(12).SetCellValue(13);
+                rowTerminal.Cells[12].CellStyle = styleHeader0;
+
+                rowTerminal.CreateCell(13).SetCellValue(14);
+                rowTerminal.Cells[13].CellStyle = styleHeader0;
+
+
+
+                rowIndex++;
+
+                int i = 0, j = 0, h = 0;
+
+                ICellStyle stylerow = workbook.CreateCellStyle();
+                IFont fontr = workbook.CreateFont();
+                fontr.FontName = "Times New Roman";
+                fontr.FontHeightInPoints = 11;
+
+                stylerow.SetFont(fontr);
+                stylerow.VerticalAlignment = VerticalAlignment.Top;
+                stylerow.Alignment = HorizontalAlignment.Center;
+                stylerow.WrapText = true;
+                stylerow.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                stylerow.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                stylerow.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                stylerow.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                ICellStyle styleFoote4 = workbook.CreateCellStyle();
+                IFont fontF4 = workbook.CreateFont();
+                fontF4.FontName = "Times New Roman";
+                fontF4.Boldweight = (short)FontBoldWeight.Bold;
+                fontF4.FontHeightInPoints = 12;
+                styleFoote4.SetFont(fontF4);
+                styleFoote4.VerticalAlignment = VerticalAlignment.Top;
+                styleFoote4.Alignment = HorizontalAlignment.Left;
+                styleFoote4.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFoote4.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFoote4.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFoote4.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                //styleFoote4.BorderDiagonalLineStyle = BorderStyle.Thin;
+                styleFoote4.WrapText = true;
+
+                ICellStyle styleTenDvi = workbook.CreateCellStyle();
+                IFont fontFTenDvi = workbook.CreateFont();
+                fontFTenDvi.FontName = "Times New Roman";
+                fontFTenDvi.Boldweight = (short)FontBoldWeight.Bold;
+                fontFTenDvi.FontHeightInPoints = 12;
+                styleTenDvi.SetFont(fontFTenDvi);
+                styleTenDvi.VerticalAlignment = VerticalAlignment.Top;
+                styleTenDvi.Alignment = HorizontalAlignment.Left;
+                styleTenDvi.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleTenDvi.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleTenDvi.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleTenDvi.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                //styleTenDvi.BorderDiagonalLineStyle = BorderStyle.Thin;
+                styleTenDvi.WrapText = true;
+                styleTenDvi.FillForegroundColor = IndexedColors.Yellow.Index;
+                styleTenDvi.FillPattern = FillPattern.SolidForeground;
+
+                //Footer
+                ICellStyle styleFooter1 = workbook.CreateCellStyle();
+                IFont fontF1 = workbook.CreateFont();
+                fontF1.FontName = "Times New Roman";
+                fontF1.Boldweight = (short)FontBoldWeight.Bold;
+                fontF1.FontHeightInPoints = 12;
+                styleFooter1.SetFont(fontF1);
+                styleFooter1.VerticalAlignment = VerticalAlignment.Top;
+                styleFooter1.Alignment = HorizontalAlignment.Center;
+                styleFooter1.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter1.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter1.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter1.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter1.WrapText = true;
+
+                ICellStyle styleFooter20 = workbook.CreateCellStyle();
+                IFont fontF20 = workbook.CreateFont();
+                fontF20.FontName = "Times New Roman";
+                fontF20.Boldweight = (short)FontBoldWeight.Normal;
+                fontF20.FontHeightInPoints = 12;
+                styleFooter20.SetFont(fontF20);
+                styleFooter20.VerticalAlignment = VerticalAlignment.Top;
+                styleFooter20.Alignment = HorizontalAlignment.Center;
+                styleFooter20.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter20.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter20.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter20.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                styleFooter20.WrapText = true;
+                styleFooter20.FillForegroundColor = IndexedColors.Yellow.Index;
+                styleFooter20.FillPattern = FillPattern.SolidForeground;
+
+
+
+                var lstDonVi = _dvi_ser.ListByParentId(" ");
+                foreach (var groupDay in list.GroupBy(x => x.TenDonVi).OrderBy(o => o.Key))
+                {
+                    h++;
+                    j = 0;
+                    //rowTerminal = sheet.CreateRow(rowIndex);
+                    ////rowTerminal.CreateCell(0).SetCellValue(PhienLVRepository.GetDayOfWeek(groupDay.Key));
+                    //rowTerminal.CreateCell(0).SetCellValue(groupDay.Key);
+                    //rowTerminal.Cells[0].Row.Height = 350;
+                    //rowTerminal.Cells[0].CellStyle = styleFoote4;
+
+                    //rowTerminal.CreateCell(1).SetCellValue("");
+                    //rowTerminal.Cells[1].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(2).SetCellValue("");
+                    //rowTerminal.Cells[2].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(3).SetCellValue("");
+                    //rowTerminal.Cells[3].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(4).SetCellValue("");
+                    //rowTerminal.Cells[4].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(5).SetCellValue("");
+                    //rowTerminal.Cells[5].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(6).SetCellValue("");
+                    //rowTerminal.Cells[6].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(7).SetCellValue("");
+                    //rowTerminal.Cells[7].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(8).SetCellValue("");
+                    //rowTerminal.Cells[8].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(9).SetCellValue("");
+                    //rowTerminal.Cells[9].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(10).SetCellValue("");
+                    //rowTerminal.Cells[10].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(11).SetCellValue("");
+                    //rowTerminal.Cells[11].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(12).SetCellValue("");
+                    //rowTerminal.Cells[12].CellStyle = styleFoote4;
+                    //rowTerminal.CreateCell(13).SetCellValue("");
+                    //rowTerminal.Cells[13].CellStyle = styleFoote4;
+
+                    //sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 13));
+
+
+
+                    //rowIndex++;
+
+                    // Add data rows
+
+                    //Lay toan bo danh sach phien lam viec
+                    // Add data rows
+                    var lstTempPLviec = groupDay.ToList();
+                    if (donviId == null)
+                    {
+                        foreach (var item in lstDonVi)
+                        {
+                            var listTenDvi = groupDay.Select(x => x.TenDonVi).ToList();
+                            if (!listTenDvi.Contains(item.TenDonVi))
+                            {
+                                lstTempPLviec.Add(new PhienLVModel
+                                {
+                                    Id = 0,
+                                    TenDonVi = item.TenDonVi,
+                                    DiaDiem = "",
+                                    TenPhongBan = "",
+                                    GiamSatVien = "",
+                                    LanhDaoTrucBan = "",
+                                    NgayDuyet = DateTime.Now,
+                                    GioBd = DateTime.Now,
+                                    GioKt = DateTime.Now,
+                                    PhongBanID = 0,
+                                    LyDoThayDoi = "",
+                                    NgayLamViec = DateTime.Now,
+                                    NgaySua = DateTime.Now,
+                                    NgayTao = DateTime.Now,
+                                    NoiDung = "",
+                                    ViTri = item.ViTri.Value,
+                                    SDT = item.SDT
+                                });
+                            }
+
+                        }
+                    }
+
+                    foreach (var group in lstTempPLviec.OrderBy(p => p.ViTri).GroupBy(x => x.TenDonVi))
+                    {
+                        var sdt = group.FirstOrDefault() != null ? group.FirstOrDefault().SDT : "";
+
+                        j++;
+                        rowTerminal = sheet.CreateRow(rowIndex);
+                        rowTerminal.CreateCell(0).SetCellValue(_plviec_ser.ConvertSoSangLaMa(j));
+                        rowTerminal.Cells[0].Row.Height = 350;
+                        if (!String.IsNullOrEmpty(sdt))
+                        {
+                            rowTerminal.CreateCell(1).SetCellValue(group.Key + ": " + sdt);
+                        }
+                        else
+                        {
+                            rowTerminal.CreateCell(1).SetCellValue(group.Key);
+                        }
+
+                        rowTerminal.Cells[0].CellStyle = styleFooter1;
+                        rowTerminal.Cells[1].CellStyle = styleTenDvi;
+
+                        rowTerminal.CreateCell(2).SetCellValue("");
+                        rowTerminal.Cells[2].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(3).SetCellValue("");
+                        rowTerminal.Cells[3].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(4).SetCellValue("");
+                        rowTerminal.Cells[4].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(5).SetCellValue("");
+                        rowTerminal.Cells[5].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(6).SetCellValue("");
+                        rowTerminal.Cells[6].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(7).SetCellValue("");
+                        rowTerminal.Cells[7].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(8).SetCellValue("");
+                        rowTerminal.Cells[8].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(9).SetCellValue("");
+                        rowTerminal.Cells[9].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(10).SetCellValue("");
+                        rowTerminal.Cells[10].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(11).SetCellValue("");
+                        rowTerminal.Cells[11].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(12).SetCellValue("");
+                        rowTerminal.Cells[12].CellStyle = styleFooter1;
+                        rowTerminal.CreateCell(13).SetCellValue("");
+                        rowTerminal.Cells[13].CellStyle = styleFooter1;
+
+                        sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 13));
+
+
+
+                        rowIndex++;
+                        int j1 = 0;
+                        foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TT_Phien))
+                        {
+                            j1++;
+                            rowTerminal = sheet.CreateRow(rowIndex);
+                            rowTerminal.CreateCell(0).SetCellValue(_plviec_ser.ConvertSoSangLaMa(j1));
+                            rowTerminal.Cells[0].Row.Height = 350;
+                            rowTerminal.Cells[0].CellStyle = styleFooter1;
+
+                            var tcp = ttPhien.FirstOrDefault() != null ? ttPhien.FirstOrDefault().TT_Phien : 0;
+
+                            rowTerminal.CreateCell(1).SetCellValue(tcp == 1 ? "Thay đổi bổ sung kiểm tra hiện trường" : tcp == 2 ? "Đăng ký KH kiểm tra hiện trường" : tcp == 3 ? "Kiểm tra đột xuất hiện trường" : "");
+                            rowTerminal.Cells[1].CellStyle = styleTenDvi;
+
+                            rowTerminal.CreateCell(2).SetCellValue("");
+                            rowTerminal.Cells[2].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(3).SetCellValue("");
+                            rowTerminal.Cells[3].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(4).SetCellValue("");
+                            rowTerminal.Cells[4].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(5).SetCellValue("");
+                            rowTerminal.Cells[5].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(6).SetCellValue("");
+                            rowTerminal.Cells[6].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(7).SetCellValue("");
+                            rowTerminal.Cells[7].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(8).SetCellValue("");
+                            rowTerminal.Cells[8].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(9).SetCellValue("");
+                            rowTerminal.Cells[9].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(10).SetCellValue("");
+                            rowTerminal.Cells[10].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(11).SetCellValue("");
+                            rowTerminal.Cells[11].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(12).SetCellValue("");
+                            rowTerminal.Cells[12].CellStyle = styleFooter1;
+                            rowTerminal.CreateCell(13).SetCellValue("");
+                            rowTerminal.Cells[13].CellStyle = styleFooter1;
+
+                            sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 13));
+
+
+                            rowIndex++;
+
+                            foreach (var item in ttPhien)
+                            {
+                                i++;
+
+                                var phieu = _pcongtac_ser.GetById(item.MaPCT);
+                                var thuocTinhList = phienLamViecThuocTinhPhienRepository.GetByPhienLamViecId(item.Id);
+
+                                plv_ThuocTinhPhien catDien = null;
+                                plv_ThuocTinhPhien tiepDia = null;
+                                plv_ThuocTinhPhien tinhChat = null;
+
+                                foreach (var thuocTinhItem in thuocTinhList)
+                                {
+                                    try
+                                    {
+                                        if (catDien == null)
+                                        {
+                                            catDien = thuocTinhPhienRepository.GetByLoaiThuocTinh(3).Where(x => x.Id == thuocTinhItem.ThuocTinhId).FirstOrDefault();
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        catDien = null;
+                                    }
+
+                                    try
+                                    {
+                                        if (tinhChat == null)
+                                        {
+                                            tinhChat = thuocTinhPhienRepository.GetByLoaiThuocTinh(5).Where(x => x.Id == thuocTinhItem.ThuocTinhId).FirstOrDefault();
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        tinhChat = null;
+                                    }
+
+                                    try
+                                    {
+                                        if (tiepDia == null)
+                                        {
+                                            tiepDia = thuocTinhPhienRepository.GetByLoaiThuocTinh(4).Where(x => x.Id == thuocTinhItem.ThuocTinhId).FirstOrDefault();
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        tiepDia = null;
+                                    }
+                                }
+
+                                rowTerminal = sheet.CreateRow(rowIndex);
+
+                                rowTerminal.CreateCell(0).SetCellValue($"{i}\n{item.SoPhieu??""}");
+                                rowTerminal.Cells[0].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(1).SetCellValue(item.NoiDung);
+                                rowTerminal.Cells[1].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(2).SetCellValue(item.TenPhongBan);
+                                rowTerminal.Cells[2].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(3).SetCellValue(item.DiaDiem);
+                                rowTerminal.Cells[3].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(4).SetCellValue(string.Format("{0:dd/MM/yyyy}", @item.NgayLamViec));
+                                rowTerminal.Cells[4].CellStyle = stylerow;
+
+                                if (item.GioBd.Date != item.GioKt.Date)
+                                {
+                                    rowTerminal.CreateCell(5).SetCellValue(String.Format("{0:dd/MM/yyyy HH\\:mm}", item.GioBd) + "-" + String.Format("{0:dd/MM/yyyy HH\\:mm}", item.GioKt));
+                                    rowTerminal.Cells[5].CellStyle = stylerow;
+                                }
+                                else
+                                {
+                                    rowTerminal.CreateCell(5).SetCellValue(String.Format("{0:HH\\:mm}", item.GioBd) + "-" + String.Format("{0:HH\\:mm}", item.GioKt));
+                                    rowTerminal.Cells[5].CellStyle = stylerow;
+                                }
+
+
+
+                                rowTerminal.CreateCell(6).SetCellValue(item.NguoiDuyet_SoPa);
+                                rowTerminal.Cells[6].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(7).SetCellValue(item.NguoiChiHuy);
+                                rowTerminal.Cells[7].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(8).SetCellValue(item.NguoiKiemSoat);
+                                rowTerminal.Cells[8].CellStyle = stylerow;
+
+
+                                rowTerminal.CreateCell(9).SetCellValue(item.GiamSatVien);
+                                rowTerminal.Cells[9].CellStyle = stylerow;
+
+
+                                //rowTerminal.CreateCell(9).SetCellValue(item.NguoiKiemTraPhieu);
+                                //rowTerminal.Cells[9].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(10).SetCellValue(item.LanhDaoTrucBan);
+                                rowTerminal.Cells[10].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(11).SetCellValue(item.HinhThucKiemTra == 1 ? "Kiểm tra đầu giờ" : item.HinhThucKiemTra == 2 ? "Kiểm tra giữa giờ" : " ");
+                                rowTerminal.Cells[11].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(12).SetCellValue(item.NguoiDaiDienKT ?? "");
+                                rowTerminal.Cells[12].CellStyle = stylerow;
+
+
+                                rowTerminal.CreateCell(13).SetCellValue(item.LyDoHoanHuy_KHLLV ?? "");
+                                if (item.TrangThai_KHLLV == 0)
+                                {
+                                    rowTerminal.Cells[13].CellStyle = styleFooter20;
+                                }
+                                else
+                                {
+                                    rowTerminal.Cells[13].CellStyle = stylerow;
+                                }
+                                
+
+                                rowIndex++;
+                            }
+
+
+
+                        }
+                    }
+                }
+
+
+
+                ICellStyle styleFooter2 = workbook.CreateCellStyle();
+                IFont fontF2 = workbook.CreateFont();
+                fontF2.FontName = "Times New Roman";
+                fontF2.Boldweight = (short)FontBoldWeight.Bold;
+                fontF2.IsItalic = true;
+                fontF2.FontHeightInPoints = 12;
+                styleFooter2.SetFont(fontF2);
+                styleFooter2.VerticalAlignment = VerticalAlignment.Top;
+                styleFooter2.Alignment = HorizontalAlignment.Left;
+                styleFooter2.WrapText = true;
+
+                ICellStyle styleFooter3 = workbook.CreateCellStyle();
+                IFont fontF3 = workbook.CreateFont();
+                fontF3.FontName = "Times New Roman";
+                fontF3.FontHeightInPoints = 12;
+                styleFooter3.SetFont(fontF3);
+                styleFooter3.VerticalAlignment = VerticalAlignment.Top;
+                styleFooter3.Alignment = HorizontalAlignment.Left;
+                styleFooter3.WrapText = true;
+
+                //Footer
+                ICellStyle styleFooter5 = workbook.CreateCellStyle();
+                IFont fontF5 = workbook.CreateFont();
+                fontF5.FontName = "Times New Roman";
+                fontF5.Boldweight = (short)FontBoldWeight.Bold;
+                fontF5.FontHeightInPoints = 12;
+                styleFooter5.SetFont(fontF5);
+                styleFooter5.VerticalAlignment = VerticalAlignment.Top;
+                styleFooter5.Alignment = HorizontalAlignment.Center;
+                styleFooter5.WrapText = true;
+
+                rowIndex++;
+                rowTerminal = sheet.CreateRow(rowIndex);
+                sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 2));
+                rowTerminal.CreateCell(0).SetCellValue("Người tổng hợp");
+                rowTerminal.Cells[0].Row.Height = 350;
+                rowTerminal.Cells[0].CellStyle = styleFooter5;
+
+                rowTerminal.CreateCell(4).SetCellValue("TP.An Toàn");
+                sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 6));
+                rowTerminal.Cells[1].CellStyle = styleFooter5;
+
+
+
+                rowTerminal.CreateCell(8).SetCellValue("PHÓ GIÁM ĐÔC");
+                sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 8, 9));
+                rowTerminal.Cells[2].CellStyle = styleFooter5;
+
+
+                #endregion
+
+
+                #region export
+                // Save the Excel spreadsheet to a MemoryStream and return it to the client
+                using (var exportData = new MemoryStream())
+                {
+                    Response.Clear();
+                    workbook.Write(exportData);
+                    string strFileName = "";
+                    if (donviId == null)
+                    {
+                        strFileName = string.Format("Ctybc-LLV.Tuan_{0}.xlsx", DateTime.Now).Replace("/", "-");
+                    }
+                    else
+                    {
+                        strFileName = string.Format("Dvibc-LLV.Tuan_{0}.xlsx", DateTime.Now).Replace("/", "-");
+                    }
+                    string saveAsFileName = strFileName;
+
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("Content-Disposition", string.Format("attachment;filename={0}", saveAsFileName));
+                    //Response.BinaryWrite(exportData.GetBuffer());
+                    Response.BinaryWrite(exportData.ToArray());
+                    Response.End();
+                }
+
+                this.SetNotification("Xuất dữ liệu thành công!", NotificationEnumeration.Success, true);
+                #endregion
+
+            }
+            catch (Exception ex)
+            {
+                this.SetNotification("Không xuất được dữ liệu: " + ex.Message, NotificationEnumeration.Error, true);
+            }
+        }
+
         private void ExportExcelFromList_Cty(IEnumerable<PhienLVModel> list, int tcphien, string DateFrom, string DateTo)
         {
             try
