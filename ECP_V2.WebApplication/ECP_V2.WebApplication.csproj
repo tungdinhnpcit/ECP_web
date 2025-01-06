@@ -4278,6 +4278,7 @@
     <Content Include="Scripts\lenhcongtac.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pdfobject.min.js" />
+    <Content Include="Scripts\ViewBienBanQDKTKS.js" />
     <Content Include="Scripts\phieucongtac.js" />
     <Content Include="Scripts\PlaySound\ting_ting.mp3" />
     <Content Include="Scripts\QLTA\ifrqlta.js" />
