@@ -40,6 +40,15 @@ function SetSelectionPosition(forParent) {
     }, 300);
 }
 
+$(document).on("change", ".txtchutrigiaoban .multiselect-add", function () {
+
+    var selectedOption = $(this).find(':selected');
+    var chucVu = selectedOption.data('chucvu');
+    $('#txtChucVuChuTri').val(chucVu);
+
+});
+
+
 $(document).on("chosen", ".multiselect-add", function () {
     //console.log("chosen");
     //console.log($(this));
@@ -184,17 +193,14 @@ $(document).on("change", ".multiselect-add", function () {
 
 });
 
-$(document).on("focus", ".LanhDaoCongViec_SelectEmp", function () {
+
+$(document).on("focus", ".NguoiChuTri_SelectEmp1", function () {
     sourceIdName = $(this).attr("datasourceidname");
     currentInputRuning = $(this);
     SetSelectionPosition($(this).parent());
 });
 
-$(document).on("focus", ".LanhDaoCongViec_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
+
 
 $(document).on("focus", ".loaiBienBan_SelectEmp", function () {
     sourceIdName = $(this).attr("datasourceidname");
@@ -202,11 +208,6 @@ $(document).on("focus", ".loaiBienBan_SelectEmp", function () {
     SetSelectionPosition($(this).parent());
 });
 
-$(document).on("focus", ".NguoiChiHuy_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
 
 $(document).on("focus", ".loaithoigianbc_SelectEmp", function () {
     sourceIdName = $(this).attr("datasourceidname");
@@ -214,110 +215,11 @@ $(document).on("focus", ".loaithoigianbc_SelectEmp", function () {
     SetSelectionPosition($(this).parent());
 });
 
-$(document).on("focus", ".ChiHuyTrucTiep_BAT_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
 
-$(document).on("focus", ".PhongBan_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
 
-$(document).on("focus", ".LoaiCongViec_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
 
-$(document).on("focus", ".SoLuongNguoi_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
 
-$(document).on("focus", ".GiamSatAnToan_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
 
-$(document).on("focus", ".GiamSatAnToan_BAT_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".NguoiDuyet_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".NguoiDuyet_BAT_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".NguoiCapPhieu_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".SoPhieuThang_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".SoPhieuNam_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".NhanVienDonViCongTac_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".NhanVienDonViCongTac_BAT_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-$(document).on("focus", ".Tram_SelectEmp", function () {
-    sourceIdName = $(this).attr("datasourceidname");
-    currentInputRuning = $(this);
-    SetSelectionPosition($(this).parent());
-});
-
-//$(document).on("focus", ".DieuKienAnToan_SelectEmp", function () {
-//    sourceIdName = $(this).attr("datasourceidname");
-//    currentInputRuning = $(this);
-//    SetSelectionPosition($(this).parent());
-//});
-
-//$(document).on("focus", ".DonViLienQuan_SelectEmp", function () {
-//    sourceIdName = $(this).attr("datasourceidname");
-//    currentInputRuning = $(this);
-//    SetSelectionPosition($(this).parent());
-//});
-
-function setPhongBan() {
-    //console.log($(".PhongBan_SelectEmp").val());
-    //$(".tentodoithuchien").text($(".PhongBan_SelectEmp").val());
-}
-
-$(document).ready(function () {
-    $(".tentodoithuchien").text($("#PhongBan_Id").val());
-});
 
 /* Add here all your JS customizations */
 function loading(name, overlay) {
@@ -548,158 +450,11 @@ function EditLengthTime(obj, min, max) {
     }
 }
 
-function AddRow1() {
-    $("#tb4").append($(".trtemp1").html());
-}
-
-function AddRowTiepDia() {
-    console.log($(".trtemp_tiepdia tbody").html());
-    $(".tbtiepdia tbody").append($(".trtemp_tiepdia tbody").html());
-    var indexOrder = 0;
-    $(".tiepdia_stt").each(function () {
-        indexOrder++;
-        $(this).val(indexOrder);
-    });
-}
-
-function SaveTiepDia() {
-    var phieucongtacid = $("#phieucongtacid").val();
-    var props = { "model": [], "pctId": phieucongtacid };
-    $(".trtiepdia").each(function () {
-        props.model.push({ "Id": "0", "MaPCT": $(this).attr("data-mapct"), "STT": $(this).find(".tiepdia_stt").val(), "Ten": $(this).find(".tiepdia_ten").val().trim(), "NoiDung": $(this).find(".tiepdia_noidung").val().trim() });
-    });
-    console.log(props.model);
-    $.ajax({
-        url: '/Admin/PhienLV/UpdateTiepDia',
-        type: 'POST', // add this
-        data: JSON.stringify(props),
-        contentType: "application/json; charset=utf-8",
-        success: function (dt) {
-            console.log(dt);
-        }
-    });
-}
-
-function RemoveTiepDia(obj) {
-    $(obj).parent().parent().remove();
-    var indexOrder = 0;
-    $(".tiepdia_stt").each(function () {
-        indexOrder++;
-        $(this).val(indexOrder);
-    });
-}
 
 
-function AddRowQLVH() {
-    console.log($(".trtemp_qlvh tbody").html());
-    $(".tbqlvh tbody").append($(".trtemp_qlvh tbody").html());
-    var indexOrder = 0;
-    $(".qlvh_stt").each(function () {
-        indexOrder++;
-        $(this).val(indexOrder);
-    });
-}
 
-function SaveQLVH() {
-    var phieucongtacid = $("#phieucongtacid").val();
-    var props = { "model": [], "pctId": phieucongtacid };
-    $(".trqlvh").each(function () {
-        props.model.push({ "Id": "0", "MaPCT": $(this).attr("data-mapct"), "STT": $(this).find(".qlvh_stt").val(), "Ten": $(this).find(".qlvh_ten").val().trim(), "NoiDung": $(this).find(".qlvh_noidung").val().trim() });
-    });
-    console.log(props.model);
-    $.ajax({
-        url: '/Admin/PhienLV/UpdateQLVH',
-        type: 'POST', // add this
-        data: JSON.stringify(props),
-        contentType: "application/json; charset=utf-8",
-        success: function (dt) {
-            console.log(dt);
-        }
-    });
-}
 
-function RemoveQLVH(obj) {
-    $(obj).parent().parent().remove();
-    var indexOrder = 0;
-    $(".qlvh_stt").each(function () {
-        indexOrder++;
-        $(this).val(indexOrder);
-    });
-}
-function addRow2() {
-    $("#tb4 .rtb").remove();
 
-    var soluong = parseInt($('#txtS13_soluongnguoi').val().trim());
-    console.log(soluong);
-    for (var i = 1; i <= soluong; i++) {
-        $("#tb4 tbody").append($(".trtemp4 tbody").html());
-    }
-    var rIndex = 1;
-    $("#tb4 tbody .rtb .rstt").each(function () {
-        $(this).text(rIndex);
-        rIndex++;
-    });
-    $("#divtb4").css("height", $("#tb4").height());
-}
 
-function addRow3() {
-    $("#tb5 .rtb").remove();
 
-    var soluong = parseInt($('#txtS13_soluongnguoi').val().trim());
-    console.log(soluong);
-    for (var i = 1; i <= soluong; i++) {
-        $("#tb5 tbody").append($(".trtemp5 tbody").html());
-    }
-    var rIndex = 1;
-    $("#tb5 tbody .rtb .rstt").each(function () {
-        $(this).text(rIndex);
-        rIndex++;
-    });
-    $("#divtb5").css("height", $("#tb5").height());
-}
 
-$('#txtS13_soluongnguoi').change(function () {
-    addRow2();
-    addRow3();
-});
-
-function addRowTB4() {
-    $("#tb4 tbody").append($(".trtemp4 tbody").html());
-    var rIndex = 1;
-    $("#tb4 tbody .rtb .rstt").each(function () {
-        $(this).text(rIndex);
-        rIndex++;
-    });
-    $("#divtb4").css("height", $("#tb4").height());
-}
-
-function removeRowTB4() {
-    $("#tb4 tbody .rtb:last").remove();
-    var rIndex = 1;
-    $("#tb4 tbody .rtb .rstt").each(function () {
-        $(this).text(rIndex);
-        rIndex++;
-    });
-}
-
-function addRowTB5() {
-    $("#tb5 tbody").append($(".trtemp5 tbody").html());
-    var rIndex = 1;
-    $("#tb5 tbody .rtb .rstt").each(function () {
-        $(this).text(rIndex);
-        rIndex++;
-    });
-    $("#divtb5").css("height", $("#tb5").height());
-}
-function removeRowTB5() {
-    $("#tb5 tbody .rtb:last").remove();
-    var rIndex = 1;
-    $("#tb5 tbody .rtb .rstt").each(function () {
-        $(this).text(rIndex);
-        rIndex++;
-    });
-}
-
-$('#txtTop_phongban').change(function () {
-    $(this).attr("data-id", "");
-});

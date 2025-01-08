@@ -217,6 +217,119 @@ namespace ECP_V2.Business.Repository
         }
         #endregion
 
+        #region AdvancedSearchPhienLVNewAll
+        public IEnumerable<PhienLVModel> AdvancedSearchPhienLVNewAll(int tcphien, int catdien, int tiepdia, int khac, string DateFrom, string DateTo, string DonViID, string PhongBanID, int Duyet, int chuyenNPC, int phieuky, string roleName)
+        {
+            try
+            {
+                using (var db = new ECP_V2Entities())
+                {
+                    string start1 = "";
+                    string end1 = "";
+
+                    if (string.IsNullOrEmpty(DonViID))
+                        DonViID = "";
+                    if (string.IsNullOrEmpty(PhongBanID))
+                        PhongBanID = "";
+
+                    // neu khong loc theo thoi gian se mac dinh hien thi du lieu trong vong 1 tuan hien tai
+                    if (string.IsNullOrEmpty(DateFrom) && string.IsNullOrEmpty(DateTo))
+                    {
+                        DateTime dts = new DateTime();
+                        DateTime dte = new DateTime();
+
+                        dts = DateTime.Now;
+                        dte = DateTime.Now;
+                        start1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dts.Date);
+                        end1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dte.Date);
+                    }
+                    else
+                    {
+                        DateTime dtf = DateTime.ParseExact(DateFrom, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        DateTime dtt = DateTime.ParseExact(DateTo, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                        start1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dtf.Date);
+                        end1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dtt.Date);
+                    }
+
+
+                    var x = db.Database.SqlQuery<PhienLVModel>("EXEC sp_AdvancedSearchPhienLVNewAll @TCPhien,@ListMaTT,@DonViID,@PhongBanID,@NgayBD,@NgayKT,@Duyet,@chuyenNPC,@phieuky,@role",
+                       new SqlParameter("@TCPhien", tcphien),
+                       new SqlParameter("@ListMaTT", catdien + "," + tiepdia + "," + khac),
+                       new SqlParameter("@DonViID", DonViID),
+                       new SqlParameter("@PhongBanID", PhongBanID),
+                       new SqlParameter("@NgayBD", start1),
+                       new SqlParameter("@NgayKT", end1),
+                       new SqlParameter("@Duyet", Duyet),
+                       new SqlParameter("@chuyenNPC", chuyenNPC),
+                       new SqlParameter("@phieuky", phieuky),
+                       new SqlParameter("@role", roleName)).ToList();
+
+                    return x;
+                }
+            }
+            catch (Exception ex)
+            { return new List<PhienLVModel>(); }
+        }
+        #endregion
+
+        #region sp_AdvancedSearchPhienLVNewAllCV
+        public IEnumerable<PhienLVModel> sp_AdvancedSearchPhienLVNewAllCV(int tcphien, int catdien, int tiepdia, int khac, string DateFrom, string DateTo, string DonViID, string PhongBanID, int Duyet, int chuyenNPC, int phieuky, string roleName)
+        {
+            try
+            {
+                using (var db = new ECP_V2Entities())
+                {
+                    string start1 = "";
+                    string end1 = "";
+
+                    if (string.IsNullOrEmpty(DonViID))
+                        DonViID = "";
+                    if (string.IsNullOrEmpty(PhongBanID))
+                        PhongBanID = "";
+
+                    // neu khong loc theo thoi gian se mac dinh hien thi du lieu trong vong 1 tuan hien tai
+                    if (string.IsNullOrEmpty(DateFrom) && string.IsNullOrEmpty(DateTo))
+                    {
+                        DateTime dts = new DateTime();
+                        DateTime dte = new DateTime();
+
+                        dts = DateTime.Now;
+                        dte = DateTime.Now;
+                        start1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dts.Date);
+                        end1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dte.Date);
+                    }
+                    else
+                    {
+                        DateTime dtf = DateTime.ParseExact(DateFrom, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        DateTime dtt = DateTime.ParseExact(DateTo, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                        start1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dtf.Date);
+                        end1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dtt.Date);
+                    }
+
+
+                    var x = db.Database.SqlQuery<PhienLVModel>("EXEC sp_AdvancedSearchPhienLVNewAllCV @TCPhien,@ListMaTT,@DonViID,@PhongBanID,@NgayBD,@NgayKT,@Duyet,@chuyenNPC,@phieuky,@role",
+                       new SqlParameter("@TCPhien", tcphien),
+                       new SqlParameter("@ListMaTT", catdien + "," + tiepdia + "," + khac),
+                       new SqlParameter("@DonViID", DonViID),
+                       new SqlParameter("@PhongBanID", PhongBanID),
+                       new SqlParameter("@NgayBD", start1),
+                       new SqlParameter("@NgayKT", end1),
+                       new SqlParameter("@Duyet", Duyet),
+                       new SqlParameter("@chuyenNPC", chuyenNPC),
+                       new SqlParameter("@phieuky", phieuky),
+                       new SqlParameter("@role", roleName)).ToList();
+
+                    return x;
+                }
+            }
+            catch (Exception ex)
+            { return new List<PhienLVModel>(); }
+        }
+        #endregion
+
+
         #region TongHopBaoCaoCuoiNgayPhienLV
         public IEnumerable<TongHopBaoCaoCuoiNgayPhienLV> TongHopBaoCaoCuoiNgayPhienLV(string DateFrom, string DateTo, string DonViID)
         {
@@ -345,6 +458,60 @@ namespace ECP_V2.Business.Repository
                     }
 
                     var data = db.Database.SqlQuery<int>("EXEC sp_CountTotalPhienLVNewAll @filter,@TCPhien,@ListMaTT,@DonViID,@PhongBanID,@NgayBD,@NgayKT,@Duyet,@chuyenNPC,@phieuky,@role",
+                       new SqlParameter("@TCPhien", tcphien),
+                       new SqlParameter("@ListMaTT", catdien + "," + tiepdia + "," + khac),
+                       new SqlParameter("@DonViID", DonViID),
+                       new SqlParameter("@PhongBanID", PhongBanID),
+                       new SqlParameter("@NgayBD", start1),
+                       new SqlParameter("@NgayKT", end1),
+                       new SqlParameter("@Duyet", Duyet),
+                       new SqlParameter("@chuyenNPC", chuyenNPC),
+                       new SqlParameter("@phieuky", phieuky),
+                       new SqlParameter("@role", roleName)).ToList();
+
+                    if (data.Count > 0)
+                        return int.Parse(data[0].ToString());
+                    else return 0;
+                }
+            }
+            catch { return 0; }
+        }
+        #endregion
+
+        #region CountTotalPhienLVNewAll
+        public int CountTotalPhienLVNewAll(int tcphien, int catdien, int tiepdia, int khac, string DateFrom, string DateTo, string DonViID, string PhongBanID, int Duyet, int chuyenNPC, int phieuky, string roleName)
+        {
+            try
+            {
+                using (var db = new ECP_V2Entities())
+                {
+                    string start1 = "";
+                    string end1 = "";
+                    if (string.IsNullOrEmpty(DonViID))
+                        DonViID = "";
+                    if (string.IsNullOrEmpty(PhongBanID))
+                        PhongBanID = "";
+
+
+                    // neu khong loc theo thoi gian se mac dinh hien thi du lieu trong vong 1 tuan hien tai
+                    if (string.IsNullOrEmpty(DateFrom) && string.IsNullOrEmpty(DateTo))
+                    {
+                        DateTime dts = new DateTime();
+                        DateTime dte = new DateTime();
+                        //GetDateStartEnd_FromDateNow(ref dts, ref dte, DateTime.Now);
+                        start1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dts.Date);
+                        end1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dte.Date);
+                    }
+                    else
+                    {
+                        DateTime dtf = DateTime.ParseExact(DateFrom, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        DateTime dtt = DateTime.ParseExact(DateTo, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                        start1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dtf.Date);
+                        end1 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dtt.Date);
+                    }
+
+                    var data = db.Database.SqlQuery<int>("EXEC sp_AdvancedSearchPhienLVNewAll @TCPhien,@ListMaTT,@DonViID,@PhongBanID,@NgayBD,@NgayKT,@Duyet,@chuyenNPC,@phieuky,@role",
                        new SqlParameter("@TCPhien", tcphien),
                        new SqlParameter("@ListMaTT", catdien + "," + tiepdia + "," + khac),
                        new SqlParameter("@DonViID", DonViID),

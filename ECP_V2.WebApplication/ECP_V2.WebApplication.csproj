@@ -4801,6 +4801,7 @@
     <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra_OLD.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachPLVChuaKiemTra.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\ViewBienBanQDKTKS.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\DanhSachChuTriGiaoBan.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
