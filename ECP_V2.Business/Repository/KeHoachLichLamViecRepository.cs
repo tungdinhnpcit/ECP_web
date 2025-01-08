@@ -74,7 +74,8 @@ namespace ECP_V2.Business.Repository
                          HinhThucKiemTra,
                          NguoiDaiDienKT,
                          NguoiDaiDienKT_Id,
-                         LyDoHoanHuy
+                         LyDoHoanHuy, 
+                         TrangThai
                           )
                     VALUES
                           (
@@ -82,7 +83,8 @@ namespace ECP_V2.Business.Repository
                         @HinhThucKiemTra,
                         @NguoiDaiDienKT,
                         @NguoiDaiDienKT_Id,
-                        @LyDoHoanHuy
+                        @LyDoHoanHuy,
+                        1
                            )
                             select SCOPE_IDENTITY();
                        END
