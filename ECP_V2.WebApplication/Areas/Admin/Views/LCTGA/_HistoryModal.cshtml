@@ -1,0 +1,39 @@
+﻿
+<div id="modal-history" class="bootbox modal fade modal-darkorange in" tabindex="" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" style="max-width:1400px; width: auto; left:0px">
+        <div class="modal-content" style="padding-bottom: 15px">
+            <div class="modal-header">
+                <h4 class="modal-title title-popup-modal">Lịch sử sửa đổi báo cáo</h4>
+                <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="horizontal-form">
+                    <form class="form-horizontal" role="form" id="frmMaintainance" @*style="min-height:650px"*@>
+
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <script type="x-tmpl-mustache" id="template-history">
+     <tr data-id="{{Id}}">
+         <td style="text-align:left">{{NoiDung}}</td>
+         <td style="text-align:left">{{PhamVi}}</td>
+         <td style="text-align:left">{{KhoiLuong}}</td>
+         <td style="text-align:right">{{GiaTri}}</td>
+         <td style="text-align:center">{{HoanThanh}}</td>
+         <td style="text-align:center">{{NgaySua}}</td>
+         <td style="text-align:left">{{NguoiSua}}</td>
+     </tr>
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-11">
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right" style="float:right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
