@@ -456,7 +456,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     try
                     {
-                        var objPCT = _pcongtac_ser.GetById(item.MaPCT);
+                        var objPCT = _pcongtac_ser.GetById(item.MaPCT ?? 0);
                         if (objPCT != null)
                         {
                             //item.TT_Phien = (int)objPCT.MaTT;
@@ -18045,7 +18045,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         //Bổ sung gọi API PMIS kết thúc
                         try
                         {
-                   
+
 
                             ECP_V2Entities db = new ECP_V2Entities();
                             var plv_tb = db.KTDK_PHIENLV.Where(d => d.id_phien == plv.Id).ToList();

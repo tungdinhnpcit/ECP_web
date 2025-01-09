@@ -79,7 +79,6 @@ namespace ECP_V2.DataAccess
         public virtual ICollection<tblPhienLamViec_TheoDoi> tblPhienLamViec_TheoDoi { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblPhienLamViec_ThuocTinh> tblPhienLamViec_ThuocTinh { get; set; }
-        //public string NguoiDaiDienKT_Id { get; set; }
 
     }
 }
