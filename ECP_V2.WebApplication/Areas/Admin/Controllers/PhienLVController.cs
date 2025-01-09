@@ -478,7 +478,14 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 }
                 DisposeAll();
+                if ((bool)isShowBtnHoanHuy)
+                {
+                return PartialView("_ListCTHT", ListNewsPageSize);
+                }
+                else
+                {
                 return PartialView("_List", ListNewsPageSize);
+                }
             }
             else
             {
@@ -1674,6 +1681,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             HinhThucKiemTra = HinhThucKiemTra,
                             NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
                             NguoiDaiDienKT = NguoiDaiDienKT,
+                            TrangThai = 1,
                             LyDoHoanHuy = "NULL"
                         };
 
@@ -4186,6 +4194,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     HinhThucKiemTra = input.HinhThucKiemTra,
                     NguoiDaiDienKT_Id = input.NguoiDaiDienKT_Id,
                     NguoiDaiDienKT = input.NguoiDaiDienKT,
+                    TrangThai= 2,
                     LyDoHoanHuy = "NULL"
                 };
 
@@ -8226,7 +8235,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                         rowIndex++;
                         int j1 = 0;
-                        foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TT_Phien))
+                        foreach (var ttPhien in group.OrderBy(p => p.ViTri)
+                            .GroupBy(x => x.TrangThai_KHLLV == 2 ? 0 : 2))
+                            //foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TrangThai_KHLLV))
                         {
                             j1++;
                             rowTerminal = sheet.CreateRow(rowIndex);
@@ -8234,9 +8245,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             rowTerminal.Cells[0].Row.Height = 350;
                             rowTerminal.Cells[0].CellStyle = styleFooter1;
 
-                            var tcp = ttPhien.FirstOrDefault() != null ? ttPhien.FirstOrDefault().TT_Phien : 0;
+                            var tcp = ttPhien.FirstOrDefault() != null ? ttPhien.FirstOrDefault().TrangThai_KHLLV : 0;
 
-                            rowTerminal.CreateCell(1).SetCellValue(tcp == 1 ? "Thay đổi bổ sung kiểm tra hiện trường" : tcp == 2 ? "Đăng ký KH kiểm tra hiện trường" : tcp == 3 ? "Kiểm tra đột xuất hiện trường" : "");
+                            rowTerminal.CreateCell(1).SetCellValue((tcp == 0 || tcp == 1) ? "Đăng ký KH kiểm tra hiện trường" : tcp == 2 ? "Thay đổi bổ sung kiểm tra hiện trường" : "");
                             rowTerminal.Cells[1].CellStyle = styleTenDvi;
 
                             rowTerminal.CreateCell(2).SetCellValue("");
