@@ -480,11 +480,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 DisposeAll();
                 if ((bool)isShowBtnHoanHuy)
                 {
-                return PartialView("_ListCTHT", ListNewsPageSize);
+                    return PartialView("_ListCTHT", ListNewsPageSize);
                 }
                 else
                 {
-                return PartialView("_List", ListNewsPageSize);
+                    return PartialView("_List", ListNewsPageSize);
                 }
             }
             else
@@ -680,18 +680,18 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-               var model = _plviec_ser.sp_AdvancedSearchPhienLVNewAllCV(0, 0, 0, 0, DateFrom, DateTo, DonViId, "", (int)TrangThaiPhienLV.DaDuyet,  -1, -1, "").ToList();
-               
+                var model = _plviec_ser.sp_AdvancedSearchPhienLVNewAllCV(0, 0, 0, 0, DateFrom, DateTo, DonViId, "", (int)TrangThaiPhienLV.DaDuyet, -1, -1, "").ToList();
+
 
 
                 string format = "dd/MM/yyyy";
                 var donVi = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId);
-                if(donVi == null)
+                if (donVi == null)
                 {
                     return null;
                 }
                 var CVKTKSTT = model.FindAll(x => x.TrangThai_KHLLV == 1).Count();
-                var CVKeHoach = model.FindAll(x => x.TT_Phien==2).Count();
+                var CVKeHoach = model.FindAll(x => x.TT_Phien == 2).Count();
                 var CVBoSung = model.FindAll(x => x.TT_Phien == 1).Count();
                 var CVDotXuat = model.FindAll(x => x.TT_Phien == 3).Count();
                 var tongcv = CVKeHoach + CVBoSung + CVDotXuat;
@@ -2406,7 +2406,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                      plv.LanhDaoCongViec_Id,
                      plv.NguoiCapPhieu_Id,
                      NguoiDaiDienKT_Id // Phiên làm việc
-                    }.Where(id => !string.IsNullOrEmpty(id)).ToList(); // Loại bỏ Id null hoặc rỗng
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
                     if (userIds.Any())
                     {
                         foreach (var userId in userIds)
@@ -3834,7 +3834,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 }
                 var role = _roleManager.Roles.Where(x => x.Name == roles).FirstOrDefault();
-
+                role.Id = role.Id ?? "0";
                 List<tblNhanVien> listNhanVienTemp = _kh_ser.ListNhanVienByRoleId(role.Id);
                 if (listNhanVienTemp != null && listNhanVienTemp.Count > 0)
                 {
@@ -4194,7 +4194,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     HinhThucKiemTra = input.HinhThucKiemTra,
                     NguoiDaiDienKT_Id = input.NguoiDaiDienKT_Id,
                     NguoiDaiDienKT = input.NguoiDaiDienKT,
-                    TrangThai= 2,
+                    TrangThai = 2,
                     LyDoHoanHuy = "NULL"
                 };
 
@@ -8237,7 +8237,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         int j1 = 0;
                         foreach (var ttPhien in group.OrderBy(p => p.ViTri)
                             .GroupBy(x => x.TrangThai_KHLLV == 2 ? 0 : 2))
-                            //foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TrangThai_KHLLV))
+                        //foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TrangThai_KHLLV))
                         {
                             j1++;
                             rowTerminal = sheet.CreateRow(rowIndex);
@@ -13308,7 +13308,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     ////NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} duyệt phiên làm việc {1} thành công", User.Identity.Name, plv.NoiDung));
                     ///
-                     #region Notify mobile khi update phiên
+                    #region Notify mobile khi update phiên
+                   // plv = _plviec_ser.GetById(plv.Id);
 
                     var userIds = new List<string>
                     {
@@ -13321,7 +13322,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                      plv.LanhDaoCongViec_Id,
                      plv.NguoiCapPhieu_Id,
                      //plv.NguoiDaiDienKT_Id // Phiên làm việc
-                    }.Where(id => !string.IsNullOrEmpty(id)).ToList();
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
                     if (userIds.Any())
                     {
                         foreach (var userId in userIds)
@@ -13846,7 +13847,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                      plv.LanhDaoCongViec_Id,
                      plv.NguoiCapPhieu_Id,
                      //plv.NguoiDaiDienKT_Id // Phiên làm việc
-                    }.Where(id => !string.IsNullOrEmpty(id)).ToList(); // Loại bỏ Id null hoặc rỗng
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
                     if (userIds.Any())
                     {
                         foreach (var userId in userIds)
@@ -14188,6 +14189,66 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             phieuLenh = " [ Lệnh Công Tác ] ";
                         }
                         tblPhienLamViec plv = _plviec_ser.GetByMaPhieuCongTac(idPhieuCongTac);
+
+                        #region Gửi notify mobile
+                        var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                        if (userIds.Any())
+                        {
+                            foreach (var userId in userIds)
+                            {
+                                var requestData = new
+                                {
+                                    IDConect = "PN",
+                                    userId = userId,
+                                    title = "Cấp số phiên làm việc",
+                                    name = "NPCIT",
+                                    header = "header",
+                                    subtitle = " ",
+                                    contents = User.Identity.Name + "- Cấp số phiên làm việc",
+                                };
+
+                                var jsonContent = JsonConvert.SerializeObject(requestData);
+                                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                using (HttpClient httpClient = new HttpClient())
+                                {
+                                    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                    if (response.IsSuccessStatusCode)
+                                    {
+                                        var result = await response.Content.ReadAsStringAsync();
+                                        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                        if (!apiResponse.Success)
+                                        {
+                                            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                        }
+                                    }
+                                }
+                            }
+
+                            //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        #endregion
+
                         if (idPhieuCongTac > 0)
                         {
 
@@ -14489,6 +14550,66 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
 
                     tblPhienLamViec plv = _plviec_ser.GetByMaPhieuCongTac(idPhieuCongTac);
+
+
+                    #region Gửi notify mobile
+                    var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                    if (userIds.Any())
+                    {
+                        foreach (var userId in userIds)
+                        {
+                            var requestData = new
+                            {
+                                IDConect = "PN",
+                                userId = userId,
+                                title = "Cấp số phiên làm việc",
+                                name = "NPCIT",
+                                header = "header",
+                                subtitle = " ",
+                                contents = User.Identity.Name + "- Cấp số phiên làm việc",
+                            };
+
+                            var jsonContent = JsonConvert.SerializeObject(requestData);
+                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                            using (HttpClient httpClient = new HttpClient())
+                            {
+                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    var result = await response.Content.ReadAsStringAsync();
+                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                    if (!apiResponse.Success)
+                                    {
+                                        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                    }
+                                }
+                            }
+                        }
+
+                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    #endregion
 
                     //string userName = WebConfigurationManager.AppSettings["userEmail"];
                     //string password = WebConfigurationManager.AppSettings["passEmail"];
@@ -16893,7 +17014,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
 
 
-       
+
         public string NextID(string lastID, string prefixID, int MaLP, string TramId)
         {
             if (lastID == "")
