@@ -13408,17 +13408,17 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             #region Notify mobile khi update phiên
 
                             var userIds = new List<string>
-                    {
-                     plv.NguoiDuyet_SoPa_Id,
-                     plv.NguoiChiHuy_Id,
-                     plv.GiamSatVien_Id,
-                     plv.NguoiKiemSoat_Id,
-                     plv.NguoiKiemTraPhieu_Id,
-                     plv.LanhDaoTrucBan_Id,
-                     plv.LanhDaoCongViec_Id,
-                     plv.NguoiCapPhieu_Id,
-                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
-                    }.Where(id => !string.IsNullOrEmpty(id)).ToList();
+                         {
+                              plv.NguoiDuyet_SoPa_Id,
+                              plv.NguoiChiHuy_Id,
+                              plv.GiamSatVien_Id,
+                              plv.NguoiKiemSoat_Id,
+                              plv.NguoiKiemTraPhieu_Id,
+                              plv.LanhDaoTrucBan_Id,
+                              plv.LanhDaoCongViec_Id,
+                              plv.NguoiCapPhieu_Id,
+                            //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                         }.Where(id => !string.IsNullOrEmpty(id)).ToList();
                             if (userIds.Any())
                             {
                                 foreach (var userId in userIds)
@@ -13450,7 +13450,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                                             if (!apiResponse.Success)
                                             {
-                                                return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                //return Json(new { success = false, responseText = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
                                             }
                                         }
                                     }
@@ -13460,7 +13460,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             }
                             else
                             {
-                                return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                                //return Json(new { success = false, responseText = "Không có nguòi nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
                             }
 
 
