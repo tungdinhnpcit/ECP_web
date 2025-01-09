@@ -1,0 +1,747 @@
+﻿@using ECP_V2.DataAccess;
+@model ECP_V2.Business.Repository.PhienLVModel
+@{
+    tblDonVi DonVi = null;
+    if (ViewBag.DonVi != null)
+    {
+        DonVi = ViewBag.DonVi;
+    }
+    tblDonVi DonViCha = null;
+    if (ViewBag.DonViCha != null)
+    {
+        DonViCha = ViewBag.DonViCha;
+    }
+
+    string donViID = "";
+    if (ViewBag.DonViCha != null)
+    {
+        donViID = ViewBag.DonViId;
+    }
+
+    int CVKeHoach = 0;
+    if (ViewBag.CVKeHoach != null)
+    {
+        CVKeHoach = ViewBag.CVKeHoach;
+    }
+
+    int CVBoSung = 0;
+    if (ViewBag.CVBoSung != null)
+    {
+        CVBoSung = ViewBag.CVBoSung;
+    }
+
+    int CVDotXuat = 0;
+    if (ViewBag.CVDotXuat != null)
+    {
+        CVDotXuat = ViewBag.CVDotXuat;
+    }
+
+
+    int CVKTKSTT = 0;
+    if (ViewBag.CVKTKSTT != null)
+    {
+        CVKTKSTT = ViewBag.CVKTKSTT;
+    }
+
+    int tongcv = 0;
+    if (ViewBag.tongcv != null)
+    {
+        tongcv = ViewBag.tongcv;
+    }
+
+    double tyleKH = 0;
+    if (ViewBag.tongcv != null)
+    {
+        tyleKH = ViewBag.tyleKH;
+    }
+
+
+
+    DateTime TuNgay = (DateTime)ViewBag.TuNgay;
+
+    DateTime DenNgay = (DateTime)ViewBag.DenNgay;
+
+
+    ECP_V2.Business.Repository.DonViRepository donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    ECP_V2.Business.Repository.d_LoaiCongViecRepository loaiCongViecRepository = new ECP_V2.Business.Repository.d_LoaiCongViecRepository();
+    ECP_V2.Business.Repository.NhanVienRepository nhanvienRepository = new ECP_V2.Business.Repository.NhanVienRepository();
+    ECP_V2.Business.Repository.TramRepository tramRepository = new ECP_V2.Business.Repository.TramRepository();
+
+
+
+    List<tblNhanVien> nhanVien = new List<tblNhanVien>();
+    if (ViewBag.nhanVien != null)
+    {
+        nhanVien = (List<tblNhanVien>)ViewBag.nhanVien;
+    }
+    string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
+
+
+}
+
+<link href="/Content/wordsstyle.css?v=@(DateTime.Now.ToString("HHmmssfff"))" rel="stylesheet" />
+@Styles.Render("~/Content/themes/admindesign/css")
+<link href="/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="/Scripts/fbphotobox/css/fbphotobox.css" rel="stylesheet" />
+
+<script src="/Scripts/jquery-3.6.3.js"></script>
+<script src="/Scripts/AdminPanel/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="/Scripts/bootstrap.min.js"></script>
+
+@Styles.Render("~/Content/themes/admindesign/css")
+@Scripts.Render("~/bundles/admin/jqueryIndex")
+
+<script src="/Scripts/autoresize.jquery.min.js"></script>
+
+
+<style>
+    * {
+        font-family: Times New Roman Arial !important;
+    }
+
+    .daky {
+        font-weight: bold;
+    }
+
+    .tbnXoaDong {
+        display: none;
+        background-color: orangered;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 112px;
+        line-height: 34px;
+        color: #fff;
+    }
+
+    .tbnThemDong {
+        display: none;
+        background: #00b000;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 112px;
+        line-height: 32px;
+        color: #fff;
+    }
+
+    .rheaderTB4:hover .tbnThemDongTB4 {
+        display: block !important;
+    }
+
+    .rheaderTB4:hover .tbnXoaDongTB4 {
+        display: block !important;
+    }
+
+    .rheaderTB5:hover .tbnThemDongTB5 {
+        display: block !important;
+    }
+
+    .rheaderTB5:hover .tbnXoaDongTB5 {
+        display: block !important;
+    }
+
+    @@media print {
+        .pagebreak {
+            page-break-before: always;
+        }
+    }
+
+    .table-resizable {
+        width: 99%;
+        height: 99%
+    }
+
+        .table-resizable .resizing {
+            cursor: col-resize;
+            user-select: none;
+        }
+
+        .table-resizable th {
+            position: relative;
+        }
+
+            .table-resizable th:before {
+                cursor: col-resize;
+                user-select: none;
+                content: '';
+                display: block;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 1em;
+            }
+
+            .table-resizable th:last-of-type:before {
+                display: none;
+            }
+
+
+        .table-resizable td {
+            max-width: 0;
+            /*overflow: hidden;*/
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+</style>
+
+<div class=Section1 style="width: 800px; height: auto; margin: 0 auto; margin-bottom:80px; background-color: white; padding: 0px 50px 20px">
+    <p class=MsoNormal>
+        <a name="_GoBack"></a><b>
+            <span><o:p>&nbsp;</o:p></span>
+        </b>
+    </p>
+    <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0
+           style='border-collapse:collapse;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:none;mso-border-insidev:none'>
+        <tr>
+            <td valign=top style='width:280px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal align="center" style='text-align:left'>
+
+                    @if (DonViCha != null && DonVi != null)
+                    {
+                        <span>
+                            <b>
+                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonViCha" id="txtTenDonViCha" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ CHA" searchbox="1">@(DonViCha.TenDonVi)</textarea>
+
+                            </b>
+                            <br />
+                            <b>
+                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonVi.TenDonVi)</textarea>
+
+                            </b>
+                        </span>
+                    }
+                    else if (DonVi != null)
+                    {
+                        <b>
+                            <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonVi.TenDonVi)</textarea>
+
+                        </b>
+                    }
+                </p>
+
+            </td>
+            <td valign="top" style='width:400px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+                    <b style="text-align: center; display: flex; flex-direction: column;">
+                        <span style='font-size:16px;color:black'>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </span>
+                    </b>
+
+                    <span style='font-size: 11px; color: black; text-align: center; display: flex; flex-direction: column;'>
+                        Độc lập - Tự do - Hạnh phúc
+                    </span>
+
+                </p>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td valign=top style='width:280px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal align="center" style='text-align:left'>
+                    <span style='font-size:11px;'>
+                        Số: /BB...-KHKT-...
+                    </span>
+                </p>
+
+            </td>
+            <td valign="top" style='width:400px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal style=" text-align: right;">
+                    <i style="text-align:center">
+                        <span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>tháng <span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@DateTime.Now.ToString("MM")" name="txtS62_thang" id="txtS62_thang" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>năm<span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="4" value="@DateTime.Now.ToString("yyyy")" name="txtS62_nam" maxlength="4" id="txtS62_nam" placeholder="………" searchbox="0" datasourceidname="listnam" class="S62_nam_SelectEmp1 input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>
+                    </i>
+                </p>
+
+            </td>
+
+        </tr>
+
+
+    </table>
+
+    <div style="width:100%">
+        <p class=MsoNormal id="divKLGBAT">
+            <b>
+                <span style='mso-bidi-font-size:12.0pt;color:black'>
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="BIÊN BẢN" data-id="1" name="txtS11" style="text-align:right" searchbox="BIÊN BẢN" datasourceidname="listloaiBienBan" class="loaiBienBan_SelectEmp input-style selectbox-control" id="txtLoaiBC" type="text" placeholder="………" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span>KẾT LUẬN GIAO BAN AN TOÀN<span class="selectboxv1 radio-style text-right" onlyone="1">
+                        <input value="TUẦN" data-id="1" name="txtS11" searchbox="TUẦN" datasourceidname="listloaithoigianbc" class="loaithoigianbc_SelectEmp input-style selectbox-control" id="txtThoiGianBC" type="text" placeholder="………" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                </span>
+
+            </b>
+        </p>
+    </div>
+    <div style="width:100%; text-align:center">
+        <p class=MsoNormal style=" text-align: center;">
+            <i style="text-align:center">
+                (Từ  ngày <span class="selectboxv1 radio-style" onlyone="1">@TuNgay.ToString("dd")</span>
+                tháng <span class="selectboxv1 radio-style" onlyone="1">@TuNgay.ToString("MM")</span>
+                đến ngày <span class="selectboxv1 radio-style" onlyone="1">@DenNgay.ToString("dd")</span>
+                tháng <span class="selectboxv1 radio-style" onlyone="1">@DenNgay.ToString("MM")</span>
+                năm <span class="selectboxv1 radio-style" onlyone="1">@DenNgay.ToString("yyyy")</span>
+            </i>
+        </p>
+    </div>
+
+    <div style="width: 100%; text-align: left">
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                I. Thời gian, thành phần:
+            </b>
+
+        </p>
+        <p>
+            1. Thời gian:  <span class="selectboxv1 radio-style" onlyone="1">
+                lúc  <input maxlength="2" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>tháng <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@DateTime.Now.ToString("MM")" name="txtS62_thang" id="txtS62_thang" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>năm<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="4" value="@DateTime.Now.ToString("yyyy")" name="txtS62_nam" maxlength="4" id="txtS62_nam" placeholder="………" searchbox="0" datasourceidname="listnam" class="S62_nam_SelectEmp1 input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </p>
+        <p>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                2. Chủ trì giao ban: <span class="selectboxv1 radio-style txtchutrigiaoban" onlyone="1">
+                    <input style="width: 250px;" name="txtchutrigiaoban" searchbox="1" datasourceidname="listchutrigiaoban" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtchutrigiaoban" type="text" placeholder="……………………………………" autocomplete="off" />
+                    <span class="multiselect-wap"></span>
+                </span>
+                <span class="selectboxv1 radio-style" onlyone="1">
+                    Chức vụ:  <input style="width: 200px;" name="txtChucVuChuTri" searchbox="" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtChucVuChuTri" type="text" placeholder="…………………………………" autocomplete="off" />
+                    <span class="multiselect-wap"></span>
+                </span>
+
+            </span>
+
+        </p>
+        <p>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                3. Thành phần tham gia: <span class="selectboxv1">
+                    <input style="width: 100%;" name="txtnhanviendonvicongtac" searchbox="1" datasourceidname="listnhanviendonvicongtac" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtnhanviendonvicongtac" type="text" placeholder="…………………………………………………………………………………………………………" autocomplete="off" />
+                    <span class="multiselect-wap"></span>
+                </span>
+            </span>
+        </p>
+
+    </div>
+    <div style="width: 100%; text-align: left">
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                II. Đánh giá, kiểm điểm công tác an toàn trong tuần:
+            </b>
+
+        </p>
+
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                1. Số lượng công việc đơn vị đã thực hiện trong tuần:
+            </b>
+            Số lượng @(tongcv).
+            Phát sinh, bổ sung: @(CVBoSung);  Đột xuất @(CVDotXuat)
+
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            Tỷ lệ PLV bổ sung, đột xuất: @(tyleKH)% PLV được lập trong KH tuần.
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            Đánh giá: cần đánh giá, phân tích được chất lượng công tác lập KH công việc, tỷ lệ bổ sung, đột xuất, hoãn huỷ cao hay thấp, nguyên nhân, lý do. Trách nhiệm thuộc về bộ phận, cá nhân nào. Từ đó, có các chỉ đạo để công tác lập KH công việc chất lượng hơn.
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                2. Công tác  KTKS ATLĐ PLV:
+            </b>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Số lượng PLV được KTKS ATLĐ trực tiếp tại hiện trường: @(CVKTKSTT) PLV;
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Số lượng PLV được KTKS ATLĐ qua hình ảnh trên ECP: PLV;
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            <b>Đánh giá:</b> cần đánh giá, phân tích được (không giới hạn) các nội dung sau:
+        </p>
+        <textarea class="form-control" rows="4" id="NoiDung_DanhGia" placeholder="Nội dung đánh giá"></textarea>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                3. Công tác QLKT-VH và thao tác điều độ liên quan an toàn:
+            </b>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Kiểm điểm nội dung về QLKT-VH liên quan tới an toàn: Việc tổ chức thi công các PLV; Việc cập nhập, xử lý các vị trí có mối nguy mất an toàn trên lưới (giao chéo, song song, đấu tắt, đấu chập, máy phát, không đảm bảo 5S đối với dây sau công tơ và cáp viễn thông, dây đi trên mặt sàn thao tác TBA,…); việc cập nhập đánh số thiết bị giữa thực tế và sơ đồ (Chuẩn hóa lưới điện),…
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Kiểm điểm an toàn trong thực hiện công tác điều độ, thao tác:  <input name="txtkiemdiemAT" style="width:250px" id="txtkiemdiemAT" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Trách nhiệm bộ phận, tập thể liên quan các tồn tại, vi phạm:  <input name="txttrachnghiembp" style="width:250px" id="txttrachnghiembp" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Các chỉ đạo để tránh tái diễn các tồn tại, vi phạm tương tự:  <input name="txtchidao3" style="width:250px" id="txtchidao3" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                4. Các tồn tại, vi phạm khác trong công tác an toàn:
+            </b>
+        </p>
+        <textarea class="form-control" rows="4" id="NoiDung_tongtaikhac" placeholder="Các tồn tại, vi phạm khác trong công tác an toàn"></textarea>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                III. Công tác ATLĐ tuần tiếp theo:
+            </b>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            1. Kế hoạch công việc của tuần tiếp theo: (theo Biểu mẫu 06)
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            2. Phân tích, đánh giá các BPAT PLV, tập trung vào các PLV có nguy cơ mất an toàn cao, khối lượng công việc lớn, nhiều mối nguy, rủi ro để từ đó quán triệt, nhắc nhở các ĐVCT; tổ chức phân công cá nhân (hoặc nhóm) KTKS ATLĐ các PLV:
+            <input name="txtphantichdanhgiabpat" style="width:250px" id="txtphantichdanhgiabpat" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            3. Các lưu ý an toàn trong các thao tác của tuần kế tiếp, đặc biệt các thao tác phức tạp, tại các vị trí có nhiều nguy cơ mất an toàn khi thực hiện thao tác
+            <input name="txtluuychotuanketiep" style="width:250px" id="txtluuychotuanketiep" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            4. Các chỉ đạo liên quan tổng hợp, theo dõi, phổ biến và xử lý các nguy cơ mất an toàn trên lưới điện
+            <input name="txtchidaolienquanth" style="width:250px" id="txtchidaolienquanth" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            5. Các chỉ đạo trong công tác an toàn khác (nếu có):
+            <input name="txtchidaoctatkhac" style="width:250px" id="txtchidaoctatkhac" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+        </p>
+
+        <br />
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                * Lưu ý: đối với giao ban an toàn tháng thì có thêm nội dung xét chế độ an toàn điện, cụ thể:
+            </b>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Người lao động vi phạm, số lượng
+            <input name="txtchidaoctatkhac" style="width:80px" id="txtchidaoctatkhac" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /><i>Trong đó:</i>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            + Đề nghị hình thức xử lý giảm thưởng vận hành an toàn, số lượng <input name="txtdenghigiamthuong" style="width:80px" id="txtdenghigiamthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            + Đề nghị hình thức xử lý cắt thưởng vận hành an toàn, số lượng  <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            + Đề nghị hình thức kỷ luật, số lượng <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+        </p>
+        <br />
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-lg-6">
+                <p class=MsoNormal style=" text-align: left;">
+                    <b style="text-align: left">
+                        Nơi nhận.
+                    </b>
+
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - PC...... (để B/c nếu có)
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - TVH, Tổ, Đội..... (để thực hiện);
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - Lưu VT, KHKT, CBAT.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <p class=MsoNormal style=" text-align: left;">
+                    <b style="text-align: left">
+                        Chủ trì cuộc họp
+                    </b>
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    (Ký tên, đóng dấu)
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" class="mytemp">
+    <div class="empdataparent">
+        <div class="empdata">
+            <select class="multiselect-add form-control" multiple="multiple" data-plugin-multiselect data-plugin-options='{ "enableCaseInsensitiveFiltering": true }'>
+                <optgroup label="Nhân viên">
+                    <option value="0">Tên Nhân Viên</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <div id="listchutrigiaoban">
+        <optgroup label="Chủ trì giao ban">
+            @{Html.RenderAction("DanhSachChuTriGiaoBan", "PhienLV", new { roles = "LanhDaoCongViec" });}
+        </optgroup>
+    </div>
+
+
+
+    <div id="listnhanviendonvicongtac">
+        <optgroup label="Thành phần tham gia">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "ChiHuyTrucTiep" });}
+        </optgroup>
+    </div>
+
+
+
+    <div id="listphieulenh">
+        <optgroup label="Phiếu/Lệnh công tác">
+            <option value="1">Phiếu công tác</option>
+            <option value="2">Lệnh công tác</option>
+        </optgroup>
+    </div>
+
+    <div id="listloaiBienBan">
+        <optgroup label="Loại Báo Cáo">
+            <option value="1">BIÊN BẢN</option>
+            <option value="2">THÔNG BÁO</option>
+        </optgroup>
+    </div>
+    <div id="listloaithoigianbc">
+        <optgroup label="Loại thời gian">
+            <option value="1">TUẦN</option>
+            <option value="2">THÁNG</option>
+        </optgroup>
+    </div>
+
+    <div id="listnhanviendonvicongtac">
+        <optgroup label="Nhân viên đơn vị công tác">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "" });}
+        </optgroup>
+    </div>
+
+
+
+    <div id="listgio">
+        <optgroup label="Giờ">
+            @for (int i = 0; i < 23; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listphut">
+        <optgroup label="Phút">
+            @for (int i = 0; i < 59; i = i + 5)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listngay">
+        <optgroup label="Ngày">
+            @for (int i = 1; i < 32; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listthang">
+        <optgroup label="Tháng">
+            @for (int i = 1; i < 13; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listnam">
+        <optgroup label="Năm">
+            <option value="@(DateTime.Now.Year - 1)">@(DateTime.Now.Year - 1)</option>
+            <option value="@(DateTime.Now.Year)">@(DateTime.Now.Year)</option>
+            <option value="@(DateTime.Now.Year + 1)">@(DateTime.Now.Year + 1)</option>
+        </optgroup>
+    </div>
+    <div id="listnam2">
+        <optgroup label="Năm">
+            <option value="@((DateTime.Now.Year - 1).ToString().Substring(2))">@((DateTime.Now.Year - 1).ToString().Substring(2))</option>
+            <option value="@(DateTime.Now.Year.ToString().Substring(2))">@(DateTime.Now.Year.ToString().Substring(2))</option>
+            <option value="@((DateTime.Now.Year + 1).ToString().Substring(2))">@((DateTime.Now.Year + 1).ToString().Substring(2))</option>
+        </optgroup>
+    </div>
+
+</div>
+<footer class="panel-footer" style="position:fixed; bottom:0;z-index:99999999; width:100%">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button class="btn btn-default modal-confirm">
+                Ký Số
+            </button>
+            <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Hủy</button>
+        </div>
+    </div>
+</footer>
+
+
+<script>
+
+    $(function () {
+        var startX,
+            startWidth,
+            $handle,
+            $table,
+            pressed = false;
+
+        $(document).on({
+            mousemove: function (event) {
+                if (pressed) {
+                    $handle.width(startWidth + (event.pageX - startX));
+                }
+            },
+            mouseup: function () {
+                if (pressed) {
+                    $table.removeClass('resizing');
+                    pressed = false;
+                }
+            }
+        }).on('mousedown', '.table-resizable th', function (event) {
+            $handle = $(this);
+            pressed = true;
+            startX = event.pageX;
+            startWidth = $handle.width();
+
+            $table = $handle.closest('.table-resizable').addClass('resizing');
+        }).on('dblclick', '.table-resizable thead', function () {
+            // Reset column sizes on double click
+            $(this).find('th[style]').css('width', '');
+        });
+
+ 
+
+
+    });
+
+    function SaveTable() {
+        var from = document.referrer;
+        alert(from);
+        let xxx = httpGet(from);
+        alert(xxx);
+        //table 4
+        var w = $("#divtb4").width();
+        var h = $("#divtb4").height();
+
+
+        var i = 1;
+        $("#tb4 thead tr th").each(function () {
+            var wth = $(this).width();
+            var hth = $(this).height();
+
+            i = i + 1;
+        });
+
+        //table 5
+        var w2 = $("#divtb5").width();
+        var h2 = $("#divtb5").height();
+
+
+        var i2 = 1;
+        $("#tb5 thead tr th").each(function () {
+            var wth2 = $(this).width();
+            var hth2 = $(this).height();
+
+            i2 = i2 + 1;
+        });
+
+        alert("Lưu thành công");
+    }
+
+    function httpGet(theUrl) {
+        let xmlhttp;
+
+        if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else { // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                return xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET", theUrl, false);
+        xmlhttp.send();
+
+        return xmlhttp.response;
+    }
+
+    function LoadSizeTable() {
+
+        //table 4
+        var w = 0;
+        var h = 0;
+
+        if (w > 0)
+            $("#divtb4").css("width", w);
+        if (h > 0)
+            $("#divtb4").css("height", h);
+
+        var i = 1;
+        $("#tb4 thead tr th").each(function () {
+            var wth = 0;
+            var hth = 0;
+
+            if (wth > 0)
+                $(this).css("width", wth);
+            if (hth > 0)
+                $(this).css("height", hth);
+            i = i + 1;
+        });
+
+        //table 5
+        var w2 = 0;
+        var h2 = 0;
+
+        if (w2 > 0)
+            $("#divtb5").css("width", w2);
+        if (h2 > 0)
+            $("#divtb5").css("height", h2);
+
+        var i2 = 1;
+        $("#tb5 thead tr th").each(function () {
+            var wth2 = 0;
+            var hth2 = 0;
+
+            if (wth2 > 0)
+                $(this).css("width", wth2);
+            if (hth2 > 0)
+                $(this).css("height", hth2);
+            i2 = i2 + 1;
+        });
+
+    }
+
+</script>
+
+
+
+<script src="/Scripts/ViewBienBanQDKTKS.js?v=@(DateTime.Now.ToString("yyyyMMddHHmmssfff"))"></script>

@@ -11,6 +11,7 @@ using ECP_V2.WebApplication.Models;
 using ECP_V2.WebApplication.Util;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin;
 using Microsoft.Owin.Security.Twitter.Messages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,6 +49,7 @@ using static ECP_V2.WebApplication.Models.ImageModel;
 using static NPOI.HSSF.Util.HSSFColor;
 using static System.Net.WebRequestMethods;
 using Message = ECP_V2.DataAccess.Message;
+
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -94,6 +96,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         //Lấy file template từ database
         //[AreaAuthorization]
+
+
 
         private void DisposeAll()
         {
@@ -564,8 +568,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #region XuatExcelBCKHLLV
         [HttpGet]
         public ActionResult XuatExcelBCKHLLV(int tcphien, int catdien, int tiepdia,
-            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky, Boolean? isShowBtnHoanHuy,
-            string LoaiBieuDo = "DS")
+            int khac, string DateFrom, string DateTo, string DonViId, string PhongBanId, int ttPhien, int? chuyenNPC, int? phieuky)
         {
 
             int Count = 0;
@@ -663,6 +666,64 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             return null;
         }
+
+
+        [HttpGet]
+        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId)
+        {
+            try
+            {
+               var model = _plviec_ser.sp_AdvancedSearchPhienLVNewAllCV(0, 0, 0, 0, DateFrom, DateTo, DonViId, "", (int)TrangThaiPhienLV.DaDuyet,  -1, -1, "").ToList();
+               
+
+
+                string format = "dd/MM/yyyy";
+                var donVi = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId);
+                if(donVi == null)
+                {
+                    return null;
+                }
+                var CVKTKSTT = model.FindAll(x => x.TrangThai_KHLLV == 1).Count();
+                var CVKeHoach = model.FindAll(x => x.TT_Phien==2).Count();
+                var CVBoSung = model.FindAll(x => x.TT_Phien == 1).Count();
+                var CVDotXuat = model.FindAll(x => x.TT_Phien == 3).Count();
+                var tongcv = CVKeHoach + CVBoSung + CVDotXuat;
+                ViewBag.CVKTKSTT = CVKTKSTT;
+                ViewBag.CVKeHoach = CVKeHoach;
+                ViewBag.CVBoSung = CVBoSung;
+                ViewBag.CVDotXuat = CVDotXuat;
+                double tyleKH = 0;
+                if (tongcv > 0)
+                {
+
+                    tyleKH = CVKeHoach * 100 / tongcv;
+                    tyleKH = Math.Round(tyleKH, 2);
+
+                }
+                ViewBag.tyleKH = tyleKH;
+                ViewBag.tongcv = tongcv;
+                ViewBag.DonVi = donVi;
+                ViewBag.DonViId = DonViId;
+                ViewBag.DonViCha = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == donVi.DviCha);
+                ViewBag.TuNgay = DateTime.ParseExact(DateFrom, format, CultureInfo.InvariantCulture);
+                ViewBag.DenNgay = DateTime.ParseExact(DateTo, format, CultureInfo.InvariantCulture);
+
+                List<tblNhanVien> nhanVien = _kh_ser.List();
+                if (nhanVien != null && nhanVien.Count > 0)
+                {
+                    ViewBag.nhanVien = nhanVien;
+                }
+                DisposeAll();
+                return View("ViewBienBanQDKTKS");
+
+            }
+            catch (Exception)
+            {
+                DisposeAll();
+                throw;
+            }
+        }
+
         #endregion
         #region EditPhienLv
         [HttpPost]
@@ -3805,6 +3866,63 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             return PartialView(listNhanVien);
         }
 
+        public ActionResult DanhSachChuTriGiaoBan(string roles, string option = "")
+        {
+            List<tblNhanVien> listNhanVien = null;
+            try
+            {
+                if (roles == "")
+                {
+                    string donviId = null;
+                    if (Session["DonViID"] != null)
+                    {
+                        donviId = Session["DonViID"].ToString();
+                    }
+                    if (donviId != null)
+                    {
+                        listNhanVien = _nhanvien_ser.ListByDonViId(donviId).OrderBy(x => x.TenNhanVien).ToList();
+                    }
+
+                }
+                var role = _roleManager.Roles.Where(x => x.Name == roles).FirstOrDefault();
+
+                List<tblNhanVien> listNhanVienTemp = _kh_ser.ListNhanVienByRoleId(role.Id);
+                if (listNhanVienTemp != null && listNhanVienTemp.Count > 0)
+                {
+                    if (option == "tatca")
+                    {
+                        listNhanVien = listNhanVienTemp.OrderBy(x => x.TenNhanVien).ToList();
+                    }
+                    else if (option == "captren")
+                    {
+                        listNhanVien = listNhanVienTemp.Where(x => !string.IsNullOrEmpty(x.DonViId) && x.DonViId.Length <= 4).OrderBy(x => x.TenNhanVien).ToList();
+                    }
+                    else
+                    {
+                        string donviId = null;
+                        if (Session["DonViID"] != null)
+                        {
+                            donviId = Session["DonViID"].ToString();
+                        }
+                        if (donviId != null)
+                        {
+                            listNhanVien = listNhanVienTemp.Where(x => x.DonViId == donviId).OrderBy(x => x.TenNhanVien).ToList();
+                        }
+                        else
+                        {
+                            listNhanVien = listNhanVienTemp.OrderBy(x => x.TenNhanVien).ToList();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            DisposeAll();
+
+            return PartialView(listNhanVien);
+        }
         #endregion
 
         #region PhienLvPaging
@@ -16763,6 +16881,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
 
+
+       
         public string NextID(string lastID, string prefixID, int MaLP, string TramId)
         {
             if (lastID == "")
