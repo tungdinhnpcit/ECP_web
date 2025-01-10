@@ -4280,6 +4280,13 @@
     <Content Include="Scripts\lenhcongtac.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pdfobject.min.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.common.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.css" />
+    <Content Include="Scripts\photoviewer\photoviewer.esm.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.min.css" />
+    <Content Include="Scripts\photoviewer\photoviewer.min.js" />
+    <Content Include="Scripts\photoviewer\voice.png" />
     <Content Include="Scripts\ViewBienBanQDKTKS.js" />
     <Content Include="Scripts\phieucongtac.js" />
     <Content Include="Scripts\PlaySound\ting_ting.mp3" />
@@ -5330,6 +5337,9 @@
       <Project>{2677432b-a595-42a5-beb9-15ddb48963c9}</Project>
       <Name>ECP_V2.DataAccess</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

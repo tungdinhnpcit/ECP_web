@@ -19,7 +19,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
     {
         private DonViRepository _dv_ser = new DonViRepository();
         private readonly LCTGARepository _lctGA = new LCTGARepository(System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString);
-      
+        private readonly  ECP_V2.Business.Repository.NhanVienRepository nhanvienRepository = new ECP_V2.Business.Repository.NhanVienRepository();
 
         // GET: Admin/bcbs_NoiDung  
         [HasCredential(MenuCode = "LCTGA;DSLCTGA")]
@@ -67,13 +67,44 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
             var obj = JsonConvert.DeserializeObject<List<LCTGhiAm>>(model);
-
-           
-
             return Json(new
             {
                 data = obj[0],
             }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpGet]
+        public ActionResult GetDSNhanVien()
+        {
+
+            List<tblNhanVien> nhanVien = nhanvienRepository.List();
+            List<NhanVienObj> dsnv = new List<NhanVienObj>();
+            nhanVien.ForEach(x =>
+            {
+                var a = new NhanVienObj();
+                a.Id = x.Id;
+                a.TenNhanVien = x.TenNhanVien;
+                a.UrlImage = x.UrlImage;
+                a.ChucVu = x.ChucVu;
+                dsnv.Add(a);
+            });
+
+
+            return Json(new
+            {
+                data = dsnv,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        private class NhanVienObj
+        {
+
+            public string Id { get; set; }
+            public string TenNhanVien { get; set; }
+            public string ChucVu { get; set; }
+            public string UrlImage { get; set; }
         }
     }
 

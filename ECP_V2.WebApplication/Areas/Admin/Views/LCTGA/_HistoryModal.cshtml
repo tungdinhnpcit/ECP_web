@@ -3,26 +3,33 @@
     <div class="modal-dialog modal-lg" style="max-width:1400px; width: auto; left:0px">
         <div class="modal-content" style="padding-bottom: 15px">
             <div class="modal-header">
-                <h4 class="modal-title title-popup-modal">Lịch sử sửa đổi báo cáo</h4>
+                <h4 class="modal-title title-popup-modal">Thông tin chi tiết quá trình thực hiện LCT</h4>
                 <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
             </div>
             <div class="modal-body">
                 <div id="horizontal-form">
                     <form class="form-horizontal" role="form" id="frmMaintainance" @*style="min-height:650px"*@>
 
-                        <div class="form-group row">
-                            <div class="col-sm-12">
-                                <script type="x-tmpl-mustache" id="template-history">
-     <tr data-id="{{Id}}">
-         <td style="text-align:left">{{NoiDung}}</td>
-         <td style="text-align:left">{{PhamVi}}</td>
-         <td style="text-align:left">{{KhoiLuong}}</td>
-         <td style="text-align:right">{{GiaTri}}</td>
-         <td style="text-align:center">{{HoanThanh}}</td>
-         <td style="text-align:center">{{NgaySua}}</td>
-         <td style="text-align:left">{{NguoiSua}}</td>
-     </tr>
-                                </script>
+                        <div class="form-group row" style="margin-left: 30px;margin-right:30px">
+                            <div class="row" id="thuchien-b1">
+
+                            </div>
+                            <div class="row" id="thuchien-b2">
+
+                            </div>
+                            <div class="row" id="thuchien-b3">
+
+                            </div>
+                            <div class="row" id="thuchien-b4">
+
+                            </div>
+                          
+                            <div class="row" id="thuchien-b5">
+
+                            </div>
+                           
+                            <div class="row" id="thuchien-b6">
+
                             </div>
                         </div>
 
@@ -37,3 +44,4 @@
         </div>
     </div>
 </div>
+

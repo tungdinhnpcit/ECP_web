@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECP_V2.DataAccess;
+using System;
 using System.Collections.Generic;
 
 namespace ECP_V2.Business.ViewModels.LCTGA
@@ -21,6 +22,8 @@ namespace ECP_V2.Business.ViewModels.LCTGA
         public DateTime? TGHoanThanh { get; set; }
 
         public List<LCTGhiAmThucHien> ThucHien { get; set; }
+
+        public List<tblNhanVien> NhanVien { get; set; }
     }
 
 
