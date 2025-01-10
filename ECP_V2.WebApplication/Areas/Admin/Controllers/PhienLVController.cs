@@ -3834,7 +3834,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 }
                 var role = _roleManager.Roles.Where(x => x.Name == roles).FirstOrDefault();
-                role.Id = role.Id ?? "0";
+
                 List<tblNhanVien> listNhanVienTemp = _kh_ser.ListNhanVienByRoleId(role.Id);
                 if (listNhanVienTemp != null && listNhanVienTemp.Count > 0)
                 {
@@ -13309,7 +13309,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     ////NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} duyệt phiên làm việc {1} thành công", User.Identity.Name, plv.NoiDung));
                     ///
                     #region Notify mobile khi update phiên
-                   // plv = _plviec_ser.GetById(plv.Id);
+                    // plv = _plviec_ser.GetById(plv.Id);
 
                     var userIds = new List<string>
                     {
@@ -13417,6 +13417,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         if (kt == "")
                         {
 
+
+
+                            plv = _plviec_ser.GetById(plv.Id);
+
                             #region Notify mobile khi update phiên
 
                             var userIds = new List<string>
@@ -13430,7 +13434,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                               plv.LanhDaoCongViec_Id,
                               plv.NguoiCapPhieu_Id,
                             //plv.NguoiDaiDienKT_Id // Phiên làm việc
-                         }.Where(id => !string.IsNullOrEmpty(id)).ToList();
+                         }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
                             if (userIds.Any())
                             {
                                 foreach (var userId in userIds)
@@ -13443,7 +13447,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         name = "NPCIT",
                                         header = "header",
                                         subtitle = " ",
-                                        contents = User.Identity.Name + "- Thêm mới phiên làm việc",
+                                        contents = User.Identity.Name + "- Duyệt phiên làm việc",
                                     };
 
                                     var jsonContent = JsonConvert.SerializeObject(requestData);
@@ -13477,8 +13481,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
 
                             #endregion
-
-                            plv = _plviec_ser.GetById(plv.Id);
 
                             string userName = WebConfigurationManager.AppSettings["userEmail"];
                             string password = WebConfigurationManager.AppSettings["passEmail"];

@@ -1422,7 +1422,7 @@ chuyenNPC = -1
                 }
             }
             //console.log("filter: " + filter);
-            loading('Đang tải dữ liệu...', 1);
+            //loading('Đang tải dữ liệu...', 1);
             //$("#preloader").unbind("click");
             //$('#preloader').click(function () {
             //    ///unloading();
@@ -1488,12 +1488,10 @@ chuyenNPC = -1
                 mainClass: 'my-mfp-zoom-in',
                 modal: true
             }).click(function () {
-
                 $("#spintTongSoPhieuNhay").val(1);
                 $("#inputLoaiPCT").val($(this).attr("id").split("_")[1]);
 
             });
-
                     unloading();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -1501,6 +1499,7 @@ chuyenNPC = -1
                     alert("Có lỗi, hãy kiểm tra kết nối internet.");
                 }
             });
+            unloading();
         }
 
         function pagelength_change(el) {
@@ -1582,7 +1581,7 @@ chuyenNPC = -1
                     unloading();
                 }
             });
-
+            unloading();
         }
 
         function DetailPhieuCongTac(PhienLvId) {
@@ -1604,7 +1603,7 @@ chuyenNPC = -1
                     unloading();
                 }
             });
-
+            unloading();
         }
 
         function AddComment(PhienLvId) {
@@ -1638,7 +1637,7 @@ chuyenNPC = -1
                     unloading();
                 }
             });
-
+            unloading();
         }
 
         //View biên bản khảo sát và PATC
@@ -2599,6 +2598,8 @@ chuyenNPC = -1
             }
 
             $.magnificPopup.close();
+            unloading();
+
     };
 
     function HuyDuyetModalConfirm() {
@@ -2701,12 +2702,14 @@ chuyenNPC = -1
                             text: 'Không thể duyệt Phiếu công tác này',
                             type: 'error'
                         });
+                        unloading();
                     }
 
                 });
             }
 
             $.magnificPopup.close();
+            unloading();
         };
 
         function NPCModalConfirm() {
@@ -2755,10 +2758,9 @@ chuyenNPC = -1
                             type: 'error'
                         });
                     }
-
                 });
             }
-
+            unloading();
             $.magnificPopup.close();
         };
 
@@ -2838,6 +2840,7 @@ chuyenNPC = -1
 
             }
             $.magnificPopup.close();
+            unloading();
 
         }
 
@@ -2917,6 +2920,7 @@ chuyenNPC = -1
 
             }
             $.magnificPopup.close();
+            unloading();
 
         }
 

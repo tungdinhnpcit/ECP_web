@@ -253,7 +253,7 @@
                 <p class=MsoNormal style=" text-align: right;">
                     <i style="text-align:center">
                         <span class="selectboxv1 radio-style" onlyone="1">
-                            <input maxlength="2" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
+                            <input maxlength="20" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style1 text-right selectbox-control" type="text" autocomplete="off" />
                             <span class="multiselect-wap"></span>
                         </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
                             <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
@@ -283,7 +283,7 @@
                         <input value="BIÊN BẢN" data-id="1" name="txtS11" style="text-align:right" searchbox="BIÊN BẢN" datasourceidname="listloaiBienBan" class="loaiBienBan_SelectEmp input-style selectbox-control" id="txtLoaiBC" type="text" placeholder="………" autocomplete="off" />
                         <span class="multiselect-wap"></span>
                     </span>KẾT LUẬN GIAO BAN AN TOÀN<span class="selectboxv1 radio-style text-right" onlyone="1">
-                        <input value="TUẦN" data-id="1" name="txtS11" searchbox="TUẦN" datasourceidname="listloaithoigianbc" class="loaithoigianbc_SelectEmp input-style selectbox-control" id="txtThoiGianBC" type="text" placeholder="………" autocomplete="off" />
+                        <input value="..." data-id="1" name="txtS11" searchbox="TUẦN" datasourceidname="listloaithoigianbc" class="loaithoigianbc_SelectEmp input-style selectbox-control" id="txtThoiGianBC" type="text" placeholder="………" autocomplete="off" />
                         <span class="multiselect-wap"></span>
                     </span>
                 </span>
@@ -312,7 +312,7 @@
         </p>
         <p>
             1. Thời gian:  <span class="selectboxv1 radio-style" onlyone="1">
-                lúc  <input maxlength="2" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
+                lúc  <input maxlength="5" value="" name="txtS62_tinh" style="width:40px" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
                 <span class="multiselect-wap"></span>
             </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
                 <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
@@ -536,7 +536,7 @@
 
     <div id="listnhanviendonvicongtac">
         <optgroup label="Nhân viên đơn vị công tác">
-            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "" });}
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "Worker" });}
         </optgroup>
     </div>
 
