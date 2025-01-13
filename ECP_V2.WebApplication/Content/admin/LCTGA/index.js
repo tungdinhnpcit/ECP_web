@@ -297,6 +297,13 @@
                 $('#thuchien-b4').empty();
                 $('#thuchien-b5').empty();
                 $('#thuchien-b6').empty();
+                $('#thuchien-b1').removeClass('buoc-dangth-lctga');
+                $('#thuchien-b2').removeClass('buoc-dangth-lctga');
+                $('#thuchien-b3').removeClass('buoc-dangth-lctga');
+                $('#thuchien-b4').removeClass('buoc-dangth-lctga');
+                $('#thuchien-b5').removeClass('buoc-dangth-lctga');
+                $('#thuchien-b6').removeClass('buoc-dangth-lctga');
+
                 if (response.data.Id > 0) {
 
                     var template = $('#template-history').html();
@@ -378,6 +385,9 @@
                         <div class="col-lg-12">
                             <b>Thời gian cập nhật:</b> ${formatdate(itemb4.AnhHT[0]?.NgayNhap)}
                         </div>
+                         <div class="col-lg-12">
+                            <b>Mô tả:</b> ${itemb4.AnhHT[0]?.MoTa??''}
+                        </div>
                         <div class="col-lg-12">
                             <div id="image-set-4" class="image-set">
                             </div>
@@ -400,6 +410,9 @@
                         </div>
                         <div class="col-lg-12">
                             <b>Thời gian cập nhật:</b> ${formatdate(itemb5.AnhHT[0]?.NgayNhap)}
+                        </div>
+                        <div class="col-lg-12">
+                            <b>Mô tả:</b> ${itemb5.AnhHT[0]?.MoTa ?? ''}
                         </div>
                         <div class="col-lg-12">
                             <div id="image-set-5" class="image-set">
@@ -449,14 +462,14 @@
                                 <img width = "10%" target="_blank" height = "10%" src=${src} alt="">
                             </a>`);
                         });
-                        $('[data-gallery="photoviewer"]').click(function (e) {
+                        $('#image-set-4 [data-gallery="photoviewer"]').click(function (e) {
                             e.preventDefault();
                             var items = [],
                                 options = {
                                     index: $(this).index(),
                                     appendTo: '.ChiTietLCTGA',
                                 };
-                            $('[data-gallery=photoviewer]').each(function () {
+                            $('#image-set-4 [data-gallery=photoviewer]').each(function () {
                                 items.push({
                                     src: $(this).attr('href'),
                                     title: $(this).attr('data-title'),
@@ -474,10 +487,25 @@
                         itemb5.AnhHT.map(el => {
                             var src = el.LinkFile + '';
                             src = src.replaceAll(' ', '%20');
-                            $('#image-set-5').append(` <a data-gallery="photoviewer" data-title="Ảnh Hiện Trường" data-group="a"
+                            $('#image-set-5').append(` <a data-gallery="photoviewer" data-title="Ảnh Hiện Trường" data-group="b"
                                href=${src}>
                                 <img width = "10%" target="_blank"  height = "10%" src=${src} alt="">
                             </a>`);
+                        });
+                        $('#image-set-5  [data-gallery="photoviewer"]').click(function (e) {
+                            e.preventDefault();
+                            var items = [],
+                                options = {
+                                    index: $(this).index(),
+                                    appendTo: '.ChiTietLCTGA',
+                                };
+                            $('#image-set-5  [data-gallery=photoviewer]').each(function () {
+                                items.push({
+                                    src: $(this).attr('href'),
+                                    title: $(this).attr('data-title'),
+                                });
+                            });
+                            new PhotoViewer(items, options);
                         });
                      
                     }
