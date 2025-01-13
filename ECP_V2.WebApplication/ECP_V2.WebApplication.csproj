@@ -2504,6 +2504,8 @@
     <Content Include="Content\MauNhapLieu\ThietBiNghiemNgat\tbnn.xlsx" />
     <Content Include="Content\MauNhapLieu\VSLD\vsld_QuanTracMoiTruong_Template.xlsx" />
     <Content Include="Content\mystyle.css" />
+    <Content Include="Content\photoviewer\photoviewer.css" />
+    <Content Include="Content\photoviewer\photoviewer.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Slide\Images\ajax-loader.gif" />
     <Content Include="Content\Slide\Images\back.png" />

@@ -218,7 +218,7 @@
             success: function (response) {
                 if (response.data) {
                     dsNV = response.data;
-                  
+
                 }
                 else {
                     javi.notify(response.message, "error");
@@ -256,14 +256,14 @@
         catch {
             return '';
         }
-        
+
     }
     $('[data-gallery="photoviewer"]').click(function (e) {
         e.preventDefault();
         var items = [],
             options = {
                 index: $(this).index(),
-                appendTo: '.modal_2',
+                appendTo: '.ChiTietLCTGA',
             };
         $('[data-gallery=photoviewer]').each(function () {
             items.push({
@@ -291,6 +291,12 @@
                 javi.startLoading();
             },
             success: function (response) {
+                $('#thuchien-b1').empty();
+                $('#thuchien-b2').empty();
+                $('#thuchien-b3').empty();
+                $('#thuchien-b4').empty();
+                $('#thuchien-b5').empty();
+                $('#thuchien-b6').empty();
                 if (response.data.Id > 0) {
 
                     var template = $('#template-history').html();
@@ -301,58 +307,76 @@
                     var itemb4 = response.data.ThucHien?.find(x => x.Buoc == 4 && x.TrangThai == 1);
                     var itemb5 = response.data.ThucHien?.find(x => x.Buoc == 5 && x.TrangThai == 1);
                     $('#thuchien-b1').append(`
-                          <div class="col-lg-12">
-                                Bước 1: Tạo lệnh 
+                          <div class="col-lg-12 css-tieudebuoc">
+                               <b>Bước 1: </b> Tạo lệnh 
                             </div>
                             <div class="col-lg-12">
-                                Người ra lệnh: ${dsNV.find(x => x.Id == itemb1.NguoiNhap)?.TenNhanVien}
+                               <b>Người ra lệnh:</b> ${dsNV.find(x => x.Id == itemb1.NguoiNhap)?.TenNhanVien}
                             </div>
                             <div class="col-lg-12">
-                                Người nhận lệnh: ${dsNV.find(x => x.Id == itemb1.NguoiNhanLenh)?.TenNhanVien}
+                               <b>Người nhận lệnh: </b> ${dsNV.find(x => x.Id == itemb1.NguoiNhanLenh)?.TenNhanVien}
                             </div>
                             <div class="col-lg-12">
-                            <a herf="${itemb1.LinkFile}">
-                                <i class="fa fa-music" aria-hidden="true"></i>
+                             <b>  File Ghi Âm:</b>
+                            <a href="${itemb1.LinkFile}">
+                                <i class="fa fa-microphone mic-link-ghiam" aria-hidden="true"></i>
                                 </a>
                             </div>
                     `)
                     if (itemb2) {
                         $('#thuchien-b2').append(`
-                      <div class="col-lg-12">
-                            Bước 2: Xác nhận lệnh
+                      <div class="col-lg-12 css-tieudebuoc">
+                           <b>Bước 2:</b> Xác nhận lệnh
                         </div>
                         <div class="col-lg-12">
-                            Người nhận lệnh:${dsNV.find(x => x.Id == itemb2.NguoiNhap)?.TenNhanVien}
+                            <b>Người nhận lệnh:</b> ${dsNV.find(x => x.Id == itemb2.NguoiNhap)?.TenNhanVien}
                         </div>
                         <div class="col-lg-12">
-                            Thời gian nhận lệnh: ${formatdate(itemb2.NgayNhap)}
+                            <b>Thời gian nhận lệnh:</b> ${formatdate(itemb2.NgayNhap)}
                         </div>
                      `)
+                    } else {
+                        $('#thuchien-b2').addClass('buoc-dangth-lctga');
+                        $('#thuchien-b2').append(`
+                        <div class="col-lg-12 css-tieudebuoc">
+                            <b>Bước 2:</b> Xác nhận lệnh
+                        </div>
+                       
+                        `)
                     }
                     if (itemb3) {
                         $('#thuchien-b3').append(`
-                       <div class="col-lg-12">
-                            Bước 3: Lấy tọa độ hiện trường
+                       <div class="col-lg-12 css-tieudebuoc">
+                            <b>Bước 3:</b> Lấy tọa độ hiện trường
                         </div>
                         <div class="col-lg-12">
-                            Người thực hiện:${dsNV.find(x => x.Id == itemb3.AnhHT[0]?.NguoiNhap)?.TenNhanVien}
+                            <b>Người thực hiện:</b> ${dsNV.find(x => x.Id == itemb3.AnhHT[0]?.NguoiNhap)?.TenNhanVien}
                         </div>
                         <div class="col-lg-12">
-                            Thời gian cập nhật:${formatdate(itemb3.AnhHT[0]?.NgayNhap)}
+                            <b>Thời gian cập nhật:</b> ${formatdate(itemb3.AnhHT[0]?.NgayNhap)}
                         </div>
-                        <div class="col-lg-12">
-                            Vị trí:<p><a target="_blank" href="http://maps.google.com/maps?q='${itemb3.AnhHT[0]?.ToaDoLong}','${itemb3.AnhHT[0]?.ToaDoLat}'>Xem bản đồ vị trí</a></p>
+                        <div class="col-lg-12" style="display: flex;"  >
+                            <b style="padding-right: 0.5rem;">Vị trí:</b>
+                            <p> <a target="_blank" href="http://maps.google.com/maps?q=${itemb3.AnhHT[0]?.ToaDoLat},${itemb3.AnhHT[0]?.ToaDoLong}(My+Point)&z=14&ll=${itemb3.AnhHT[0]?.ToaDoLat},${itemb3.AnhHT[0]?.ToaDoLong}">Xem bản đồ vị trí</a></p>
                         </div>
                      `)
+                    } else {
+                        $('#thuchien-b3').addClass('buoc-dangth-lctga');
+                        $('#thuchien-b3').append(`
+                        <div class="col-lg-12 css-tieudebuoc">
+                           <b>Bước 3:</b> Lấy tọa độ hiện trường
+                        </div>
+                       
+                        `)
                     }
                     if (itemb4) {
 
                         $('#thuchien-b4').append(`
-                       <div class="col-lg-12">
-                            Bước 4: Ảnh CBNV thực hiện
+                       <div class="col-lg-12 css-tieudebuoc">
+                            <b>Bước 4:</b> Ảnh CBNV thực hiện
                         </div>
                         <div class="col-lg-12">
-                            Thời gian cập nhật: ${formatdate(itemb4.AnhHT[0]?.NgayNhap)}
+                            <b>Thời gian cập nhật:</b> ${formatdate(itemb4.AnhHT[0]?.NgayNhap)}
                         </div>
                         <div class="col-lg-12">
                             <div id="image-set-4" class="image-set">
@@ -360,13 +384,22 @@
                         </div>
                      `)
                     }
+                    else {
+                        $('#thuchien-b4').addClass('buoc-dangth-lctga');
+                        $('#thuchien-b4').append(`
+                        <div class="col-lg-12 css-tieudebuoc">
+                        <b>Bước 4:</b> Ảnh CBNV thực hiện
+                        </div>
+                       
+                        `)
+                    }
                     if (itemb5) {
                         $('#thuchien-b5').append(`
-                      <div class="col-lg-12">
-                            Bước 5: Ảnh ảnh hiện trường
+                      <div class="col-lg-12 css-tieudebuoc">
+                           <b>Bước 5:</b> Ảnh ảnh hiện trường
                         </div>
                         <div class="col-lg-12">
-                            Thời gian cập nhật: ${formatdate(itemb5.AnhHT[0]?.NgayNhap)}
+                            <b>Thời gian cập nhật:</b> ${formatdate(itemb5.AnhHT[0]?.NgayNhap)}
                         </div>
                         <div class="col-lg-12">
                             <div id="image-set-5" class="image-set">
@@ -374,18 +407,35 @@
                         </div>
                      `)
                     }
+                    else {
+                        $('#thuchien-b5').addClass('buoc-dangth-lctga');
+                        $('#thuchien-b5').append(`
+                        <div class="col-lg-12 css-tieudebuoc">
+                          <b>Bước 5:</b> Ảnh ảnh hiện trường
+                        </div>
+                       
+                        `)
+                    }
                     if (itemb1.TGHoanThanh && itemb1.TrangThai == 3) {
                         $('#thuchien-b6').append(`
-                      <div class="col-lg-12">
-                            Bước 6: Xác nhận hoàn thành
+                      <div class="col-lg-12 css-tieudebuoc">
+                           <b>Bước 6:</b> Xác nhận hoàn thành
                         </div>
                         <div class="col-lg-12">
-                            Người thực hiện:  ${dsNV.find(x => x.Id == itemb1.NguoiNhanLenh)?.TenNhanVien}
+                            <b>Người thực hiện:</b>  ${dsNV.find(x => x.Id == itemb1.NguoiNhanLenh)?.TenNhanVien}
                         </div>
                         <div class="col-lg-12">
-                            Thời gian cập nhật:  ${formatdate(itemb1.TGHoanThanh)}
+                            <b>Thời gian cập nhật:</b>  ${formatdate(itemb1.TGHoanThanh)}
                         </div>
                      `)
+                    } else {
+                        $('#thuchien-b6').addClass('buoc-dangth-lctga');
+                        $('#thuchien-b6').append(`
+                        <div class="col-lg-12 css-tieudebuoc">
+                          <b>Bước 6:</b> Xác nhận hoàn thành
+                        </div>
+                       
+                        `)
                     }
 
 
@@ -399,7 +449,21 @@
                                 <img width = "10%" target="_blank" height = "10%" src=${src} alt="">
                             </a>`);
                         });
-                       
+                        $('[data-gallery="photoviewer"]').click(function (e) {
+                            e.preventDefault();
+                            var items = [],
+                                options = {
+                                    index: $(this).index(),
+                                    appendTo: '.ChiTietLCTGA',
+                                };
+                            $('[data-gallery=photoviewer]').each(function () {
+                                items.push({
+                                    src: $(this).attr('href'),
+                                    title: $(this).attr('data-title'),
+                                });
+                            });
+                            new PhotoViewer(items, options);
+                        });
                     }
                     else {
                         $('#image-set-4').empty();
@@ -415,7 +479,7 @@
                                 <img width = "10%" target="_blank"  height = "10%" src=${src} alt="">
                             </a>`);
                         });
-
+                     
                     }
                     else {
                         $('#image-set-5').empty();
