@@ -429,7 +429,7 @@
                        
                         `)
                     }
-                    if (itemb1.TGHoanThanh && itemb1.TrangThai == 3) {
+                    if (itemb1.TGHoanThanh && itemb1.TrangThai == 2) {
                         $('#thuchien-b6').append(`
                       <div class="col-lg-12 css-tieudebuoc">
                            <b>Bước 6:</b> Xác nhận hoàn thành
