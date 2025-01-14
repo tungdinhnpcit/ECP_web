@@ -4804,6 +4804,9 @@
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachChuTriGiaoBan.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\_ListCTHT.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\_Partial_ListCTHT.cshtml" />
+    <Content Include="Content\MauNhapLieu\HPPC\Ctybc-LLV.Tuan2.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
