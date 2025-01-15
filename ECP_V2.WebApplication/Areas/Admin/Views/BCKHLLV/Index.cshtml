@@ -260,51 +260,17 @@
                                 <option value="1">Đã chuyển NPC</option>
                             </select>
                         </div>
-                        @*@if (donVi != null)
-        {
-            if (((donviId.Length == 4 && donVi.DviCha.Equals("PA")) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
-            {
-
-            }
-            else
-            {
-                <div class="col-md-2">
-                    <a href="#modalAnimDuyetAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetAll">
-                        <i class="fa fa-check-circle"></i> &nbsp; Báo cáo
-                    </a>
-                </div>
-            }
-        }
-
-        @if (User.IsInRole("DuyetNPC"))
-        {
-            <div class="col-md-2">
-                <a href="#modalAnimGuiNPCAll" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="DuyetNPC">
-                    <i class="fa fa-check-circle"></i> &nbsp; Gửi công việc NPC
-                </a>
-            </div>
-        }*@
-                        @*<div class="col-md-2">
-            <a href="#modalAnimDeleteMultiple" class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;padding: 3px 9px;" id="XoaDanhSach">
-                <i class="fa fa-check-circle"></i> &nbsp; Xóa danh sách
-            </a>
-        </div>*@
                         <div class="col-md-2">
                             <a href="#" class="mb-xs mt-xs mr-xs btn btn-primary" onclick="xuatExcel()" style="cursor:pointer;padding: 3px 9px;" id="xuatexcel123">
                                 <i class="fa fa-file-excel-o"></i> &nbsp; Xuất excel
                             </a>
                         </div>
                         <div class="col-md-2">
-                            @*<a href="#modalAnimUpdateSoPhieu" title="Cập nhật phiếu công tác" class="on-default updateSoPhieu"><i class="fa fa-bookmark" style="font-size: 25px; cursor: pointer"></i>*@
-                            <a class="mb-xs mt-xs mr-xs btn btn-primary viewDocBC" href="#modalAnimUpdateSoPhieu" style="cursor:pointer;padding: 3px 9px;" id="xuatdoc123">
-                                <i class="fa fa-file-excel-o"></i> &nbsp; Xuất doc
+                            <a class="mb-xs mt-xs mr-xs btn btn-primary viewDocBC" href="#modalAnimUpdateSoPhieu" style="cursor:pointer;width:200px;height:28px;line-height:0; float: right;" id="xuatdoc123">
+                                <i class="fa fa-file-word-o"></i> &nbsp; Biên bản giao ban AT
                             </a>
                         </div>
-                        <div class="col-md-2">
-                            <a class="mb-xs mt-xs mr-xs btn btn-primary" style="cursor:pointer;width:200px;height:28px;line-height:0; float: right;" id="export_tuan_cty">
-                                <i class="fa fa-file-excel-o"></i> &nbsp; Báo cáo giao ban AT
-                            </a>
-                        </div>
+                       
                     </div>
 
 
@@ -387,7 +353,7 @@
 <div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style="max-width: 1200px; height: 750px;margin: 5px auto;">
     <section class="panel" style="width:100%; height:100%">
         <header class="panel-heading">
-            <h2 class="panel-title">CẬP NHẬT: PHIẾU/LỆNH CÔNG TÁC</h2>
+            <h2 class="panel-title">Biên bản giao ban an toàn </h2>
             <button class="btn btn-default modal-dismiss" onclick="ClosePhieuCongTac()" id="modal-dismiss" style="position: absolute; right: 10px; top: 10px; font-size: 14px; font-weight: bold;">x</button>
         </header>
         <div class="panel-body" style="width:100%; height:100%; padding:5px 0 0 0">

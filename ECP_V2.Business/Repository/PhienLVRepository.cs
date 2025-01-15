@@ -2340,6 +2340,31 @@ namespace ECP_V2.Business.Repository
         }
         #endregion
 
+
+        #region Báo cáo docx kết luận giao ban an toàn
+        public SoLongPLV_BaoCao Get_SoLuong_PLV_BaoCao(string DonViID, string TuNgay, string DenNgay)
+        {
+            try
+            {
+                using (var db = new ECP_V2Entities())
+                {
+                    var result = db.Database.SqlQuery<SoLongPLV_BaoCao>(
+                        @"EXEC Get_SoLuong_PLV_BaoCao @DonViID, @TuNgay, @DenNgay",
+                        new SqlParameter("@DonViID", DonViID),
+                        new SqlParameter("@TuNgay", TuNgay),
+                        new SqlParameter("@DenNgay", DenNgay)
+                    ).ToList();
+
+                    return result[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 
     public class PhienLVModel
@@ -2517,5 +2542,15 @@ namespace ECP_V2.Business.Repository
         public string CamDesc { get; set; }
         public string MaDvql { get; set; }
     }
+    public class SoLongPLV_BaoCao
+    {
+        public int TongSoPhien { get; set; }
+        public int TongSoPhienKeHoach { get; set; }
+        public int TongSoBoSung { get; set; }
+        public int TongSoDotXuat { get; set; }
+        public int TongSoKTKS_TrucTiep { get; set; }
+        public int TongSoKTKS_HinhAnh { get; set; }
+        public double TyLePhanTram { get; set; }
 
+    }
 }

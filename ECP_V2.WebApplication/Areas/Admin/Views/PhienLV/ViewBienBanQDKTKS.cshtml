@@ -56,7 +56,6 @@
     }
 
 
-
     DateTime TuNgay = (DateTime)ViewBag.TuNgay;
 
     DateTime DenNgay = (DateTime)ViewBag.DenNgay;
@@ -84,6 +83,7 @@
 <link href="/Content/kendo/kendo.common.min.css" rel="stylesheet" />
 <link href="/Content/kendo/kendo.default.min.css" rel="stylesheet" />
 <link href="/Scripts/fbphotobox/css/fbphotobox.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <script src="/Scripts/jquery-3.6.3.js"></script>
 <script src="/Scripts/AdminPanel/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
@@ -93,6 +93,8 @@
 @Scripts.Render("~/bundles/admin/jqueryIndex")
 
 <script src="/Scripts/autoresize.jquery.min.js"></script>
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 
 <style>
@@ -188,6 +190,20 @@
 </style>
 
 <div class=Section1 style="width: 800px; height: auto; margin: 0 auto; margin-bottom:80px; background-color: white; padding: 0px 50px 20px">
+    <div style="display: inline-block;min-width:150px;position: relative;margin-left:5px">
+        <select class="chosen-select" id="LoaiBaoCao">
+            <option value="">Loại báo cáo</option>
+            <option value="1">Báo cáo tuần</option>
+            <option value="2">Báo cáo tháng</option>
+        </select>
+    </div>
+    <div style="display: inline-block;position: relative;margin-left:10px">
+        <input type="text" id="ChonThoiGian" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
+    </div>
+
+    <div style="display: inline-block;position: relative;top:-5px">
+        <a title="Làm mới" onclick="ShowData()" class="btn btn-success btn-sm"><i class="fa "> Làm mới</i></a>
+    </div>
     <p class=MsoNormal>
         <a name="_GoBack"></a><b>
             <span><o:p>&nbsp;</o:p></span>
@@ -249,9 +265,9 @@
                 </p>
 
             </td>
-            <td valign="top" style='width:400px;padding:0in 5.4pt 0in 5.4pt'>
+            <td valign="top" style='width:500px;padding:0in 5.4pt 0in 5.4pt'>
                 <p class=MsoNormal style=" text-align: right;">
-                    <i style="text-align:center">
+                    <i style="text-align:center; display:flex">
                         <span class="selectboxv1 radio-style" onlyone="1">
                             <input maxlength="20" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style1 text-right selectbox-control" type="text" autocomplete="off" />
                             <span class="multiselect-wap"></span>
@@ -277,28 +293,37 @@
 
     <div style="width:100%">
         <p class=MsoNormal id="divKLGBAT">
-            <b>
-                <span style='mso-bidi-font-size:12.0pt;color:black'>
-                    <span class="selectboxv1 radio-style" onlyone="1">
-                        <input value="BIÊN BẢN" data-id="1" name="txtS11" style="text-align:right" searchbox="BIÊN BẢN" datasourceidname="listloaiBienBan" class="loaiBienBan_SelectEmp input-style selectbox-control" id="txtLoaiBC" type="text" placeholder="………" autocomplete="off" />
-                        <span class="multiselect-wap"></span>
-                    </span>KẾT LUẬN GIAO BAN AN TOÀN<span class="selectboxv1 radio-style text-right" onlyone="1">
-                        <input value="..." data-id="1" name="txtS11" searchbox="TUẦN" datasourceidname="listloaithoigianbc" class="loaithoigianbc_SelectEmp input-style selectbox-control" id="txtThoiGianBC" type="text" placeholder="………" autocomplete="off" />
-                        <span class="multiselect-wap"></span>
-                    </span>
-                </span>
-
-            </b>
+            <div>
+                <div style='font-size: 12.0pt; color: black; display: flex; text-transform: uppercase; font-weight: bold; justify-content:center'>
+                    <span class=" radio-style" onlyone="1">
+                    </span> BIÊN BẢN KẾT LUẬN GIAO BAN AN TOÀN&nbsp;<div class="selectboxv1 radio-style text-right" onlyone="1">
+                        <P class="txtThoiGianBC" style="text-transform: uppercase; font-weight: bold"></P>
+                    </div>
+                </div>
+            </div>
         </p>
     </div>
     <div style="width:100%; text-align:center">
         <p class=MsoNormal style=" text-align: center;">
             <i style="text-align:center">
-                (Từ  ngày <span class="selectboxv1 radio-style" onlyone="1">@TuNgay.ToString("dd")</span>
-                tháng <span class="selectboxv1 radio-style" onlyone="1">@TuNgay.ToString("MM")</span>
-                đến ngày <span class="selectboxv1 radio-style" onlyone="1">@DenNgay.ToString("dd")</span>
-                tháng <span class="selectboxv1 radio-style" onlyone="1">@DenNgay.ToString("MM")</span>
-                năm <span class="selectboxv1 radio-style" onlyone="1">@DenNgay.ToString("yyyy")</span>
+                Từ <span>@ViewBag.TuNgay</span> đến <span>@ViewBag.DenNgay</span>
+                @*(Từ  ngày <span class="selectboxv1 radio-style" onlyone="1">
+            <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayBatDau" id="ngayBatDau" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
+            <span class="multiselect-wap"></span>
+        </span>
+        tháng <span class="selectboxv1 radio-style" onlyone="1">
+            <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangBatDau" id="thangBatDau" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
+            <span class="multiselect-wap"></span>
+        </span>
+        đến ngày <span class="selectboxv1 radio-style" onlyone="1">
+            <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayKetThuc" id="ngayKetThuc" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
+            <span class="multiselect-wap"></span>
+        </span>
+        tháng <span class="selectboxv1 radio-style" onlyone="1">
+            <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangKetThuc" id="thangKetThuc" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
+            <span class="multiselect-wap"></span>
+        </span>
+        năm <span class="selectboxv1 radio-style" style="font-weight:bold" name="namKetThuc" id="namKetThuc" onlyone="1">...)</span>*@
             </i>
         </p>
     </div>
@@ -312,7 +337,7 @@
         </p>
         <p>
             1. Thời gian:  <span class="selectboxv1 radio-style" onlyone="1">
-                lúc  <input maxlength="5" value="" name="txtS62_tinh" style="width:40px" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
+                lúc  <input maxlength="5" name="txtS62_tinh" style="width:40px" value="@DateTime.Now.ToString("HH:mm")" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
                 <span class="multiselect-wap"></span>
             </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
                 <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
@@ -356,18 +381,22 @@
             </b>
 
         </p>
-
-        <p class=MsoNormal style=" text-align: left;">
+        <div class=MsoNormal style=" text-align: left; display:flex">
             <b style="text-align: left">
-                1. Số lượng công việc đơn vị đã thực hiện trong tuần:
+                1. Số lượng công việc đơn vị đã thực hiện trong tuần:&nbsp;
             </b>
-            Số lượng @(tongcv).
-            Phát sinh, bổ sung: @(CVBoSung);  Đột xuất @(CVDotXuat)
+            <p id="TongSoPhien" style="font-weight:bold">@ViewBag.TongSoPhien</p> &nbsp;
+        </div>
 
-        </p>
-        <p class=MsoNormal style=" text-align: left;">
-            Tỷ lệ PLV bổ sung, đột xuất: @(tyleKH)% PLV được lập trong KH tuần.
-        </p>
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            <p style="font-style:italic">Trong đó: </p> &nbsp;
+            Có kế hoạch:&nbsp; <p id="TongSoPhienKeHoach" style="font-weight:bold"> @ViewBag.TongSoPhienKeHoach</p> &nbsp;
+            Phát sinh, bổ sung:&nbsp; <p id="TongSoBoSung" style="font-weight:bold">@ViewBag.TongSoBoSung</p> &nbsp;
+            Đột xuất:&nbsp; <p id="TongSoDotXuat" style="font-weight:bold">@ViewBag.TongSoDotXuat</p> &nbsp;
+        </div>
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            Tỷ lệ PLV bổ sung, đột xuất:&nbsp;<p id="TyLePhanTram" style="font-weight:bold">@ViewBag.TyLePhanTram</p>% PLV được lập trong KH tuần.
+        </div>
         <p class=MsoNormal style=" text-align: left;">
             Đánh giá: cần đánh giá, phân tích được chất lượng công tác lập KH công việc, tỷ lệ bổ sung, đột xuất, hoãn huỷ cao hay thấp, nguyên nhân, lý do. Trách nhiệm thuộc về bộ phận, cá nhân nào. Từ đó, có các chỉ đạo để công tác lập KH công việc chất lượng hơn.
         </p>
@@ -376,12 +405,12 @@
                 2. Công tác  KTKS ATLĐ PLV:
             </b>
         </p>
-        <p class=MsoNormal style=" text-align: left;">
-            - Số lượng PLV được KTKS ATLĐ trực tiếp tại hiện trường: @(CVKTKSTT) PLV;
-        </p>
-        <p class=MsoNormal style=" text-align: left;">
-            - Số lượng PLV được KTKS ATLĐ qua hình ảnh trên ECP: PLV;
-        </p>
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            - Số lượng PLV được KTKS ATLĐ trực tiếp tại hiện trường:&nbsp; <p id="TongSoKTKS_TrucTiep" style="font-weight:bold">@ViewBag.TongSoKTKS_TrucTiep</p>&nbsp; PLV;
+        </div>
+        <div class=MsoNormal style=" text-align: left; display: flex">
+            - Số lượng PLV được KTKS ATLĐ qua hình ảnh trên ECP:&nbsp;<p id="TongSoKTKS_HinhAnh" style="font-weight:bold">@ViewBag.TongSoKTKS_HinhAnh</p> &nbsp;PLV;
+        </div>
         <p class=MsoNormal style=" text-align: left;">
             <b>Đánh giá:</b> cần đánh giá, phân tích được (không giới hạn) các nội dung sau:
         </p>
@@ -635,7 +664,7 @@
             $(this).find('th[style]').css('width', '');
         });
 
- 
+
 
 
     });
@@ -740,6 +769,189 @@
 
     }
 
+    let timeout;
+
+
+
+    $.datepicker.regional["vi-VN"] = {
+        closeText: "Đóng",
+        prevText: "Trước",
+        nextText: "Sau",
+        currentText: "Hôm nay",
+        monthNames: ["Tháng một", "Tháng hai", "Tháng ba", "Tháng tư", "Tháng năm", "Tháng sáu", "Tháng bảy", "Tháng tám", "Tháng chín", "Tháng mười", "Tháng mười một", "Tháng mười hai"],
+        monthNamesShort: ["Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Mười một", "Mười hai"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+        weekHeader: "Tuần",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    };
+    $.datepicker.setDefaults($.datepicker.regional["vi-VN"]);
+    // Thay đổi loại báo cáo
+
+    $("#LoaiBaoCao").change(function () {
+        var loaiBaoCao = $(this).val();
+        var thoiGianPicker = $("#ChonThoiGian");
+        // Xóa DatePicker cũ nếu có
+        if (thoiGianPicker.data('datepicker')) {
+            thoiGianPicker.datepicker("destroy");
+        }
+        console.log('Check loaiBaoCao', loaiBaoCao)
+        if (loaiBaoCao == "1") {
+            $(".txtThoiGianBC").text("tuần")
+            thoiGianPicker.val("")
+            // Cấu hình chọn tuần
+            thoiGianPicker.attr('placeholder', 'Chọn tuần');
+            if (thoiGianPicker) {
+                thoiGianPicker.datepicker({
+                    showWeek: true,
+                    firstDay: 1,
+                    dateFormat: "dd/mm/yy",
+                    onClose: function (dateText, inst) {
+                        var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                        if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+                            const weekNumber = $.datepicker.iso8601Week(selectedDate); // Lấy số tuần
+                            const year = selectedDate.getFullYear(); // Lấy năm
+                            $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+                        } else {
+                            $("#ChonThoiGian").val("");
+                        }
+                    }
+                }).datepicker("show");
+            }
+
+
+        } else if (loaiBaoCao == "2") {
+
+            $(".txtThoiGianBC").text("tháng")
+            thoiGianPicker.val("");
+            // Cấu hình chọn ngày bình thường
+            thoiGianPicker.attr('placeholder', 'Chọn ngày');
+            if (thoiGianPicker) {
+                thoiGianPicker.datepicker({
+                    dateFormat: "dd/mm/yy", // Định dạng ngày
+                    onClose: function (dateText, inst) {
+                        var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                        if (selectedDate) {
+                            $("#ChonThoiGian").val($.datepicker.formatDate("mm/yy", selectedDate));
+                        } else {
+                            $("#ChonThoiGian").val("");
+                        }
+                    }
+                }).datepicker("show");
+            }
+
+        } else {
+            thoiGianPicker.val("")
+            thoiGianPicker.attr('placeholder', 'Chọn thời gian');
+        }
+    });
+
+        function ShowData() {
+        var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
+        var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
+
+
+        if (loaiBaoCao == 2) {
+            var thoiGianParts = thoiGian.split('/');
+            var month = parseInt(thoiGianParts[0]);  // Tháng
+            var year = parseInt(thoiGianParts[1]);  // Năm
+
+            // Tính ngày đầu tháng và ngày cuối tháng
+            var firstDay = new Date(year, month - 1, 1);  // Ngày đầu tháng
+            var lastDay = new Date(year, month, 0);  // Ngày cuối tháng (ngày 0 của tháng tiếp theo)
+            var tuNgay = formatDate(firstDay)
+            var denNgay = formatDate(lastDay)
+            $("#ngayBatDau").val(tuNgay.slice(6, 8));
+            $("#thangBatDau").val(tuNgay.slice(4, 6));
+            $("#ngayKetThuc").val(denNgay.slice(6, 8));
+            $("#thangKetThuc").val(denNgay.slice(4, 6));
+            $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+            Get_SoLuong_PLV('@DonVi.Id', tuNgay, denNgay )
+        } else {
+            var regex = /Tuần (\d+) năm (\d{4})/;
+            var match = thoiGian.match(regex);
+
+            if (match) {
+                var weekNumber = parseInt(match[1]);  // Tuần thứ mấy
+                var year = parseInt(match[2]);  // Năm
+
+                // Tính ngày bắt đầu của tuần (Thứ Hai)
+                var startOfWeek = getStartOfWeek(year, weekNumber);
+                var endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // Ngày cuối tuần (Chủ Nhật)
+                var tuNgay = formatDate(startOfWeek)
+                var denNgay = formatDate(endOfWeek)
+                $("#ngayBatDau").val(tuNgay.slice(6, 8));
+                $("#thangBatDau").val(tuNgay.slice(4, 6));
+                $("#ngayKetThuc").val(denNgay.slice(6, 8));
+                $("#thangKetThuc").val(denNgay.slice(4, 6));
+                $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+
+                Get_SoLuong_PLV ('@DonVi.Id', tuNgay, denNgay )
+;
+            } else {
+                console.log("Dữ liệu không hợp lệ");
+            }
+        }
+    }
+
+    // Hàm để tính ngày đầu tuần (Thứ Hai) của một tuần trong năm
+    function getStartOfWeek(year, weekNumber) {
+        var date = new Date(year, 0, 1); // Bắt đầu từ ngày 1 tháng 1 của năm
+        var daysOffset = (date.getDay() === 0 ? 6 : date.getDay() - 1); // Điều chỉnh nếu ngày 1 tháng 1 là Chủ Nhật
+        date.setDate(date.getDate() - daysOffset); // Tính Thứ Hai đầu tiên của năm
+
+        // Thêm số tuần để đến tuần cần tính
+        date.setDate(date.getDate() + (weekNumber - 1) * 7);
+
+        return date;
+    }
+
+    // Hàm để định dạng ngày theo định dạng yyyymmdd
+    function formatDate(date) {
+        var year = date.getFullYear();
+        var month = ("0" + (date.getMonth() + 1)).slice(-2); // Đảm bảo tháng có 2 chữ số
+        var day = ("0" + date.getDate()).slice(-2); // Đảm bảo ngày có 2 chữ số
+        return year + month + day;
+    }
+
+
+    function Get_SoLuong_PLV(DonViID, ngayBatDau, ngayKetThuc) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            $.ajax({
+                url: '/BCKHLLV/Get_SoLuong_PLV_BaoCao',
+                type: 'GET',
+                data: {
+                    DonViID: DonViID,
+                    TuNgay: ngayBatDau,
+                    DenNgay: ngayKetThuc
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+                        $('#TongSoPhien').text(data.TongSoPhien);
+                        $('#TongSoPhienKeHoach').text(data.TongSoPhienKeHoach);
+                        $('#TongSoBoSung').text(data.TongSoBoSung);
+                        $('#TongSoDotXuat').text(data.TongSoDotXuat);
+                        $('#TongSoKTKS_TrucTiep').text(data.TongSoKTKS_TrucTiep);
+                        $('#TongSoKTKS_HinhAnh').text(data.TongSoKTKS_HinhAnh);
+                        $('#TyLePhanTram').text(data.TyLePhanTram);
+                    } else {
+                        console.log("Không có dữ liệu:", response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi AJAX:", error);
+                }
+            });
+        }, 2000);
+    }
 </script>
 
 

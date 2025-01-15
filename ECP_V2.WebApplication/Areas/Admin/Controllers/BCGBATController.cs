@@ -49,7 +49,7 @@ using static System.Net.WebRequestMethods;
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
     [Authorize]
-    public class BCKHLLVController : UTController
+    public class BCGBATController : UTController
     {
 
         //

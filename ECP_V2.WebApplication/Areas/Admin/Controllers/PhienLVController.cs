@@ -715,6 +715,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 ViewBag.TuNgay = DateTime.ParseExact(DateFrom, format, CultureInfo.InvariantCulture);
                 ViewBag.DenNgay = DateTime.ParseExact(DateTo, format, CultureInfo.InvariantCulture);
 
+
+
+                string formattedDateFrom = DateTime.Parse(DateFrom).ToString("yyyyMMdd");
+                string formattedDateTo = DateTime.Parse(DateTo).ToString("yyyyMMdd");
+
+                // lấy lại data
+                var data = _plviec_ser.Get_SoLuong_PLV_BaoCao(DonViId, formattedDateFrom, formattedDateTo);
+                if (data != null)
+                {
+                    /// truyền tham số
+                    ViewBag.TongSoPhien = data.TongSoPhien;
+                    ViewBag.TongSoPhienKeHoach = data.TongSoPhienKeHoach;
+                    ViewBag.TongSoBoSung = data.TongSoBoSung;
+                    ViewBag.TongSoDotXuat = data.TongSoDotXuat;
+                    ViewBag.TongSoKTKS_TrucTiep = data.TongSoKTKS_TrucTiep;
+                    ViewBag.TongSoKTKS_HinhAnh = data.TongSoKTKS_HinhAnh;
+                    ViewBag.TyLePhanTram = data.TyLePhanTram;
+                }
                 List<tblNhanVien> nhanVien = _kh_ser.List();
                 if (nhanVien != null && nhanVien.Count > 0)
                 {
@@ -3063,7 +3081,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 pct = _pcongtac_ser.GetById(plv.MaPCT);
 
                 byte[] file = safeTrainRepository.GetFileTmpSign(0, pct.MaLP.Value);//System.IO.File.ReadAllBytes("C:\\Users\\Admin\\Downloads\\6. Phieu KT DZ NGAY TT.xls");
-                //Lấy tham số
+                                                                                    //Lấy tham số
                 string param = GetParamSign(plv.Id, pct.MaLP.Value, 0);
 
                 string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + System.Convert.ToBase64String(file) + "\"\r\n}";
@@ -3103,7 +3121,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 //Read file thử 0 phát.
                 byte[] file = safeTrainRepository.GetFileTmpSign(step, loaiphieu);//System.IO.File.ReadAllBytes("C:\\Users\\Admin\\Downloads\\6. Phieu KT DZ NGAY TT.xls");
-                //Lấy tham số
+                                                                                  //Lấy tham số
                 string param = GetParamSign(plv.Id, loaiphieu, step);
 
                 string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + System.Convert.ToBase64String(file) + "\"\r\n}";
@@ -4955,7 +4973,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         }
                                                     }
 
-                                                   
+
                                                 }
                                             }
                                             catch
@@ -5840,7 +5858,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         }
                                         catch
                                         { }
-                                       
+
                                         #region Kiểm tra hiện trường
                                         // Kiểm tra hiện trường
                                         var HinhThucKiemTra = ds.Tables[0].Rows[i][18].ToString().Replace("\n", " ").Replace("  ", " ").Trim().ToUpper(); ;
@@ -5893,7 +5911,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         }
                                                     }
 
-                                                   
+
                                                 }
                                             }
                                             catch
@@ -6829,7 +6847,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         }
                                                     }
 
-                                                   
+
                                                 }
                                             }
                                             catch
@@ -17775,7 +17793,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { success = false, responseText = "Lỗi cập nhật phiếu công tác. Chi tiết: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        #endregion        
+        #endregion
         #region PhieuCongTac
         [HasCredential(MenuCode = "PCT;DSPLCT")]
         public ActionResult IndexPhieuCongTac(string listLCV = "", string id = "", string date = "")
@@ -19556,6 +19574,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
         #endregion
+
 
 
     }

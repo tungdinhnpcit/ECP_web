@@ -362,6 +362,7 @@
     <Compile Include="Areas\Admin\Controllers\BaoCaoLichSuController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_NoiDungController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_TonThatController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BCGBATController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCKHLLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCKTGSController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCSuco_ChitietController.cs" />
@@ -4807,6 +4808,7 @@
     <Content Include="Content\MauNhapLieu\HPPC\Ctybc-LLV.Tuan2.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Admin\Views\BCGBAT\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
