@@ -37,19 +37,19 @@
         </div>
         <div class="col-lg-3">
             <label for="ChonThoiGian">Chọn thời gian:</label>
-            <input type="text" id="ChonThoiGian" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
+            <input type="text" id="ChonThoiGian" onchange="onchangeThoiGian()" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
             </>
         </div>
         <div class="col-lg-2">
-            <div class="form-group" style="padding-top:28px;float:right;">
+            <div class="form-group" id="btnView" style="padding-top:28px;float:right; display:none">
                 <a class="mb-xs mt-xs mr-xs btn btn-primary viewDocBC" href="#modalAnimUpdateSoPhieu" style="cursor:pointer;width:100px ;height:28px;line-height:0; float: right;" id="xuatdoc123" type="button">
-                    <i class="fa fa-file-word-o"></i>Xem
+                    <i class="fa fa-file-word-o"></i> &nbsp; Xem
                 </a>
             </div>
         </div>
     </div>
 
-    <div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style="max-width: 1200px; height: 750px;margin: 5px auto;">
+    <div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style="max-width: 1200px; height: 80vh;">
         <section class="panel" style="width:100%; height:100%">
             <header class="panel-heading">
                 <h2 class="panel-title">Biên bản giao ban an toàn </h2>
@@ -92,6 +92,8 @@
 </style>
 
 <script>
+
+
     $(function () {
         $('a.viewDocBC').magnificPopup({
             type: 'inline',
@@ -104,12 +106,24 @@
             removalDelay: 300,
             mainClass: 'my-mfp-zoom-in',
             modal: true
-        }).click(function () {
-                    var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
-        var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
+        }).click(function (event) {
+
+            var thoiGian = $("#ChonThoiGian").val();
+            var TuanThang = "";
+            if (!thoiGian || thoiGian=="") {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chọn thời gian!',
+                    type: 'error'
+                });
+                return false
+            }
+            else {
+            $('#modalAnimUpdateSoPhieu').modal('show');
+            var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
             var tuNgay = "";
             var denNgay = "";
-        if (loaiBaoCao == 2) {
+             if (loaiBaoCao == 2) {
             var thoiGianParts = thoiGian.split('/');
             var month = parseInt(thoiGianParts[0]);  // Tháng
             var year = parseInt(thoiGianParts[1]);  // Năm
@@ -117,15 +131,17 @@
             // Tính ngày đầu tháng và ngày cuối tháng
             var firstDay = new Date(year, month - 1, 1);  // Ngày đầu tháng
             var lastDay = new Date(year, month, 0);  // Ngày cuối tháng (ngày 0 của tháng tiếp theo)
-             tuNgay = formatDate(firstDay)
-             denNgay = formatDate(lastDay)
+            tuNgay = formatDate(firstDay);
+            denNgay = formatDate(lastDay);
+            TuanThang = thoiGianParts[0];
             $("#ngayBatDau").val(tuNgay.slice(6, 8));
             $("#thangBatDau").val(tuNgay.slice(4, 6));
             $("#ngayKetThuc").val(denNgay.slice(6, 8));
             $("#thangKetThuc").val(denNgay.slice(4, 6));
             $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
             Get_SoLuong_PLV('@donviId', tuNgay, denNgay )
-        } else {
+             }
+             else {
             var regex = /Tuần (\d+) năm (\d{4})/;
             var match = thoiGian.match(regex);
 
@@ -138,7 +154,9 @@
                 var endOfWeek = new Date(startOfWeek);
                 endOfWeek.setDate(startOfWeek.getDate() + 6); // Ngày cuối tuần (Chủ Nhật)
                  tuNgay = formatDate(startOfWeek)
-                 denNgay = formatDate(endOfWeek)
+                denNgay = formatDate(endOfWeek)
+                TuanThang = match[1];
+
                 $("#ngayBatDau").val(tuNgay.slice(6, 8));
                 $("#thangBatDau").val(tuNgay.slice(4, 6));
                 $("#ngayKetThuc").val(denNgay.slice(6, 8));
@@ -146,20 +164,50 @@
                 $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
 
                 Get_SoLuong_PLV ('@donviId', tuNgay, denNgay )
-;
-            } else {
-                console.log("Dữ liệu không hợp lệ");
-            }
-        }
+                 }
+             else { console.log("Dữ liệu không hợp lệ"); }
+             }
             DateFrom = $('#GioBd').val();
             DateTo = $('#GioKt').val();
             DonViId = $('#cmbDonViID').val();
             var DateFrom = tuNgay.slice(6, 8) + "/" + tuNgay.slice(4, 6) + "/" + tuNgay.slice(0, 4);
             var DateTo = denNgay.slice(6, 8) + "/" + denNgay.slice(4, 6) + "/" + denNgay.slice(0, 4);
-            
-            $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + '@donviId');
-        });
-    });
+            var TenLoaiBaoCao = loaiBaoCao == 1 ? 'tuần' : "tháng";
+                $.ajax({
+                    url: '/BCGBAT/Get_BienBan_ByTime',
+                    method: 'GET',
+                    data: {
+                        loaiBaoCao: loaiBaoCao,
+                        tuanThang: TuanThang,
+                        nam: 2025,
+                        idDonVi: '@donviId'
+                    },
+                    success: function (response) {
+                        console.log('Dữ liệu :', response);
+                        if (response.success) {
+                            console.log('Dữ liệu nhận được:', response.Data[0]);
+
+                            var data = response.Data[0];
+                            if (data[6].Value != null) {
+
+
+                            }else{
+                                 $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + '@donviId' + "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang );
+                            }
+                            // Xử lý hoặc hiển thị dữ liệu lên giao diện
+                        } else {
+                                 $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + '@donviId' + "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang );
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý lỗi nếu có
+                        console.error('Có lỗi xảy ra:', error);
+                    }
+                });
+            }
+        })
+
+     });
     let timeout;
     $.datepicker.regional["vi-VN"] = {
         closeText: "Đóng",
@@ -179,8 +227,18 @@
         yearSuffix: ""
     };
     $.datepicker.setDefaults($.datepicker.regional["vi-VN"]);
-    // Thay đổi loại báo cáo
+    function onchangeThoiGian() {
+        var thoiGian = $("#ChonThoiGian").val();
+        console.log("check thời gian123", thoiGian)
+        if (thoiGian && thoiGian != "" && thoiGian != null) {
+            $("#btnView").css("display", "flex");
+        } else {
+            $("#btnView").css("display", "none");
+        }
+    };
 
+
+    // Thay đổi loại báo cáo
     $("#LoaiBaoCao").change(function () {
         var loaiBaoCao = $(this).val();
         var thoiGianPicker = $("#ChonThoiGian");
@@ -239,10 +297,10 @@
         }
     });
 
-        function ShowData() {
+    function ShowData() {
         var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
         var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
-
+        var TuanThang = "";
 
         if (loaiBaoCao == 2) {
             var thoiGianParts = thoiGian.split('/');
@@ -344,5 +402,8 @@
         $("#baocaoctwords").attr("src", "");
         $.magnificPopup.close();
     }
+
+
+
 </script>
 <script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>

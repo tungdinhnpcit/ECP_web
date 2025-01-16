@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.Util;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Finance;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
@@ -42,6 +43,7 @@ using System.Web.Helpers;
 using System.Web.Mvc;
 //using System.Web.Services.Description;
 using System.Web.UI.WebControls;
+using static BaoCaoAnToanRepository;
 using static ECP_V2.WebApplication.Models.ImageModel;
 using static NPOI.HSSF.Util.HSSFColor;
 using static System.Net.WebRequestMethods;
@@ -78,6 +80,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         private d_LoaiCongViecRepository loaicv_ser = new d_LoaiCongViecRepository();
         private TramRepository tramRepository = new TramRepository();
         private string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
+        private BaoCaoAnToanRepository _baocaoantoan = new BaoCaoAnToanRepository();
 
         SafeTrainRepository safeTrainRepository = new SafeTrainRepository();
         ApprovePlanReponsitory appPlanRepo = new ApprovePlanReponsitory();
@@ -86,8 +89,21 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         //string path = url + "ConvertHtmlToPdf";
         string path = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString() + "jxlsToFile";
+        string apiFile = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
+
         //Lấy file template từ database
         //[AreaAuthorization]
+        public class FileUploadResponse
+        {
+            public bool State { get; set; }
+            public string Message { get; set; }
+            public string Data { get; set; }
+        }
+        public class ResponseData
+        {
+            public bool Status { get; set; }
+            public dynamic Data { get; set; }
+        }
 
         private void DisposeAll()
         {
@@ -294,6 +310,149 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 return Json(new { message = ex.Message, success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Insert_BienBanAnToan(FormCollection form, HttpPostedFileBase file, HttpPostedFileBase fileKeHoach)
+        {
+            try
+            {
+                // Lấy thông tin từ form
+                var bienBan = new ModelBaoCaoAnToan
+                {
+                    LoaiBaoCao = Convert.ToInt32(form["LoaiBaoCao"]),
+                    TuanThang = Convert.ToInt32(form["TuanThang"]),
+                    Nam = Convert.ToInt32(form["Nam"]),
+                    NgayBatDau = form["NgayBatDau"],
+                    NgayKetThuc = form["NgayKetThuc"],
+                    TrangThai = Convert.ToInt32(form["TrangThai"]),
+                    IdNguoiTrinhKy = User.Identity.GetUserId(),
+                    HoTenNguoiTrinh = User.Identity.Name,
+                    IdDonVi = form["IdDonVi"]
+                };
+                var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(bienBan);
+                var result = new ResponseData();
+                var fileSize = form["fileSize"];
+                var fileKeHoachSize = form["fileKeHoachSize"];
+                if (IdTaiLieu > 0 && fileKeHoach != null && fileKeHoach.ContentLength > 0)
+                {
+                    result = await UploadFileToApi(fileKeHoach, bienBan.IdDonVi);
+                    if (result.Status)
+                    {
+                        var InfoFile = new ModelFilePath
+                        {
+                            IdLoaiFile = 2,
+                            IdTaiLieu = IdTaiLieu,
+                            TenFile = result.Data.Split(new string[] { "\\" }, StringSplitOptions.None).Last(),
+                            MimeType = fileKeHoach.ContentType,
+                            Size = fileKeHoachSize != null ? Convert.ToInt32(fileKeHoachSize) : file?.ContentLength ?? 0,
+                            URL = result.Data,
+                            TrangThai = 1,
+                            IdNguoiCapNhat = User.Identity.GetUserId(),
+                        };
+                        await _baocaoantoan.Insert_FilePath(InfoFile);
+                    }
+                }
+                if (IdTaiLieu > 0 && file != null && file.ContentLength > 0)
+                {
+                    result = await UploadFileToApi(file, bienBan.IdDonVi);
+                    if (result.Status)
+                    {
+                        var InfoFile = new ModelFilePath
+                        {
+                            IdLoaiFile = 1,
+                            IdTaiLieu = IdTaiLieu,
+                            TenFile = result.Data.Split(new string[] { "\\" }, StringSplitOptions.None).Last(),
+                            MimeType = file.ContentType,
+                            Size = fileSize != null ? Convert.ToInt32(fileSize) : file?.ContentLength ?? 0,
+                            URL = result.Data,
+                            TrangThai = 1,
+                            IdNguoiCapNhat = User.Identity.GetUserId(),
+                        };
+                        await _baocaoantoan.Insert_FilePath(InfoFile);
+
+                    }
+                }
+                if (result.Status)
+                {
+                    return Json(new { message = "Insert thành công", success = true });
+                }
+                else
+                {
+                    return Json(new { message = "Lỗi", success = false });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message, success = false });
+            }
+        }
+
+        private async Task<ResponseData> UploadFileToApi(HttpPostedFileBase file, string IdDonVi)
+        {
+            var res = new ResponseData();
+            res.Status = false;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var content = new MultipartFormDataContent();
+
+                    var fileStream = file.InputStream;
+                    content.Add(new StreamContent(fileStream), "file", file.FileName);
+                    //var API = apiFile + "api/v1.0/File/UploadFile?IdDonVi=" + IdDonVi;
+                    var API = "http://localhost:5000/api/v1.0/File/UploadFile?IdDonVi=PNGV00";
+                    var response = await client.PostAsync(API, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        res.Status = true;
+                        var data = await response.Content.ReadAsStringAsync();
+                        var responseObj = JsonConvert.DeserializeObject<FileUploadResponse>(data);
+                        res.Data = responseObj.Data;
+                        return res;
+                    }
+                    else
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        return res;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có
+                return res;
+            }
+        }
+
+        public async Task<Object> Get_BienBan_ByTime(int loaiBaoCao, int tuanThang, int nam, string idDonVi)
+        {
+            try
+            {
+
+                var result = await _baocaoantoan.Get_BienBan_ByTime(loaiBaoCao, tuanThang, nam, idDonVi);
+                if (result == null || !result.Any())
+                {
+                    DisposeAll();
+                    return Json(new { success = false, message = "Không có data!" }, JsonRequestBehavior.AllowGet);
+                }
+
+                DisposeAll();
+                return Json(new { success = true, message = "Cập nhật thành công!" , Data= result }, JsonRequestBehavior.AllowGet);
+
+                // Trả về kết quả dưới dạng JSON
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có
+
+                DisposeAll();
+
+                return Json(new { success = false, message = "Lỗi!" }, JsonRequestBehavior.AllowGet);
             }
         }
 

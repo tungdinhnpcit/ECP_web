@@ -54,11 +54,15 @@
     {
         tyleKH = ViewBag.tyleKH;
     }
+    var loaiBaoCao = " ";
+    if (ViewBag.LoaiBaoCao != null)
+    {
+        loaiBaoCao = ViewBag.LoaiBaoCao;
+    }
 
+    var TuNgay = ((DateTime)ViewBag.TuNgay).ToString("dd/MM/yyyy");
 
-    DateTime TuNgay = (DateTime)ViewBag.TuNgay;
-
-    DateTime DenNgay = (DateTime)ViewBag.DenNgay;
+    var DenNgay = ((DateTime)ViewBag.DenNgay).ToString("dd/MM/yyyy");
 
 
     ECP_V2.Business.Repository.DonViRepository donViRepository = new ECP_V2.Business.Repository.DonViRepository();
@@ -77,6 +81,9 @@
 
 
 }
+@*Xuất PDF*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 
 <link href="/Content/wordsstyle.css?v=@(DateTime.Now.ToString("HHmmssfff"))" rel="stylesheet" />
 @Styles.Render("~/Content/themes/admindesign/css")
@@ -189,42 +196,47 @@
         }
 </style>
 
-<div class=Section1 style="width: 800px; height: auto; margin: 0 auto; margin-bottom:80px; background-color: white; padding: 0px 50px 20px">
-    <div style="display: inline-block;min-width:150px;position: relative;margin-left:5px">
-        <select class="chosen-select" id="LoaiBaoCao">
-            <option value="">Loại báo cáo</option>
-            <option value="1">Báo cáo tuần</option>
-            <option value="2">Báo cáo tháng</option>
-        </select>
-    </div>
-    <div style="display: inline-block;position: relative;margin-left:10px">
-        <input type="text" id="ChonThoiGian" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
-    </div>
+<div class=Section1 style="width: 65vw; height: auto; margin: 0 auto; margin-bottom:80px; background-color: white; padding: 0px 5rem 2rem">
+    @if (User.IsInRole("Admin"))
+    {
+        <div style="display: inline-block;min-width:150px;position: relative;margin-left:5px">
+            <select class="chosen-select" id="LoaiBaoCao">
+                <option value="">Loại báo cáo</option>
+                <option value="1">Báo cáo tuần</option>
+                <option value="2">Báo cáo tháng</option>
+            </select>
+        </div>
+        <div style="display: inline-block;position: relative;margin-left:10px">
+            <input type="text" id="ChonThoiGian" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
+        </div>
 
-    <div style="display: inline-block;position: relative;top:-5px">
-        <a title="Làm mới" onclick="ShowData()" class="btn btn-success btn-sm"><i class="fa "> Làm mới</i></a>
-    </div>
+        <div style="display: inline-block;position: relative;top:-5px">
+            <a title="Làm mới" onclick="ShowData()" class="btn btn-success btn-sm"><i class="fa "> Làm mới</i></a>
+        </div>
+    }
+
+
     <p class=MsoNormal>
         <a name="_GoBack"></a><b>
             <span><o:p>&nbsp;</o:p></span>
         </b>
     </p>
-    <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0
+    <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0 id="top"
            style='border-collapse:collapse;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:none;mso-border-insidev:none'>
         <tr>
-            <td valign=top style='width:280px;padding:0in 5.4pt 0in 5.4pt'>
-                <p class=MsoNormal align="center" style='text-align:left'>
+            <td valign=top style='width:280px;'>
+                <p class=MsoNormal align="center" style='text-align:left' id="tenDonVi">
 
                     @if (DonViCha != null && DonVi != null)
                     {
                         <span>
                             <b>
-                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonViCha" id="txtTenDonViCha" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ CHA" searchbox="1">@(DonViCha.TenDonVi)</textarea>
+                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonViCha" id="txtTenDonViCha" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="2" placeholder="TÊN ĐƠN VỊ CHA" searchbox="1">@(DonViCha.TenDonVi)</textarea>
 
                             </b>
                             <br />
                             <b>
-                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonVi.TenDonVi)</textarea>
+                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="2" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonVi.TenDonVi)</textarea>
 
                             </b>
                         </span>
@@ -247,7 +259,7 @@
                         </span>
                     </b>
 
-                    <span style='font-size: 11px; color: black; text-align: center; display: flex; flex-direction: column;'>
+                    <span style='font-size: 13px; color: black; text-align: center; display: flex; flex-direction: column;'>
                         Độc lập - Tự do - Hạnh phúc
                     </span>
 
@@ -265,13 +277,14 @@
                 </p>
 
             </td>
-            <td valign="top" style='width:500px;padding:0in 5.4pt 0in 5.4pt'>
-                <p class=MsoNormal style=" text-align: right;">
-                    <i style="text-align:center; display:flex">
+            <td valign="top" style='width:15rem;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal style=" text-align: right; ">
+                    <i style="text-align:center; display:flex !important">
                         <span class="selectboxv1 radio-style" onlyone="1">
                             <input maxlength="20" value="" name="txtS62_tinh" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style1 text-right selectbox-control" type="text" autocomplete="off" />
                             <span class="multiselect-wap"></span>
-                        </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                            ,
+                        </span> ngày<span class="selectboxv1 radio-style" onlyone="1">
                             <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
                             <span class="multiselect-wap"></span>
                         </span>tháng <span class="selectboxv1 radio-style" onlyone="1">
@@ -297,7 +310,7 @@
                 <div style='font-size: 12.0pt; color: black; display: flex; text-transform: uppercase; font-weight: bold; justify-content:center'>
                     <span class=" radio-style" onlyone="1">
                     </span> BIÊN BẢN KẾT LUẬN GIAO BAN AN TOÀN&nbsp;<div class="selectboxv1 radio-style text-right" onlyone="1">
-                        <P class="txtThoiGianBC" style="text-transform: uppercase; font-weight: bold"></P>
+                        <P class="txtThoiGianBC" style="text-transform: uppercase; font-weight: bold">@ViewBag.LoaiBaoCao</P>
                     </div>
                 </div>
             </div>
@@ -306,24 +319,24 @@
     <div style="width:100%; text-align:center">
         <p class=MsoNormal style=" text-align: center;">
             <i style="text-align:center">
-                Từ <span>@ViewBag.TuNgay</span> đến <span>@ViewBag.DenNgay</span>
+                Từ <span>@TuNgay</span> đến <span>@DenNgay</span>
                 @*(Từ  ngày <span class="selectboxv1 radio-style" onlyone="1">
-            <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayBatDau" id="ngayBatDau" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
-            <span class="multiselect-wap"></span>
-        </span>
-        tháng <span class="selectboxv1 radio-style" onlyone="1">
-            <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangBatDau" id="thangBatDau" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
-            <span class="multiselect-wap"></span>
-        </span>
-        đến ngày <span class="selectboxv1 radio-style" onlyone="1">
-            <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayKetThuc" id="ngayKetThuc" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
-            <span class="multiselect-wap"></span>
-        </span>
-        tháng <span class="selectboxv1 radio-style" onlyone="1">
-            <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangKetThuc" id="thangKetThuc" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
-            <span class="multiselect-wap"></span>
-        </span>
-        năm <span class="selectboxv1 radio-style" style="font-weight:bold" name="namKetThuc" id="namKetThuc" onlyone="1">...)</span>*@
+                        <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayBatDau" id="ngayBatDau" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    tháng <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangBatDau" id="thangBatDau" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    đến ngày <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayKetThuc" id="ngayKetThuc" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    tháng <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangKetThuc" id="thangKetThuc" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    năm <span class="selectboxv1 radio-style" style="font-weight:bold" name="namKetThuc" id="namKetThuc" onlyone="1">...)</span>*@
             </i>
         </p>
     </div>
@@ -367,8 +380,7 @@
         <p>
             <span style='mso-bidi-font-size:12.0pt;color:black'>
                 3. Thành phần tham gia: <span class="selectboxv1">
-                    <input style="width: 100%;" name="txtnhanviendonvicongtac" searchbox="1" datasourceidname="listnhanviendonvicongtac" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtnhanviendonvicongtac" type="text" placeholder="…………………………………………………………………………………………………………" autocomplete="off" />
-                    <span class="multiselect-wap"></span>
+                    <textarea class="form-control" rows="2" id="thanhPhanThamGia" placeholder="Thành phần tham gia..." style="outline:none !important"></textarea>
                 </span>
             </span>
         </p>
@@ -376,15 +388,15 @@
     </div>
     <div style="width: 100%; text-align: left">
         <p class=MsoNormal style=" text-align: left;">
-            <b style="text-align: left">
-                II. Đánh giá, kiểm điểm công tác an toàn trong tuần:
-            </b>
+            <div style="text-align: left; display: flex; font-weight: bold">
+                II. Đánh giá, kiểm điểm công tác an toàn trong &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P> :
+            </div>
 
         </p>
         <div class=MsoNormal style=" text-align: left; display:flex">
-            <b style="text-align: left">
-                1. Số lượng công việc đơn vị đã thực hiện trong tuần:&nbsp;
-            </b>
+            <div style="text-align: left; display: flex; font-weight: bold">
+                1. Số lượng công việc đơn vị đã thực hiện trong &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>:&nbsp;
+            </div>
             <p id="TongSoPhien" style="font-weight:bold">@ViewBag.TongSoPhien</p> &nbsp;
         </div>
 
@@ -395,7 +407,7 @@
             Đột xuất:&nbsp; <p id="TongSoDotXuat" style="font-weight:bold">@ViewBag.TongSoDotXuat</p> &nbsp;
         </div>
         <div class=MsoNormal style=" text-align: left; display:flex">
-            Tỷ lệ PLV bổ sung, đột xuất:&nbsp;<p id="TyLePhanTram" style="font-weight:bold">@ViewBag.TyLePhanTram</p>% PLV được lập trong KH tuần.
+            Tỷ lệ PLV bổ sung, đột xuất:&nbsp;<p id="TyLePhanTram" style="font-weight:bold">@ViewBag.TyLePhanTram</p>% PLV được lập trong KH &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>.
         </div>
         <p class=MsoNormal style=" text-align: left;">
             Đánh giá: cần đánh giá, phân tích được chất lượng công tác lập KH công việc, tỷ lệ bổ sung, đột xuất, hoãn huỷ cao hay thấp, nguyên nhân, lý do. Trách nhiệm thuộc về bộ phận, cá nhân nào. Từ đó, có các chỉ đạo để công tác lập KH công việc chất lượng hơn.
@@ -414,7 +426,7 @@
         <p class=MsoNormal style=" text-align: left;">
             <b>Đánh giá:</b> cần đánh giá, phân tích được (không giới hạn) các nội dung sau:
         </p>
-        <textarea class="form-control" rows="4" id="NoiDung_DanhGia" placeholder="Nội dung đánh giá"></textarea>
+        <textarea class="form-control" rows="2" id="NoiDung_DanhGia" placeholder="Nội dung đánh giá"></textarea>
         <p class=MsoNormal style=" text-align: left;">
             <b style="text-align: left">
                 3. Công tác QLKT-VH và thao tác điều độ liên quan an toàn:
@@ -424,64 +436,86 @@
             - Kiểm điểm nội dung về QLKT-VH liên quan tới an toàn: Việc tổ chức thi công các PLV; Việc cập nhập, xử lý các vị trí có mối nguy mất an toàn trên lưới (giao chéo, song song, đấu tắt, đấu chập, máy phát, không đảm bảo 5S đối với dây sau công tơ và cáp viễn thông, dây đi trên mặt sàn thao tác TBA,…); việc cập nhập đánh số thiết bị giữa thực tế và sơ đồ (Chuẩn hóa lưới điện),…
         </p>
         <p class=MsoNormal style=" text-align: left;">
-            - Kiểm điểm an toàn trong thực hiện công tác điều độ, thao tác:  <input name="txtkiemdiemAT" style="width:250px" id="txtkiemdiemAT" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            - Kiểm điểm an toàn trong thực hiện công tác điều độ, thao tác:
+
+            <textarea class="form-control" rows="2" id="txtkiemdiemAT" placeholder="Nhập..."></textarea>
+            @*<input name="txtkiemdiemAT" style="width:250px" id="txtkiemdiemAT" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
         <p class=MsoNormal style=" text-align: left;">
-            - Trách nhiệm bộ phận, tập thể liên quan các tồn tại, vi phạm:  <input name="txttrachnghiembp" style="width:250px" id="txttrachnghiembp" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            - Trách nhiệm bộ phận, tập thể liên quan các tồn tại, vi phạm:
+            <textarea class="form-control" rows="2" id="txttrachnghiembp" placeholder="Nhập..."></textarea>
+            @*<input name="txttrachnghiembp" style="width:250px" id="txttrachnghiembp" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
         <p class=MsoNormal style=" text-align: left;">
-            - Các chỉ đạo để tránh tái diễn các tồn tại, vi phạm tương tự:  <input name="txtchidao3" style="width:250px" id="txtchidao3" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            - Các chỉ đạo để tránh tái diễn các tồn tại, vi phạm tương tự:
+            <textarea class="form-control" rows="2" id="txtchidao3" placeholder="Nhập..."></textarea>
+            @*<input name="txtchidao3" style="width:250px" id="txtchidao3" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
         <p class=MsoNormal style=" text-align: left;">
             <b style="text-align: left">
                 4. Các tồn tại, vi phạm khác trong công tác an toàn:
             </b>
         </p>
-        <textarea class="form-control" rows="4" id="NoiDung_tongtaikhac" placeholder="Các tồn tại, vi phạm khác trong công tác an toàn"></textarea>
+        <textarea class="form-control" rows="2" id="NoiDung_tongtaikhac" placeholder="Nhập..."></textarea>
         <p class=MsoNormal style=" text-align: left;">
-            <b style="text-align: left">
-                III. Công tác ATLĐ tuần tiếp theo:
-            </b>
+            <div style="text-align: left; display:flex; font-weight:bold">
+                III. Công tác ATLĐ &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>&nbsp;tiếp theo:
+            </div>
         </p>
-        <p class=MsoNormal style=" text-align: left;">
-            1. Kế hoạch công việc của tuần tiếp theo: (theo Biểu mẫu 06)
-        </p>
+        <div class=MsoNormal style=" text-align: left">
+            <div class=MsoNormal style=" text-align: left;display:flex">
+                1. Kế hoạch công việc của &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>&nbsp;tiếp theo: (theo Biểu mẫu 06)
+            </div>
+            <input type="file" class="form-control" id="fileKeHoach" />
+        </div>
         <p class=MsoNormal style=" text-align: left;">
             2. Phân tích, đánh giá các BPAT PLV, tập trung vào các PLV có nguy cơ mất an toàn cao, khối lượng công việc lớn, nhiều mối nguy, rủi ro để từ đó quán triệt, nhắc nhở các ĐVCT; tổ chức phân công cá nhân (hoặc nhóm) KTKS ATLĐ các PLV:
-            <input name="txtphantichdanhgiabpat" style="width:250px" id="txtphantichdanhgiabpat" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            <textarea class="form-control" rows="2" id="txtphantichdanhgiabpat" placeholder="Nhập..."></textarea>
+
+            @*<input name="txtphantichdanhgiabpat" style="width:250px" id="txtphantichdanhgiabpat" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
         <p class=MsoNormal style=" text-align: left;">
             3. Các lưu ý an toàn trong các thao tác của tuần kế tiếp, đặc biệt các thao tác phức tạp, tại các vị trí có nhiều nguy cơ mất an toàn khi thực hiện thao tác
-            <input name="txtluuychotuanketiep" style="width:250px" id="txtluuychotuanketiep" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            <textarea class="form-control" rows="2" id="txtluuychotuanketiep" placeholder="Nhập..."></textarea>
+
+            @*<input name="txtluuychotuanketiep" style="width:250px" id="txtluuychotuanketiep" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
         <p class=MsoNormal style=" text-align: left;">
             4. Các chỉ đạo liên quan tổng hợp, theo dõi, phổ biến và xử lý các nguy cơ mất an toàn trên lưới điện
-            <input name="txtchidaolienquanth" style="width:250px" id="txtchidaolienquanth" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            <textarea class="form-control" rows="2" id="txtchidaolienquanth" placeholder="Nhập..."></textarea>
+
+            @*<input name="txtchidaolienquanth" style="width:250px" id="txtchidaolienquanth" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
         <p class=MsoNormal style=" text-align: left;">
             5. Các chỉ đạo trong công tác an toàn khác (nếu có):
-            <input name="txtchidaoctatkhac" style="width:250px" id="txtchidaoctatkhac" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+            <textarea class="form-control" rows="2" id="txtchidaoctatkhac" placeholder="Nhập..."></textarea>
+            @*<input name="txtchidaoctatkhac" style="width:250px" id="txtchidaoctatkhac" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
         </p>
 
         <br />
-        <p class=MsoNormal style=" text-align: left;">
-            <b style="text-align: left">
-                * Lưu ý: đối với giao ban an toàn tháng thì có thêm nội dung xét chế độ an toàn điện, cụ thể:
-            </b>
-        </p>
-        <p class=MsoNormal style=" text-align: left;">
-            - Người lao động vi phạm, số lượng
-            <input name="txtchidaoctatkhac" style="width:80px" id="txtchidaoctatkhac" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /><i>Trong đó:</i>
-        </p>
-        <p class=MsoNormal style=" text-align: left;">
-            + Đề nghị hình thức xử lý giảm thưởng vận hành an toàn, số lượng <input name="txtdenghigiamthuong" style="width:80px" id="txtdenghigiamthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
-        </p>
-        <p class=MsoNormal style=" text-align: left;">
-            + Đề nghị hình thức xử lý cắt thưởng vận hành an toàn, số lượng  <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
-        </p>
-        <p class=MsoNormal style=" text-align: left;">
-            + Đề nghị hình thức kỷ luật, số lượng <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
-        </p>
+        @if (loaiBaoCao == "tháng")
+        {
+            <div>
+                <p class=MsoNormal style=" text-align: left;">
+                    <b style="text-align: left">
+                        * Lưu ý: đối với giao ban an toàn tháng thì có thêm nội dung xét chế độ an toàn điện, cụ thể:
+                    </b>
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - Người lao động vi phạm, số lượng
+                    <input name="txtchidaoctatkhac" style="width:80px" id="txtchidaoctatkhac" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /><i>Trong đó:</i>
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    + Đề nghị hình thức xử lý giảm thưởng vận hành an toàn, số lượng <input name="txtdenghigiamthuong" style="width:80px" id="txtdenghigiamthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    + Đề nghị hình thức xử lý cắt thưởng vận hành an toàn, số lượng  <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    + Đề nghị hình thức kỷ luật, số lượng <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+                </p>
+            </div>
+        }
         <br />
         <br />
         <br />
@@ -622,9 +656,10 @@
 <footer class="panel-footer" style="position:fixed; bottom:0;z-index:99999999; width:100%">
     <div class="row">
         <div class="col-md-12 text-right">
-            <button class="btn btn-default modal-confirm">
-                Ký Số
+            <button class="btn btn-default modal-confirm" onclick="ExportModalToPdf(1)">
+                Tải xuống
             </button>
+            <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white" onclick="ExportModalToPdf(2)">Trình ký</button>
             <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Hủy</button>
         </div>
     </div>
@@ -849,9 +884,9 @@
             thoiGianPicker.val("")
             thoiGianPicker.attr('placeholder', 'Chọn thời gian');
         }
-    });
+     });
 
-        function ShowData() {
+    function ShowData() {
         var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
         var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
 
@@ -951,6 +986,108 @@
                 }
             });
         }, 2000);
+    };
+
+
+    function convertToDate(dateString) {
+        var parts = dateString.split(' '); // Tách ngày và giờ
+        var dateParts = parts[0].split('/'); // Tách ngày theo "/"
+        var timeParts = parts[1].split(':'); // Tách giờ, phút, giây
+        var newDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1], timeParts[2]);
+        // Chuyển đối tượng Date thành chuỗi dd-MM-yyyy
+        var day = newDate.getDate().toString().padStart(2, '0'); // Lấy ngày và thêm 0 nếu ngày < 10
+        var month = (newDate.getMonth() + 1).toString().padStart(2, '0'); // Lấy tháng (lưu ý tháng bắt đầu từ 0)
+        var year = newDate.getFullYear();
+
+        var formattedDate = `${year}${month}${day}`;
+
+        return formattedDate;
+    }
+
+    function ExportModalToPdf(thaoTac) {
+        const element = document.querySelector('.Section1');
+        const targetElement = element.querySelector('#top');
+        const tenDonVi = element.querySelector('#tenDonVi');
+
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        } else {
+            console.error("Không tìm thấy phần tử có ID trong modal");
+            return;
+        }
+        element.style.padding = '0 0 0 0';
+        element.style.width = '55vw';
+        tenDonVi.style.margin = '-0.5rem 0 0 0';
+
+            const options = {
+                margin: 10,
+                filename: 'FileTaiLieu.pdf',
+                image: { type: 'jpeg', quality: 1.0 },
+                html2canvas: { scale: 3, useCORS: true  },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }
+            if (thaoTac == 1) {
+                html2pdf().set(options).from(element).save();
+            }
+            if (thaoTac == 2) {
+                var dateFrom = convertToDate('@ViewBag.TuNgay');
+                var dateTo = convertToDate('@ViewBag.DenNgay');
+                html2pdf().set(options).from(element).toPdf().get('pdf').then(function (pdf) {
+                    const pdfBlob = pdf.output('blob');
+                    var IdLoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
+
+                    const formData = new FormData();
+                    formData.append('LoaiBaoCao', IdLoaiBaoCao);
+                    formData.append('TuanThang', '@ViewBag.TuanThang');
+                    formData.append('Nam', 2025);
+                    formData.append('NgayBatDau', dateFrom);
+                    formData.append('NgayKetThuc', dateTo);
+                    formData.append('TrangThai', 1);
+                    formData.append('IdNguoiTrinhKy', "");
+                    formData.append('HoTenNguoiTrinh', "");
+                    formData.append('IdDonVi', '@donViID');
+                    formData.append('file', pdfBlob, 'TaiLieu.pdf');
+                    formData.append('fileSize', pdfBlob.size);
+
+                    const fileKeHoach = document.getElementById('fileKeHoach').files[0];
+                    if (fileKeHoach) {
+                        formData.append('fileKeHoach', fileKeHoach);
+                        formData.append('fileKeHoachSize', fileKeHoach.size);
+                    }
+                    // Gửi dữ liệu qua Fetch API
+                    $.ajax({
+                        url: '/BCGBAT/Insert_BienBanAnToan',
+                        type: 'POST',
+                        data: formData,
+                        processData: false, // Ngăn chặn jQuery tự động xử lý dữ liệu
+                        contentType: false, // Để ngăn jQuery tự động đặt `Content-Type`
+                        success: function (data) {
+                            console.log('Success:', data);
+                            if (data.success) {
+
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Trình ký thành công!',
+                                    type: 'success'
+                                });
+                                $('#btnKySo').css('display', 'none');
+                            }
+                            else {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Lỗi!',
+                                    type: 'error'
+                                });
+                                return false
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            }
     }
 </script>
 
