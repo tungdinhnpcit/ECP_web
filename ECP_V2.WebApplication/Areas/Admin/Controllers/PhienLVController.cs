@@ -676,7 +676,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId, string LoaiBaoCao, string TuanThang)
+        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId, string LoaiBaoCao, string TuanThang, int TrangThaiBienBan, int IdBienBan)
         {
             try
             {
@@ -700,10 +700,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 ViewBag.CVBoSung = CVBoSung;
                 ViewBag.CVDotXuat = CVDotXuat;
                 ViewBag.TuanThang = TuanThang;
+                ViewBag.TrangThaiBienBan = TrangThaiBienBan;
+                ViewBag.IdBienBan = IdBienBan;
                 double tyleKH = 0;
                 if (tongcv > 0)
                 {
-
                     tyleKH = CVKeHoach * 100 / tongcv;
                     tyleKH = Math.Round(tyleKH, 2);
 

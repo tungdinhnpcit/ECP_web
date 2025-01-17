@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Contexts;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 public class BaoCaoAnToanRepository
 {
@@ -27,13 +28,16 @@ public class BaoCaoAnToanRepository
         public string NgayBatDau { get; set; }
         public string NgayKetThuc { get; set; }
         public int TrangThai { get; set; }
+        public string TenTrangThai { get; set; }
         public string IdNguoiTrinhKy { get; set; }
         public string HoTenNguoiTrinh { get; set; }
         public string IdNguoiKy { get; set; }
         public string HoTenNguoiKy { get; set; }
         public string NgayCapNhat { get; set; }
-        public int oBienBan { get; set; }
+        public int SoBienBan { get; set; }
         public string IdDonVi { get; set; }
+        public string URL_FileBienBan { get; set; }
+        public string URL_FileDinhKem { get; set; }
     }
 
     public class ModelFilePath
@@ -48,6 +52,8 @@ public class BaoCaoAnToanRepository
         public int TrangThai { get; set; }
         public string IdNguoiCapNhat { get; set; }
         public string NgayCapNhat { get; set; }
+        //public string URL_FileBienBan { get; set; }
+        //public string URL_FileDinhKem { get; set; }
     }
     // Tạo một kết nối SQL
     private IDbConnection CreateConnection()
@@ -69,9 +75,9 @@ public class BaoCaoAnToanRepository
         using (var connection = CreateConnection())
         {
             string query = @"
-            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, IdDonVi, NgayCapNhat)
+            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, HoTenNguoiKy, IdNguoiKy,  IdDonVi, NgayCapNhat)
             OUTPUT INSERTED.ID
-            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh, @IdDonVi, GetDate())";
+            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh,@HoTenNguoiKy, @IdNguoiKy, @IdDonVi, GetDate())";
             var id = await connection.QuerySingleAsync<int>(query, model);
 
             return id;  // Trả về ID của bản ghi vừa được thêm
@@ -91,19 +97,80 @@ public class BaoCaoAnToanRepository
             return id;
         }
     }
-    public async Task<IEnumerable<dynamic>> Get_BienBan_ByTime(int LoaiBaoCao, int TuanThang, int Nam, string IdDonVi)
+    public async Task<IEnumerable<ModelBaoCaoAnToan>> Get_BienBan_ByTime(int LoaiBaoCao, int TuanThang, int Nam, string IdDonVi)
     {
         using (var connection = CreateConnection())
         {
-            string query = @"SELECT a.*, b.URL
+            string query = @"SELECT a.*, b.URL as URL_FileBienBan, c.URL as URL_FileDinhKem, d.TenTrangThai
                 FROM BienBanAnToan a
-                left join filepath b on a.Id= b.IdTaiLieu
+                left join filepath b on a.Id= b.IdTaiLieu and b.IdLoaiFile= 1 and b.TrangThai=1 
+                left join filepath c on a.Id= c.IdTaiLieu and c.IdLoaiFile= 2 and c.TrangThai=1 
+                inner join DM_TrangThai_BienBanAnToan d on a.TrangThai= d.Id 
                 WHERE LoaiBaoCao = @LoaiBaoCao AND TuanThang = @TuanThang AND Nam = @Nam AND IdDonVi = @IdDonVi";
-
             var parameters = new { LoaiBaoCao, TuanThang, Nam, IdDonVi };
-            var data = await connection.QueryAsync<dynamic>(query, parameters);
+            var data = await connection.QueryAsync<ModelBaoCaoAnToan>(query, parameters);
+           
             return data;
         }
     }
 
+    public async Task<int> HuyTrinh_TraLai_BienBanAnToan(int Id, int TrangThai)
+    {
+        using (var connection = CreateConnection())
+        {
+            string query = @"UPDATE BienBanAnToan 
+                         SET TrangThai = @TrangThai, 
+                         NgayCapNhat = GETDATE() 
+                         WHERE Id = @Id";
+
+            var rowsAffected = await connection.ExecuteAsync(query, new
+            {
+                Id,
+                TrangThai
+            });
+
+            return rowsAffected; 
+        }
+    }
+    public async Task<int> Update_TrangThaiFilePathByBienBan(int Id, int TrangThai, string IdNguoiCapNhat)
+    {
+        using (var connection = CreateConnection())
+        {
+            string query = @"update FilePath set TrangThai= @TrangThai, NgayCapNhat= getdate(), IdNguoiCapNhat= @IdNguoiCapNhat
+                            where IdTaiLieu= @Id and IdLoaiFile in(1,2)";
+
+            var rowsAffected = await connection.ExecuteAsync(query, new
+            {
+                Id,
+                TrangThai,
+                IdNguoiCapNhat
+            });
+
+            return rowsAffected;
+        }
+    }
+
+    public async Task<int> TrinhKyLai_BienBanAnToan(ModelBaoCaoAnToan model)
+    {
+        using (var connection = CreateConnection())
+        {
+            string query = @"
+            UPDATE BienBanAnToan
+            SET 
+                TrangThai = 1,        
+                NgayCapNhat = GETDATE(),  
+                IdNguoiKy = @IdNguoiKy,   
+                HoTenNguoiKy = @HoTenNguoiKy 
+            WHERE Id = @Id"; 
+    
+        var rowsAffected = await connection.ExecuteAsync(query, new
+        {
+            Id = model.Id,           
+            IdNguoiKy = model.IdNguoiKy,  
+            HoTenNguoiKy = model.HoTenNguoiKy  
+        });
+
+            return rowsAffected; 
+        }
+    }
 }

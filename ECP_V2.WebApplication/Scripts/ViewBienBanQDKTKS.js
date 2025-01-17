@@ -41,7 +41,6 @@ function SetSelectionPosition(forParent) {
 }
 
 $(document).on("change", ".txtchutrigiaoban .multiselect-add", function () {
-
     var selectedOption = $(this).find(':selected');
     var chucVu = selectedOption.data('chucvu');
     $('#txtChucVuChuTri').val(chucVu);
@@ -108,6 +107,10 @@ $(document).on("change", ".multiselect-add", function () {
 
             if (latest_value != "undefined") {
                 console.log("set onlyone " + latest_text + " " + $(currentInputRuning).attr("id"));
+                var selectedOption = $(this).find(':selected');
+                var chucVu = selectedOption.data('chucvu');
+                $('#txtChucVuChuTri').val(chucVu);
+                $('#txtKyTen').text(latest_text);
                 if ($(currentInputRuning).attr("type") === "text") {
                     $(currentInputRuning).attr("value", latest_text);
                     $(currentInputRuning).val(latest_text);

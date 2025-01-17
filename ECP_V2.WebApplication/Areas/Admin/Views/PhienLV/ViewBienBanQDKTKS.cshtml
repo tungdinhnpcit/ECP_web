@@ -365,13 +365,13 @@
         </p>
         <p>
             <span style='mso-bidi-font-size:12.0pt;color:black'>
-                2. Chủ trì giao ban: <span class="selectboxv1 radio-style txtchutrigiaoban" onlyone="1">
+                2. Chủ trì giao ban: <span class="selectboxv1 radio-style " onlyone="1">
                     <input style="width: 250px;" name="txtchutrigiaoban" searchbox="1" datasourceidname="listchutrigiaoban" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtchutrigiaoban" type="text" placeholder="……………………………………" autocomplete="off" />
                     <span class="multiselect-wap"></span>
                 </span>
                 <span class="selectboxv1 radio-style" onlyone="1">
                     Chức vụ:  <input style="width: 200px;" name="txtChucVuChuTri" searchbox="" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtChucVuChuTri" type="text" placeholder="…………………………………" autocomplete="off" />
-                    <span class="multiselect-wap"></span>
+                    @*<span class="multiselect-wap"></span>*@
                 </span>
 
             </span>
@@ -466,7 +466,7 @@
             <div class=MsoNormal style=" text-align: left;display:flex">
                 1. Kế hoạch công việc của &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>&nbsp;tiếp theo: (theo Biểu mẫu 06)
             </div>
-            <input type="file" class="form-control" id="fileKeHoach" />
+            <input type="file" class="form-control" id="fileKeHoach" accept=".pdf, .xlsx, .xsl, .docx, .jpeg, .jpg, .png" max="1" />
         </div>
         <p class=MsoNormal style=" text-align: left;">
             2. Phân tích, đánh giá các BPAT PLV, tập trung vào các PLV có nguy cơ mất an toàn cao, khối lượng công việc lớn, nhiều mối nguy, rủi ro để từ đó quán triệt, nhắc nhở các ĐVCT; tổ chức phân công cá nhân (hoặc nhóm) KTKS ATLĐ các PLV:
@@ -545,6 +545,8 @@
                 </p>
                 <p class=MsoNormal style=" text-align: left;">
                     (Ký tên, đóng dấu)
+                </p>
+                <p class=MsoNormal style=" text-align: left; font-weight:bold" id="txtKyTen">
                 </p>
             </div>
         </div>
@@ -655,12 +657,35 @@
 </div>
 <footer class="panel-footer" style="position:fixed; bottom:0;z-index:99999999; width:100%">
     <div class="row">
-        <div class="col-md-12 text-right">
+        <div class="col-md-6 text-right">
+            <p style="font-weight:bold;">
+                Trạng thái: @(
+        ViewBag.TrangThaiBienBan == null
+        ? "Chưa có trạng thái"
+        : ViewBag.TrangThaiBienBan == 0 ? "Chưa trình"
+        : ViewBag.TrangThaiBienBan == 1 ? "Đang trình"
+        : ViewBag.TrangThaiBienBan == 2 ? "Hủy Trình"
+        : ViewBag.TrangThaiBienBan == 3 ? "Trả lại"
+        : ViewBag.TrangThaiBienBan == 2 ? "Đã ký"
+        : ""
+            )
+            </p>
+        </div>
+
+        <div class="col-md-6 text-right">
             <button class="btn btn-default modal-confirm" onclick="ExportModalToPdf(1)">
                 Tải xuống
             </button>
-            <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white" onclick="ExportModalToPdf(2)">Trình ký</button>
-            <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Hủy</button>
+            @if (ViewBag.TrangThaiBienBan == 0 || ViewBag.TrangThaiBienBan == 3 || ViewBag.TrangThaiBienBan == 2)
+            {
+                <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white" onclick="ExportModalToPdf(2)">Trình ký</button>
+            }
+            @if (ViewBag.TrangThaiBienBan == 1)
+            {
+                <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white" onclick="ExportModalToPdf(3)">Ký số</button>
+                <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white">Trả lại</button>
+            }
+            <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Đóng</button>
         </div>
     </div>
 </footer>
@@ -1004,16 +1029,42 @@
         return formattedDate;
     }
 
+    document.getElementById("fileKeHoach").addEventListener("change", function () {
+        const file = this.files[0]; // Lấy tệp đầu tiên
+        if (file) {
+            // Kiểm tra kích thước tệp (giới hạn: 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert("Tệp quá lớn. Kích thước tối đa là 5MB.");
+                this.value = ""; // Xóa tệp đã chọn
+                return;
+            }
+            // Kiểm tra định dạng tệp
+            const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
+            const fileExtension = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert("Định dạng tệp không được hỗ trợ, hoặc dung lượng lớn hơn cho phép.");
+                this.value = ""; // Xóa tệp đã chọn
+            }
+        }
+    });
+
     function ExportModalToPdf(thaoTac) {
         const element = document.querySelector('.Section1');
         const targetElement = element.querySelector('#top');
         const tenDonVi = element.querySelector('#tenDonVi');
+        var HoTenNguoiKy = $("#txtchutrigiaoban").val();
+        var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
 
-        if (targetElement) {
+        if (targetElement && IdNguoiKy) {
             targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         } else {
             console.error("Không tìm thấy phần tử có ID trong modal");
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Chọn chủ trì giao ban!',
+                type: 'error'
+            });
             return;
         }
         element.style.padding = '0 0 0 0';
@@ -1026,68 +1077,114 @@
                 image: { type: 'jpeg', quality: 1.0 },
                 html2canvas: { scale: 3, useCORS: true  },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }
+              }
+
             if (thaoTac == 1) {
                 html2pdf().set(options).from(element).save();
             }
             if (thaoTac == 2) {
-                var dateFrom = convertToDate('@ViewBag.TuNgay');
-                var dateTo = convertToDate('@ViewBag.DenNgay');
-                html2pdf().set(options).from(element).toPdf().get('pdf').then(function (pdf) {
-                    const pdfBlob = pdf.output('blob');
-                    var IdLoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
+    var dateFrom = convertToDate('@ViewBag.TuNgay');
+    var dateTo = convertToDate('@ViewBag.DenNgay');
 
-                    const formData = new FormData();
-                    formData.append('LoaiBaoCao', IdLoaiBaoCao);
-                    formData.append('TuanThang', '@ViewBag.TuanThang');
-                    formData.append('Nam', 2025);
-                    formData.append('NgayBatDau', dateFrom);
-                    formData.append('NgayKetThuc', dateTo);
-                    formData.append('TrangThai', 1);
-                    formData.append('IdNguoiTrinhKy', "");
-                    formData.append('HoTenNguoiTrinh', "");
-                    formData.append('IdDonVi', '@donViID');
-                    formData.append('file', pdfBlob, 'TaiLieu.pdf');
-                    formData.append('fileSize', pdfBlob.size);
+    // Sử dụng html2pdf và thêm catch để xử lý lỗi
+    html2pdf()
+        .set(options)
+        .from(element)
+        .toPdf()
+        .get('pdf')
+        .then(function (pdf) {
+            const pdfBlob = pdf.output('blob');
+            var IdLoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
 
-                    const fileKeHoach = document.getElementById('fileKeHoach').files[0];
-                    if (fileKeHoach) {
-                        formData.append('fileKeHoach', fileKeHoach);
-                        formData.append('fileKeHoachSize', fileKeHoach.size);
-                    }
-                    // Gửi dữ liệu qua Fetch API
-                    $.ajax({
-                        url: '/BCGBAT/Insert_BienBanAnToan',
-                        type: 'POST',
-                        data: formData,
-                        processData: false, // Ngăn chặn jQuery tự động xử lý dữ liệu
-                        contentType: false, // Để ngăn jQuery tự động đặt `Content-Type`
-                        success: function (data) {
-                            console.log('Success:', data);
-                            if (data.success) {
+            const formData = new FormData();
+            formData.append('LoaiBaoCao', IdLoaiBaoCao);
+            formData.append('TuanThang', '@ViewBag.TuanThang');
+            formData.append('Nam', 2025);
+            formData.append('NgayBatDau', dateFrom);
+            formData.append('NgayKetThuc', dateTo);
+            formData.append('TrangThai', 1);
+            formData.append('IdNguoiTrinhKy', "");
+            formData.append('HoTenNguoiTrinh', "");
+            formData.append('HoTenNguoiKy', HoTenNguoiKy);
+            formData.append('IdNguoiKy', IdNguoiKy);
+            formData.append('IdDonVi', '@donViID');
+            formData.append('file', pdfBlob, 'TaiLieu.pdf');
+            formData.append('fileSize', pdfBlob.size);
+            console.log(Object.fromEntries(formData))
 
-                                new PNotify({
-                                    title: 'Thông báo!',
-                                    text: 'Trình ký thành công!',
-                                    type: 'success'
-                                });
-                                $('#btnKySo').css('display', 'none');
-                            }
-                            else {
-                                new PNotify({
-                                    title: 'Thông báo!',
-                                    text: 'Lỗi!',
-                                    type: 'error'
-                                });
-                                return false
-                            }
-                        },
-                        error: function (error) {
-                            console.error('Error:', error);
-                        }
-                    });
-                });
+            const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
+            const fileKeHoach = document.getElementById('fileKeHoach').files[0];
+            if (fileKeHoach) {
+                const fileExtension = fileKeHoach.name.substring(fileKeHoach.name.lastIndexOf(".")).toLowerCase();
+                if (!allowedExtensions.includes(fileExtension)) {
+                    alert("Định dạng tệp không được hỗ trợ.");
+                    this.value = ""; // Xóa tệp đã chọn
+                    return false
+                }
+                formData.append('fileKeHoach', fileKeHoach);
+                formData.append('fileKeHoachSize', fileKeHoach.size);
             }
+
+            var url = "";
+            if ('@ViewBag.TrangThaiBienBan' == 1 ||'@ViewBag.TrangThaiBienBan' == 0) {
+                url = '/BCGBAT/Insert_BienBanAnToan'
+            }
+            if ('@ViewBag.TrangThaiBienBan' == 3 || '@ViewBag.TrangThaiBienBan' == 2) {
+                url = '/BCGBAT/TrinhKyLai_BienBanAnToan'
+                formData.append('Id', '@ViewBag.IdBienBan');
+            }
+
+            console.log('url:', url);
+
+            // Gửi dữ liệu qua Fetch API
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false, // Ngăn chặn jQuery tự động xử lý dữ liệu
+                contentType: false, // Để ngăn jQuery tự động đặt `Content-Type`
+                success: function (data) {
+                    console.log('Success:', data);
+                    if (data.success) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Trình ký thành công!',
+                            type: 'success'
+                        });
+                        setTimeout(function () {
+                            parent.ClosePhieuCongTac();
+                        }, 2000);
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Lỗi!',
+                            type: 'error'
+                        });
+                        return false
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Lỗi!',
+                        type: 'error'
+                    });
+                    return false
+                }
+            });
+        })
+        .catch(function (error) {
+            console.error("Lỗi khi tạo PDF:", error);
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Có lỗi xảy ra khi tạo PDF.',
+                type: 'error'
+            });
+        });
+}
+
     }
 </script>
 

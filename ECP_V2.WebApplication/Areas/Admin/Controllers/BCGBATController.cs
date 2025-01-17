@@ -47,6 +47,9 @@ using static BaoCaoAnToanRepository;
 using static ECP_V2.WebApplication.Models.ImageModel;
 using static NPOI.HSSF.Util.HSSFColor;
 using static System.Net.WebRequestMethods;
+using System.Linq;
+using System.Data.Entity;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -90,7 +93,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         //string path = url + "ConvertHtmlToPdf";
         string path = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString() + "jxlsToFile";
         string apiFile = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
-
         //Lấy file template từ database
         //[AreaAuthorization]
         public class FileUploadResponse
@@ -103,6 +105,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             public bool Status { get; set; }
             public dynamic Data { get; set; }
+            public string Message { get; set; }
+
         }
 
         private void DisposeAll()
@@ -229,6 +233,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             var listThuocTinhPhien5 = thuocTinhPhienRepository.GetByLoaiThuocTinh(5);
             ViewBag.ThuocTinhPhien5 = listThuocTinhPhien5;
+            ViewBag.UserId = User.Identity.GetUserId(); 
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -319,7 +324,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-                // Lấy thông tin từ form
+                var userId = User.Identity.GetUserId();
+                var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+                    .FirstOrDefault(x => x.Id == userId);              
                 var bienBan = new ModelBaoCaoAnToan
                 {
                     LoaiBaoCao = Convert.ToInt32(form["LoaiBaoCao"]),
@@ -328,8 +335,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     NgayBatDau = form["NgayBatDau"],
                     NgayKetThuc = form["NgayKetThuc"],
                     TrangThai = Convert.ToInt32(form["TrangThai"]),
-                    IdNguoiTrinhKy = User.Identity.GetUserId(),
-                    HoTenNguoiTrinh = User.Identity.Name,
+                    IdNguoiTrinhKy = dataNguoiTrinh.Id,
+                    HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien,
+                    HoTenNguoiKy = form["HoTenNguoiKy"],
+                    IdNguoiKy = form["IdNguoiKy"],
                     IdDonVi = form["IdDonVi"]
                 };
                 var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(bienBan);
@@ -345,12 +354,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             IdLoaiFile = 2,
                             IdTaiLieu = IdTaiLieu,
-                            TenFile = result.Data.Split(new string[] { "\\" }, StringSplitOptions.None).Last(),
+                            TenFile = fileKeHoach.FileName,
                             MimeType = fileKeHoach.ContentType,
                             Size = fileKeHoachSize != null ? Convert.ToInt32(fileKeHoachSize) : file?.ContentLength ?? 0,
                             URL = result.Data,
                             TrangThai = 1,
-                            IdNguoiCapNhat = User.Identity.GetUserId(),
+                            IdNguoiCapNhat = dataNguoiTrinh.Id,
                         };
                         await _baocaoantoan.Insert_FilePath(InfoFile);
                     }
@@ -364,12 +373,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             IdLoaiFile = 1,
                             IdTaiLieu = IdTaiLieu,
-                            TenFile = result.Data.Split(new string[] { "\\" }, StringSplitOptions.None).Last(),
+                            TenFile = file.FileName,
                             MimeType = file.ContentType,
                             Size = fileSize != null ? Convert.ToInt32(fileSize) : file?.ContentLength ?? 0,
                             URL = result.Data,
                             TrangThai = 1,
-                            IdNguoiCapNhat = User.Identity.GetUserId(),
+                            IdNguoiCapNhat = dataNguoiTrinh.Id,
                         };
                         await _baocaoantoan.Insert_FilePath(InfoFile);
 
@@ -403,8 +412,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     var fileStream = file.InputStream;
                     content.Add(new StreamContent(fileStream), "file", file.FileName);
-                    //var API = apiFile + "api/v1.0/File/UploadFile?IdDonVi=" + IdDonVi;
-                    var API = "http://localhost:5000/api/v1.0/File/UploadFile?IdDonVi=PNGV00";
+                    var API = apiFile + "api/v1.0/File/UploadFile?IdDonVi=" + IdDonVi;
                     var response = await client.PostAsync(API, content);
 
                     if (response.IsSuccessStatusCode)
@@ -433,29 +441,122 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-
                 var result = await _baocaoantoan.Get_BienBan_ByTime(loaiBaoCao, tuanThang, nam, idDonVi);
                 if (result == null || !result.Any())
                 {
                     DisposeAll();
                     return Json(new { success = false, message = "Không có data!" }, JsonRequestBehavior.AllowGet);
                 }
-
                 DisposeAll();
                 return Json(new { success = true, message = "Cập nhật thành công!" , Data= result }, JsonRequestBehavior.AllowGet);
-
-                // Trả về kết quả dưới dạng JSON
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi nếu có
-
                 DisposeAll();
-
-                return Json(new { success = false, message = "Lỗi!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
+        public async Task<ActionResult> HuyTrinh_TraLai_BienBanAnToan(int id, int trangThai)
+        {
+            var IdUser = User.Identity.GetUserId();
+            if (id <= 0)
+            {
+                return Json(new { message = "Dữ liệu không hợp lệ", success = false },  JsonRequestBehavior.AllowGet);
+            }
+            int rowsUpdated = await _baocaoantoan.HuyTrinh_TraLai_BienBanAnToan(id, trangThai);
+            if (rowsUpdated > 0)
+            {
+                await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, 0, IdUser);
+               
+            }
+            else
+            {
+                DisposeAll();
+                return Json(new { message = "Không tìm thấy dữ liệu update!", success = false },  JsonRequestBehavior.AllowGet);
+            }
+
+            DisposeAll();
+            return Json(new { message = "Update thành công", success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> TrinhKyLai_BienBanAnToan(FormCollection form, HttpPostedFileBase file, HttpPostedFileBase fileKeHoach)
+        {
+            try
+            {
+                var IdUser = User.Identity.GetUserId();
+                var IdBienBan = form["Id"];
+                
+                // Lấy thông tin từ form
+                var bienBan = new ModelBaoCaoAnToan
+                {
+                    Id = form["Id"],
+                    TrangThai = 1,
+                    //IdNguoiTrinhKy = dataNguoiTrinh.Id,
+                    //HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien,
+                    HoTenNguoiKy = form["HoTenNguoiKy"],
+                    IdNguoiKy = form["IdNguoiKy"],
+                    IdDonVi = form["IdDonVi"]
+            };
+                var IdTaiLieu = await _baocaoantoan.TrinhKyLai_BienBanAnToan(bienBan);
+                var result = new ResponseData();
+                var fileSize = form["fileSize"];
+                var fileKeHoachSize = form["fileKeHoachSize"];
+                if (IdTaiLieu > 0 && fileKeHoach != null && fileKeHoach.ContentLength > 0)
+                {
+                    result = await UploadFileToApi(fileKeHoach, bienBan.IdDonVi);
+                    if (result.Status)
+                    {
+                        var InfoFile = new ModelFilePath
+                        {
+                            IdLoaiFile = 2,
+                            IdTaiLieu = int.Parse(IdBienBan),
+                            TenFile = fileKeHoach.FileName,
+                            MimeType = fileKeHoach.ContentType,
+                            Size = fileKeHoachSize != null ? Convert.ToInt32(fileKeHoachSize) : file?.ContentLength ?? 0,
+                            URL = result.Data,
+                            TrangThai = 1,
+                            IdNguoiCapNhat = IdUser,
+                        };
+                        await _baocaoantoan.Insert_FilePath(InfoFile);
+                    }
+                }
+                if (IdTaiLieu > 0 && file != null && file.ContentLength > 0)
+                {
+                    result = await UploadFileToApi(file, bienBan.IdDonVi);
+                    if (result.Status)
+                    {
+                        var InfoFile = new ModelFilePath
+                        {
+                            IdLoaiFile = 1,
+                            IdTaiLieu = int.Parse(IdBienBan),
+                            TenFile = file.FileName,
+                            MimeType = file.ContentType,
+                            Size = fileSize != null ? Convert.ToInt32(fileSize) : file?.ContentLength ?? 0,
+                            URL = result.Data,
+                            TrangThai = 1,
+                            IdNguoiCapNhat = IdUser,
+                        };
+                        await _baocaoantoan.Insert_FilePath(InfoFile);
+
+                    }
+                }
+                if (result.Status)
+                {
+                    return Json(new { message = "Insert thành công", success = true });
+                }
+                else
+                {
+                    return Json(new { message = "Lỗi", success = false });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message, success = false });
+            }
+        }
 
         #endregion
     }
