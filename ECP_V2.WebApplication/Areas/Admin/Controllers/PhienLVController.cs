@@ -3153,8 +3153,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     stepSignCheck = 22;
                 }
+                var data = System.Convert.FromBase64String((string)objBase64Pdf.SelectToken("data"));
                 //Gọi ký
-                string kq = (string)SignMobileExampleAsync(System.Convert.FromBase64String((string)objBase64Pdf.SelectToken("data")), stepSignCheck, userSign, loaiphieu);
+                string kq = (string)SignMobileExampleAsync(data, stepSignCheck, userSign, loaiphieu, " ");
 
                 //Ký xong lưu vào database:
                 //byte[] fileSign = System.Convert.FromBase64String((kq));
@@ -3307,13 +3308,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         #region
         //Hàm gọi ký
-        public string SignMobileExampleAsync(byte[] byfile, int stepSign, string userSign, int loaiphieu)
+        public string SignMobileExampleAsync(byte[] byfile, int stepSign, string userSign, int loaiphieu, string usernameSession)
         {
 
             string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
             var httpClient = new HttpClient();
             var uploadServiceBaseAddress = urlSignServer + "api/sign";
-            var objUserSign = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+            //tblNhanVien nvien = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+            var username = "";
+            if (Session != null && !string.IsNullOrEmpty(Session["UserName"].ToString()))
+            {
+                username = Session["UserName"].ToString();
+            }
+            else
+            {
+                username = usernameSession; 
+            }
+
+            var objUserSign = _nhanvien_ser.GetByUserName(username);
             //string path = HttpContext.Current.Server.MapPath("/upload/");
             DataSign dt = new DataSign();
             var k = new KetQuaTimKiem();
@@ -3334,7 +3346,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             dt.FileDataSign = byfile;
             //dt.TypeSign = "Text";
 
-            dt.ImageSign = appPlanRepo.imgSignByUserid(Session["UserName"].ToString());
+            dt.ImageSign = appPlanRepo.imgSignByUserid(username);
             //dt.FileType = "pdf";
             dt.CommentSign = @"test";
             if (loaiphieu == 2)
@@ -3463,7 +3475,17 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
             var httpClient = new HttpClient();
             var uploadServiceBaseAddress = urlSignServer + "api/sign";
-            var objUserSign = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+            var username = "";
+            if (Session != null && !string.IsNullOrEmpty(Session["UserName"].ToString()))
+            {
+                username = Session["UserName"].ToString();
+            }
+            else
+            {
+                username = userSign;
+            }
+
+            var objUserSign = _nhanvien_ser.GetByUserName(username);
             //string path = HttpContext.Current.Server.MapPath("/upload/");
             DataSign dt = new DataSign();
             var k = new KetQuaTimKiem();
@@ -3484,7 +3506,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             dt.FileDataSign = byfile;
             //dt.TypeSign = "Text";
 
-            dt.ImageSign = appPlanRepo.imgSignByUserid(Session["UserName"].ToString());
+            dt.ImageSign = appPlanRepo.imgSignByUserid(username);
             //dt.FileType = "pdf";
             dt.CommentSign = @"test";
             if (loaibienban == 0) // 0  là Biên bản khảo sát
@@ -3794,7 +3816,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #endregion
 
         #region
-        private async Task<string> ConvertHtmlToPdfAsync(string htmlStrBase64)
+        public async Task<string> ConvertHtmlToPdfAsync(string htmlStrBase64)
         {
             string url = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString();
             string path = url + "ConvertHtmlToPdf";

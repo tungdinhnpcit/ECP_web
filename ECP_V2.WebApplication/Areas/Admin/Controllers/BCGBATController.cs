@@ -50,6 +50,7 @@ using static System.Net.WebRequestMethods;
 using System.Linq;
 using System.Data.Entity;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -573,7 +574,108 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { message = ex.Message, success = false });
             }
         }
+        public async Task<ActionResult> KySo(string url)
+        {
+            try
+            {
+                string kt = "";
 
+                // Tải file từ URL (giả sử file này sẽ được ký)
+                using (WebClient client = new WebClient())
+                {
+                    byte[] fileBytes = client.DownloadData(url);
+                    // Tải file
+                    //string fileType = GetFileType(fileBytes);
+                    //return File(fileBytes, "application/pdf", "downloaded_file.pdf");
+
+
+                    // Đọc file đã tải và chuyển thành base64 (chuỗi)
+                    //string base64File = Convert.ToBase64String(fileBytes);
+
+                    // Lấy thông tin người dùng từ Session
+                    tblNhanVien nvien = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+
+                    
+                    // Tạo đối tượng chứa thông tin để ký (ví dụ về ký số EVN)
+                    DataSign dt = new DataSign();
+                    var k = new KetQuaTimKiem();
+                    k.Height = 40;
+                    k.Width = 150;
+                    k.X = 100;
+                    k.Y = 100;
+                    k.PageNumber = 2;
+                    dt.k = k;
+                    dt.Provider = "EVN_CA";
+                    dt.DinhDanhKy = nvien.Hsm_serial;
+                    dt.MESSAGE = nvien.TenNhanVien + " Đã ký lúc " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    dt.LoaiHThi = "TEXT";
+                    dt.FileDataSign = fileBytes;  // Truyền file bytes vào để ký
+                    dt.ImageSign = appPlanRepo.imgSignByUserid(nvien.Username);  // Thêm hình ảnh chữ ký
+                    dt.CommentSign = @"test";  // Thêm chú thích cho chữ ký
+                    dt.KeyWord = "((LENH_STEP_4))";  // Thêm từ khóa nếu cần
+
+                    // Lấy địa chỉ URL của dịch vụ ký
+                    string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
+                    var uploadServiceBaseAddress = urlSignServer + "api/sign";
+
+                    // Tạo nội dung gửi yêu cầu POST tới API
+                    var content = new StringContent(JsonConvert.SerializeObject(dt), System.Text.Encoding.UTF8, "application/json");
+                    var request = new HttpRequestMessage(HttpMethod.Post, uploadServiceBaseAddress)
+                    {
+                        Content = content
+                    };
+
+                    // Gửi yêu cầu POST để ký
+                    var httpResponseMessage = await new HttpClient().SendAsync(request);
+
+                    // Xử lý kết quả trả về từ API
+                    string kqSign = "";
+                    if (httpResponseMessage.IsSuccessStatusCode)
+                    {
+                        // Đọc dữ liệu trả về từ API (dữ liệu PDF đã ký)
+                        var data_pdf = JsonConvert.DeserializeObject<ResponseDataX>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+                        if (data_pdf.Data != null)
+                        {
+                            kqSign = data_pdf.Data.ToString(); // Chứa chuỗi base64 của file PDF đã ký
+                        }
+                    }
+                    else
+                    {
+                        // Xử lý lỗi nếu có
+                        kqSign = "Lỗi khi ký file: " + httpResponseMessage.ReasonPhrase;
+                    }
+
+                    // Trả lại file đã ký cho người dùng
+                    if (!string.IsNullOrEmpty(kqSign))
+                    {
+                        byte[] signedFileBytes = Convert.FromBase64String(kqSign);
+                        return File(signedFileBytes, "application/pdf", "signed_file.pdf");
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Không thể ký file" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Trả về lỗi nếu có ngoại lệ
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        private string GetFileType(byte[] fileBytes)
+        {
+            // Magic number cho PDF là "%PDF"
+            string fileType = "Unknown";
+            if (fileBytes.Length >= 4)
+            {
+                if (fileBytes[0] == 0x25 && fileBytes[1] == 0x50 && fileBytes[2] == 0x44 && fileBytes[3] == 0x46)
+                {
+                    fileType = "PDF";
+                }
+            }
+            return fileType;
+        }
         #endregion
     }
 }

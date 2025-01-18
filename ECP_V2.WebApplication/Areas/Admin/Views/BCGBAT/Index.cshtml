@@ -79,7 +79,10 @@
                 </div>
                 <div class="col-md-12 " style="background-color:white; padding:2px; display:flex; justify-content:right">
                     <button class="btn btn-default " id="btnHuyTrinh" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(2)">Hủy trình</button>
-                    <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="ExportModalToPdf(3)">Ký duyệt</button>
+                    <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="KySo()">Ký duyệt</button>
+                    <a href="@Url.Action("KySo", "BCGBAT", new { url = "http://10.21.3.15:8202/4.FILES/PNGV00/FileBaoCaoAnToan/24bff492-7f20-4107-bf51-4966ac53ab42.pdf" })" download="signed_file.pdf">
+                        Tải file đã ký
+                    </a>
                     <button class="btn btn-default " id="btnTraLai" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(3)">Trả lại</button>
                 </div>
             </div>
@@ -509,6 +512,27 @@
         });
     }
 
+    function KySo() {
+        var url = $("#baocaoctwords").attr("src");
+        $.ajax({
+            url: '/BCGBAT/KySo',
+            type: 'GET',
+            data: { url: url },
+            success: function (response) {
+                console.log('Base64:', response);
+
+                if (response.success) {
+                    console.log('Base64:', response.base64);
+
+                } else {
+                    console.error("Lỗi: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Lỗi khi gọi API:", error);
+            }
+        });
+    }
 
 </script>
 <script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>
