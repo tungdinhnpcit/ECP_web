@@ -317,7 +317,22 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { message = ex.Message, success = false }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        public JsonResult Get_SoBienBanMax_ByDonVi(string DonViID)
+        {
+            try
+            {
+                var soBienBanMax = _baocaoantoan.Get_SoBienBanMax_ByDonVi(DonViID);
+                if (soBienBanMax == -1)
+                {
+                    return Json(new { message = "Không có dữ liệu", success = false }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { data = soBienBanMax, success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = $"Đã xảy ra lỗi: {ex.Message}", success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult> Insert_BienBanAnToan(FormCollection form, HttpPostedFileBase file, HttpPostedFileBase fileKeHoach)
@@ -330,6 +345,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 var bienBan = new ModelBaoCaoAnToan
                 {
                     LoaiBaoCao = Convert.ToInt32(form["LoaiBaoCao"]),
+                    SoBienBan = Convert.ToInt32(form["SoBienBan"]),
                     TuanThang = Convert.ToInt32(form["TuanThang"]),
                     Nam = Convert.ToInt32(form["Nam"]),
                     NgayBatDau = form["NgayBatDau"],

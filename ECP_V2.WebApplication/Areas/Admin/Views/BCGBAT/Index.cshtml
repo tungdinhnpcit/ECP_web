@@ -32,7 +32,7 @@
         </div>
         <div class="col-lg-2">
             <label for="cboLoai">Loại báo cáo:</label>
-            <select class="form-control" id="LoaiBaoCao">
+            <select class="form-control" id="LoaiBaoCao" onchange="onchangeLoaiBaoCao(this)">
                 <option value="">Loại</option>
                 <option value="1">Tuần</option>
                 <option value="2">Tháng</option>
@@ -68,13 +68,13 @@
                 </div>
                 <div id="thongTinBienBan" style="display:flex; color:#cdc11f">
                     <div class="col-md-4 text-right">
-                        <div style="display:flex">Trạng thái: <p id="txtTrangThai" style="font-weight:bold"></p> </div>
+                        <div style="display:flex">Trạng thái: &nbsp;<p id="txtTrangThai" style="font-weight:bold"></p> </div>
                     </div>
                     <div class="col-md-4 text-right">
-                        <div style="display:flex">Người thao tác: <p id="txtNguoiTrinh" style="font-weight:bold"></p> </div>
+                        <div style="display:flex">Người thao tác: &nbsp;<p id="txtNguoiTrinh" style="font-weight:bold"></p> </div>
                     </div>
                     <div class="col-md-4 text-right">
-                        <div style="display:flex">Thời gian thao tác: <p id="txtThoiGianTrinh" style="font-weight:bold"></p> </div>
+                        <div style="display:flex">Thời gian thao tác: &nbsp;<p id="txtThoiGianTrinh" style="font-weight:bold"></p> </div>
                     </div>
                 </div>
                 <div class="col-md-12 " style="background-color:white; padding:2px; display:flex; justify-content:right">
@@ -117,7 +117,7 @@
 <script>
 
 
-    $(function () {
+    $( function () {
         $('a.viewDocBC').magnificPopup({
             type: 'inline',
             fixedContentPos: false,
@@ -129,7 +129,7 @@
             removalDelay: 300,
             mainClass: 'my-mfp-zoom-in',
             modal: true
-        }).click(function (event) {
+        }).click(async function (event) {
 
             var thoiGian = $("#ChonThoiGian").val();
             var TuanThang = "";
@@ -192,7 +192,8 @@
              }
             DateFrom = $('#GioBd').val();
             DateTo = $('#GioKt').val();
-            DonViId = $('#cmbDonViID').val();
+            DonViId = $('#cboDonvi').val();
+            var soBienBanMax = await Get_SoBienBanMax_ByDonVi(DonViId);
             var DateFrom = tuNgay.slice(6, 8) + "/" + tuNgay.slice(4, 6) + "/" + tuNgay.slice(0, 4);
             var DateTo = denNgay.slice(6, 8) + "/" + denNgay.slice(4, 6) + "/" + denNgay.slice(0, 4);
             var TrangThaiBienBan = 0;
@@ -207,7 +208,6 @@
                         idDonVi: '@donviId'
                     },
                     success: function (response) {
-
                         if (response.Data) {
                             TrangThaiBienBan = response.Data[0].TrangThai;
                         }
@@ -232,15 +232,15 @@
                             if (data.TrangThai == 3 || data.TrangThai== 2) {
                                 $("#txtNguoiTrinh").text(data.HoTenNguoiKy)
                                 $("#txtThoiGianTrinh").text(formattedDate)
-                               $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + '@donviId' +
-                                   "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + data.Id);
+                               $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" +  DonViId  +
+                                   "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + data.Id + "&soBienBan=" + data.SoBienBan);
                             }
 
 
                         } else {
                             $("#txtTrangThai").text("Chưa trình");
-                            $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + '@donviId' +
-                                "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0);
+                            $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + DonViId  +
+                                "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0 + "&soBienBan=" + soBienBanMax);
                         }
                     },
                     error: function (xhr, status, error) {
@@ -271,6 +271,7 @@
         yearSuffix: ""
     };
     $.datepicker.setDefaults($.datepicker.regional["vi-VN"]);
+
     function onchangeThoiGian() {
         var thoiGian = $("#ChonThoiGian").val();
         console.log("check thời gian123", thoiGian)
@@ -281,10 +282,9 @@
         }
     };
 
-
-    // Thay đổi loại báo cáo
-    $("#LoaiBaoCao").change(function () {
-        var loaiBaoCao = $(this).val();
+    //// Thay đổi loại báo cáo
+    function onchangeLoaiBaoCao(element) {
+        var loaiBaoCao = $(element).val();
         var thoiGianPicker = $("#ChonThoiGian");
         // Xóa DatePicker cũ nếu có
         if (thoiGianPicker.data('datepicker')) {
@@ -313,8 +313,6 @@
                     }
                 }).datepicker("show");
             }
-
-
         } else if (loaiBaoCao == "2") {
 
             $(".txtThoiGianBC").text("tháng")
@@ -339,7 +337,8 @@
             thoiGianPicker.val("")
             thoiGianPicker.attr('placeholder', 'Chọn thời gian');
         }
-    });
+    }
+
 
     function ShowData() {
         var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
@@ -443,6 +442,27 @@
         }, 2000);
     };
 
+    function Get_SoBienBanMax_ByDonVi(DonViID) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/BCGBAT/Get_SoBienBanMax_ByDonVi',
+                type: 'GET',
+                data: { DonViID: DonViID },
+                success: function (response) {
+                    if (response.success) {
+                        resolve(response.data);
+                    } else {
+                        resolve(0); 
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi AJAX:", error);
+                    reject(0); // Trả về 0 nếu có lỗi
+                }
+            });
+        });
+    }
+
     function ClosePhieuCongTac() {
         $("#txtTrangThai").text("");
         $("#txtNguoiTrinh").text("");
@@ -474,7 +494,7 @@
                     });
                     setTimeout(function () {
                         ClosePhieuCongTac();
-                    }, 2000);
+                    }, 500);
                 } else {
                     new PNotify({
                         title: 'Thông báo!',

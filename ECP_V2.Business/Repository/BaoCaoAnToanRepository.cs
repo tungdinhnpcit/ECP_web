@@ -9,6 +9,8 @@ using System.Runtime.Remoting.Contexts;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using System.Linq;
+using ECP_V2.Business.Repository;
+using ECP_V2.DataAccess;
 
 public class BaoCaoAnToanRepository
 {
@@ -75,9 +77,9 @@ public class BaoCaoAnToanRepository
         using (var connection = CreateConnection())
         {
             string query = @"
-            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, HoTenNguoiKy, IdNguoiKy,  IdDonVi, NgayCapNhat)
+            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, HoTenNguoiKy, IdNguoiKy,  IdDonVi, NgayCapNhat, SoBienBan)
             OUTPUT INSERTED.ID
-            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh,@HoTenNguoiKy, @IdNguoiKy, @IdDonVi, GetDate())";
+            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh,@HoTenNguoiKy, @IdNguoiKy, @IdDonVi, GetDate(), @SoBienBan)";
             var id = await connection.QuerySingleAsync<int>(query, model);
 
             return id;  // Trả về ID của bản ghi vừa được thêm
@@ -171,6 +173,26 @@ public class BaoCaoAnToanRepository
         });
 
             return rowsAffected; 
+        }
+    }
+    public int Get_SoBienBanMax_ByDonVi(string DonViID)
+    {
+        try
+        {
+            using (var db = new ECP_V2Entities())
+            {
+                var result = db.Database.SqlQuery<int?>(
+                    @"SELECT ISNULL(MAX(SoBienBan), 0) AS MaxSoBienBan
+                    FROM [BienBanAnToan]
+                    WHERE IdDonVi = @DonViID;",
+                    new SqlParameter("@DonViID", DonViID)
+                ).FirstOrDefault();
+                return result ?? 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            return -1;
         }
     }
 }

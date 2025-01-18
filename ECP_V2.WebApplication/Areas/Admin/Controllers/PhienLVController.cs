@@ -676,7 +676,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId, string LoaiBaoCao, string TuanThang, int TrangThaiBienBan, int IdBienBan)
+        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId, string LoaiBaoCao, string TuanThang, int TrangThaiBienBan, int IdBienBan, int soBienBan)
         {
             try
             {
@@ -702,6 +702,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 ViewBag.TuanThang = TuanThang;
                 ViewBag.TrangThaiBienBan = TrangThaiBienBan;
                 ViewBag.IdBienBan = IdBienBan;
+                ViewBag.soBienBan = soBienBan;
                 double tyleKH = 0;
                 if (tongcv > 0)
                 {
@@ -714,6 +715,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 ViewBag.DonVi = donVi;
                 ViewBag.DonViId = DonViId;
                 ViewBag.DonViCha = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == donVi.DviCha);
+                ViewBag.TenVietTat = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId).TenVietTat;
                 ViewBag.TuNgay = DateTime.ParseExact(DateFrom, format, CultureInfo.InvariantCulture);
                 ViewBag.DenNgay = DateTime.ParseExact(DateTo, format, CultureInfo.InvariantCulture);
                 ViewBag.LoaiBaoCao = LoaiBaoCao;
