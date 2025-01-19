@@ -3126,8 +3126,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 byte[] file = safeTrainRepository.GetFileTmpSign(step, loaiphieu);//System.IO.File.ReadAllBytes("C:\\Users\\Admin\\Downloads\\6. Phieu KT DZ NGAY TT.xls");
                                                                                   //Lấy tham số
                 string param = GetParamSign(plv.Id, loaiphieu, step);
+                var datafile = System.Convert.ToBase64String(file);
 
-                string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + System.Convert.ToBase64String(file) + "\"\r\n}";
+                string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + datafile + "\"\r\n}";
 
                 using (HttpClient httpClient = new HttpClient())
                 {

@@ -195,4 +195,16 @@ public class BaoCaoAnToanRepository
             return -1;
         }
     }
+    public async Task<ModelBaoCaoAnToan> Get_BienBan_ById(int Id)
+    {
+        using (var connection = CreateConnection())
+        {
+            string query = @"SELECT a.* FROM BienBanAnToan a WHERE Id = @Id";
+            var parameters = new { Id };
+
+            var data = await connection.QueryAsync<ModelBaoCaoAnToan>(query, parameters);
+
+            return data.FirstOrDefault();
+        }
+    }
 }

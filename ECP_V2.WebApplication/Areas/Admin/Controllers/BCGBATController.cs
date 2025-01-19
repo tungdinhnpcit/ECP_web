@@ -51,6 +51,9 @@ using System.Linq;
 using System.Data.Entity;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using static ECP_V2.WebApplication.Areas.Admin.Controllers.PhienLVController;
+using ECP_V2.WebApplication.NotificationService;
+using static ECP_V2.WebApplication.Areas.Admin.Controllers.SendNotifyController;
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -58,6 +61,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
     public class BCGBATController : UTController
     {
 
+        //private readonly INotificationService _notificationService;
+        //public BCGBATController(INotificationService notificationService)
+        //{
+        //    _notificationService = notificationService;
+        //}
         //
         // GET: /Admin/PhienLV/
         private PhienLVRepository _plviec_ser = new PhienLVRepository();
@@ -88,12 +96,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         SafeTrainRepository safeTrainRepository = new SafeTrainRepository();
         ApprovePlanReponsitory appPlanRepo = new ApprovePlanReponsitory();
-
         //Call API để convert html tới pdf.        
         //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         //string path = url + "ConvertHtmlToPdf";
         string path = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString() + "jxlsToFile";
         string apiFile = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
+       
         //Lấy file template từ database
         //[AreaAuthorization]
         public class FileUploadResponse
@@ -234,7 +242,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             var listThuocTinhPhien5 = thuocTinhPhienRepository.GetByLoaiThuocTinh(5);
             ViewBag.ThuocTinhPhien5 = listThuocTinhPhien5;
-            ViewBag.UserId = User.Identity.GetUserId(); 
+            ViewBag.UserId = User.Identity.GetUserId();
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -342,7 +350,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             {
                 var userId = User.Identity.GetUserId();
                 var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
-                    .FirstOrDefault(x => x.Id == userId);              
+                    .FirstOrDefault(x => x.Id == userId);
                 var bienBan = new ModelBaoCaoAnToan
                 {
                     LoaiBaoCao = Convert.ToInt32(form["LoaiBaoCao"]),
@@ -358,12 +366,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     IdNguoiKy = form["IdNguoiKy"],
                     IdDonVi = form["IdDonVi"]
                 };
+
                 var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(bienBan);
                 var result = new ResponseData();
                 var fileSize = form["fileSize"];
                 var fileKeHoachSize = form["fileKeHoachSize"];
                 if (IdTaiLieu > 0 && fileKeHoach != null && fileKeHoach.ContentLength > 0)
                 {
+                    
+
                     result = await UploadFileToApi(fileKeHoach, bienBan.IdDonVi);
                     if (result.Status)
                     {
@@ -383,6 +394,20 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
                 if (IdTaiLieu > 0 && file != null && file.ContentLength > 0)
                 {
+                    // Gửi thông báo đến người ký
+                    var baseRequestData = new NotificationRequest
+                    {
+                        userId = form["IdNguoiKy"],
+                        IDConect = "PN",
+                        Title = "Trình ký nội dung biên bản báo cáo AT",
+                        Name = dataNguoiTrinh.TenNhanVien,
+                        Header = "Thông báo",
+                        Subtitle = "Thông báo",
+                        Contents = dataNguoiTrinh.TenNhanVien + "- Trình ký nội dung biên bản báo cáo AT"
+                    };
+                    var PLVController = new SendNotifyController();
+
+                    await PLVController.SendNotification(baseRequestData);
                     result = await UploadFileToApi(file, bienBan.IdDonVi);
                     if (result.Status)
                     {
@@ -465,7 +490,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     return Json(new { success = false, message = "Không có data!" }, JsonRequestBehavior.AllowGet);
                 }
                 DisposeAll();
-                return Json(new { success = true, message = "Cập nhật thành công!" , Data= result }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = "Cập nhật thành công!", Data = result }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -479,18 +504,55 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             var IdUser = User.Identity.GetUserId();
             if (id <= 0)
             {
-                return Json(new { message = "Dữ liệu không hợp lệ", success = false },  JsonRequestBehavior.AllowGet);
+                return Json(new { message = "Dữ liệu không hợp lệ", success = false }, JsonRequestBehavior.AllowGet);
             }
+            ModelBaoCaoAnToan bienBan = (ModelBaoCaoAnToan)await _baocaoantoan.Get_BienBan_ById(id);
             int rowsUpdated = await _baocaoantoan.HuyTrinh_TraLai_BienBanAnToan(id, trangThai);
             if (rowsUpdated > 0)
             {
-                await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, 0, IdUser);
+                var baseRequestData = new NotificationRequest
+                {
+                    IDConect = "PN",
+                    Title = "Thông báo",
+                    Name = bienBan.HoTenNguoiKy,
+                    Header = "Thông báo",
+                    Subtitle = "Thông báo",
+                    Contents = "Thông báo"
+                };
+                var PLVController = new SendNotifyController();
+
+                if (trangThai == 4)// Ký duyệt
+                {
+                    baseRequestData.Title = "Ký duyệt biên bản báo cáo AT";
+                    baseRequestData.userId = bienBan.IdNguoiTrinhKy;
+                    baseRequestData.Contents = $"{bienBan.HoTenNguoiKy} - đã ký biên bản báo cáo AT";
+                    await PLVController.SendNotification(baseRequestData);
+
+                    //await _notificationService.SendNotificationsAsync(new string[] { bienBan.IdNguoiTrinhKy.ToString() }, baseRequestData);
+
+                }
                
+                if (trangThai == 3)// trả lại
+                {
+                    baseRequestData.Title = "Trả lại biên bản báo cáo AT";
+                    baseRequestData.userId = bienBan.IdNguoiTrinhKy;
+                    baseRequestData.Contents = $"{bienBan.HoTenNguoiKy} - Trả lại biên bản báo cáo AT";
+                    await PLVController.SendNotification(baseRequestData);
+
+                    //await _notificationService.SendNotificationsAsync(new string[] { bienBan.IdNguoiTrinhKy.ToString() }, baseRequestData);
+                }
+                var trangThaiFile = 0;
+                if (trangThai == 4)
+                {
+                    trangThaiFile = 1;
+                };
+                await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, trangThaiFile, IdUser);
+
             }
             else
             {
                 DisposeAll();
-                return Json(new { message = "Không tìm thấy dữ liệu update!", success = false },  JsonRequestBehavior.AllowGet);
+                return Json(new { message = "Không tìm thấy dữ liệu update!", success = false }, JsonRequestBehavior.AllowGet);
             }
 
             DisposeAll();
@@ -502,9 +564,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             try
             {
+
                 var IdUser = User.Identity.GetUserId();
                 var IdBienBan = form["Id"];
-                
+
+                var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+                    .FirstOrDefault(x => x.Id == IdUser);
                 // Lấy thông tin từ form
                 var bienBan = new ModelBaoCaoAnToan
                 {
@@ -515,7 +580,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     HoTenNguoiKy = form["HoTenNguoiKy"],
                     IdNguoiKy = form["IdNguoiKy"],
                     IdDonVi = form["IdDonVi"]
-            };
+                };
                 var IdTaiLieu = await _baocaoantoan.TrinhKyLai_BienBanAnToan(bienBan);
                 var result = new ResponseData();
                 var fileSize = form["fileSize"];
@@ -541,6 +606,20 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
                 if (IdTaiLieu > 0 && file != null && file.ContentLength > 0)
                 {
+                    var baseRequestData = new NotificationRequest
+                    {
+                        userId = form["IdNguoiKy"],
+                        IDConect = "PN",
+                        Title = "Trình ký nội dung biên bản báo cáo AT",
+                        Name = dataNguoiTrinh.TenNhanVien,
+                        Header = "Thông báo",
+                        Subtitle = "Thông báo",
+                        Contents = dataNguoiTrinh.TenNhanVien + "- Trình ký nội dung biên bản báo cáo AT"
+                    };
+                    var PLVController = new SendNotifyController();
+
+                    await PLVController.SendNotification(baseRequestData);
+
                     result = await UploadFileToApi(file, bienBan.IdDonVi);
                     if (result.Status)
                     {
@@ -584,18 +663,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 using (WebClient client = new WebClient())
                 {
                     byte[] fileBytes = client.DownloadData(url);
-                    // Tải file
-                    //string fileType = GetFileType(fileBytes);
-                    //return File(fileBytes, "application/pdf", "downloaded_file.pdf");
-
-
-                    // Đọc file đã tải và chuyển thành base64 (chuỗi)
                     //string base64File = Convert.ToBase64String(fileBytes);
-
-                    // Lấy thông tin người dùng từ Session
                     tblNhanVien nvien = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
 
-                    
                     // Tạo đối tượng chứa thông tin để ký (ví dụ về ký số EVN)
                     DataSign dt = new DataSign();
                     var k = new KetQuaTimKiem();
@@ -663,19 +733,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        private string GetFileType(byte[] fileBytes)
-        {
-            // Magic number cho PDF là "%PDF"
-            string fileType = "Unknown";
-            if (fileBytes.Length >= 4)
-            {
-                if (fileBytes[0] == 0x25 && fileBytes[1] == 0x50 && fileBytes[2] == 0x44 && fileBytes[3] == 0x46)
-                {
-                    fileType = "PDF";
-                }
-            }
-            return fileType;
-        }
+
         #endregion
+
+      
     }
 }
