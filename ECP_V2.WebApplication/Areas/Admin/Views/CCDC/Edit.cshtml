@@ -1,8 +1,9 @@
-﻿ @model ECP_V2.WebApplication.Areas.Admin.Models.CongCuDungCuAnToanViewModels
+﻿@model ECP_V2.WebApplication.Areas.Admin.Models.CongCuDungCuAnToanViewModels
 @{
     Layout = null;
 }
-
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 <link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
 <style>
     select {
@@ -22,13 +23,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.LoaiThietBi != null)
                 {
-                @Html.DropDownListFor(model => model.MaLoai, (SelectList)ViewBag.LoaiThietBi, "Chọn loại", new { @class = "form-control", @style = "width:100%", @onchange = "LoaiThietBi_OnChange(this)" })
+                    @Html.DropDownListFor(model => model.MaLoai, (SelectList)ViewBag.LoaiThietBi, "Chọn loại", new { @class = "form-control", @style = "width:100%", @onchange = "LoaiThietBi_OnChange(this)" })
                 }
                 else
                 {
-                <select id="MaLoai" name="MaLoai" style="width:100%" onclick="LoaiThietBi_OnChange(this)" class="form-control">
-                    <option value="">Chọn loại</option>
-                </select>
+                    <select id="MaLoai" name="MaLoai" style="width:100%" onclick="LoaiThietBi_OnChange(this)" class="form-control">
+                        <option value="">Chọn loại</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaLoai)
             </div>
@@ -49,13 +50,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.HangSX != null)
                 {
-                @Html.DropDownListFor(model => model.MaHSX, (SelectList)ViewBag.HangSX, "Chọn hãng sản xuất", new { @class = "selectoption" })
+                    @Html.DropDownListFor(model => model.MaHSX, (SelectList)ViewBag.HangSX, "Chọn hãng sản xuất", new { @class = "selectoption" })
                 }
                 else
                 {
-                <select id="MaHSX" name="MaHSX" class="selectoption">
-                    <option value="">Chọn hãng sản xuất</option>
-                </select>
+                    <select id="MaHSX" name="MaHSX" class="selectoption">
+                        <option value="">Chọn hãng sản xuất</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaHSX)
             </div>
@@ -64,13 +65,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.NuocSX != null)
                 {
-                @Html.DropDownListFor(model => model.MaNSX, (SelectList)ViewBag.NuocSX, "Chọn nước sản xuất", new { @class = "selectoption" })
+                    @Html.DropDownListFor(model => model.MaNSX, (SelectList)ViewBag.NuocSX, "Chọn nước sản xuất", new { @class = "selectoption" })
                 }
                 else
                 {
-                <select id="MaNSX" name="MaNSX" class="selectoption">
-                    <option value="">Chọn nước sản xuất</option>
-                </select>
+                    <select id="MaNSX" name="MaNSX" class="selectoption">
+                        <option value="">Chọn nước sản xuất</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaNSX)
             </div>
@@ -180,14 +181,18 @@
 <script>
     $(function () {
 
-        $("#NgayDuaVaoSuDung").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-        }).data("kendoDatePicker");
+        //$("#NgayDuaVaoSuDung").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker");
+        var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+        var start = $("#NgayDuaVaoSuDung").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(yNgay);
 
         $("#MaLoai").select2();
         $("#MaHSX").select2();
         $("#MaNSX").select2();
-       
+
 
         // Spinner
         (function ($) {
@@ -213,7 +218,7 @@
 
         }).apply(this, [jQuery]);
 
-        
+
     });
 
     function ChangeCheckBoxMuaTrong() {

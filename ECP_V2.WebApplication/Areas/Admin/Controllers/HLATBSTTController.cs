@@ -68,7 +68,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 //Lấy các biến
                 string bactho = Request.Form["bactho"];
                 string bacat = Request.Form["bacat"];
-                string cdanhatd = Request.Form["cdanhatd"];
+                string cdanhatd = Request.Form["cdanhatd"];                
                 string nsid = Request.Form["nsid"];
 
                 string nhomatd = Request.Form["nhomatd"];
@@ -80,19 +80,19 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 //2. Có x thì insert file
                 HttpFileCollectionBase files = Request.Files;
-
+                
                 String serverMapPath = "~/Files/somefiles/";
                 String pathFull = Path.Combine(HostingEnvironment.MapPath(serverMapPath));
-
+                                
                 for (int i = 0; i < files.Count; i++)
                 {
                     HttpPostedFileBase file = files[i];
                     string fname = file.FileName;
                     fname = System.IO.Path.Combine(pathFull, fname);
                     file.SaveAs(fname);
-
+                    
                     //safeTraninRepo.InsertClassFile(x, file.FileName, arrNgay[i], fname, "DOC");
-
+                    
                 }
 
                 return Json("OK");

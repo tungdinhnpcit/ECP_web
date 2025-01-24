@@ -25,7 +25,7 @@
     $(document).ready(function () {
         //Load danh mục:
         LoadDsOrg();
-
+        
         //Khởi tạo danh sách đơn vị
         $('#tblOrg').DataTable({
             select: {
@@ -130,209 +130,179 @@
     }
 
     /*----------multiple-file-upload-----------*/
-    .input-group.file-caption-main {
-        display: none;
-    }
+.input-group.file-caption-main{
+    display: none;
+}
+.close.fileinput-remove{
+    display: none;
+}
+.file-drop-zone{
+    margin: 0px;
+    border: 1px solid #fff;
+    background-color: #fff;
+    padding: 0px;
+    display: contents;
+}
+.file-drop-zone.clickable:hover{
+    border-color: #fff;
+}
+.file-drop-zone .file-preview-thumbnails{
+    display: inline;
+}
+.file-drop-zone-title{
+    padding: 15px;
+    height: 120px;
+    width: 120px;
+    font-size: 12px;
+}
+.file-input-ajax-new{
+    display: inline-block;
+}
+.file-input.theme-fas{
+    display: inline-block;
+    width: 100%;
+}
+.file-preview{
+    padding: 0px;
+    border: none;
+    display: inline;
 
-    .close.fileinput-remove {
-        display: none;
-    }
-
-    .file-drop-zone {
-        margin: 0px;
-        border: 1px solid #fff;
-        background-color: #fff;
-        padding: 0px;
-        display: contents;
-    }
-
-        .file-drop-zone.clickable:hover {
-            border-color: #fff;
-        }
-
-        .file-drop-zone .file-preview-thumbnails {
-            display: inline;
-        }
-
-    .file-drop-zone-title {
-        padding: 15px;
-        height: 120px;
-        width: 120px;
-        font-size: 12px;
-    }
-
-    .file-input-ajax-new {
-        display: inline-block;
-    }
-
-    .file-input.theme-fas {
-        display: inline-block;
-        width: 100%;
-    }
-
-    .file-preview {
-        padding: 0px;
-        border: none;
-        display: inline;
-    }
-
-    .file-drop-zone-title {
-        display: none;
-    }
-
-    .file-footer-caption {
-        display: none !important;
-    }
-
-    .kv-file-upload {
-        display: none;
-    }
-
-    .file-upload-indicator {
-        display: none;
-    }
-
-    .file-drag-handle.drag-handle-init.text-info {
-        display: none;
-    }
-
-    .krajee-default.file-preview-frame .kv-file-content {
-        width: 90px;
-        height: 90px;
-        display: flex;
-        text-align: center;
-        align-items: center;
-    }
-
-    .krajee-default.file-preview-frame {
-        background-color: #fff;
-        margin: 3px;
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-        .krajee-default.file-preview-frame:not(.file-preview-error):hover {
-            box-shadow: none;
-            border-color: #ed3237;
-        }
-
-            .krajee-default.file-preview-frame:not(.file-preview-error):hover .file-preview-image {
-                transform: scale(1.1);
-            }
-
-    .krajee-default.file-preview-frame {
-        box-shadow: none;
-        border-color: #fff;
-        max-width: 150px;
-        margin: 5px;
-        padding: 0px;
-        transition: 0.5s;
-    }
-
-    .file-thumbnail-footer,
-    .file-actions {
-        width: 20px;
-        height: 20px !important;
-        position: absolute !important;
-        top: 3px;
-        right: 3px;
-    }
-
-    .kv-file-remove:focus,
-    .kv-file-remove:active {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-    .kv-file-remove {
-        border-radius: 50%;
-        z-index: 1;
-        right: 0;
-        position: absolute;
-        top: 0;
-        text-align: center;
-        color: #fff;
-        background-color: #ed3237;
-        border: 1px solid #ed3237;
-        padding: 2px 6px;
-        font-size: 11px;
-        transition: 0.5s;
-    }
-
-        .kv-file-remove:hover {
-            border-color: #fdeff0;
-            background-color: #fdeff0;
-            color: #ed1924;
-        }
-
-    .kv-preview-data.file-preview-video {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    .btn-outline-secondary.focus, .btn-outline-secondary:focus {
-        box-shadow: none;
-    }
-
-    .btn-toggleheader,
-    .btn-fullscreen,
-    .btn-borderless {
-        display: none;
-    }
-
-    .btn-kv.btn-close {
-        color: #fff;
-        border: none;
-        background-color: #ed3237;
-        font-size: 11px;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        padding: 0px;
-    }
-
-    .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
-    .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
-    .show > .btn-outline-secondary.dropdown-toggle:focus {
-        background-color: rgba(255,255,255,0.8);
-        color: #000;
-        box-shadow: none;
-        color: #ed3237;
-    }
-
-    .kv-file-content .file-preview-image {
-        width: 90px !important;
-        height: 90px !important;
-        max-width: 90px !important;
-        max-height: 90px !important;
-        transition: 0.5s;
-    }
-
-    .btn-danger.btn-file {
-        padding: 0px;
-        height: 95px;
-        width: 95px;
-        display: inline-block;
-        margin: 5px;
-        border-color: #fdeff0;
-        background-color: #fdeff0;
-        color: #ed1924;
-        border-radius: 15px;
-        padding-top: 30px;
-        transition: 0.5s;
-    }
-
-        .btn-danger.btn-file:active,
-        .btn-danger.btn-file:hover {
-            background-color: #fde3e5;
-            color: #ed1924;
-            border-color: #fdeff0;
-            box-shadow: none;
-        }
-
-        .btn-danger.btn-file i {
-            font-size: 30px;
-        }
+}
+.file-drop-zone-title{
+    display: none;
+}
+.file-footer-caption{
+    display: none !important;
+}
+.kv-file-upload{
+    display: none;
+}
+.file-upload-indicator{
+    display: none;
+}
+.file-drag-handle.drag-handle-init.text-info{
+    display: none;
+}
+.krajee-default.file-preview-frame .kv-file-content{
+    width: 90px;
+    height: 90px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
+.krajee-default.file-preview-frame{
+    background-color: #fff;
+    margin: 3px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.krajee-default.file-preview-frame:not(.file-preview-error):hover{
+    box-shadow: none;
+    border-color: #ed3237;
+}
+.krajee-default.file-preview-frame:not(.file-preview-error):hover .file-preview-image{
+    transform: scale(1.1);
+}
+.krajee-default.file-preview-frame{
+    box-shadow: none;
+    border-color: #fff;
+    max-width: 150px;
+    margin: 5px;
+    padding: 0px;
+    transition: 0.5s;
+}
+.file-thumbnail-footer,
+.file-actions{
+    width: 20px;
+    height: 20px !important;
+    position: absolute !important;
+    top: 3px;
+    right: 3px;
+}
+.kv-file-remove:focus,
+.kv-file-remove:active{
+    outline: none !important;
+    box-shadow: none !important;
+}
+.kv-file-remove{
+    border-radius: 50%;
+    z-index: 1;
+    right: 0;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    color: #fff;
+    background-color: #ed3237;
+    border: 1px solid #ed3237;
+    padding: 2px 6px;
+    font-size: 11px;
+    transition: 0.5s;
+}
+.kv-file-remove:hover{
+    border-color: #fdeff0;
+    background-color: #fdeff0;
+    color: #ed1924;
+}
+.kv-preview-data.file-preview-video{
+    width: 100% !important;
+    height: 100% !important;
+}
+.btn-outline-secondary.focus, .btn-outline-secondary:focus{
+    box-shadow: none;
+}
+.btn-toggleheader,
+.btn-fullscreen,
+.btn-borderless{
+    display: none;
+}
+.btn-kv.btn-close{
+    color: #fff;
+    border: none;
+    background-color: #ed3237;
+    font-size: 11px;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    padding: 0px;
+}
+.btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
+.btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+.show>.btn-outline-secondary.dropdown-toggle:focus{
+    background-color: rgba(255,255,255,0.8);
+    color: #000;
+    box-shadow: none;
+    color: #ed3237;
+}
+.kv-file-content .file-preview-image{
+    width: 90px !important;
+    height: 90px !important;
+    max-width: 90px !important;
+    max-height: 90px !important;
+    transition: 0.5s;
+}
+.btn-danger.btn-file{
+    padding: 0px;
+    height: 95px;
+    width: 95px;
+    display: inline-block;
+    margin: 5px;
+    border-color: #fdeff0;
+    background-color: #fdeff0;
+    color: #ed1924;
+    border-radius: 15px;
+    padding-top: 30px;
+    transition: 0.5s;
+}
+.btn-danger.btn-file:active,
+.btn-danger.btn-file:hover{
+    background-color: #fde3e5;
+    color: #ed1924;
+    border-color: #fdeff0;
+    box-shadow: none;
+}
+.btn-danger.btn-file i{
+    font-size: 30px;
+}
 </style>
 
 <div class="container-fruid ms-auto" style="margin-top:-40px;">
@@ -433,7 +403,8 @@
                         <div class="col-sm-2">
                             <label type="text" readonly class="form-control-plaintext"
                                    for="bactho" style="font-weight:bold;" value="" />
-                            <select id="bactho" class="form-control">
+                            <select id="bactho" class="form-control">  
+                                <option value="">0/8</option>
                                 <option value="1">1/8</option>
                                 <option value="2">2/8</option>
                                 <option value="3">3/8</option>
@@ -449,86 +420,88 @@
                             <label type="text" readonly class="form-control-plaintext"
                                    for="bacat" style="font-weight:bold;" value="" />
                             <select id="bacat" class="form-control">
+                                <option value="">0/5</option>
                                 <option value="1">1/5</option>
                                 <option value="2">2/5</option>
                                 <option value="3">3/5</option>
                                 <option value="4">4/5</option>
                                 <option value="5">5/5</option>
                             </select>
-                        </div>
-                        <input type="hidden" id="nsid" />
+                        </div>                     
+                        <input type="hidden" id="nsid"/>
                     </div>
                     <div class="form-group row">
 
                         <label for="cdatd-select" class="col-sm-2 col-form-label">Chức danh ATĐ:</label>
                         @*<select id="cdatd" class="form-control">
-                                <option value="1">Người giám sát</option>
-                                <option value="2">Người kiểm tra</option>
-                            </select>*@
+            <option value="1">Người giám sát</option>
+            <option value="2">Người kiểm tra</option>
+        </select>*@
                         <div class="col-sm-10">
                             <select class="form-select" id="cdatd-select" data-placeholder="Chọn chức danh ATĐ" multiple>
+                                
                             </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; background-color: #0984e3;color:white;">
-                    <span><i class="fa fa-folder" style="color:yellow"></i>  Hồ sơ đính kèm</span>
-                </div>
-                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem;">
-                    <div class="form-group row" style="padding-top:5px !important">
-                        <section class="bg-diffrent">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="verify-sub-box">
-                                            <div class="file-loading">
-                                                <input id="multiplefileupload" lang="vi" type="file" accept=".jpg,.gif,.png,.txt,.xls,.xlsx" multiple>
+                    <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; background-color: #0984e3;color:white;">
+                        <span><i class="fa fa-folder" style="color:yellow"></i>  Hồ sơ đính kèm</span>
+                    </div>
+                    <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem;">
+                        <div class="form-group row" style="padding-top:5px !important">
+                            <section class="bg-diffrent">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="verify-sub-box">
+                                                <div class="file-loading">
+                                                    <input id="multiplefileupload" lang="vi" type="file" accept=".jpg,.gif,.png,.txt,.xls,.xlsx" multiple>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+        </div>
+       
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; background-color: #0984e3;color:white;">
+                        <span><i class="fa fa-info" style="color:yellow"></i>  Nhóm An toàn</span>
+                    </div>
+                    <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; ">
+                        
+                        <div class="form-group row" style="padding-top:5px !important;">
+                            <div class="col-lg-4">
+                                <label type="text" for="cboATD" class="form-control-plaintext"
+                                       style="font-weight:bold;" value="" />
+                                <select class="form-control form-control-sm" id="cboATD">
+                                    <option value="ALL">--Nhóm An toàn Điện--</option>
+                                </select>
                             </div>
-                        </section>
+                            <div class="col-lg-4">
+                                <label type="text" for="cboATVSLD" class="form-control-plaintext"
+                                       style="font-weight:bold;" value="" />
+                                <select class="form-control form-control-sm" id="cboATVSLD">
+                                    <option value="ALL">--Nhóm An toàn VSLĐ--</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <label type="text" for="cboHotline" class="form-control-plaintext"
+                                       style="font-weight:bold;" value="" />
+                                <select class="form-control form-control-sm" id="cboHotline">
+                                    <option value="ALL">--Nhóm Hotline--</option>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-lg-12">
-            <div class="card mb-4">
-                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; background-color: #0984e3;color:white;">
-                    <span><i class="fa fa-info" style="color:yellow"></i>  Nhóm An toàn</span>
-                </div>
-                <div class="card-body" style="border: solid; background: transparent; border-width: 1px 1px 1px 1px; border-color: grey; border-radius: 0.3rem; ">
-
-                    <div class="form-group row" style="padding-top:5px !important;">
-                        <div class="col-lg-4">
-                            <label type="text" for="cboATD" class="form-control-plaintext"
-                                   style="font-weight:bold;" value="" />
-                            <select class="form-control form-control-sm" id="cboATD">
-                                <option value="ALL">--Nhóm An toàn Điện--</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-4">
-                            <label type="text" for="cboATVSLD" class="form-control-plaintext"
-                                   style="font-weight:bold;" value="" />
-                            <select class="form-control form-control-sm" id="cboATVSLD">
-                                <option value="ALL">--Nhóm An toàn VSLĐ--</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-4">
-                            <label type="text" for="cboHotline" class="form-control-plaintext"
-                                   style="font-weight:bold;" value="" />
-                            <select class="form-control form-control-sm" id="cboHotline">
-                                <option value="ALL">--Nhóm Hotline--</option>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+                </div>               
+    </div>    
 </div>
 
 <script>
@@ -558,9 +531,9 @@
         }
     });
 
-    //$('#cmdView').click(function (e) {
-    //    LoadKquaBC02();
-    //});
+        //$('#cmdView').click(function (e) {
+        //    LoadKquaBC02();
+        //});
     $('#cdatd-select').select2({
         theme: "bootstrap-5",
         width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
@@ -571,5 +544,5 @@
     $('#btnSave').on('click', function () {
         OnSaveInforHR();
     });
-
+    
 </script>

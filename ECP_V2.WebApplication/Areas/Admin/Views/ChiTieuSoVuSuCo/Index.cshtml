@@ -89,13 +89,11 @@
         //Menu Collapsed Layout
         $('html').addClass('sidebar-left-collapsed');
 
-        $("#Date").kendoDatePicker({
-            start: "decade",
-            depth: "decade",
-            format: "yyyy",
-            value: new Date(),
-            change: onChange,
-        });
+        const d = new Date();
+        let year = d.getFullYear();
+        $('#Date').datepicker({
+            dateFormat: 'yyyy'
+        }).val(year);
 
         Paging();
     });

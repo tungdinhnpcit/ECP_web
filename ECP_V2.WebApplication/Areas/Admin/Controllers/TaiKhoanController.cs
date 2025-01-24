@@ -341,7 +341,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateInput(false)]
-        public  ActionResult Add(NhanVienModel model)
+        public ActionResult Add(NhanVienModel model)
         {
             if (User.IsInRole("AdminDonVi"))
             {
@@ -448,17 +448,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     return View(model);
                 }
 
-                //string existsSign = await CheckAuthenSign(model.Hsm_serial);
-
-                //if (existsSign.Equals("ERROR"))
-                //{
-                //    DisposeAll();
-
-                //    //return JsonError("Số điện thoại đã đăng ký tài khoản.");
-                //    SetNotification("Alias hay Serial ký số không chính xác hoặc chưa được cập nhật.", NotificationEnumeration.Error, true);
-                //    return View(model);
-                //}
-
                 string strError = "";
                 var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var t1 = idenM.CreateUser(user, model.Password);
@@ -555,31 +544,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         }
 
-        #region Hàm check định danh ký có đúng ko?
-        private async Task<string> CheckAuthenSign(string usersign)
-        {
-            string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
-            var httpClient = new HttpClient();
-            var uploadServiceBaseAddress = urlSignServer + "api/Sign?DinhDanhKy=" + usersign + "&provider=EVN_CA";
-            var client = new HttpClient();
-            string kq = "ERROR";
-            HttpResponseMessage response = await client.GetAsync(uploadServiceBaseAddress);
-            if (response.IsSuccessStatusCode)
-            {
-                kq = await response.Content.ReadAsAsync<string>();
-            }
-
-            return kq;
-
-        }
-        #endregion
-
 
         [HttpPost]
         [ValidateInput(false)]
         public async Task<ActionResult> Edit(NhanVienModel model)
         {
-            
             if (User.IsInRole("AdminDonVi"))
             {
                 var listDvi = _dv_ser.List().Where(x => x.Id.Equals(Session["DonViID"].ToString())).OrderBy(p => p.TenDonVi).ToList();
@@ -674,16 +643,21 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
                 }
 
-                string exSign = await CheckAuthenSign(model.Hsm_serial).ConfigureAwait(false);
-
-                if (exSign.Equals("ERROR"))
+                if (!string.IsNullOrEmpty(model.Hsm_serial))
                 {
-                    DisposeAll();
+                    string exSign = await CheckAuthenSign(model.Hsm_serial).ConfigureAwait(false);
 
-                    //return JsonError("Cập nhật chưa đúng alias/serial ký số EVNCA.");
-                    SetNotification("Cập nhật chưa đúng alias/serial ký số EVNCA.", NotificationEnumeration.Error, true);
-                    return View(model);
+                    if (exSign.Equals("ERROR"))
+                    {
+                        DisposeAll();
+
+                        //return JsonError("Cập nhật chưa đúng alias/serial ký số EVNCA.");
+                        SetNotification("Cập nhật chưa đúng alias/serial ký số EVNCA.", NotificationEnumeration.Error, true);
+                        return View(model);
+                    }
                 }
+
+                
 
                 aspNetUserRepository.Update(user, ref strErrorUser);
 
@@ -770,7 +744,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                             //eKH.NgaySinh = new DateTime(1988, 7, 3);
                             object x = _kh_ser.UpdateV2(nv, ref strError);
-                                                        
                             if (x == null)
                             {
                                 DisposeAll();
@@ -833,6 +806,34 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
 
         }
+
+        #region Hàm check định danh ký có đúng ko?
+        private async Task<string> CheckAuthenSign(string usersign)
+        {
+            string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
+            var httpClient = new HttpClient();
+            var uploadServiceBaseAddress = urlSignServer + "api/Sign?DinhDanhKy=" + usersign + "&provider=EVN_CA";
+            var client = new HttpClient();
+            string kq = "ERROR";
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(uploadServiceBaseAddress);
+                if (response.IsSuccessStatusCode)
+                {
+                    kq = await response.Content.ReadAsAsync<string>();
+                }
+
+                return kq;
+            }
+            catch (Exception ex){
+                return kq;
+            }
+            
+
+            
+
+        }
+        #endregion
 
         [Authorize(Roles = "Admin,AdminDonVi,Manager,Master")]
         public ActionResult Edit(string id)

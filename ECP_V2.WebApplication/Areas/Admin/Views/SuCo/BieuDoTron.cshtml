@@ -14,7 +14,8 @@
         padding: 5px;
     }
 </style>
-
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 <div class="block-fluid">
     <div class="panel panel-visible">
         <div class="panel-heading br-b-n">
@@ -60,14 +61,27 @@
 
         //Menu Collapsed Layout
         $('html').addClass('sidebar-left-collapsed');
-        var start = $("#GioBd").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-        }).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+        //var start = $("#GioBd").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
 
-        var end = $("#GioKt").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-            change: end_chage
-        }).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+        //var end = $("#GioKt").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //    change: end_chage
+        //}).data("kendoDatePicker").value(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+
+        var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+        var start = $("#GioBd").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(yNgay);
+
+        var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
+        var end = $("#GioKt").datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+                end_chage();
+            }
+        }).val(xNgay);
 
         Paging();
 

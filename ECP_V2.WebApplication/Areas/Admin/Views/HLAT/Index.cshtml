@@ -88,7 +88,7 @@
         });
 
         //Khởi tạo table kết quả
-        $('#tblResultUpdate').DataTable({            
+        $('#tblResultUpdate').DataTable({
             "language": {
                 "lengthMenu": "Hiển thị _MENU_",
                 "zeroRecords": "Không có dữ liệu",
@@ -106,7 +106,7 @@
 
 
 
-        $('#tblPerson').DataTable({            
+        $('#tblPerson').DataTable({
             "language": {
                 "lengthMenu": "Hiển thị _MENU_",
                 "zeroRecords": "Không có dữ liệu",
@@ -141,7 +141,7 @@
             "bFilter": false, //hide Search bar
             "bInfo": false, // hide showing entries
         });
-        
+
         ///Khởi tạo table file bài thi
         $('#tblListFileResult').DataTable({
             "language": {
@@ -283,23 +283,23 @@
     </div>
     <div class="row">
         @*<div class="col-lg-3">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <table id="tblOrg" class="table cell-border compact stripe" style="width:100%">
-                        <thead style="background-color: #3742fa; color:white;">
-                            <tr>
-                                <th></th>
-                                <th style="text-align:center;">Đơn vị</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="tblOrg" class="table cell-border compact stripe" style="width:100%">
+                            <thead style="background-color: #3742fa; color:white;">
+                                <tr>
+                                    <th></th>
+                                    <th style="text-align:center;">Đơn vị</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
 
-            </div>
-        </div>*@
+                </div>
+            </div>*@
         <div class="col-lg-12">
             <div class="card mb-2">
                 <div class="card-body">
@@ -343,7 +343,7 @@
                         </div>*@
                     <div class="form-group col-md-2">
                         <label for="mdStatus">Trạng thái:</label>
-                        <input type="hidden" id="txtStatus"/>
+                        <input type="hidden" id="txtStatus" />
                         <label id="mdStatus" style="background-color: #2848f8; color: white; border-radius: 20px; width: 100px; text-align: center;">Tạo mới</label>
                         <button id="btnChangeStatus" class="" title="Đổi trạng thái"><i class="fa fa-refresh"></i></button>
                     </div>
@@ -664,13 +664,11 @@
                             <div class="form-group col-md-4">
                                 <label for="kqLoaithi"></label>
                                 <select class="form-control form-control-sm" id="kqLoaithi">
-                                    
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="kqLanthi"></label>
                                 <select class="form-control form-control-sm" id="kqLanthi">
-                                    
                                 </select>
                             </div>
                             <div class="form-group col-md-4 form-inline" style="padding-top:22px;">
@@ -704,7 +702,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="OnSaveResult()">Ghi</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" >Đóng</button>
             </div>
 
         </div>
@@ -908,7 +906,7 @@
                 <h4 class="modal-title" id="mdLockTitle"><i class="fa fa-exclamation-triangle"></i>  Thông báo</h4>
             </div>
             <div class="modal-body">
-                <h4 class="modal-title" style="color:red;font-weight:initial"> Bài thi đã bị khoá, không thể cập nhật! </h4>               
+                <h4 class="modal-title" style="color:red;font-weight:initial"> Bài thi đã bị khoá, không thể cập nhật! </h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal" id="modal-btn-no">Thoát</button>
@@ -971,6 +969,8 @@
         $("#mdKhKthuc").datepicker({
             dateFormat: 'dd/mm/yy',
         }).val(yNgay);*@
+
+        $("#txtClassId").val("");
 
         $("#mdThBatdau").datepicker({
             dateFormat: 'dd/mm/yy',
@@ -1073,11 +1073,14 @@
         var tblSelect = $('#tblPersonSelect').DataTable();
         var tblPerson = $('#tblPerson').DataTable();
         var data = tblPerson.rows().data();
+        var dataSelect = tblSelect.rows().data();
         //let icheck = false;
         //let xTbl = 0;
+        //Khai báo biến check tồn tại
+        let checkExists = false;
 
         var t = $('#tblOrgAdd').DataTable();
-        var dvql = t.row('.selected').data()['madvql'];
+        var dvql = t.row('.selected').data()['tendvql'];
 
         let ccnut = tblSelect.rows().data().count();
         let ttnut = $('#ttNut').val();
@@ -1088,27 +1091,45 @@
                 var valCheck = $(this).val();
 
                 data.each(function (value, index) {
-                    if (valCheck === value.nsid.toString()) {
-                        if (ccnut > 0 && ttnut == "EDIT") {
-                            let objAdd = {
-                                x: '<input type="checkbox" style="width:20px;" name="x[]" value="' + value.nsid + '" class="dt-body-center" />',
-                                nsid: value.nsid,
-                                orgid: dvql,
-                                tenkhaisinh: value.tenkhaisinh,
-                                chucdanh: "",
-                                email: "",
-                                kqua: "",
-                                phongban: "",
-                                quequan: null,
-                                sdt: null,
-                                tinhtrang: null
+
+                    dataSelect.each(function (val, ind) {
+                        if (ttnut == "EDIT") {
+                            if (valCheck == val.nsid) {
+                                checkExists = true;
                             }
-                            tblSelect.row.add(objAdd).draw(false);
                         } else {
-                            tblSelect.row.add(['<input type="checkbox" name="x[]" value="' + value.nsid + '" class="dt-body-center" />', value.nsid, dvql, value.tenkhaisinh, ""]).draw(false);
+                            if (valCheck == val[1]) {
+                                checkExists = true;
+                            }
                         }
 
+                    });
+                    if (!checkExists) {
+                        if (valCheck === value.nsid.toString()) {
+                            if (ccnut > 0 && ttnut == "EDIT") {
+                                let objAdd = {
+                                    x: '<input type="checkbox" style="width:20px;" name="x[]" value="' + value.nsid + '" class="dt-body-center" />',
+                                    nsid: value.nsid,
+                                    orgid: dvql,
+                                    tenkhaisinh: value.tenkhaisinh,
+                                    chucdanh: "",
+                                    email: "",
+                                    kqua: "",
+                                    phongban: "",
+                                    quequan: null,
+                                    sdt: null,
+                                    tinhtrang: null
+                                }
+                                tblSelect.row.add(objAdd).draw(false);
+                            } else {
+                                tblSelect.row.add(['<input type="checkbox" name="x[]" value="' + value.nsid + '" class="dt-body-center" />', value.nsid, dvql, value.tenkhaisinh, ""]).draw(false);
+                            }
+
+                        }
                     }
+
+                    checkExists = false;
+
                 });
             }
         });
@@ -1193,6 +1214,7 @@
         $('#canhanHtthi').text($('#kqLoaithi option:selected').text());
         $('#canhanLanthi').text($('#kqLanthi option:selected').text());
         //Kiểm tra xem bài thi đã được khoá chưa?
-        checkLockExam(0);        
+        checkLockExam(0);
     });
+
 </script>

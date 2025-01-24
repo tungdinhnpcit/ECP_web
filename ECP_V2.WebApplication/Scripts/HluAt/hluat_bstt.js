@@ -3,7 +3,7 @@ function LoadDsOrg() {
     $.ajax({
         type: 'POST',
         url: '/Admin/HLAT/LoadDsOrg',
-        dataType: 'json',
+        dataType: 'json',        
         contentType: "application/json; charset=utf-8",
         success: function (response) {
             $('#tblOrg').dataTable().fnClearTable();
@@ -21,7 +21,7 @@ function LoadDsOrg() {
                     },
                     { 'data': 'slns', visible: false }
                     ],
-                    scrollY: '335',
+                    scrollY:'335',
                     "paging": false,
                     "bFilter": false, //hide Search bar
                     "bInfo": false,
@@ -71,12 +71,12 @@ function LoadDsNhansuByOrg() {
                     { 'data': 'orgid', visible: false, orderable: false },
                     { 'data': 'tenkhaisinh' },
                     { 'data': 'chucdanh' },
-                    { 'data': 'phongban' },
-                    { 'data': 'cccd' },
-                    { 'data': 'bactho' },
-                    { 'data': 'bacat' },
-                    { 'data': 'chucdanhatd' }
-                    ],
+                        { 'data': 'phongban' },
+                        { 'data': 'cccd' },
+                        { 'data': 'bactho' },
+                        { 'data': 'bacat' },
+                        { 'data': 'chucdanhatd' }
+                    ],                    
                     scrollY: 300,
                     'order': [[1, 'asc']]
                 });
@@ -119,7 +119,7 @@ function LoadNhansuById() {
 
 
 ///Load combobox thông tin Nhóm atd
-function LoadGroup() {
+function LoadGroup() {    
 
     $('#cboATD').empty();
     $('#cboATVSLD').empty();
@@ -155,19 +155,19 @@ function LoadGroup() {
                             .append($('<option></option>', { text: value["categorydesc"] })
                                 .attr('value', value["categoryid"]));
                     }
-
+                    
                     if (value.groupid == 'ATVSLD') {
                         $('#cboATVSLD')
                             .append($('<option></option>', { text: value["categorydesc"] })
                                 .attr('value', value["categoryid"]));
                     }
-
+                    
                     if (value.groupid == 'HOTLINE') {
                         $('#cboHotline')
                             .append($('<option></option>', { text: value["categorydesc"] })
                                 .attr('value', value["categoryid"]));
                     }
-
+                    
                 });
             }
         },
@@ -181,7 +181,7 @@ function LoadGroup() {
 function LoadGroupWorker() {
 
     $('#cdatd-select').empty();
-
+    
     //Load Nhóm đào tạo
     $.ajax({
         type: 'POST',
@@ -191,10 +191,10 @@ function LoadGroupWorker() {
         contentType: "application/json; charset=utf-8",
         success: function (response) {
             if (response.length > 0) {
-                $.each(response, function (i, value) {
+                $.each(response, function (i, value) {                    
                     $('#cdatd-select')
-                        .append($('<option></option>', { text: value["categorydesc"] })
-                            .attr('value', value["categoryid"]));
+                            .append($('<option></option>', { text: value["categorydesc"] })
+                                .attr('value', value["categoryid"]));                    
 
                 });
             }
@@ -227,7 +227,7 @@ function OnSaveInforHR() {
     let nsid = $('#nsid').val();
 
     var formData = new FormData();
-
+    
     formData.append("FileUpload", document.getElementById("multiplefileupload").files[0]);
     formData.append("bactho", bactho);
     formData.append("bacat", bacat);

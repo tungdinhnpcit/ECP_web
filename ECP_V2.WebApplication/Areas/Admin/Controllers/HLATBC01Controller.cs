@@ -46,6 +46,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             return Json(lstBc01, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult LoadNsById(string nsid)
+        {
+            List<Personal> personals = safeTraninRepo.LoadDsPersonalById(nsid);
+            return Json(personals, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 }

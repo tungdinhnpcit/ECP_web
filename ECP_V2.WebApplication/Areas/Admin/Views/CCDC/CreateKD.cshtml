@@ -2,13 +2,15 @@
 @{
     Layout = null;
 }
-
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 <link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
 <style>
     select {
         height: 40px;
         padding: 0;
     }
+
     #divUpLoad .fileUpload {
         position: relative;
         overflow: hidden;
@@ -81,7 +83,7 @@
                 <div class="clearfix"></div>
                 @Html.TextBoxFor(model => model.NgayKiemTra, new { })
                 @Html.ValidationMessageFor(model => model.NgayKiemTra)
-               
+
             </div>
             <div class="col-md-3">
                 <label class="control-label" for="BienBanSo">Biên bản số</label>
@@ -133,10 +135,19 @@
 <script>
     $(function () {
 
-        $("#NgayKiemTra").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-        }).data("kendoDatePicker");
+        //$("#NgayKiemTra").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker");
 
+        var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+        var start = $("#NgayKiemTra").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(yNgay);
+
+        @*var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
+        var end = $("#NgayKiemTra").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(xNgay);*@
 
         // Spinner
         (function ($) {

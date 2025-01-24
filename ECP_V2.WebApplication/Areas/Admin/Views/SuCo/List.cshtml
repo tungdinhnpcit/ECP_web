@@ -208,6 +208,9 @@
                         Biện pháp khắc phục, cấp điện
                     </th>
                     <th rowspan="2">
+                        Diễn biến sự cố
+                    </th>
+                    <th rowspan="2">
                         Ghi chú
                     </th>
                     @*<th rowspan="2">
@@ -328,6 +331,9 @@
                     <th style="text-align:center">
                         33
                     </th>
+                    <th style="text-align:center">
+                        34
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -405,9 +411,9 @@
                         {
                             <td class="imgNoiDung" style="min-width:80px;max-width:80px;width:80px;text-align:center">
                                 @*<div class="checkbox-custom" style="margin-left:22px">
-                                        <input id="@item.Id" value="@item.Id" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
-                                        <label for="@item.Id"></label>
-                                    </div>*@
+                    <input id="@item.Id" value="@item.Id" type="checkbox" onclick="ChangeCheckBox()" class="chkbox">
+                    <label for="@item.Id"></label>
+                </div>*@
                             </td>
                         }
                         else
@@ -505,6 +511,7 @@
                         </td>
                         <td>@item.NoiDungKienNghi</td>
                         <td>@item.ThoiTiet</td>
+                        <td>@item.DienBienSuCo</td>
                         <td>@item.GhiChu</td>
 
                     </tr>

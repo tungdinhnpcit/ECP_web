@@ -438,12 +438,15 @@
 
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;">
             1.3. Địa điểm (hoặc thiết bị) tiến hành công tác:
-            <textarea data-plugin-maxlength maxlength="1000" id="txtS13" name="txtS13" class="input-style input-style3 autoExpand1" rows="2" data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.DiaDiem)</textarea>
+            <span>
+                <textarea data-plugin-maxlength maxlength="1000" id="txtS13" name="txtS13" class="input-style input-style3 autoExpand1" rows="2" data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.DiaDiem)</textarea>
+            </span>
         </p>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;">
             1.4. Nội dung công tác:
-
-            <textarea @(!string.IsNullOrEmpty(phieuCongTac.NguoiDuyet) ? "disabled" : "") data-plugin-maxlength maxlength="4000" id="txtS14" name="txtS14" class="input-style input-style3 autoExpand2" rows='2' data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.NoiDung)</textarea>
+            <span>
+                <textarea @(!string.IsNullOrEmpty(phieuCongTac.NguoiDuyet) ? "disabled" : "") data-plugin-maxlength maxlength="4000" id="txtS14" name="txtS14" class="input-style input-style3 autoExpand2" rows='2' data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.NoiDung)</textarea>
+            </span>
         </p>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;">
             1.5. Điều kiện về an toàn điện để tiến hành công việc:
@@ -473,7 +476,10 @@
                 </span>
             </span>
         </p>
-        <p style="margin: 0; font-size: 15px;  text-align: left;"><strong>Người ra Lệnh công tác</strong> <em>(ký, ghi họ, tên)</em>: <em>&nbsp;</em>……………………………………………………………………</p>
+        <p style="margin: 0; font-size: 15px;  text-align: left;">
+            <strong>Người ra Lệnh công tác</strong>
+            <em>(ký, ghi họ, tên)</em>: <em>&nbsp;</em>……………………………………………………………………
+        </p>
 
         @*<div class="pagebreak></div>*@
         <div style="height: 100vh;page-break-after: always;"></div>
@@ -660,13 +666,16 @@
 
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;text-align: left;">
             1.3. Địa điểm (hoặc thiết bị) tiến hành công tác:
-            <textarea readonly maxlength="999" id="txtS132" name="txtS132" class="input-style input-style3 autoExpand11" rows="2" data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.DiaDiem)</textarea>
+            <span>
+                <textarea readonly maxlength="999" id="txtS132" name="txtS132" class="input-style input-style3 autoExpand11" rows="2" data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.DiaDiem)</textarea>
+            </span>           
 
         </p>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;">
             1.4. Nội dung công tác:
-
-            <textarea disabled data-plugin-maxlength maxlength="4000" id="txtS142" name="txtS142" class="input-style input-style3 autoExpand22" rows="2" data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.NoiDung)</textarea>
+            <span>
+                <textarea disabled data-plugin-maxlength maxlength="4000" id="txtS142" name="txtS142" class="input-style input-style3 autoExpand22" rows="2" data-min-rows='2' placeholder="………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………">@(Model.NoiDung)</textarea>
+            </span>           
 
         </p>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;">

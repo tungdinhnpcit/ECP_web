@@ -5618,7 +5618,7 @@ public partial class ECP_V2Entities : DbContext
     }
 
 
-    public virtual ObjectResult<sp_AdvancedSearchPhienLVNew2_Result> sp_AdvancedSearchPhienLVNew2(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> skip, string take, Nullable<int> duyet, Nullable<int> chuyenNPC, string role)
+    public virtual ObjectResult<sp_AdvancedSearchPhienLVNew2_Result> sp_AdvancedSearchPhienLVNew2(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> skip, string take, Nullable<int> duyet, Nullable<int> chuyenNPC, Nullable<int> phieuky, string role)
     {
 
         var filterParameter = filter != null ?
@@ -5674,6 +5674,11 @@ public partial class ECP_V2Entities : DbContext
         var chuyenNPCParameter = chuyenNPC.HasValue ?
             new ObjectParameter("chuyenNPC", chuyenNPC) :
             new ObjectParameter("chuyenNPC", typeof(int));
+
+
+        var phieukyParameter = phieuky.HasValue ?
+            new ObjectParameter("phieuky", phieuky) :
+            new ObjectParameter("phieuky", typeof(int));
 
 
         var roleParameter = role != null ?
@@ -5681,11 +5686,11 @@ public partial class ECP_V2Entities : DbContext
             new ObjectParameter("role", typeof(string));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_AdvancedSearchPhienLVNew2_Result>("sp_AdvancedSearchPhienLVNew2", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, skipParameter, takeParameter, duyetParameter, chuyenNPCParameter, roleParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_AdvancedSearchPhienLVNew2_Result>("sp_AdvancedSearchPhienLVNew2", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, skipParameter, takeParameter, duyetParameter, chuyenNPCParameter, phieukyParameter, roleParameter);
     }
 
 
-    public virtual ObjectResult<sp_AdvancedSearchPhieuCongTac1_Result> sp_AdvancedSearchPhieuCongTac1(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> skip, string take, Nullable<int> duyet, Nullable<int> chuyenNPC, string role, string loaiCongViec)
+    public virtual ObjectResult<sp_AdvancedSearchPhieuCongTac1_Result> sp_AdvancedSearchPhieuCongTac1(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> skip, string take, Nullable<int> duyet, Nullable<int> chuyenNPC, Nullable<int> phieuky, string role, string loaiCongViec)
     {
 
         var filterParameter = filter != null ?
@@ -5741,6 +5746,11 @@ public partial class ECP_V2Entities : DbContext
         var chuyenNPCParameter = chuyenNPC.HasValue ?
             new ObjectParameter("chuyenNPC", chuyenNPC) :
             new ObjectParameter("chuyenNPC", typeof(int));
+
+
+        var phieukyParameter = phieuky.HasValue ?
+            new ObjectParameter("phieuky", phieuky) :
+            new ObjectParameter("phieuky", typeof(int));
 
 
         var roleParameter = role != null ?
@@ -5753,7 +5763,7 @@ public partial class ECP_V2Entities : DbContext
             new ObjectParameter("LoaiCongViec", typeof(string));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_AdvancedSearchPhieuCongTac1_Result>("sp_AdvancedSearchPhieuCongTac1", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, skipParameter, takeParameter, duyetParameter, chuyenNPCParameter, roleParameter, loaiCongViecParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_AdvancedSearchPhieuCongTac1_Result>("sp_AdvancedSearchPhieuCongTac1", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, skipParameter, takeParameter, duyetParameter, chuyenNPCParameter, phieukyParameter, roleParameter, loaiCongViecParameter);
     }
 
 
@@ -5979,7 +5989,7 @@ public partial class ECP_V2Entities : DbContext
     }
 
 
-    public virtual ObjectResult<Nullable<int>> sp_CountTotalPhienLVNew2(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> duyet, Nullable<int> chuyenNPC, string role)
+    public virtual ObjectResult<Nullable<int>> sp_CountTotalPhienLVNew2(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> duyet, Nullable<int> chuyenNPC, Nullable<int> phieuky, string role)
     {
 
         var filterParameter = filter != null ?
@@ -6025,6 +6035,11 @@ public partial class ECP_V2Entities : DbContext
         var chuyenNPCParameter = chuyenNPC.HasValue ?
             new ObjectParameter("chuyenNPC", chuyenNPC) :
             new ObjectParameter("chuyenNPC", typeof(int));
+
+
+        var phieukyParameter = phieuky.HasValue ?
+            new ObjectParameter("phieuky", phieuky) :
+            new ObjectParameter("phieuky", typeof(int));
 
 
         var roleParameter = role != null ?
@@ -6032,11 +6047,11 @@ public partial class ECP_V2Entities : DbContext
             new ObjectParameter("role", typeof(string));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_CountTotalPhienLVNew2", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, duyetParameter, chuyenNPCParameter, roleParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_CountTotalPhienLVNew2", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, duyetParameter, chuyenNPCParameter, phieukyParameter, roleParameter);
     }
 
 
-    public virtual ObjectResult<Nullable<int>> sp_CountTotalPhieuCongTac1(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> duyet, Nullable<int> chuyenNPC, Nullable<int> loaiCongViec)
+    public virtual ObjectResult<Nullable<int>> sp_CountTotalPhieuCongTac1(string filter, Nullable<int> tCPhien, string listMaTT, string donViID, string phongBanID, string ngayBD, string ngayKT, Nullable<int> duyet, Nullable<int> chuyenNPC, Nullable<int> phieuky, Nullable<int> role, string loaiCongViec)
     {
 
         var filterParameter = filter != null ?
@@ -6084,12 +6099,22 @@ public partial class ECP_V2Entities : DbContext
             new ObjectParameter("chuyenNPC", typeof(int));
 
 
-        var loaiCongViecParameter = loaiCongViec.HasValue ?
+        var phieukyParameter = phieuky.HasValue ?
+            new ObjectParameter("phieuky", phieuky) :
+            new ObjectParameter("phieuky", typeof(int));
+
+
+        var roleParameter = role.HasValue ?
+            new ObjectParameter("role", role) :
+            new ObjectParameter("role", typeof(int));
+
+
+        var loaiCongViecParameter = loaiCongViec != null ?
             new ObjectParameter("LoaiCongViec", loaiCongViec) :
-            new ObjectParameter("LoaiCongViec", typeof(int));
+            new ObjectParameter("LoaiCongViec", typeof(string));
 
 
-        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_CountTotalPhieuCongTac1", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, duyetParameter, chuyenNPCParameter, loaiCongViecParameter);
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_CountTotalPhieuCongTac1", filterParameter, tCPhienParameter, listMaTTParameter, donViIDParameter, phongBanIDParameter, ngayBDParameter, ngayKTParameter, duyetParameter, chuyenNPCParameter, phieukyParameter, roleParameter, loaiCongViecParameter);
     }
 
 

@@ -40,6 +40,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.Security;
 //using System.Web.Services.Description;
 using System.Web.UI.WebControls;
 using static ECP_V2.WebApplication.Models.ImageModel;
@@ -1304,7 +1305,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 return Json(new { success = false, responseText = "Cập nhật trạng thái phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
             }
-        }
+        }        
 
         [HttpGet]
         public ActionResult CapNhatTrangThaiVuaTaoPhieuLenh(string Id)
@@ -2661,7 +2662,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     return Json("Chưa cấp số phiếu không được Ký", JsonRequestBehavior.AllowGet);
                 }
 
-
+                                
                 //   *** Gọi ký theo bước ***
                 // 1. Kiểm tra xem đây là bước ký nào?
                 // - Bước 0: Người chỉ huy:
@@ -2691,6 +2692,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 //kq = await CallSignPhieuStep(plv, pct.MaLP.Value, 1, nvien.TenNhanVien);
                 if (plvSigns.Count == 0)
                 {
+                    if(pct.NguoiCapPhieu_Id == null)
+                    {
+                        DisposeAll();
+
+                        return Json("Người cấp phiếu chưa nhập, không được ký.", JsonRequestBehavior.AllowGet);
+                    }
                     //Check người cấp phiếu Id mới đc ký
                     if (pct.NguoiCapPhieu_Id.Equals(Session["UserId"].ToString()))
                     {
@@ -2709,12 +2716,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         DisposeAll();
 
                         return Json("Người dùng không được ký Phiên làm việc này.", JsonRequestBehavior.AllowGet);
-                    }
+                    }                    
 
                 }
                 else
                 {
-
+                    
                     if (pct.MaLP.Value.ToString().Equals("2") && (plvSigns.Count == 2))
                     {
                         DisposeAll();
@@ -2736,10 +2743,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
 
                     kq = await CallSignPhieuStep(plv, pct.MaLP.Value, 4, nvien.TenNhanVien);
-
+                                        
                 }
 
-
+                
                 ////Gọi ký bước 1
                 //await CallSignPhieuStep1(plv.Id.ToString(), pct.MaLP.Value);
 
@@ -3006,13 +3013,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string kq = "";
             string pwd = "Dungpv123";
             string s = "{\r\n  \"UserName\": \"" + Session["UserName"].ToString() + "\",\r\n  \"Password\": \"" + pwd + "\",\r\n  \"ID_DV\": \"" + dv + "\"\r\n}";
-            //ServicePointManager.ServerCertificateValidationCallback = new
-            //     RemoteCertificateValidationCallback
-            //     (
-            //        delegate { return true; }
-            //     );
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = new
+                 RemoteCertificateValidationCallback
+                 (
+                    delegate { return true; }
+                 );
+            //ServicePointManager.Expect100Continue = true;
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             using (HttpClient httpClient = new HttpClient())
             {
@@ -3198,7 +3205,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             //dt.DinhDanhKy = "84969189999";
             //dt.DinhDanhKy = "84866608977";
             //dt.Provider = "vt";
-
+            
             dt.Provider = "EVN_CA";
             dt.DinhDanhKy = objUserSign.Hsm_serial;
             dt.MESSAGE = objUserSign.TenNhanVien + " Đã ký lúc " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
@@ -3287,135 +3294,135 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     //if (step == 0 || step == 1)
                     //{
-                    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"}" +
-                        ",{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
-                    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
-                    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
-                    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
-                    ",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
+                        strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"}" +
+                            ",{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
+                        ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
+                        ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
+                        ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
+                        ",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
+                        
+                        ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
+                        ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
+                        ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
+                        ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
+                        ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
+                        ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
+                        ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
+                        ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
+                        ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
+                        ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
+                        ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
 
-                    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
-                    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
-                    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
-                    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
-                    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
-                    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
-                    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
-                    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
-                    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
-                    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
-                    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
-
-                    ",{\"name\":\"NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    ",{\"name\":\"NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy2_Buoc2"].ToString())) + "\"}" +
-                    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
-                    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}" +
-                    ",{\"name\":\"HTML_DanhSachCongViec\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachCongViec"].ToString())) + "\"}" +
-                    ",{\"name\":\"ThoiGianKetThuc\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianKetThuc"].ToString())) + "\"}" +
-                    ",{\"name\":\"NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChoPhep"].ToString())) + "\"}" +
-                    ",{\"name\":\"ChucDanh_NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ChucDanh_NguoiChoPhep"].ToString())) + "\"}" +
-                    ",{\"name\":\"NguoiKy_Buoc3\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy_Buoc3"].ToString())) + "\"}" +
-                    ",{\"name\":\"TenDonVi_LCT_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"PhongBan_PCT_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"SoPhieu_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"ThoiGianDuyet_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"NguoiChiHuy_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"BacAT_ChiHuy_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"SoNguoiThamGia_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"PhongBanCreatPhien_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"DiaDiem_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"NoiDung_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"DieuKien_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"ThoiGianBatDau_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"MaPCT_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"HTML_DanhSachNhanVien_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"Gio_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"Phut_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut_A"].ToString())) + "\"}" +
-                    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}";
-                    //}
-                    //else if (step == 2)
-                    //{
-                    //    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"},{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
-                    //    //",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}"
-                    //    ;
-                    //}
-                    //else if (step == 3)
-                    //{
-                    //    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"},{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
-                    //    //",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"HTML_DanhSachCongViec\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachCongViec"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianKetThuc\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianKetThuc"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChoPhep"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ChucDanh_NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ChucDanh_NguoiChoPhep"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}"
-                    //    ;
-                    //}
-                    //else if (step == 4)
-                    //{
-                    //    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"},{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
-                    //    //",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"HTML_DanhSachCongViec\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachCongViec"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ThoiGianKetThuc\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianKetThuc"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChoPhep"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"ChucDanh_NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ChucDanh_NguoiChoPhep"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiKy_Buoc3\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy_Buoc3"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy1_Buoc2"].ToString())) + "\"}" +
-                    //    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}"
-                    //    ;
+                        ",{\"name\":\"NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        ",{\"name\":\"NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy2_Buoc2"].ToString())) + "\"}" +
+                        ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
+                        ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}" +
+                        ",{\"name\":\"HTML_DanhSachCongViec\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachCongViec"].ToString())) + "\"}" +
+                        ",{\"name\":\"ThoiGianKetThuc\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianKetThuc"].ToString())) + "\"}" +
+                        ",{\"name\":\"NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChoPhep"].ToString())) + "\"}" +
+                        ",{\"name\":\"ChucDanh_NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ChucDanh_NguoiChoPhep"].ToString())) + "\"}" +
+                        ",{\"name\":\"NguoiKy_Buoc3\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy_Buoc3"].ToString())) + "\"}" +
+                        ",{\"name\":\"TenDonVi_LCT_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"PhongBan_PCT_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"SoPhieu_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"ThoiGianDuyet_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"NguoiChiHuy_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"BacAT_ChiHuy_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"SoNguoiThamGia_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"PhongBanCreatPhien_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"DiaDiem_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"NoiDung_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"DieuKien_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"ThoiGianBatDau_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"MaPCT_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"HTML_DanhSachNhanVien_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"Gio_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio_A"].ToString())) + "\"}" +
+                        ",{\"name\":\"Phut_A\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut_A"].ToString())) + "\"}" +                        
+                        ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}";
+                        //}
+                        //else if (step == 2)
+                        //{
+                        //    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"},{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
+                        //    //",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}"
+                        //    ;
+                        //}
+                        //else if (step == 3)
+                        //{
+                        //    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"},{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
+                        //    //",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"HTML_DanhSachCongViec\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachCongViec"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianKetThuc\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianKetThuc"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChoPhep"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ChucDanh_NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ChucDanh_NguoiChoPhep"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}"
+                        //    ;
+                        //}
+                        //else if (step == 4)
+                        //{
+                        //    strParam = "{\"name\":\"TenDonVi_LCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["TenDonVi_LCT"].ToString())) + "\"},{\"name\":\"PhongBan_PCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBan_PCT"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"SoPhieu\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoPhieu"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianDuyet\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianDuyet"].ToString())) + "\"}" +
+                        //    //",{\"name\":\"MaYeuCauCRM\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaYeuCauCRM"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChiHuy"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_ChiHuy\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_ChiHuy"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"SoNguoiThamGia\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["SoNguoiThamGia"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"PhongBanCreatPhien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["PhongBanCreatPhien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DiaDiem\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DiaDiem"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NoiDung\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NoiDung"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DieuKien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DieuKien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianBatDau\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianBatDau"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"MaPCT\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["MaPCT"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Gio\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Gio"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Phut\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Phut"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"HTML_DanhSachNhanVien\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachNhanVien"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"HTML_DanhSachCongViec\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["HTML_DanhSachCongViec"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"Nguoiralenh\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["Nguoiralenh"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ThoiGianKetThuc\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ThoiGianKetThuc"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiChoPhep"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"ChucDanh_NguoiChoPhep\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["ChucDanh_NguoiChoPhep"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"BacAT_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["BacAT_NguoiKy2_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiKy_Buoc3\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy_Buoc3"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"NguoiKy1_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["NguoiKy1_Buoc2"].ToString())) + "\"}" +
+                        //    ",{\"name\":\"DonVi_NguoiKy2_Buoc2\"" + ",\"value\":\"" + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(row["DonVi_NguoiKy2_Buoc2"].ToString())) + "\"}"
+                        //    ;
                     //}
 
                 }
@@ -17513,7 +17520,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             foreach (DataRow dr in dsDvi.Rows)
             {
                 DonVi newObj = new DonVi();
-                newObj.Id = dr["Id"].ToString();
+                newObj.Id = dr["Id"].ToString(); 
                 newObj.TenDonVi = dr["TenDonVi"].ToString();
 
                 lstDonvi.Add(newObj);
@@ -17548,7 +17555,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         public async Task<ActionResult> CapNhatNguoiKsoat(string donvi, string idnhanvien, string idphien)
         {
             try
-            {
+            {                
                 safeTrainRepository.CapNhatNguoiKsoat(donvi, idnhanvien, idphien);
 
                 try
@@ -17581,6 +17588,43 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json("ERROR-" + ex.Message);
             }
         }
+        #endregion
+
+        #region namcv load lại danh sách người chọn
+              
+        public JsonResult LoadDsachUserCtac(string loaithaotac, string madonvi)
+        {
+            
+           
+             List<tblNhanVien> lstNhanvien = new List<tblNhanVien>();
+             try
+             {
+
+                List<tblNhanVien> listNhanVienTemp = _nhanvien_ser.ListByDonViId(madonvi);
+                if (listNhanVienTemp != null && listNhanVienTemp.Count > 0)
+                {
+                    //listNhanVien = listNhanVienTemp.Where(x => x.DonViId == madonvi).OrderBy(x => x.TenNhanVien).ToList();
+                    foreach (tblNhanVien nvien in listNhanVienTemp)
+                    {
+                        tblNhanVien newObj = new tblNhanVien();
+                        newObj.Id = nvien.Id;
+                        newObj.TenNhanVien = nvien.TenNhanVien;
+                        newObj.SoDT = nvien.SoDT;
+
+                        lstNhanvien.Add(newObj);
+                    }
+                }
+
+                return Json(lstNhanvien, JsonRequestBehavior.AllowGet);
+             }
+             catch
+             {
+             }
+           
+             return Json(new { success = false, responseText = "Tạo phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
+            
+        }
+
         #endregion
 
     }

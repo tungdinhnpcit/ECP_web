@@ -127,6 +127,8 @@ public partial class tblPhienLamViec
 
     public string GhiChu { get; set; }
 
+    public Nullable<System.DateTime> NgayBatDau { get; set; }
+
 
 
     public virtual plv_TinhChatPhien plv_TinhChatPhien { get; set; }

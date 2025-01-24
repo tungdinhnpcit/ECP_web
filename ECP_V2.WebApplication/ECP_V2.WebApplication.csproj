@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44302</IISExpressSSLPort>
+    <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -250,6 +250,12 @@
       <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet.Async, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Renci.SshNet.Async.1.4.0\lib\net40\Renci.SshNet.Async.dll</HintPath>
+    </Reference>
     <Reference Include="SautinSoft.PdfFocus, Version=6.9.7.6, Culture=neutral, PublicKeyToken=0b79b934109b3e9e, processorArchitecture=MSIL">
       <HintPath>..\packages\sautinsoft.pdffocus.6.9.7.6\lib\net45\SautinSoft.PdfFocus.dll</HintPath>
     </Reference>
@@ -3992,6 +3998,9 @@
     <Content Include="Scripts\AdminPanel\assets\vendor\jquery-ui\development-bundle\ui\minified\jquery.ui.spinner.min.js" />
     <Content Include="Scripts\AdminPanel\assets\vendor\jquery-ui\development-bundle\ui\minified\jquery.ui.widget.min.js" />
     <Content Include="Scripts\AdminPanel\assets\vendor\jquery-ui\index.html" />
+    <Content Include="Scripts\AdminPanel\assets\vendor\jquery-ui\js\jquery-1.10.2.js" />
+    <Content Include="Scripts\AdminPanel\assets\vendor\jquery-ui\js\jquery-ui-1.10.4.custom.js" />
+    <Content Include="Scripts\AdminPanel\assets\vendor\jquery-ui\js\jquery-ui-1.10.4.custom.min.js" />
     <Content Include="Scripts\AdminPanel\assets\vendor\jquery-validation\additional-methods.js" />
     <Content Include="Scripts\AdminPanel\assets\vendor\jquery-validation\additional-methods.min.js" />
     <Content Include="Scripts\AdminPanel\assets\vendor\jquery-validation\jquery.validate.js" />
@@ -4250,6 +4259,11 @@
     <Content Include="Scripts\HluAt\hluat_kh.js" />
     <Content Include="Scripts\HluAt\hluat_report.js" />
     <Content Include="Scripts\HluAt\hluyen_antoan.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
+    <Content Include="Scripts\jquery-ui-1.13.2.js" />
+    <Content Include="Scripts\jquery-ui-1.13.2.min.js" />
     <Content Include="Scripts\jquery.TextareaLineCount.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\KTGS\html\template.html" />
@@ -4281,6 +4295,7 @@
     <Content Include="Scripts\QLTA\khxlsc.js" />
     <Content Include="Scripts\QLTA\lapkh.js" />
     <Content Include="Scripts\QLTA\pckt.js" />
+    <Content Include="Scripts\QLTA\plv.js" />
     <Content Include="Scripts\QLTA\quanlysuco.js" />
     <Content Include="Scripts\quanlyruiro\js\modal_AddRuiRo.js" />
     <Content Include="Scripts\quanlyruiro\js\model_dm_ruiro.js" />
@@ -5051,7 +5066,6 @@
     <Content Include="Scripts\DataTables\responsive.semanticui.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
     <Content Include="Scripts\jquery-3.6.3.js" />
-    <Content Include="Scripts\jquery-2.0.0.min.map" />
     <Content Include="Scripts\jquery-unified-export-file-1.0.min.js" />
     <Content Include="Scripts\jQuery.FileUpload\canvas-to-blob.min.js" />
     <Content Include="Scripts\jQuery.FileUpload\cors\jquery.postmessage-transport.js" />
@@ -5073,7 +5087,6 @@
     <Content Include="Scripts\jquery.signalR-2.2.3.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -5258,7 +5271,6 @@
     <Folder Include="Scripts\AdminPanel\assets\vendor\editors\xeditable\inputs\address\" />
     <Folder Include="Scripts\AdminPanel\assets\vendor\editors\xeditable\inputs\typeaheadjs\lib\" />
     <Folder Include="Scripts\AdminPanel\assets\vendor\editors\xeditable\js\" />
-    <Folder Include="Scripts\AdminPanel\assets\vendor\jquery-ui\js\" />
     <Folder Include="Scripts\AdminPanel\assets\vendor\jquery\jquery_ui\" />
     <Folder Include="Scripts\AdminPanel\assets\vendor\plugins\c3charts\" />
     <Folder Include="Scripts\AdminPanel\assets\vendor\plugins\circles\" />

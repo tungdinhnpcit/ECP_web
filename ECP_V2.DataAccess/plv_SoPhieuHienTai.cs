@@ -31,6 +31,7 @@ public partial class plv_SoPhieuHienTai
     public string DonViId { get; set; }
 
     public string DonViTen { get; set; }
+
     public Nullable<bool> IsHand { get; set; }
 
     public Nullable<int> MaPCT { get; set; }

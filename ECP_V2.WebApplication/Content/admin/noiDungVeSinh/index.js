@@ -81,19 +81,19 @@
            
         })
 
-        $("#monthpicker").kendoDatePicker({
-            // defines the start view
-            start: "year",
+        //$("#monthpicker").kendoDatePicker({
+        //    // defines the start view
+        //    start: "year",
 
-            // defines when the calendar should return date
-            depth: "year",
+        //    // defines when the calendar should return date
+        //    depth: "year",
 
-            // display month and year in the input
-            format: "MM/yyyy",
+        //    // display month and year in the input
+        //    format: "MM/yyyy",
 
-            // specifies that DateInput is used for masking the input element
-            dateInput: true
-        });
+        //    // specifies that DateInput is used for masking the input element
+        //    dateInput: true
+        //});
 
 
 
@@ -104,6 +104,10 @@
         })
 
         $('#monthpicker').on('change', function () {
+            loadData();
+        })
+
+        $('#btnPicker').on('click', function () {
             loadData();
         })
 

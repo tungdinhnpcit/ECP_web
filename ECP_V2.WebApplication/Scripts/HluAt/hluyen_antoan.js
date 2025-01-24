@@ -214,7 +214,7 @@ function LoadDsClass() {
                     "destroy": true,
                     "data": response,
                     "columns": [{ 'data': 'classdesc' },
-                        { 'data': 'classcode' },
+                        { 'data': 'categoryid' },
                         { 'data': 'sohvien' },
                         { 'data': 'ngaybd_kh', visible:false },
                         { 'data': 'ngaybd_th' },
@@ -644,7 +644,7 @@ function LoadDsPersonByClass() {
                             return html;
                         }, sClass: 'dt-body-center', orderable: false
                     }, { 'data': 'nsid' , visible:false},
-                    { 'data': 'orgid' },
+                        { 'data': 'tendvi' },
                     { 'data': 'tenkhaisinh' },
                     { 'data': 'tinhtrang' },
                     ]
@@ -696,7 +696,7 @@ function LoadLstFileByClass() {
         contentType: "application/json; charset=utf-8",
         success: function (response) {
             //$('#tblListFile').dataTable().fnClearTable();   
-            $('#tblListFile').dataTable().fnClearTable(); 
+            $('#tblListFile').DataTable().fnClearTable(); 
             if (response.length > 0) {
                 var table = $('#tblListFile').DataTable({
                     "language": {
@@ -975,8 +975,8 @@ function FillDataResult(obj) {
         $('#kqDvDtao').text("Tự thực hiện");
     }
     
-    $('#kqLop').text(obj.classcode);
-    $('#kqMahieu').text(obj.classdesc);
+    $('#kqLop').text(obj.classdesc);
+    $('#kqMahieu').text(obj.classcode);
     $('#kqLoaiDtao').text(obj.groupdesc);
     $('#kqNhomhl').text(obj.categorydesc);
     $('#kqNgayth').text(obj.ngaybd_th + ' - ' + obj.ngaykt_th);

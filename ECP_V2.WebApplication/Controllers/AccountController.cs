@@ -161,7 +161,7 @@ namespace ECP_V2.WebApplication.Controllers
                 if (user != null && user.LockoutEndDateUtc != null)
                 {
                     var month = DateTimeSpan.CompareDates(DateTime.Now, user.LockoutEndDateUtc.GetValueOrDefault().AddHours(7)).Months;
-                    if (month >= 6)
+                    if (month >= 3)
                     {
                         return RedirectToAction("ChangePassword", "Account", new { UserName = model.UserName });
                     }

@@ -55,9 +55,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 string donvi = Request.Form["donvi"];
                 string nam = Request.Form["nam"];
                 string loaidaotao = Request.Form["loaidaotao"];
-                
+
                 List<BC03_Kqua> lstKqua = safeTraninRepo.BC03_KquaThi(donvi, nam, loaidaotao);
-                
+
                 string donViId = Session["DonViID"].ToString();
                 tblDonVi donVi = null;
                 if (!string.IsNullOrEmpty(donViId))
@@ -123,7 +123,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 rowIndex++;
                 rowTerminal = sheet.CreateRow(rowIndex);
-                                
+
                 ICellStyle styleHeader2 = workbook.CreateCellStyle();
                 IFont font3 = workbook.CreateFont();
                 font3.FontName = "Times New Roman";
@@ -150,13 +150,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 rowTerminal.Cells[0].Row.Height = 350;
                 rowTerminal.Cells[0].CellStyle = styleHeader3;
 
-                rowIndex++;
-                rowTerminal = sheet.CreateRow(rowIndex);
-                rowIndex++;
-                rowTerminal = sheet.CreateRow(rowIndex);
-                rowIndex++;
-                rowTerminal = sheet.CreateRow(rowIndex);
-
                 ICellStyle styleHeader = workbook.CreateCellStyle();
                 IFont font = workbook.CreateFont();
                 font.FontName = "Times New Roman";
@@ -171,48 +164,162 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 styleHeader.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
                 styleHeader.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("A"+ rowIndex + ":A" + (rowIndex + 1)));
+                rowIndex = 5;
+                rowTerminal = sheet.CreateRow(rowIndex);
+
+                //rowIndex++;
+                //rowTerminal = sheet.CreateRow(rowIndex);     
+
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 0, 0));
 
                 rowTerminal.CreateCell(0).SetCellValue("NSID");
-                rowTerminal.Cells[0].Row.Height = 600;
                 rowTerminal.Cells[0].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("B" + rowIndex + ":B" + (rowIndex + 1)));
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 1, 1));
 
                 rowTerminal.CreateCell(1).SetCellValue("Công ty");
                 rowTerminal.Cells[1].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("C" + rowIndex + ":C" + (rowIndex + 1)));
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 2, 2));
                 rowTerminal.CreateCell(2).SetCellValue("Đơn vị");
                 rowTerminal.Cells[2].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("D" + rowIndex + ":D" + (rowIndex + 1)));
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 3, 3));
                 rowTerminal.CreateCell(3).SetCellValue("Phòng/Ban");
                 rowTerminal.Cells[3].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("E" + rowIndex + ":E" + (rowIndex + 1)));
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 4, 4));
                 rowTerminal.CreateCell(4).SetCellValue("Họ và Tên");
                 rowTerminal.Cells[4].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("F" + rowIndex + ":F" + (rowIndex + 1)));
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 5, 5));
                 rowTerminal.CreateCell(5).SetCellValue("Ngày sinh");
                 rowTerminal.Cells[5].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("G" + rowIndex + ":G" + (rowIndex + 1)));
+                sheet.AddMergedRegion(new CellRangeAddress(5, 6, 6, 6));
                 rowTerminal.CreateCell(6).SetCellValue("Chức danh");
                 rowTerminal.Cells[6].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("H" + rowIndex + ":L" + (rowIndex + 1)));
-                rowTerminal.CreateCell(7).SetCellValue("An toàn điện");
+                sheet.AddMergedRegion(new CellRangeAddress(5, 5, 7, 11));
+                rowTerminal.CreateCell(7).SetCellValue("An toàn Điện");
                 rowTerminal.Cells[7].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("M" + rowIndex + ":Q" + (rowIndex + 1)));
-                rowTerminal.CreateCell(11).SetCellValue("An toàn VSLĐ");
+                //sheet.AddMergedRegion(new CellRangeAddress(6, 6, 7, 7));
+                //rowTerminal.CreateCell(7).SetCellValue("Nhóm");
+                //rowTerminal.Cells[7].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 8, 8));
+                rowTerminal.CreateCell(8).SetCellValue("Khóa đào tạo");
+                rowTerminal.Cells[8].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 9, 9));
+                rowTerminal.CreateCell(9).SetCellValue("Lý thuyết");
+                rowTerminal.Cells[9].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 10, 10));
+                rowTerminal.CreateCell(10).SetCellValue("Thực hành");
+                rowTerminal.Cells[10].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 11, 11));
+                rowTerminal.CreateCell(11).SetCellValue("Ghi chú");
                 rowTerminal.Cells[11].CellStyle = styleHeader;
 
-                sheet.AddMergedRegion(CellRangeAddress.ValueOf("R" + rowIndex + ":V" + (rowIndex + 1)));
-                rowTerminal.CreateCell(16).SetCellValue("Hotline");
+                sheet.AddMergedRegion(new CellRangeAddress(5, 5, 12, 16));
+                rowTerminal.CreateCell(12).SetCellValue("An toàn VSLĐ");
+                rowTerminal.Cells[12].CellStyle = styleHeader;
+
+                //sheet.AddMergedRegion(new CellRangeAddress(6, 6, 12, 12));
+                //rowTerminal.CreateCell(12).SetCellValue("Nhóm");
+                //rowTerminal.Cells[12].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 13, 13));
+                rowTerminal.CreateCell(13).SetCellValue("Khóa đào tạo");
+                rowTerminal.Cells[13].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 14, 14));
+                rowTerminal.CreateCell(14).SetCellValue("Lý thuyết");
+                rowTerminal.Cells[14].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 15, 15));
+                rowTerminal.CreateCell(15).SetCellValue("Thực hành");
+                rowTerminal.Cells[15].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 16, 16));
+                rowTerminal.CreateCell(16).SetCellValue("Ghi chú");
                 rowTerminal.Cells[16].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(5, 5, 17, 21));
+                rowTerminal.CreateCell(17).SetCellValue("Hotline");
+                rowTerminal.Cells[17].CellStyle = styleHeader;
+
+                //sheet.AddMergedRegion(new CellRangeAddress(6, 6, 17, 17));
+                //rowTerminal.CreateCell(17).SetCellValue("Nhóm");
+                //rowTerminal.Cells[17].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 18, 18));
+                rowTerminal.CreateCell(18).SetCellValue("Khóa đào tạo");
+                rowTerminal.Cells[18].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 19, 19));
+                rowTerminal.CreateCell(19).SetCellValue("Lý thuyết");
+                rowTerminal.Cells[19].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 20, 20));
+                rowTerminal.CreateCell(20).SetCellValue("Thực hành");
+                rowTerminal.Cells[20].CellStyle = styleHeader;
+
+                sheet.AddMergedRegion(new CellRangeAddress(6, 6, 21, 21));
+                rowTerminal.CreateCell(21).SetCellValue("Ghi chú");
+                rowTerminal.Cells[21].CellStyle = styleHeader;
+
+                rowIndex++;
+                rowTerminal = sheet.CreateRow(rowIndex);
+
+                rowTerminal.CreateCell(0).SetCellValue("");
+                rowTerminal.Cells[0].CellStyle = styleHeader;
+                rowTerminal.CreateCell(1).SetCellValue("");
+                rowTerminal.Cells[1].CellStyle = styleHeader;
+                rowTerminal.CreateCell(2).SetCellValue("");
+                rowTerminal.Cells[2].CellStyle = styleHeader;
+                rowTerminal.CreateCell(3).SetCellValue("");
+                rowTerminal.Cells[3].CellStyle = styleHeader;
+                rowTerminal.CreateCell(4).SetCellValue("");
+                rowTerminal.Cells[4].CellStyle = styleHeader;
+                rowTerminal.CreateCell(5).SetCellValue("");
+                rowTerminal.Cells[5].CellStyle = styleHeader;
+                rowTerminal.CreateCell(6).SetCellValue("");
+                rowTerminal.Cells[6].CellStyle = styleHeader;
+                rowTerminal.CreateCell(7).SetCellValue("Nhóm");
+                rowTerminal.Cells[7].CellStyle = styleHeader;
+                rowTerminal.CreateCell(8).SetCellValue("Khóa đào tạo");
+                rowTerminal.Cells[8].CellStyle = styleHeader;
+                rowTerminal.CreateCell(9).SetCellValue("Lý thuyết");
+                rowTerminal.Cells[9].CellStyle = styleHeader;
+                rowTerminal.CreateCell(10).SetCellValue("Thực hành");
+                rowTerminal.Cells[10].CellStyle = styleHeader;
+                rowTerminal.CreateCell(11).SetCellValue("Ghi chú");
+                rowTerminal.Cells[11].CellStyle = styleHeader;
+                rowTerminal.CreateCell(12).SetCellValue("Nhóm");
+                rowTerminal.Cells[12].CellStyle = styleHeader;
+                rowTerminal.CreateCell(13).SetCellValue("Khóa đào tạo");
+                rowTerminal.Cells[13].CellStyle = styleHeader;
+                rowTerminal.CreateCell(14).SetCellValue("Lý thuyết");
+                rowTerminal.Cells[14].CellStyle = styleHeader;
+                rowTerminal.CreateCell(15).SetCellValue("Thực hành");
+                rowTerminal.Cells[15].CellStyle = styleHeader;
+                rowTerminal.CreateCell(16).SetCellValue("Ghi chú");
+                rowTerminal.Cells[16].CellStyle = styleHeader;
+
+                rowTerminal.CreateCell(17).SetCellValue("Nhóm");
+                rowTerminal.Cells[17].CellStyle = styleHeader;
+                rowTerminal.CreateCell(18).SetCellValue("Khóa đào tạo");
+                rowTerminal.Cells[18].CellStyle = styleHeader;
+                rowTerminal.CreateCell(19).SetCellValue("Lý thuyết");
+                rowTerminal.Cells[19].CellStyle = styleHeader;
+                rowTerminal.CreateCell(20).SetCellValue("Thực hành");
+                rowTerminal.Cells[20].CellStyle = styleHeader;
+                rowTerminal.CreateCell(21).SetCellValue("Ghi chú");
+                rowTerminal.Cells[21].CellStyle = styleHeader;
 
                 rowIndex++;
 
@@ -278,35 +385,71 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     i++;
                     rowTerminal = sheet.CreateRow(rowIndex);
-                    rowTerminal.CreateCell(0).SetCellValue(item.donvi);
+                    rowTerminal.CreateCell(0).SetCellValue(item.nsid);
                     rowTerminal.Cells[0].CellStyle = stylerow;
 
-                    rowTerminal.CreateCell(1).SetCellValue(item.hoten);
+                    rowTerminal.CreateCell(1).SetCellValue(item.cty);
                     rowTerminal.Cells[1].CellStyle = styleCellText;
 
-                    rowTerminal.CreateCell(2).SetCellValue(item.chucdanh);
+                    rowTerminal.CreateCell(2).SetCellValue(item.donvi);
                     rowTerminal.Cells[2].CellStyle = stylerow;
 
                     rowTerminal.CreateCell(3).SetCellValue(item.phongban);
-                    rowTerminal.Cells[3].CellStyle = styleCellText;                    
+                    rowTerminal.Cells[3].CellStyle = styleCellText;
 
-                    rowTerminal.CreateCell(4).SetCellValue(item.lhdaotao);
+                    rowTerminal.CreateCell(4).SetCellValue(item.hoten);
                     rowTerminal.Cells[4].CellStyle = styleCellText;
 
-                    rowTerminal.CreateCell(5).SetCellValue(item.khoadaotao);
+                    rowTerminal.CreateCell(5).SetCellValue(item.ngaysinh);
                     rowTerminal.Cells[5].CellStyle = styleCellNumber;
 
-                    rowTerminal.CreateCell(6).SetCellValue(item.ngaydaotao);
+                    rowTerminal.CreateCell(6).SetCellValue(item.chucdanh);
                     rowTerminal.Cells[6].CellStyle = styleCellText;
 
-                    rowTerminal.CreateCell(7).SetCellValue(item.kq_lthuyet);
+                    rowTerminal.CreateCell(7).SetCellValue(item.nhom_atd);
                     rowTerminal.Cells[7].CellStyle = styleCellText;
 
-                    rowTerminal.CreateCell(8).SetCellValue(item.kq_thanh);
+                    rowTerminal.CreateCell(8).SetCellValue(item.khoadtao_atd);
                     rowTerminal.Cells[8].CellStyle = styleCellText;
 
-                    rowTerminal.CreateCell(9).SetCellValue(item.ghichu);
+                    rowTerminal.CreateCell(9).SetCellValue(item.kqua_lt_atd);
                     rowTerminal.Cells[9].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(10).SetCellValue(item.kqua_th_atd);
+                    rowTerminal.Cells[10].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(11).SetCellValue(item.ghichu_atd);
+                    rowTerminal.Cells[11].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(12).SetCellValue(item.nhom_vsld);
+                    rowTerminal.Cells[12].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(13).SetCellValue(item.khoadtao_vsld);
+                    rowTerminal.Cells[13].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(14).SetCellValue(item.kqua_lt_vsld);
+                    rowTerminal.Cells[14].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(15).SetCellValue(item.kqua_th_vsld);
+                    rowTerminal.Cells[15].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(16).SetCellValue(item.ghichu_vsld);
+                    rowTerminal.Cells[16].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(17).SetCellValue(item.nhom_hotline);
+                    rowTerminal.Cells[17].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(18).SetCellValue(item.khoadtao_hotline);
+                    rowTerminal.Cells[18].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(19).SetCellValue(item.kqua_lt_hotline);
+                    rowTerminal.Cells[19].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(20).SetCellValue(item.kqua_th_hotline);
+                    rowTerminal.Cells[20].CellStyle = styleCellText;
+
+                    rowTerminal.CreateCell(21).SetCellValue(item.ghichu_hotline);
+                    rowTerminal.Cells[21].CellStyle = styleCellText;
 
                     rowIndex++;
                 }
@@ -314,7 +457,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 // Save the Excel spreadsheet to a MemoryStream and return it to the client
                 using (var exportData = new MemoryStream())
                 {
-                    workbook.Write(exportData);                    
+                    workbook.Write(exportData);
 
                     byte[] bytes = exportData.ToArray();
                     string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);

@@ -197,12 +197,13 @@
 <script>
     $('#cboDonvi').on('change', function (e) {
         //Load();()
-        LoadNhansu();
+        LoadNhansu();        
     //$('#cboNhansu').on('change', function (e) {
     //    //LoadDsNhomTheoLoaiDaotao();
     });
 
     $('#cmdView').click(function (e) {
+        LoadInfoNsById();
         LoadDsKquaThi();
     });
       

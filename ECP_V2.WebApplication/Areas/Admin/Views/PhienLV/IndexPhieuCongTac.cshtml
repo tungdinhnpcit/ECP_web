@@ -11,6 +11,7 @@
 
 @section ScriptSignalR{
     <script src="~/Scripts/AdminJS/chosen/chosen.jquery.js"></script>
+    <script src="~/Scripts/QLTA/plv.js"></script>
 }
 
 @section Styles{
@@ -407,6 +408,38 @@
                     <div class="col-md-12 text-right">
                         <button class="btn btn-primary modal-confirm" onclick="DuyetAllModalConfirm()" id="modal-confirm">Có</button>
                         <button class="btn btn-default modal-dismiss" onclick="DuyetAllModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <!-- Modal Thêm người KS của toàn TCT -->
+    <div id="modalAnimAddUserKs" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Chọn người kiểm soát</h2>
+            </header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label class="control-label">Chọn Công ty</label>
+                        <select class="form-control" id="cboCty"></select>
+                    </div>
+                    <div class="col-lg-12">
+                        <label class="control-label">Chọn Điện lực</label>
+                        <select class="form-control" id="cboDluc"></select>
+                    </div>
+                    <div class="col-lg-12">
+                        <label class="control-label">Chọn nhân sự</label>
+                        <select class="form-control" id="cboNvien"></select>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="UpdateUserKsModalConfirm()" id="modal-confirm">Ghi</button>
+                        <button class="btn btn-default modal-dismiss" onclick="UpdateVuaTaoModalDismiss()" id="modal-dismiss">Thoát</button>
                     </div>
                 </div>
             </footer>
@@ -1687,15 +1720,24 @@ chuyenNPC = -1
                     if (data == "") {
                         new PNotify({
                             title: 'Thông báo!',
-                            text: 'Ký số thành công',
-                            type: 'success'
+                            text: 'Upload file không thành công!',
+                            type: 'error'
+                        });
+                    } else {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalBBKS'
+                            }
                         });
 
-
-                        //Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Upload file thành công!',
+                            type: 'success'
+                        });
                     }
 
-                    }
+                }
 
             });
         }
@@ -1722,12 +1764,21 @@ chuyenNPC = -1
                     if (data == "") {
                         new PNotify({
                             title: 'Thông báo!',
-                            text: 'Ký số thành công',
-                            type: 'success'
+                            text: 'Upload file không thành công!',
+                            type: 'error'
+                        });
+                    } else {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalPATC'
+                            }
                         });
 
-
-                        //Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Upload file thành công!',
+                            type: 'success'
+                        });
                     }
 
                 }
@@ -1736,112 +1787,136 @@ chuyenNPC = -1
         }
 
         //Gọi hàm ký số BBKS
-        function onSignBBKS() {
-            var formData = new FormData();
-            var file = document.getElementById("fileBBKS").files[0];
-            var IdSign = $('#hdIdphien').val();
-            formData.append("fileBBKS", file);
-            formData.append("Id", IdSign);
-            formData.append("Loaibb", 0);            
-                $.ajax({
-                    type: "POST",
-                    url: '/Admin/PhienLV/onSignBBKSAsync',
-                    data: formData,
-                    dataType: 'json',
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function () {//alert(id);
-                    },
-                    success: function (data) {
-                        unloading();
-                        if (data == "") {
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Ký số thành công',
-                                type: 'success'
-                            });
+    function onSignBBKS() {
+        var formData = new FormData();
+        var file = document.getElementById("fileBBKS").files[0];
+        var IdSign = $('#hdIdphien').val();
+        formData.append("fileBBKS", file);
+        formData.append("Id", IdSign);
+        formData.append("Loaibb", 0);
+            $.ajax({
+                type: "POST",
+                url: '/Admin/PhienLV/onSignBBKSAsync',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function () {//alert(id);
+                },
+                success: function (data) {
+                    unloading();
+                    if (data == "") {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Ký số thành công',
+                            type: 'success'
+                        });
 
 
-                            //Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-                        }
-                        else if (data == "Chưa cấp số phiếu không được Ký") {
-                            $.magnificPopup.close({
-                                items: {
-                                    src: '#modalAnimKyso'
-                                }
-                            });
+                        //Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+                    }
+                    else if (data == "Chưa cấp số phiếu không được Ký") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalAnimKyso'
+                            }
+                        });
 
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Chưa cấp số phiếu không được Ký!',
-                                type: 'error'
-                            });
-                        } else if (data == "Chưa được ký bước cuối!") {
-                            $.magnificPopup.close({
-                                items: {
-                                    src: '#modalAnimKyso'
-                                }
-                            });
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Chưa cấp số phiếu không được Ký!',
+                            type: 'error'
+                        });
+                    } else if (data == "Chưa được ký bước cuối!") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalAnimKyso'
+                            }
+                        });
 
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Chưa được ký kết thúc!',
-                                type: 'error'
-                            });
-                        } else if (data == "NOT EVNCA") {
-                            $.magnificPopup.close({
-                                items: {
-                                    src: '#modalAnimKyso'
-                                }
-                            });
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Chưa được ký kết thúc!',
+                            type: 'error'
+                        });
+                    } else if (data == "Chưa ký tại hiện trường") {
+                        //$.magnificPopup.close({
+                        //    items: {
+                        //        src: '#modalAnimKyso'
+                        //    }
+                        //});
 
-
-                        } else if (data == "Phiếu đã được ký") {
-                            $.magnificPopup.close({
-                                items: {
-                                    src: '#modalPATC'
-                                }
-                            });
-
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Phương án thi công đã được ký, không thể ký tiếp.',
-                                type: 'error'
-                            });
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Chưa ký tại hiện trường!',
+                            type: 'error'
+                        });
+                    } else if (data == "NOT EVNCA") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalAnimKyso'
+                            }
+                        });
 
 
-                        } else if (data == "Chưa có file") {
-                            $.magnificPopup.close({
-                                items: {
-                                    src: '#modalPATC'
-                                }
-                            });
+                    } else if (data == "Phiếu đã được ký") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalBBKS'
+                            }
+                        });
 
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Người dùng chọn file Phương án thi công để ký.',
-                                type: 'error'
-                            });
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Biên bản khảo sát đã được ký, không thể ký tiếp.',
+                            type: 'error'
+                        });
 
-                        } else {
+                    } else if (data == "Chưa có file") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalBBKS'
+                            }
+                        });
 
-                            $.magnificPopup.close({
-                                items: {
-                                    src: '#modalAnimKyso'
-                                }
-                            });
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Người dùng chọn file Biên bản khảo sát để ký.',
+                            type: 'error'
+                        });
 
-                            new PNotify({
-                                title: 'Thông báo!',
-                                text: 'Ký số thành công',
-                                type: 'success'
-                            });
-                        }
+                    } else if (data == "Người cấp phiếu chưa nhập, không được ký.") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalBBKS'
+                            }
+                        });
 
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Người cấp phiếu chưa nhập, không được ký.',
+                            type: 'error' 
+                        });
+
+                    } else {
+
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalAnimKyso'
+                            }
+                        });
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Ký số thành công',
+                            type: 'success'
+                        });
                     }
 
-                });
-        }
+                }
+
+            });
+    }
 
         //Gọi hàm ký số PATC
         function onSignPATC() {
@@ -2052,6 +2127,19 @@ chuyenNPC = -1
                             text: 'Phiếu đã hoàn thiện ký!',
                             type: 'error'
                         });
+                    } else if (data == "Người cấp phiếu chưa nhập, không được ký.") {
+                        $.magnificPopup.close({
+                            items: {
+                                src: '#modalBBKS'
+                            }
+                        });
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Người cấp phiếu chưa nhập, không được ký.',
+                            type: 'error'
+                        });
+
                     } else
                        {
                         //var json = JSON.parse(data.Result);
@@ -2348,7 +2436,7 @@ chuyenNPC = -1
                 success: function (data) {
                     unloading();
 
-                    if (data == "NOFILE") {
+                    if (data == "") {
 
                     }
                     else {
@@ -3153,6 +3241,53 @@ chuyenNPC = -1
             $.magnificPopup.close();
         }
 
+        //Cập nhật Người kiểm soát ngoài đơn vị thuộc tct
+        function UpdateUserKsModalConfirm() {
+            if (IdUpdateVuaTao != "") {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/CapNhatNguoiKsoat',
+                    data: JSON.stringify({ donvi: $('#cboCty').val(), idnhanvien: $("#cboNvien").val(), idphien: IdUpdateVuaTao }),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data ='OK') {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Cập nhật thành công!',
+                                type: 'success'
+                            });
+
+                        }
+                        else {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi : ' + data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    }
+
+                });
+            }
+
+            $.magnificPopup.close();
+        }
+
+        $("#cboCty").on("change", function () {
+            loaddsdluc();
+            loaddsnvien();
+        });
+
+        $("#cboDluc").on("change", function () {
+            $("#cboDluc").select2();
+            $("#cboNvien").select2();
+            let dluc = $("#cboDluc").val();
+            if (dluc != null) {
+                loaddsnvien();
+            }
+        });
+
         function UpdateSoPhieuModalDismiss() {
             $.magnificPopup.close();
         }
@@ -3699,6 +3834,27 @@ chuyenNPC = -1
             }
         }
 
+            //if (buoc == 0) {
+            //    $('#obj0').css('display', 'block');
+            //    $('#obj1').css('display', 'none');
+            //    $('#obj2').css('display', 'none');
+            //    $('#btnBack').prop("disabled", true);
+            //    $('#btnForward').prop("disabled", false);
+            //}
+            //if (buoc == 1) {
+            //    $('#obj0').css('display', 'none');
+            //    $('#obj1').css('display', 'block');
+            //    $('#obj2').css('display', 'none');
+            //    $('#btnForward').prop("disabled", false);
+            //    $('#btnBack').prop("disabled", false);
+            //}
+            //if (buoc == 2) {
+            //    $('#obj0').css('display', 'none');
+            //    $('#obj1').css('display', 'none');
+            //    $('#obj2').css('display', 'block');
+            //    $('#btnForward').prop("disabled", true);
+            //    $('#btnBack').prop("disabled", false);
+            //}
         }
     </script>
 }

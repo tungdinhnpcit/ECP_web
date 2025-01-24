@@ -408,13 +408,13 @@
 </div>
 <div id="selectdayofweek">
     <ul>
+        <li><a rowname="Monday" class="todayofweek" id="style@(DayOfWeek.Monday)">T2</a></li>
         <li><a rowname="Tuesday" class="todayofweek" id="style@(DayOfWeek.Tuesday)">T3</a></li>
         <li><a rowname="Wednesday" class="todayofweek" id="style@(DayOfWeek.Wednesday)">T4</a></li>
         <li><a rowname="Thursday" class="todayofweek" id="style@(DayOfWeek.Thursday)">T5</a></li>
         <li><a rowname="Friday" class="todayofweek" id="style@(DayOfWeek.Friday)">T6</a></li>
         <li><a rowname="Saturday" class="todayofweek" id="style@(DayOfWeek.Saturday)">T7</a></li>
         <li><a rowname="Sunday" class="todayofweek" id="style@(DayOfWeek.Sunday)">CN</a></li>
-        <li><a rowname="Monday" class="todayofweek" id="style@(DayOfWeek.Monday)">T2</a></li>
     </ul>
     <script>
         $('#style@(DateTime.Now.DayOfWeek)').attr('style', 'background:#006a9e !important;');
@@ -462,6 +462,10 @@
 
         }
     }
+
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
 </script>
 <style>
 
@@ -648,12 +652,12 @@
     @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
     <script type="text/javascript">
 
-        $.datepicker.setDefaults({
-            showOn: "both",
-            buttonImageOnly: true,
-            buttonImage: "calendar.gif",
-            regional: "vn"
-        });
+        //$.datepicker.setDefaults({
+        //    showOn: "both",
+        //    buttonImageOnly: true,
+        //    buttonImage: "calendar.gif",
+        //    regional: "vn"
+        //});
 
         var IdDelete = 0;
         var IdCopy = 0;
@@ -1206,31 +1210,104 @@
                 '<textarea dataempid="" onkeypress="return false;" datasourceidname="listtinhchat" class="TinhChat_SelectEmp form-control" id="TinhChat_' + index + '" placeholder="Tính chất phiên lv" class = "form-control"></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
-                       '<td><span>' +
-                       '<textarea searchbox="1" dataempid=""  datasourceidname="listnguoiduyet" class="NguoiDuyet_SoPa_SelectEmp form-control" id="NguoiDuyet_SoPa_' + index + '" placeholder="Người duyệt phương án" class = "form-control"></textarea>' +
+                '<td><span>' +
+                        //Người duyệt phương án
+                        '<select class="form-control select2" id="DuyetDviID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
+
+                       '<textarea searchbox="1" dataempid="" width="100%" datasourceidname="listnguoiduyet" class="NguoiDuyet_SoPa_SelectEmp form-control" id="NguoiDuyet_SoPa_' + index + '" placeholder="Người duyệt phương án" class = "form-control"></textarea>' +
                        '</span><div class="multiselect-wap"></div></td>' +
-                       '<td><span>' +
+                            '<td><span>' +
+                            //Người chỉ huy
+                        '<select class="form-control select2" id="NguoiChihuyID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                        '<textarea dataempid=""  searchbox="1" datasourceidname="listchihuytructiep" class="NguoiChiHuy_SelectEmp form-control"  rows="2" id="NguoiChiHuy_' + index + '" placeholder="Người chỉ huy trực tiếp" class = "form-control" ></textarea>' +
                        '</span><div class="multiselect-wap"></div></td>' +
-                       '<td><span>' +
+                            '<td><span>' +
+                            //Người giám sát
+                        '<select class="form-control select2" id="NguoiGiamSatID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                        '<textarea dataempid=""   searchbox="1" datasourceidname="listgiamsat" class="GiamSatVien_SelectEmp form-control" rows="2" id="GiamSatVien_' + index + '" placeholder="Người giám sát ATLĐ" class = "form-control" ></textarea>' +
                        '</span><div class="multiselect-wap"></div></td>' +
-                       '<td><span>' +
+                            '<td><span>' +
+                            //Người kiểm soát
+                        '<select class="form-control select2" id="NguoiKiemSoatID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                 '<textarea dataempid=""  searchbox="1" datasourceidname="listkiemsoat"  class="NguoiKiemSoat_SelectEmp form-control" rows="2" id="NguoiKiemSoat_' + index + '" placeholder="Người cho phép" class = "form-control" ></textarea>' +
                        '</span><div class="multiselect-wap"></div></td>' +
-                       '<td><span>' +
+                            '<td><span>' +
+                            //Người kiểm tra phiếu
+                        '<select class="form-control select2" id="NguoiKiemPhieuID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                        '<textarea dataempid=""  searchbox="1" datasourceidname="listkiemtraphieu" class="NguoiKiemTraPhieu_SelectEmp form-control" rows="2" id="NguoiKiemTraPhieu_' + index + '" placeholder="Người kiểm tra PCT; PTT; LCT" class = "form-control" ></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
-                       '<td><span>' +
+                            '<td><span>' +
+                            //Lãnh đạo trực ban
+                        '<select class="form-control select2" id="LDTrucbanID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                        '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaotrucban"  class="LanhDaoTrucBan_SelectEmp form-control" rows="2" id="LanhDaoTrucBan_' + index + '" placeholder="Lãnh đạo đơn vị trực ban kiểm soát" class = "form-control" ></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
-                  '<td onlyone="1"><span>' +
+                            '<td onlyone="1"><span>' +
+                            //Lãnh đạo công việc
+                        '<select class="form-control select2" id="LDCongviecID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                        '<textarea dataempid=""  searchbox="1" datasourceidname="listlanhdaocongviec"  class="LanhDaoCongViec_SelectEmp form-control" rows="2" id="LanhDaoCongViec_' + index + '" placeholder="Lãnh đạo công việc" class = "form-control" ></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
-                  '<td onlyone="1"><span>' +
+                            '<td onlyone="1"><span>' +
+                            //Người cấp phiếu
+                        '<select class="form-control select2" id="NguoiCapPhieuID_' + index + '" onchange="onChangeSelect(this)">' +
+                        '@try {
+                                    @Html.Raw(ECP_V2.Business.Repository.SafeTrainRepository.getAllDonviNPC(Session["DonViID"].ToString()))
+                                }
+                                catch (Exception ex)
+                                { }
+                             ' +
+                        '</select>' +
                        '<textarea dataempid=""  searchbox="1" datasourceidname="listnguoicapphieu"  class="NguoiCapPhieu_SelectEmp form-control" rows="2" id="NguoiCapPhieu_' + index + '" placeholder="Người cấp phiếu" class = "form-control" ></textarea>' +
                 '</span><div class="multiselect-wap"></div></td>' +
 
@@ -1252,7 +1329,7 @@
 
             // khai bao cho Popup
             $('#Cancel_' + index).magnificPopup({
-    type: 'inline',
+                type: 'inline',
 
                 fixedContentPos: false,
                 fixedBgPos: true,
@@ -1594,6 +1671,190 @@
             }
 
             $.magnificPopup.close();
+        }
+
+        //namcv add onChangeSelect
+        function onChangeSelect(el) {
+            //Gọi ajax để thay đổi danh sách bên dưới
+            loading('Đang xử lý...', 1);
+            let dvi = el.value;
+            let thaotac = '';
+            $.ajax({
+                type: "POST",
+                url: '/Admin/PhienLV/LoadDsachUserCtac',
+                data:JSON.stringify({
+                    loaithaotac: thaotac,
+                    madonvi: dvi
+                }),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (el.id.indexOf("DuyetDviID") != -1) {
+                        $('#listnguoiduyet').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Người duyệt phương án");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listnguoiduyet').append(select);
+                    }
+
+                    if (el.id.indexOf("NguoiChihuyID_") != -1) {
+                        $('#listchihuytructiep').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Người chỉ huy trực tiếp");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listchihuytructiep').append(select);
+                    }
+
+                    if (el.id.indexOf("NguoiGiamSatID_") != -1) {
+                        $('#listgiamsat').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Người giám sát");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listgiamsat').append(select);
+                    }
+
+                    if (el.id.indexOf("NguoiKiemSoatID_") != -1) {
+                        $('#listkiemsoat').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Người cho phép");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listkiemsoat').append(select);
+                    }
+
+                    if (el.id.indexOf("NguoiKiemPhieuID_") != -1) {
+                        $('#listkiemtraphieu').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Người kiểm tra phiếu");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listkiemtraphieu').append(select);
+                    }
+
+                    if (el.id.indexOf("LDTrucbanID_") != -1) {
+                        $('#listlanhdaotrucban').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Lãnh đạo trực ban");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listlanhdaotrucban').append(select);
+                    }
+
+                    if (el.id.indexOf("LDCongviecID_") != -1) {
+                        $('#listlanhdaocongviec').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Lãnh đạo công việc");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listlanhdaocongviec').append(select);
+                    }
+
+                    if (el.id.indexOf("NguoiCapPhieuID_") != -1) {
+                        $('#listnguoicapphieu').empty();
+                        var select = $('<select/>');
+
+                        var optgroup = $('<optgroup>');
+                        optgroup.attr('label', "Người cấp phiếu");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var option = $("<option></option>");
+                            option.val(obj.Id);
+                            option.text(obj.TenNhanVien + ' - ' + obj.SoDT);
+
+                            optgroup.append(option);
+                        }
+                        select.append(optgroup);
+
+                        $('#listnguoicapphieu').append(select);
+                    }
+
+
+                    unloading();
+                }
+            });
+
+            unloading();
         }
 
         function ImportKHModalDismiss() {
@@ -2003,7 +2264,7 @@
         </div>
     </div>
     <div id="listnguoiduyet">
-        <optgroup label="Người duyệt phương án">
+        <optgroup label="Người duyệt phương án" id="nguoiduyetpaId">
             @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "NguoiDuyetChucNang" });}
         </optgroup>
     </div>

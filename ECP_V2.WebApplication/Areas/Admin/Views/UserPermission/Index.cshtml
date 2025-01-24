@@ -440,7 +440,7 @@
 
 @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
         var IdDelete = 0;
         var NoiDungDelete = 0;
@@ -449,21 +449,14 @@
 
         $(function () {
 
-            var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
-
-            ////var tuNgay = kendo.toString(kendo.parseDate('@(ViewBag.TuNgay!=null?ViewBag.TuNgay:DateTime.Now)', 'dd/MM/yyyy'), 'dd/MM/yyyy');
-            $("#GioBd").datepicker({
-                dateFormat: 'dd/mm/yy'
-            }).val(yNgay);
-
             //var start = $("#GioBd").kendoDatePicker({
             //    format: 'dd/MM/yyyy',
             //}).data("kendoDatePicker");
 
-            $("#GioKt").datepicker({
-                dateFormat: 'dd/MM/yyyy',
-                change: end_chage
-            }).val(yNgay);
+            //var end = $("#GioKt").kendoDatePicker({
+            //    format: 'dd/MM/yyyy',
+            //    change: end_chage
+            //}).data("kendoDatePicker");
 
             //Menu Collapsed Layout
             $('html').addClass('sidebar-left-collapsed');
@@ -513,11 +506,6 @@
             //    format: 'dd/MM/yyyy',
             //    value:new Date()
             //}).data("kendoDatePicker");
-
-            $("#NgayBoSung").datepicker({
-                dateFormat: 'dd/MM/yyyy',
-                change: end_chage
-            }).val(yNgay);
 
             $("#txtRolesUser").change(function () {
 
@@ -587,7 +575,7 @@
             */
             $(document).on('click', '#btnAddTaiKhoanToRoles', function (e) {
                 e.preventDefault();
-
+                
 
                 var arrSelected = [];
                 var roleName = $('input[name="ChiTietQuyen"]:checked').val();
@@ -615,7 +603,7 @@
                             $('#drlPbanAdd option:first-child').attr("selected", true);
                             $('#drlDviAdd option:first-child').attr("selected", true);
                             $('#txtKeyWordAdd').val('');
-
+                            
                             GetListTaiKhoanAdd('', $('#drlPhongBanAll').val(), $('#drlDonViAll').val(), $('input[name="ChiTietQuyen"]:checked').val());
 
                             new PNotify({
@@ -630,7 +618,7 @@
                     });
                 }
 
-
+                
             });
 
             $(document).on('click', '#btnAddChucNangToRoles', function (e) {
@@ -1047,6 +1035,6 @@
             $(".fulltable").removeClass("hide");
             $(this).addClass("hide");
         });
-</script>
+    </script>
 }
 

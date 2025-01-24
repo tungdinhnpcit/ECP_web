@@ -32,6 +32,10 @@ public partial class plv_PhieuCongTac_Sign
 
     public string UrlFileSign { get; set; }
 
+    public string UserSignId { get; set; }
+
+    public string ChucVu { get; set; }
+
 }
 
 }

@@ -4,12 +4,15 @@
     var lstTaiLieu = (List<ECP_V2.DataAccess.tbnn_SoTheoDoiTBNN_TaiLieu>)ViewBag.lstTaiLieu;
 }
 
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 <link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
 <style>
     select {
         height: 40px;
         padding: 0;
     }
+
     #divUpLoad .fileUpload {
         position: relative;
         overflow: hidden;
@@ -80,7 +83,7 @@
             <div class="col-md-4">
                 <label class="control-label" for="NgayKiemTra">Ngày kiểm định</label>
                 <div class="clearfix"></div>
-                @Html.TextBoxFor(model => model.NgayKiemTra, new { @style="width:100%" })
+                @Html.TextBoxFor(model => model.NgayKiemTra, new { @style = "width:100%" })
                 @Html.ValidationMessageFor(model => model.NgayKiemTra)
 
             </div>
@@ -141,10 +144,14 @@
 <script>
     $(function () {
 
+        var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+        $("#NgayKiemTra").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(yNgay);
 
-        $("#NgayKiemTra").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-        }).data("kendoDatePicker");
+        //$("#NgayKiemTra").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker");
 
 
         // Spinner

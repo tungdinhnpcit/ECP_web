@@ -1,0 +1,521 @@
+﻿
+
+<div id="modal_ds_ktgs" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde; padding: 2px; width: 100%">
+        <div class="modal-content" style="height: 750px;overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" style="color:red !important;margin-top:-10px !important;font-size:25px !important">×</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div style="overflow-y:auto">
+                    <table id="tblktgs_ctiet" class="dataTable table table-striped table-bordered table-hover" style="width:100%!important;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center">Mã biên bản</th>
+                                <th style="text-align: center">Loại biên bản</th>
+                                <th style="text-align: center">Địa điểm</th>
+                                <th style="text-align: center">Nội dung công việc</th>
+                                <th style="text-align: center">Tồn tại</th>
+                                <th style="text-align: center">Tình trạng khắc phục</th>
+                                <th style="text-align: center">Đơn vị kiểm tra</th>
+                                <th style="text-align: center">Thành phần kiểm tra</th>
+                                <th style="text-align: center">Người kiểm tra</th>
+                                <th style="text-align: center">Thời gian kiểm tra</th>
+                                <th style="text-align: center">Chi tiết</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_kptt" class="modal bs-example-modal-lg">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="height: 750px;overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" style="color:red !important;margin-top:-10px !important;font-size:25px !important">×</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div style="overflow-y:auto">
+
+                    <div>
+                        <label class="input-group-text" for="inputGroupSelect01">Nội dung khắc phục:</label>
+
+                    </div>
+                    <div>
+                        <input class="form-control" data-val="true" data-val-required="Tên loại không được để trống!" id="txtndkp" name="TenLoai" placeholder="Nhập nội dung khắc phục" type="text" value="">
+
+                    </div>
+                    <div>
+                        <label class="input-group-text" for="inputGroupSelect01">File đính kèm:</label>
+                    </div>
+                    <div class="input-group mb-3">
+
+                        <input type="file" accept="image/*" class="custom-file-input" multiple id="fileupload">
+                        <div id="imgpreview">
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a onclick="modal_kptt.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_kptt.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script id="template_ktgs" type="text/x-handlebars-template">
+    <div class="modal-content" style="height: 750px;overflow-y: auto;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" style="color:red !important;margin-top:-10px !important;font-size:25px !important">×</button>
+            <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+            <div style="display:table">
+            </div>
+            <div class="row">
+                <div class="label label-lg label-info arrowed-in arrowed-right" style="width:98%;" id="divthongtin">
+                    <b style="font-size:13px;">Thông tin biên bản</b>
+                    <i class="ace-icon fa fa-chevron-down" id="morett"></i>
+                </div>
+                <div class="row" id="showtt" style="padding-left: 10px !important">
+                    <div class="col-md-4">
+                        <b style="background-color: #3742fa; color: white; ">Địa điểm:</b>
+                        <div> ${DiaDiem}</div>
+                        <b style="background-color: #3742fa; color: white; ">Nội dung công việc:</b>
+                        <div> ${NoiDungCongViec}</div>
+                        <b style="background-color: #3742fa; color: white; ">Ngày thực hiện:</b>
+                        <div> ${util.FormatDateToVn(ThoiGian)}</div>
+                        <b style="background-color: #3742fa; color: white;">Tinh trạng:</b>
+                        <div>
+                            {{if CoTonTai = true}}
+                            Kết thúc
+                            {{else}}
+                            Còn tồn tại
+                            {{/if}}
+                        </div>
+                        <b style="background-color: #3742fa; color: white;">Khắc phục:</b>
+                        <div>
+                            ${Nd_Kphuc}
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="text-align:center">
+                        <img id="imglager" style="height:100%;width:100%" src="" />
+                    </div>
+                    <div class="col-md-2" id="groupimg">
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<div id="modal_ctbb" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" id="md_content_xlvb">
+
+
+    </div>
+</div>
+
+
+
+<div id="modal_adduser" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="height: 750px;overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm nhân viên vào nhóm</h4>
+            </div>
+            <div class="modal-body">
+                <select id="cbouser" style="width:450px;"></select>
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_adduser.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_adduser.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="modal_addhl" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm công việc</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-6">
+                    <input id="txttencv" type="text" class="form-control" placeholder="Nhập tên công việc" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_addhl.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_addhl.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_addbuoc" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm bước thực hiện</h4>
+            </div>
+            <div class="modal-body">
+                <div style="margin:5px">
+                    <input id="txtbuoc" type="text" placeholder="Nhập tên công việc" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                </div>
+                <div style="margin:5px">
+                    <textarea id="txtnoidung" placeholder="Nhập nội dung thực hiện" aria-label="Recipient's username" aria-describedby="basic-addon2"></textarea>
+                </div>
+                <div style="margin:5px">
+                    <input id="file_hlat_upload" type="file" accept="media/*;video/*" multiple class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2"> File hiệu lệnh</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_addbuoc.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_addbuoc.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_giao_chitieu" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Giao chỉ tiêu thực hiện</h4>
+            </div>
+            <div class="modal-body">
+                <div style="margin:5px">
+                    <div style="display:inline">
+                        <label class="input-group-text">Đơn vị</label>
+                    </div>
+
+                    <select id="cbodonvigiao"></select>
+
+                    <div style="display:inline">
+                        <label class="input-group-text">Năm</label>
+                    </div>
+                    <select class="custom-select" id="cbonamgiao">
+                        <option selected value="2021">2021</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                <div style="margin:5px">
+                    <input type="text" id="txtctieuso" placeholder="Nhập số chỉ tiêu" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_giao_chitieu.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_giao_chitieu.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_addhl_ktat" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm chủ đề</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-6">
+                    <input id="txttencv_ktat" type="text" class="form-control" placeholder="Nhập tên chủ đề" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_addhl_ktat.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_addhl_ktat.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal_addbuoc_ktat" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Thêm bước thực hiện</h4>
+            </div>
+            <div class="modal-body">
+                <div style="margin:5px">
+                    <textarea id="txtnoidung_ktat" placeholder="Nhập nội dung câu hỏi" aria-label="Recipient's username" aria-describedby="basic-addon2" ></textarea>
+                </div>
+                <div style="margin:5px">
+                    <textarea id="txtnd_traloi_ktat" placeholder="Nội dung trả lời" aria-label="Recipient's username" aria-describedby="basic-addon2" ></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_addbuoc_ktat.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_addbuoc_ktat.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="modal_face_ai" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg" style="background: 1px #004bde;
+    padding: 2px;">
+        <div class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Nhận dang khuân mặt</h4>
+            </div>
+            <div class="modal-body">
+                <div id="ai_images" style="height:500px;overflow-y:auto">
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a onclick="modal_face_ai.submit()" class="btn btn-success btn-sm"><i class="fa fa-file l-o mr-5"></i>Cập nhật</a>
+                <a onclick="modal_face_ai.cancel()" class="btn btn-danger btn-sm"><i class="fa fa-file l-o mr-5"></i>Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--camera-->
+<div id="modal_ShowCamera" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 970px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View online camera</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="viewcam">
+
+                </div>
+
+                <div>
+                    <button type="button" onclick="camera.fullscreen(1)">Xem toàn màn hình</button>
+                    <!--<button type="button" onclick="camera.zoom(-1)">+ ZOOM IN</button>-->
+                </div>
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home2" aria-controls="home" role="tab" data-toggle="tab">Video</a></li>
+                    <li role="presentation"><a href="#profile2" aria-controls="profile" role="tab" data-toggle="tab">Picture</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home2">
+                        <iframe id="ifCamera" style="width:100%;height:450px;border:none" src=""></iframe>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="profile2">
+                        <button type="button" onclick="camera.viewimageonline()"> Refresh</button>
+                        <div id="ithump_pic_online" >
+
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_AddCamera" class="modal bs-example-modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 970px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Đăng ký sử dụng Camera cho phiên làm việc</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="tblCamera" class="display table table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Serial</th>
+                            <th>Tên</th>
+                            <th>Sử dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cập nhật</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal_ShowHisCamera" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 970px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View offline camera</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="viewhiscam">
+
+                </div>
+                <p id="current_his_cam"></p>
+                <div>
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Video</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Picture</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div id="ithump_cam">
+
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="profile">
+                            <div id="ithump_pic">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Video</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Picture</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div id="ithump_cam">
+
+            </div>
+        </div>
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <div id="ithump_pic">
+
+            </div>
+        </div>
+    </div>-->
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_HisCameramp4" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 970px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">View mp4 camera</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="objmp4"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal_dkcamera" class="modal bs-example-modal-lg" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 970px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Đăng ký sử dụng camera</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input id="dkcamera_txtID" type="text" class="form-control" placeholder="Nhập serial" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <br />
+                <input id="dkcamera_txtdes" type="text" class="form-control" placeholder="Nhập tên" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"  onclick="dkcamera.submitdk()">Cập nhật</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>

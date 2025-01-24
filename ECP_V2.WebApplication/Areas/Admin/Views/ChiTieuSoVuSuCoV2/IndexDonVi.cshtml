@@ -5,8 +5,7 @@
 
 
 <link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
-<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
-<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+
 
 <div class="block-fluid">
     <div class="panel panel-visible">
@@ -89,14 +88,11 @@
     $(function () {
         //Menu Collapsed Layout
         $('html').addClass('sidebar-left-collapsed');
-                
         const d = new Date();
         let year = d.getFullYear();
-
-        $("#Date").datepicker({
+        $('#Date').datepicker({
             dateFormat: 'yyyy'
         }).val(year);
-
         //$("#Date").kendoDatePicker({
         //    start: "decade",
         //    depth: "decade",

@@ -1051,9 +1051,15 @@
                 $("#NgayDuaVaoSuDung").val(json.NgayDuaVaoSuDung);
                 $("#HanKiemDinh").val(json.HanKiemDinh);
                 $("#QuyTacDanhMa").val(json.QuyTacDanhMa);
-                $("#NgayDuaVaoSuDung").kendoDatePicker({
-                    format: 'dd/MM/yyyy',
-                }).data("kendoDatePicker");
+
+                $("#NgayDuaVaoSuDung").datepicker({
+                    dateFormat: 'dd/mm/yy'
+                }).val(json.NgayDuaVaoSuDung);
+
+                //$("#NgayDuaVaoSuDung").kendoDatePicker({
+                //    format: 'dd/MM/yyyy',
+                //}).data("kendoDatePicker");
+
                 $("span.k-widget").css("background-color", "transparent");
             }
         });

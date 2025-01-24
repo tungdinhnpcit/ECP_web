@@ -410,7 +410,7 @@
           <Property Name="disable" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'ECP_PN_X.dbo.FacilitySites' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ECP_PN.dbo.FacilitySites' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="FacilitySites">
           <Key>
             <PropertyRef Name="FacilitySiteID" />
@@ -584,7 +584,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.FacilitySites' does not have a primar
           <Property Name="MA_LOAI_KTR" Type="nvarchar" MaxLength="25" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'ECP_PN_X.dbo.KTDK_NHOMKTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ECP_PN.dbo.KTDK_NHOMKTR' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="KTDK_NHOMKTR">
           <Key>
             <PropertyRef Name="MA_LOAI_KTR" />
@@ -1025,16 +1025,9 @@ warning 6002: The table/view 'ECP_PN_X.dbo.KTDK_NHOMKTR' does not have a primary
           <Property Name="MaYeuCauCRM" Type="nvarchar" MaxLength="200" />
           <Property Name="TramId" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCongTac_Sign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="plv_PhieuCongTac_Sign">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="MaPCT" />
-            <PropertyRef Name="PhienLamViecID" />
-            <PropertyRef Name="Step" />
-            <PropertyRef Name="UserSign" />
-            <PropertyRef Name="UrlFileSign" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MaPCT" Type="int" Nullable="false" />
@@ -1042,7 +1035,9 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCongTac_Sign' does not have 
           <Property Name="Step" Type="int" Nullable="false" />
           <Property Name="UserSign" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DateSign" Type="datetime" />
-          <Property Name="UrlFileSign" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="UrlFileSign" Type="nvarchar" MaxLength="500" />
+          <Property Name="UserSignId" Type="nvarchar" MaxLength="500" />
+          <Property Name="ChucVu" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="plv_PhieuCT_NhanVien">
           <Key>
@@ -1059,7 +1054,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCongTac_Sign' does not have 
           <Property Name="BacAnToan" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ECP_PN.dbo.plv_PhieuCT_NhanVien_his' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="plv_PhieuCT_NhanVien_his">
           <Key>
             <PropertyRef Name="MaPCT" />
@@ -1496,7 +1491,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Property Name="DonViId" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="CapDienAp" Type="nchar" MaxLength="10" />
           <Property Name="TenThietBi" Type="nvarchar" MaxLength="256" />
-          <Property Name="DienBienSuCo" Type="nvarchar" MaxLength="256" />
+          <Property Name="DienBienSuCo" Type="nvarchar(max)" />
           <Property Name="TomTat" Type="nvarchar" MaxLength="1000" />
           <Property Name="TinhTrangBienBan" Type="bit" />
           <Property Name="HinhAnhSuCo" Type="bit" />
@@ -2140,6 +2135,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Property Name="DieuKienAnToan" Type="nvarchar(max)" />
           <Property Name="ID_KTGS" Type="nvarchar" MaxLength="200" />
           <Property Name="GhiChu" Type="nvarchar" MaxLength="500" />
+          <Property Name="NgayBatDau" Type="datetime" />
         </EntityType>
         <EntityType Name="tblPhienLamViec_ChinhSua">
           <Key>
@@ -3822,6 +3818,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Parameter Name="Take" Type="varchar" Mode="In" />
           <Parameter Name="Duyet" Type="int" Mode="In" />
           <Parameter Name="chuyenNPC" Type="int" Mode="In" />
+          <Parameter Name="phieuky" Type="int" Mode="In" />
           <Parameter Name="role" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_AdvancedSearchPhieuCongTac" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -3836,6 +3833,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Parameter Name="Take" Type="varchar" Mode="In" />
           <Parameter Name="Duyet" Type="int" Mode="In" />
           <Parameter Name="chuyenNPC" Type="int" Mode="In" />
+          <Parameter Name="phieuky" Type="int" Mode="In" />
           <Parameter Name="role" Type="nvarchar" Mode="In" />
           <Parameter Name="LoaiCongViec" Type="nvarchar" Mode="In" />
         </Function>
@@ -3897,6 +3895,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Parameter Name="NgayKT" Type="varchar" Mode="In" />
           <Parameter Name="Duyet" Type="int" Mode="In" />
           <Parameter Name="chuyenNPC" Type="int" Mode="In" />
+          <Parameter Name="phieuky" Type="int" Mode="In" />
           <Parameter Name="role" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_CountTotalPhieuCongTac" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -3909,7 +3908,9 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Parameter Name="NgayKT" Type="varchar" Mode="In" />
           <Parameter Name="Duyet" Type="int" Mode="In" />
           <Parameter Name="chuyenNPC" Type="int" Mode="In" />
-          <Parameter Name="LoaiCongViec" Type="int" Mode="In" />
+          <Parameter Name="phieuky" Type="int" Mode="In" />
+          <Parameter Name="role" Type="int" Mode="In" />
+          <Parameter Name="LoaiCongViec" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_CountTotalPhieuCongTac_His" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="filter" Type="nvarchar" Mode="In" />
@@ -4151,6 +4152,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <EntitySet Name="PLV_PAN_TCONG" EntityType="Self.PLV_PAN_TCONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="plv_PhieuCongTac" EntityType="Self.plv_PhieuCongTac" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="plv_PhieuCongTac_His" EntityType="Self.plv_PhieuCongTac_His" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="plv_PhieuCongTac_Sign" EntityType="Self.plv_PhieuCongTac_Sign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="plv_PhieuCT_NhanVien" EntityType="Self.plv_PhieuCT_NhanVien" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="plv_SoPhieuHienTai" EntityType="Self.plv_SoPhieuHienTai" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="plv_SoPhieuHienTai_His" EntityType="Self.plv_SoPhieuHienTai_His" Schema="dbo" store:Type="Tables" />
@@ -4258,17 +4260,6 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
     [KTDK_NHOMKTR].[STT] AS [STT], 
     [KTDK_NHOMKTR].[MO_TA] AS [MO_TA]
     FROM [dbo].[KTDK_NHOMKTR] AS [KTDK_NHOMKTR]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="plv_PhieuCongTac_Sign" EntityType="Self.plv_PhieuCongTac_Sign" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [plv_PhieuCongTac_Sign].[Id] AS [Id], 
-    [plv_PhieuCongTac_Sign].[MaPCT] AS [MaPCT], 
-    [plv_PhieuCongTac_Sign].[PhienLamViecID] AS [PhienLamViecID], 
-    [plv_PhieuCongTac_Sign].[Step] AS [Step], 
-    [plv_PhieuCongTac_Sign].[UserSign] AS [UserSign], 
-    [plv_PhieuCongTac_Sign].[DateSign] AS [DateSign], 
-    [plv_PhieuCongTac_Sign].[UrlFileSign] AS [UrlFileSign]
-    FROM [dbo].[plv_PhieuCongTac_Sign] AS [plv_PhieuCongTac_Sign]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="plv_PhieuCT_NhanVien_his" EntityType="Self.plv_PhieuCT_NhanVien_his" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -5714,6 +5705,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
             <Parameter Name="Take" Mode="In" Type="String" />
             <Parameter Name="Duyet" Mode="In" Type="Int32" />
             <Parameter Name="chuyenNPC" Mode="In" Type="Int32" />
+            <Parameter Name="phieuky" Mode="In" Type="Int32" />
             <Parameter Name="role" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_AdvancedSearchPhieuCongTac1" ReturnType="Collection(ECP_V2Model.sp_AdvancedSearchPhieuCongTac1_Result)">
@@ -5728,6 +5720,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
             <Parameter Name="Take" Mode="In" Type="String" />
             <Parameter Name="Duyet" Mode="In" Type="Int32" />
             <Parameter Name="chuyenNPC" Mode="In" Type="Int32" />
+            <Parameter Name="phieuky" Mode="In" Type="Int32" />
             <Parameter Name="role" Mode="In" Type="String" />
             <Parameter Name="LoaiCongViec" Mode="In" Type="String" />
           </FunctionImport>
@@ -5789,6 +5782,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
             <Parameter Name="NgayKT" Mode="In" Type="String" />
             <Parameter Name="Duyet" Mode="In" Type="Int32" />
             <Parameter Name="chuyenNPC" Mode="In" Type="Int32" />
+            <Parameter Name="phieuky" Mode="In" Type="Int32" />
             <Parameter Name="role" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_CountTotalPhieuCongTac1" ReturnType="Collection(Int32)">
@@ -5801,7 +5795,9 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
             <Parameter Name="NgayKT" Mode="In" Type="String" />
             <Parameter Name="Duyet" Mode="In" Type="Int32" />
             <Parameter Name="chuyenNPC" Mode="In" Type="Int32" />
-            <Parameter Name="LoaiCongViec" Mode="In" Type="Int32" />
+            <Parameter Name="phieuky" Mode="In" Type="Int32" />
+            <Parameter Name="role" Mode="In" Type="Int32" />
+            <Parameter Name="LoaiCongViec" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_CountTotalPhieuCongTac_His1" ReturnType="Collection(Int32)">
             <Parameter Name="filter" Mode="In" Type="String" />
@@ -11156,6 +11152,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <NavigationProperty Name="tblComments" Relationship="ECP_V2Model.FK_tblComment_tblPhienLamViec" FromRole="tblPhienLamViec" ToRole="tblComment" />
           <NavigationProperty Name="tblPhienLamViec_TheoDoi" Relationship="ECP_V2Model.FK_tblPhienLamViec_TheoDoi_tblPhienLamViec" FromRole="tblPhienLamViec" ToRole="tblPhienLamViec_TheoDoi" />
           <NavigationProperty Name="tblPhienLamViec_ThuocTinh" Relationship="ECP_V2Model.FK_tblPhienLamViec_ThuocTinh_tblPhienLamViec2" FromRole="tblPhienLamViec" ToRole="tblPhienLamViec_ThuocTinh" />
+          <Property Name="NgayBatDau" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_tblPhienLamViec_plv_TinhChatPhien">
           <End Type="ECP_V2Model.plv_TinhChatPhien" Role="plv_TinhChatPhien" Multiplicity="0..1" />
@@ -11231,7 +11228,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Property Name="DonViId" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="CapDienAp" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="TenThietBi" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="DienBienSuCo" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="DienBienSuCo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TomTat" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="TinhTrangBienBan" Type="Boolean" />
           <Property Name="HinhAnhSuCo" Type="Boolean" />
@@ -11414,11 +11411,6 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
         <EntityType Name="plv_PhieuCongTac_Sign">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="MaPCT" />
-            <PropertyRef Name="PhienLamViecID" />
-            <PropertyRef Name="Step" />
-            <PropertyRef Name="UserSign" />
-            <PropertyRef Name="UrlFileSign" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MaPCT" Type="Int32" Nullable="false" />
@@ -11426,7 +11418,9 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <Property Name="Step" Type="Int32" Nullable="false" />
           <Property Name="UserSign" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DateSign" Type="DateTime" Precision="3" />
-          <Property Name="UrlFileSign" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="UrlFileSign" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="UserSignId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ChucVu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -14827,6 +14821,7 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <EntitySetMapping Name="tblPhienLamViecs">
             <EntityTypeMapping TypeName="ECP_V2Model.tblPhienLamViec">
               <MappingFragment StoreEntitySet="tblPhienLamViec">
+                <ScalarProperty Name="NgayBatDau" ColumnName="NgayBatDau" />
                 <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
                 <ScalarProperty Name="ID_KTGS" ColumnName="ID_KTGS" />
                 <ScalarProperty Name="DieuKienAnToan" ColumnName="DieuKienAnToan" />
@@ -14974,6 +14969,8 @@ warning 6002: The table/view 'ECP_PN_X.dbo.plv_PhieuCT_NhanVien_his' does not ha
           <EntitySetMapping Name="plv_PhieuCongTac_Sign">
             <EntityTypeMapping TypeName="ECP_V2Model.plv_PhieuCongTac_Sign">
               <MappingFragment StoreEntitySet="plv_PhieuCongTac_Sign">
+                <ScalarProperty Name="ChucVu" ColumnName="ChucVu" />
+                <ScalarProperty Name="UserSignId" ColumnName="UserSignId" />
                 <ScalarProperty Name="UrlFileSign" ColumnName="UrlFileSign" />
                 <ScalarProperty Name="DateSign" ColumnName="DateSign" />
                 <ScalarProperty Name="UserSign" ColumnName="UserSign" />

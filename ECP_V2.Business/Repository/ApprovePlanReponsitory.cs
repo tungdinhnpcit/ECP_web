@@ -389,7 +389,7 @@ namespace ECP_V2.Business.Repository
                 sql_cmnd.CommandType = CommandType.StoredProcedure;
                 sql_cmnd.Parameters.AddWithValue("@idphien", SqlDbType.NVarChar).Value = idphien;
                 sql_cmnd.Parameters.AddWithValue("@usersign", SqlDbType.NVarChar).Value = usersign;
-                sql_cmnd.Parameters.AddWithValue("@datesign", SqlDbType.DateTime).Value = datesign;
+                sql_cmnd.Parameters.AddWithValue("@datesign", SqlDbType.NVarChar).Value = datesign;
                 sql_cmnd.Parameters.AddWithValue("@urlfile", SqlDbType.NVarChar).Value = urlfile;
                 sql_cmnd.Parameters.AddWithValue("@loaibb", SqlDbType.Int).Value = loaibb;
 
@@ -397,6 +397,7 @@ namespace ECP_V2.Business.Repository
                 conn.Close();
             }
         }
+
         public byte[] getFileSign(string id, int step)
         {
             byte[] imgSignByUserid = null;
@@ -440,7 +441,6 @@ namespace ECP_V2.Business.Repository
             return dt;
         }
         #endregion
-
         #region 'Hàm lấy urlfile Sign'
         public string GetUrlFileSignBB(string idphien, int loaibb)
         {
@@ -462,14 +462,13 @@ namespace ECP_V2.Business.Repository
                 foreach (var row in dt.AsEnumerable())  // AsEnumerable() returns IEnumerable<DataRow>
                 {
                     urlfile = row.Field<string>("UrlFileSign");
-                    
+
                 }
             }
 
             return urlfile;
         }
         #endregion
-
     }
 
 }

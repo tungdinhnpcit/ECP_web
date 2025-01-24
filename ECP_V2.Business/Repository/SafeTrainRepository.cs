@@ -1,6 +1,7 @@
 ﻿using ECP_V2.Business.UnitOfWork;
 using ECP_V2.Business.ViewModels.HLAT;
 using ECP_V2.Common;
+using ECP_V2.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -12,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -173,6 +175,61 @@ namespace ECP_V2.Business.Repository
 
             return classTrains;
 
+        }
+
+        //Lấy danh sách cty
+        public DataTable getDsPlvDonvi(string madvql, string kieudv)
+        {
+            DataTable dt = new DataTable();
+            if (string.IsNullOrEmpty(madvql)) madvql = "PA";
+            if (string.IsNullOrEmpty(kieudv)) kieudv = "CTY";            
+
+                using (SqlConnection conn = new SqlConnection(Connectstr))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("usp_plv_getdviqly", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@madviqly", madvql));
+                cmd.Parameters.Add(new SqlParameter("@kieudv", kieudv));
+
+                //SqlDataReader dr = cmd.ExecuteReader();
+                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                    {
+                        sda.Fill(dt);
+                    }
+
+                    conn.Close();
+                }
+           
+
+            return dt;
+        }
+
+        public DataTable getDsPlvNvien(string cty, string dluc)
+        {
+            DataTable dt = new DataTable();
+            if (string.IsNullOrEmpty(cty)) cty = "PA";
+            if (string.IsNullOrEmpty(dluc)) dluc = "CTY";
+
+            using (SqlConnection conn = new SqlConnection(Connectstr))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("usp_plv_getnvien_dvid", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@cty", cty));
+                cmd.Parameters.Add(new SqlParameter("@dluc", dluc));
+
+                //SqlDataReader dr = cmd.ExecuteReader();
+                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                {
+                    sda.Fill(dt);
+                }
+
+                conn.Close();
+            }
+
+
+            return dt;
         }
 
         //Lấy danh sách nhân sự bởi ID
@@ -1332,6 +1389,31 @@ namespace ECP_V2.Business.Repository
 
         }
 
+        //Lấy danh sách danh mục cbo
+        public List<GroupEdu> LoadCboWorker()
+        {
+            List<GroupEdu> lstPersional = new List<GroupEdu>();
+            using (SqlConnection conn = new SqlConnection(Connectstr))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("select * from hluat_dm_cdanh", conn);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    GroupEdu a = new GroupEdu();
+                    a.categoryid = rdr["cdanh_id"] == null ? "" : rdr["cdanh_id"].ToString();
+                    a.categorydesc = rdr["cdanh_desc"] == null ? "" : rdr["cdanh_desc"].ToString();
+                   
+                    lstPersional.Add(a);
+                }
+                conn.Close();
+            }
+
+            return lstPersional;
+        }
+
         //Cập nhật thông tin nhân sự
 
         public void UpdateInforHr(string nsid, string bactho, string bacat, string cdanhatd, string nhomatd, string nhomvsld, string nhomhotline)
@@ -1355,86 +1437,6 @@ namespace ECP_V2.Business.Repository
             }
         }
 
-        //Lấy danh sách danh mục cbo
-        public List<GroupEdu> LoadCboWorker()
-        {
-            List<GroupEdu> lstPersional = new List<GroupEdu>();
-            using (SqlConnection conn = new SqlConnection(Connectstr))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("select * from hluat_dm_cdanh", conn);
-                cmd.CommandType = CommandType.Text;
-
-                SqlDataReader rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    GroupEdu a = new GroupEdu();
-                    a.categoryid = rdr["cdanh_id"] == null ? "" : rdr["cdanh_id"].ToString();
-                    a.categorydesc = rdr["cdanh_desc"] == null ? "" : rdr["cdanh_desc"].ToString();
-
-                    lstPersional.Add(a);
-                }
-                conn.Close();
-            }
-
-            return lstPersional;
-        }
-
-        public DataTable getDsPlvNvien(string cty, string dluc)
-        {
-            DataTable dt = new DataTable();
-            if (string.IsNullOrEmpty(cty)) cty = "PA";
-            if (string.IsNullOrEmpty(dluc)) dluc = "CTY";
-
-            using (SqlConnection conn = new SqlConnection(Connectstr))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("usp_plv_getnvien_dvid", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add(new SqlParameter("@cty", cty));
-                cmd.Parameters.Add(new SqlParameter("@dluc", dluc));
-
-                //SqlDataReader dr = cmd.ExecuteReader();
-                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                {
-                    sda.Fill(dt);
-                }
-
-                conn.Close();
-            }
-
-
-            return dt;
-        }
-
-        //Lấy danh sách cty
-        public DataTable getDsPlvDonvi(string madvql, string kieudv)
-        {
-            DataTable dt = new DataTable();
-            if (string.IsNullOrEmpty(madvql)) madvql = "PA";
-            if (string.IsNullOrEmpty(kieudv)) kieudv = "CTY";
-
-            using (SqlConnection conn = new SqlConnection(Connectstr))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("usp_plv_getdviqly", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add(new SqlParameter("@madviqly", madvql));
-                cmd.Parameters.Add(new SqlParameter("@kieudv", kieudv));
-
-                //SqlDataReader dr = cmd.ExecuteReader();
-                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                {
-                    sda.Fill(dt);
-                }
-
-                conn.Close();
-            }
-
-
-            return dt;
-        }
-
         //Cập nhật người kiểm sát
         public void CapNhatNguoiKsoat(string macty, string idnhanvien, string idphien)
         {
@@ -1451,6 +1453,39 @@ namespace ECP_V2.Business.Repository
 
                 conn.Close();
             }
+        }
+
+        //Lấy danh sách đơn vị All
+        public static string getAllDonviNPC(string madvi)
+        {
+            string html = "";
+            var connection = ConfigurationManager.ConnectionStrings["DbNpcContext"].ConnectionString;
+            List<tblDonVi> lstDonvi = new List<tblDonVi>();
+            using (SqlConnection conn = new SqlConnection(connection))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("select * from v_donvi_khac", conn);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    tblDonVi a = new tblDonVi();
+                    a.Id = rdr["Id"] == null ? "" : rdr["Id"].ToString();
+                    a.TenDonVi = rdr["TenDonVi"] == null ? "" : rdr["TenDonVi"].ToString();
+                    a.DviCha = rdr["DviCha"] == null ? "" : rdr["DviCha"].ToString();
+
+                    lstDonvi.Add(a);
+                }
+                conn.Close();
+            }
+
+            foreach (var item in lstDonvi)
+            {
+                html += "<option value=" + item.Id + " " + (item.Id == madvi ? "selected" : "") + " >" + item.TenDonVi.Trim() + "</option>";
+            }
+
+            return html;
         }
 
     }

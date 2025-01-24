@@ -175,6 +175,7 @@
                 //preloader: false,
                 //midClick: true,
                 //removalDelay: 300,
+                mainClass: 'mfp-fullscreen',
                 //mainClass: 'mfp-content',
                 modal: true
             }).click(function () {
@@ -246,10 +247,9 @@
             font-weight: bold;
         }
 
-        .white-popup-block {
-            max-width: 100% !important;
+        .white-popup-block{
+            max-width:100% !important;
         }
-
         .DuyetNPC {
             color: orange;
             font-weight: bold;
@@ -514,50 +514,51 @@
                                                                 </i>
                                                                 @if (comments != null && comments.Count() > 0)
                                                                 {
-                                                        <span>@comments.Count()</span>}
+                                                                    <span>@comments.Count()</span>}
                                                             </a>
                                                             @if (User.IsInRole("Admin"))
                                                             {
-                                                        <a id="Image_@item.Id" href="~/Images/Detail?phienlvid=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a> }
-                                                                                        else
-                                                                                        {
-                                                        <a id="Image_@item.Id" href="~/Admin/PhienLV/DetailHinhAnhPhienLv?PhienLvId=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="Image_@item.Id" href="~/Images/Detail?phienlvid=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a> }
+                                                            else
+                                                            {
+                                                                <a id="Image_@item.Id" href="~/Admin/PhienLV/DetailHinhAnhPhienLv?PhienLvId=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a>}
                                                             @if (User.IsInRole("DuyetViec"))
                                                             {
                                                                 if (item.NguoiDuyet == null && item.TrangThai == 1)
                                                                 {
-                                                        <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
-                                                                                        }
+                                                                    <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
+                                                            }
 
                                                             @if (User.IsInRole("Manager"))
                                                             {
                                                                 if (item.TrangThai == 5)
                                                                 {
-                                                        <a href="#modalAnimGuiLai" id="Duyet_@item.Id" title="Gửi lại cấp trên" class="on-editing cancel-row Duyet"><i class="fa fa-reply" style="font-size:25px;cursor:pointer"></i></a>}
-                                                                                        }
+                                                                    <a href="#modalAnimGuiLai" id="Duyet_@item.Id" title="Gửi lại cấp trên" class="on-editing cancel-row Duyet"><i class="fa fa-reply" style="font-size:25px;cursor:pointer"></i></a>}
+                                                            }
 
                                                             @if (User.IsInRole("DuyetNPC"))
                                                             {
                                                                 if ((item.TrangThai == 2 || item.TrangThai == 3) && (item.IsChuyenNPC == false || item.IsChuyenNPC == null))
                                                                 {
-                                                        <a href="#modalAnimNPC" id="Duyet_@item.Id" title="Duyệt NPC" class="on-editing cancel-row Duyet"><i class="fa fa-forward" style="font-size:25px;cursor:pointer"></i></a>}
-                                                                                        }
+                                                                    <a href="#modalAnimNPC" id="Duyet_@item.Id" title="Duyệt NPC" class="on-editing cancel-row Duyet"><i class="fa fa-forward" style="font-size:25px;cursor:pointer"></i></a>}
+                                                            }
 
                                                             <a href="/UploadImagePhienLV/Index/@item.Id" class="glyphicon glyphicon-upload" style="font-size: 30px;" title="Tải ảnh cho phiên làm việc này"></a>
 
                                                             @if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
                                                             {
-                                                        <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa Phiên Làm Việc" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa Phiên Làm Việc" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>}
 
                                                             @if ((item.TrangThai == 3) && (User.IsInRole("Admin")))
                                                             {
-                                                        <a id="UpdateVuaTao_@item.Id" href="#modalAnimUpdateVuaTao" title="Cập nhật công việc về vừa tạo" class="on-default updateVuaTao"><i class="fa fa-refresh" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="UpdateVuaTao_@item.Id" href="#modalAnimUpdateVuaTao" title="Cập nhật công việc về vừa tạo" class="on-default updateVuaTao"><i class="fa fa-refresh" style="font-size: 25px; cursor: pointer"></i></a>}
 
                                                             @if ((item.TrangThai != 7) && (item.TrangThai != 3) && (User.IsInRole("Admin") || User.IsInRole("Manager")))
                                                             {
-                                                        <a id="ketthuc_@item.Id" href="#modalAnimKetThuc" title="Kết thúc Phiên Làm Việc" class="on-default ketthuc"><i class="fa fa-sign-out" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="ketthuc_@item.Id" href="#modalAnimKetThuc" title="Kết thúc Phiên Làm Việc" class="on-default ketthuc"><i class="fa fa-sign-out" style="font-size: 25px; cursor: pointer"></i></a>}
 
                                                             <a id="Camera_@item.Id" href="#modalAnimCamera" title="Xem Camera" class="on-default camera"><i class="fa fa-" style="font-size: 25px; cursor: pointer"></i></a>
+                                                            <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -917,7 +918,6 @@
                                                                     <a id="CameraAdd_@item.Id" onclick="camera.addCamera(@item.Id)" title="Thêm Camera" class="on-default addcamera"><i class="fa fa-plus" style="font-size: 25px; cursor: pointer"></i></a>
 
                                                                 }
-
                                                                 <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
                                                             </td>
                                                         </tr>
@@ -1111,51 +1111,51 @@
                                                                 </i>
                                                                 @if (comments != null && comments.Count() > 0)
                                                                 {
-                                                        <span>@comments.Count()</span>}
+                                                                    <span>@comments.Count()</span>}
                                                             </a>
                                                             @if (User.IsInRole("Admin"))
                                                             {
-                                                        <a id="Image_@item.Id" href="~/Images/Detail?phienlvid=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a> }
-                                                                                        else
-                                                                                        {
-                                                        <a id="Image_@item.Id" href="~/Admin/PhienLV/DetailHinhAnhPhienLv?PhienLvId=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="Image_@item.Id" href="~/Images/Detail?phienlvid=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a> }
+                                                            else
+                                                            {
+                                                                <a id="Image_@item.Id" href="~/Admin/PhienLV/DetailHinhAnhPhienLv?PhienLvId=@item.Id" target="_blank" title="Hình ảnh phiên làm việc" class="on-default remove-row"><i class="fa fa-picture-o" style="font-size: 25px; cursor: pointer"></i></a>}
                                                             @if (User.IsInRole("DuyetViec"))
                                                             {
                                                                 if (item.NguoiDuyet == null && item.TrangThai == 1)
                                                                 {
-                                                        <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
-                                                                                        }
+                                                                    <a href="#modalAnimDuyet" id="Duyet_@item.Id" title="Duyệt lịch làm việc" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>}
+                                                            }
 
                                                             @if (User.IsInRole("Manager"))
                                                             {
                                                                 if (item.TrangThai == 5)
                                                                 {
-                                                        <a href="#modalAnimGuiLai" id="Duyet_@item.Id" title="Gửi lại cấp trên" class="on-editing cancel-row Duyet"><i class="fa fa-reply" style="font-size:25px;cursor:pointer"></i></a>}
-                                                                                        }
+                                                                    <a href="#modalAnimGuiLai" id="Duyet_@item.Id" title="Gửi lại cấp trên" class="on-editing cancel-row Duyet"><i class="fa fa-reply" style="font-size:25px;cursor:pointer"></i></a>}
+                                                            }
 
                                                             @if (User.IsInRole("DuyetNPC"))
                                                             {
                                                                 if ((item.TrangThai == 2 || item.TrangThai == 3) && (item.IsChuyenNPC == false || item.IsChuyenNPC == null))
                                                                 {
-                                                        <a href="#modalAnimNPC" id="Duyet_@item.Id" title="Duyệt NPC" class="on-editing cancel-row Duyet"><i class="fa fa-forward" style="font-size:25px;cursor:pointer"></i></a>}
-                                                                                        }
+                                                                    <a href="#modalAnimNPC" id="Duyet_@item.Id" title="Duyệt NPC" class="on-editing cancel-row Duyet"><i class="fa fa-forward" style="font-size:25px;cursor:pointer"></i></a>}
+                                                            }
 
                                                             <a href="/UploadImagePhienLV/Index/@item.Id" class="glyphicon glyphicon-upload" style="font-size: 30px;" title="Tải ảnh cho phiên làm việc này"></a>
 
                                                             @if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
                                                             {
-                                                        <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa Phiên Làm Việc" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa Phiên Làm Việc" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>}
 
                                                             @if ((item.TrangThai == 3) && (User.IsInRole("Admin")))
                                                             {
-                                                        <a id="UpdateVuaTao_@item.Id" href="#modalAnimUpdateVuaTao" title="Cập nhật công việc về vừa tạo" class="on-default updateVuaTao"><i class="fa fa-refresh" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="UpdateVuaTao_@item.Id" href="#modalAnimUpdateVuaTao" title="Cập nhật công việc về vừa tạo" class="on-default updateVuaTao"><i class="fa fa-refresh" style="font-size: 25px; cursor: pointer"></i></a>}
 
                                                             @if ((item.TrangThai != 7) && (item.TrangThai != 3) && (User.IsInRole("Admin") || User.IsInRole("Manager")))
                                                             {
-                                                        <a id="ketthuc_@item.Id" href="#modalAnimKetThuc" title="Kết thúc Phiên Làm Việc" class="on-default ketthuc"><i class="fa fa-sign-out" style="font-size: 25px; cursor: pointer"></i></a>}
+                                                                <a id="ketthuc_@item.Id" href="#modalAnimKetThuc" title="Kết thúc Phiên Làm Việc" class="on-default ketthuc"><i class="fa fa-sign-out" style="font-size: 25px; cursor: pointer"></i></a>}
 
-                                                        <a id="camera_@item.Id" href="#modalAnimKetThuc" title="Xem Camera" class="on-default camera"><i class="fa fa-book" style="font-size: 25px; cursor: pointer"></i></a>
-
+                                                            <a id="camera_@item.Id" href="#modalAnimKetThuc" title="Xem Camera" class="on-default camera"><i class="fa fa-book" style="font-size: 25px; cursor: pointer"></i></a>
+                                                            <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
                                                         </td>
                                                     </tr>
                                                 </table>

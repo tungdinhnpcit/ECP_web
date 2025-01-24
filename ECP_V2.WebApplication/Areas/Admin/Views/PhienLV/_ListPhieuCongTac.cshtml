@@ -3,7 +3,7 @@
     int i = 0;
 
     <script type="text/javascript">
-        
+
 
         $(function () {
 
@@ -14,7 +14,7 @@
             //});
 
             //$('.prev').on('click', function (e) {
-            //    e.preventDefault();              
+            //    e.preventDefault();
             //    Paging(1, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val());
             //});
 
@@ -153,6 +153,24 @@
                 IdUpdateVuaTao = $(this).attr("id").split("_")[1];
             });
 
+            ////Modal Add User Kiemsoat
+            $('a.AddUserKs').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in',
+                modal: true
+            }).click(function () {
+                IdUpdateVuaTao = $(this).attr("id").split("_")[1];
+                loaddscty();
+                //loaddsdluc();
+            });
+
             $('a.CapSoPhieuLenh').magnificPopup({
                 type: 'inline',
                 fixedContentPos: false,
@@ -244,7 +262,7 @@
 
                 });
             }
-            
+
             //Nút ký
             //khai bao Popup cho nut them comment
             $('a.SignSoPhieu').magnificPopup({
@@ -259,9 +277,9 @@
                 mainClass: 'my-mfp-zoom-in',
                 modal: true
             }).click(function () {
-                IdSign = $(this).attr("id").split("_")[1];               
+                IdSign = $(this).attr("id").split("_")[1];
                 getBuocKy(IdSign);
-            });            
+            });
 
             $('a.ViewSign').magnificPopup({
                 type: 'inline',
@@ -299,7 +317,7 @@
                 document.getElementById("fileBBKS").value = null;
 
             });
-            
+
             //Phương án thi công
             $('a.KsPATC').magnificPopup({
                 type: 'inline',
@@ -413,7 +431,6 @@
             background-position: 50% 80%;
             background-size: 40px 40px;
         }
-        
     </style>
 
 
@@ -426,7 +443,7 @@
         //var donVi = _dvi_ser.GetById(donviId);
 
         <div class="row" style="margin-top:10px">
-            <input type="hidden" id="buocky"/>
+            <input type="hidden" id="buocky" />
             <div class="col-md-12">
                 <div class="tabs tabs-primary">
                     <ul class="nav nav-tabs">
@@ -843,20 +860,20 @@
                                                                 {
                                                                     <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)" href="#modalAnimCapSoPhieuLenh" title="Cấp số phiếu/lệnh công tác" class="on-default CapSoPhieuLenh"><i class="fa fa-paypal" style="font-size: 25px; cursor: pointer"></i></a>
                                                                     <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)_@(item.MaLP)" href="#modalAnimChonSoPhieu" title="Chọn số phiếu/lệnh công tác" class="on-default ChonSoPhieuLenh"><i class="fa fa-hand-o-up" style="font-size: 25px; cursor: pointer"></i></a>
+
+                                                                }
+                                                                <!--Edit Người kiểm soát ID-->
+                                                                <a id="NguoiKiemSoat_@item.Id" href="#modalAnimAddUserKs" title="Chỉnh sửa Người kiểm soát" class="on-default AddUserKs"><i class="fa fa-plus-circle" style="font-size: 20px;color:red; cursor: pointer"></i></a>
+                                                                <!----Ký số-->
+                                                                <a id="SignSoPhieu_@item.Id" href="#modalAnimKyso" title="Ký số Phiếu/Lệnh" class="on-default SignSoPhieu"><i class="fa fa-pencil" style="font-size: 20px;color:red; cursor: pointer"></i></a>
+                                                                <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
+                                                                @if (User.IsInRole("BBKSPATC"))
+                                                                {
+                                                                    <a id="KsBBKS_@item.Id" href="#modalBBKS" title="Biên bản khảo sát" class="KsBBKS"><i class="fa fa-shirtsinbulk" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
+                                                                    <a id="KsPATC_@item.Id" href="#modalPATC" title="Phương án thi công" class="KsPATC"><i class="fa fa-file-powerpoint-o" style="font-size: 20px;color:red; cursor: pointer"></i></a>
+
                                                                 }
 
-
-                                                                <a id="SignSoPhieu_@item.Id" href="#modalAnimKyso" title="Ký số Phiếu/Lệnh" class="on-default SignSoPhieu"><i class="fa fa-pencil" style="font-size: 20px;color:red; cursor: pointer"></i></a>
-
-
-                                                                <!----Ký số-->
-                                                                <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
-                                                                @*@if (User.IsInRole("BBKSPATC"))
-        {*@
-                                                                <a id="KsBBKS_@item.Id" href="#modalBBKS" title="Biên bản khảo sát" class="KsBBKS"><i class="fa fa-shirtsinbulk" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
-                                                                <a id="KsPATC_@item.Id" href="#modalPATC" title="Phương án thi công" class="KsPATC"><i class="fa fa-file-powerpoint-o" style="font-size: 20px;color:red; cursor: pointer"></i></a>
-
-                                                                @*  }*@
                                                             </td>
                                                         </tr>
                                                     }

@@ -2,14 +2,16 @@
 @{
     Layout = null;
 }
-
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 <link href="/Content/AdminPanel/assets/vendor/jquery-ui/css/jquery-ui-default.css" rel="stylesheet" />
 <style>
     select {
         height: 40px;
         padding: 0;
     }
-     #divUpLoad .fileUpload {
+
+    #divUpLoad .fileUpload {
         position: relative;
         overflow: hidden;
     }
@@ -71,13 +73,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.LoaiThietBi != null)
                 {
-                @Html.DropDownListFor(model => model.MaLoai, (SelectList)ViewBag.LoaiThietBi, "Chọn loại", new { @class = "form-control", @style = "width:100%", @onchange = "LoaiThietBi_OnChange(this)" })
+                    @Html.DropDownListFor(model => model.MaLoai, (SelectList)ViewBag.LoaiThietBi, "Chọn loại", new { @class = "form-control", @style = "width:100%", @onchange = "LoaiThietBi_OnChange(this)" })
                 }
                 else
                 {
-                <select id="MaLoai" name="MaLoai" style="width:100%" onclick="LoaiThietBi_OnChange(this)" class="form-control">
-                    <option value="">Chọn loại</option>
-                </select>
+                    <select id="MaLoai" name="MaLoai" style="width:100%" onclick="LoaiThietBi_OnChange(this)" class="form-control">
+                        <option value="">Chọn loại</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaLoai)
             </div>
@@ -98,13 +100,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.HangSX != null)
                 {
-                @Html.DropDownListFor(model => model.MaHSX, (SelectList)ViewBag.HangSX, "Chọn hãng sản xuất", new { @class = "selectoption" })
+                    @Html.DropDownListFor(model => model.MaHSX, (SelectList)ViewBag.HangSX, "Chọn hãng sản xuất", new { @class = "selectoption" })
                 }
                 else
                 {
-                <select id="MaHSX" name="MaHSX" class="selectoption">
-                    <option value="">Chọn hãng sản xuất</option>
-                </select>
+                    <select id="MaHSX" name="MaHSX" class="selectoption">
+                        <option value="">Chọn hãng sản xuất</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaHSX)
             </div>
@@ -113,13 +115,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.NuocSX != null)
                 {
-                @Html.DropDownListFor(model => model.MaNSX, (SelectList)ViewBag.NuocSX, "Chọn nước sản xuất", new { @class = "selectoption" })
+                    @Html.DropDownListFor(model => model.MaNSX, (SelectList)ViewBag.NuocSX, "Chọn nước sản xuất", new { @class = "selectoption" })
                 }
                 else
                 {
-                <select id="MaNSX" name="MaNSX" class="selectoption">
-                    <option value="">Chọn nước sản xuất</option>
-                </select>
+                    <select id="MaNSX" name="MaNSX" class="selectoption">
+                        <option value="">Chọn nước sản xuất</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaNSX)
             </div>
@@ -153,7 +155,7 @@
                 <label class="control-label" for="inputDefault">Tập thể/ cá nhân quản lý</label>
                 @if (Session["DonViID"].ToString() == "PA")
                 {
-                <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
+                    <select class="form-control" id="cmbPhongBan" onchange="phongban_change(this)"></select>
                 }
                 else
                 {
@@ -164,25 +166,25 @@
 
                         if (phongBan != null)
                         {
-                <select class="form-control" id="PhongBanID" name="PhongBanID">
-                    <option value="@phongBan.Id">@phongBan.TenPhongBan</option>
-                </select>
+                            <select class="form-control" id="PhongBanID" name="PhongBanID">
+                                <option value="@phongBan.Id">@phongBan.TenPhongBan</option>
+                            </select>
                         }
                         else
                         {
-                <select class="form-control" id="PhongBanID" name="PhongBanID"></select>
+                            <select class="form-control" id="PhongBanID" name="PhongBanID"></select>
                         }
                     }
                     else
                     {
-                <select class="form-control" id="PhongBanID" name="PhongBanID">
-                    <option value="">Chọn tập thể/ cá nhân quản lý</option>
-                    @try
-                    {
-                    @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
-                    }
-                    catch { }
-                </select>
+                        <select class="form-control" id="PhongBanID" name="PhongBanID">
+                            <option value="">Chọn tập thể/ cá nhân quản lý</option>
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.PhongBanRepository.GetPhongBanByDonViIDHtml(Session["DonViID"].ToString(), 0))
+                            }
+                            catch { }
+                        </select>
                     }
                 }
             </div>
@@ -212,13 +214,13 @@
                 <div class="clearfix"></div>
                 @if (ViewBag.TrangThaiCCDC != null)
                 {
-                @Html.DropDownListFor(model => model.MaTT, (SelectList)ViewBag.TrangThaiCCDC, new { @class = "selectoption" })
+                    @Html.DropDownListFor(model => model.MaTT, (SelectList)ViewBag.TrangThaiCCDC, new { @class = "selectoption" })
                 }
                 else
                 {
-                <select id="MaTT" name="MaTT" class="selectoption">
-                    <option value="">Chọn trạng thái</option>
-                </select>
+                    <select id="MaTT" name="MaTT" class="selectoption">
+                        <option value="">Chọn trạng thái</option>
+                    </select>
                 }
                 @Html.ValidationMessageFor(model => model.MaTT)
             </div>
@@ -331,13 +333,24 @@
 <script>
     $(function () {
 
-        $("#NgayDuaVaoSuDung").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-        }).data("kendoDatePicker");
+        var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+        $("#NgayDuaVaoSuDung").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(yNgay);
 
-        $("#NgayKiemTra").kendoDatePicker({
-            format: 'dd/MM/yyyy',
-        }).data("kendoDatePicker");
+        var xNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+        $("#NgayKiemTra").datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).val(xNgay);
+
+        //$("#NgayDuaVaoSuDung").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker");
+
+
+        //$("#NgayKiemTra").kendoDatePicker({
+        //    format: 'dd/MM/yyyy',
+        //}).data("kendoDatePicker");
 
         $("#MaLoai").select2();
         $("#MaHSX").select2();

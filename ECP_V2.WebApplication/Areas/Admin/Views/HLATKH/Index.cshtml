@@ -163,9 +163,9 @@
         color: white;
     }
 
-    .modal-header .close {
-        margin-top: -20px;
-    }
+        .modal-header .close {
+            margin-top: -20px;
+        }
 
     table.dataTable tbody tr.selected {
         background-color: #f6e58d !important;
@@ -236,7 +236,7 @@
                 <i class="fa fa-plus"></i> Thêm mới kế hoạch
             </button>
             <div>
-                <input type="hidden" id="ttNut"/>
+                <input type="hidden" id="ttNut" />
             </div>
         </div>
     </div>
@@ -523,8 +523,10 @@
         var tblSelect = $('#tblPersonSelect').DataTable();
         var tblPerson = $('#tblPerson').DataTable();
         var data = tblPerson.rows().data();
-        //let icheck = false;
-        //let xTbl = 0;
+        var dataSelect = tblSelect.rows().data();
+  
+        //Khai báo biến check tồn tại
+        let checkExists = false;
 
         var t = $('#tblOrgAdd').DataTable();
         var dvql = t.row('.selected').data()['madvql'];
@@ -536,29 +538,45 @@
             // If checkbox is checked
             if (this.checked) {
                 var valCheck = $(this).val();
-
                 data.each(function (value, index) {
-                    if (valCheck === value.nsid.toString()) {
-                        if (ccnut > 0 && ttnut == "EDIT") {
-                            let objAdd = {
-                                x: '<input type="checkbox" name="x[]" value="' + value.nsid + '" style="width:20px;text-align:center;"/>',
-                                nsid: value.nsid,
-                                orgid: dvql,
-                                tenkhaisinh: value.tenkhaisinh,
-                                chucdanh: "",
-                                email: "",
-                                kqua: "",
-                                phongban: "",
-                                quequan: null,
-                                sdt: null,
-                                tinhtrang: null
+
+                    dataSelect.each(function (val, ind) {
+                        if (ttnut == "EDIT") {
+                            if (valCheck == val.nsid) {
+                                checkExists = true;
                             }
-                            tblSelect.row.add(objAdd).draw(false);
                         } else {
-                            tblSelect.row.add(['<input type="checkbox" name="x[]" value="' + value.nsid + '" style="width:20px;text-align:center;"/>', value.nsid, dvql, value.tenkhaisinh, ""]).draw(false);
+                            if (valCheck == val[1]) {
+                                checkExists = true;
+                            }
                         }
 
+                    });
+                    if (!checkExists) {
+                        if (valCheck === value.nsid.toString()) {
+                            if (ccnut > 0 && ttnut == "EDIT") {
+                                let objAdd = {
+                                    x: '<input type="checkbox" name="x[]" value="' + value.nsid + '" style="width:20px;text-align:center;"/>',
+                                    nsid: value.nsid,
+                                    orgid: dvql,
+                                    tenkhaisinh: value.tenkhaisinh,
+                                    chucdanh: "",
+                                    email: "",
+                                    kqua: "",
+                                    phongban: "",
+                                    quequan: null,
+                                    sdt: null,
+                                    tinhtrang: null
+                                }
+                                tblSelect.row.add(objAdd).draw(false);
+                            } else {
+                                tblSelect.row.add(['<input type="checkbox" name="x[]" value="' + value.nsid + '" style="width:20px;text-align:center;"/>', value.nsid, dvql, value.tenkhaisinh, ""]).draw(false);
+                            }
+
+                        }
                     }
+
+                    checkExists = false;
                 });
             }
         });

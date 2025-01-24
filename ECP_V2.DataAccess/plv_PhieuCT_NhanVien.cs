@@ -37,6 +37,7 @@ public partial class plv_PhieuCT_NhanVien
     public string BacAnToan { get; set; }
 
 
+
     public virtual plv_PhieuCongTac plv_PhieuCongTac { get; set; }
 
     public virtual tblNhanVien tblNhanVien { get; set; }

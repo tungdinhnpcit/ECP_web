@@ -23,7 +23,7 @@
         }
     })
 }
-
+var obj;
 function LoadNhansu() {
     let donvi = $('#cboDonvi').val();
     if (donvi === null) {
@@ -49,6 +49,34 @@ function LoadNhansu() {
                             .attr('value', value["nsid"]));
                 });
             }
+        },
+        error: function (ex) {
+            alert('Không thể lấy danh sách Nhân sự');
+        }
+    })
+}
+
+function LoadInfoNsById() {
+    let nsid = $('#cboNhansu').val();
+   
+    $.ajax({
+        type: 'POST',
+        url: '/Admin/HLATBC01/LoadNsById',
+        dataType: 'json',
+        data: JSON.stringify({ nsid: nsid }),
+        contentType: "application/json; charset=utf-8",
+        success: function (response) {
+            obj = response[0];
+
+            $('#donvi').text(obj.donvi);
+            $('#hovaten').text(obj.tenkhaisinh);
+            $('#chucvu').text(obj.chucdanh);
+            $('#cccd').text(obj.cccd);
+            $('#namsinh').text(obj.ngaysinh);
+            $('#gioitinh').text(obj.gioitinh);
+            $('#nhomantoan').text(obj.chucdanhatd);
+            $('#chucdanh').text(obj.chucdanhatd);
+            $('#bacat').text(obj.bacat);
         },
         error: function (ex) {
             alert('Không thể lấy danh sách Nhân sự');
@@ -97,8 +125,7 @@ function LoadDsKquaThi() {
                     },
                 });
             }
-            SetValueFake();
-
+            
         },
         error: function (ex) {
             alert('Không thể lấy được danh sách lớp học');
@@ -176,7 +203,7 @@ function LoadKquaBC03() {
         type: 'POST',
         url: '/Admin/HLATBC03/LoadDs03KquaThi',
         dataType: 'json',
-        data: JSON.stringify({ donvi: donvi, nam: nam, loaidaotao:loaidaotao }),
+        data: JSON.stringify({ donvi: donvi, nam: nam, loaidaotao: loaidaotao }),
         contentType: "application/json; charset=utf-8",
         success: function (response) {
             $('#tblKqua03').dataTable().fnClearTable();
@@ -198,27 +225,27 @@ function LoadKquaBC03() {
                     "destroy": true,
                     "data": response,
                     "columns": [{ 'data': 'nsid' },
-                        { 'data': 'cty' },
-                        { 'data': 'donvi' },
-                        { 'data': 'phongban' },
-                        { 'data': 'hoten' },
-                        { 'data': 'ngaysinh' },
-                        { 'data': 'chucdanh' },
-                        { 'data': 'nhom_atd' },
-                        { 'data': 'khoadtao_atd' },
-                        { 'data': 'kqua_lt_atd' },
-                        { 'data': 'kqua_th_atd' },
-                        { 'data': 'ghichu_atd' },
-                        { 'data': 'nhom_vsld' },
-                        { 'data': 'khoadtao_vsld' },
-                        { 'data': 'kqua_lt_vsld' },
-                        { 'data': 'kqua_th_vsld' },
-                        { 'data': 'ghichu_vsld' },
-                        { 'data': 'nhom_hotline' },
-                        { 'data': 'khoadtao_hotline' },
-                        { 'data': 'kqua_lt_hotline' },
-                        { 'data': 'kqua_th_hotline' },
-                        { 'data': 'ghichu_hotline' },
+                    { 'data': 'cty' },
+                    { 'data': 'donvi' },
+                    { 'data': 'phongban' },
+                    { 'data': 'hoten' },
+                    { 'data': 'ngaysinh' },
+                    { 'data': 'chucdanh' },
+                    { 'data': 'nhom_atd' },
+                    { 'data': 'khoadtao_atd' },
+                    { 'data': 'kqua_lt_atd' },
+                    { 'data': 'kqua_th_atd' },
+                    { 'data': 'ghichu_atd' },
+                    { 'data': 'nhom_vsld' },
+                    { 'data': 'khoadtao_vsld' },
+                    { 'data': 'kqua_lt_vsld' },
+                    { 'data': 'kqua_th_vsld' },
+                    { 'data': 'ghichu_vsld' },
+                    { 'data': 'nhom_hotline' },
+                    { 'data': 'khoadtao_hotline' },
+                    { 'data': 'kqua_lt_hotline' },
+                    { 'data': 'kqua_th_hotline' },
+                    { 'data': 'ghichu_hotline' },
                     ],
                     'order': [[0, 'asc']],
                 });

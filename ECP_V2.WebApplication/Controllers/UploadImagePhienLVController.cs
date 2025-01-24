@@ -2,11 +2,16 @@
 using ECP_V2.Common.Helpers;
 using ECP_V2.DataAccess;
 using ECP_V2.WebApplication.Models;
+using Renci.SshNet;
+using Renci.SshNet.Sftp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.PeerToPeer;
 using System.Web;
 using System.Web.Mvc;
 
@@ -21,6 +26,8 @@ namespace ECP_V2.WebApplication.Controllers
         private PhienLVRepository phienLVRepository = new PhienLVRepository();
         private IdentityManager identityManager = new IdentityManager();
 
+        //Biến chung lấy thông tin SFTP
+        private String pathsftp = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"].Replace("/", "");
         private void DisposeAll()
         {
             if (imagesRepository != null)
@@ -172,108 +179,293 @@ namespace ECP_V2.WebApplication.Controllers
                             //var uploadurl = "ftp://103.63.109.191/";
                             //var username = "Administrator";
                             //var password = "xytuqvgXtmw9A8b";
-
+                            string urlfiles = System.Configuration.ConfigurationManager.AppSettings["SFTP_FOLDER"];
                             //string uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/";
                             string username = System.Configuration.ConfigurationManager.AppSettings["FTP_USER"];
                             string password = System.Configuration.ConfigurationManager.AppSettings["FTP_PASS"];
+                            string uploadurl = urlfiles;
 
-                            string uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId;
+                            //if (!FtpDirectoryExists(urlfiles, username, password))
+                            //{
+                            //    CreateFTPDirectory(urlfiles, username, password);
 
-                            #region check and directory
+
+                            //}
+
+                            //string uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId;
                             if (!FtpDirectoryExists(uploadurl, username, password))
                             {
-                                CreateFTPDirectory(uploadurl, username, password);
-                                uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID;
+                                CreateSFTPDirectory(uploadurl, username, password);
+                                uploadurl = urlfiles + "/Files/"; //+ phienLV.DonViId + "/" + phienLV.PhongBanID;
                                 if (!FtpDirectoryExists(uploadurl, username, password))
                                 {
-                                    CreateFTPDirectory(uploadurl, username, password);
-                                    uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
+                                    CreateSFTPDirectory(uploadurl, username, password);
+                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/";// + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
                                     if (!FtpDirectoryExists(uploadurl, username, password))
                                     {
-                                        CreateFTPDirectory(uploadurl, username, password);
-                                        uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                        CreateSFTPDirectory(uploadurl, username, password);
+                                        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/";// + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
                                         if (!FtpDirectoryExists(uploadurl, username, password))
                                         {
-                                            CreateFTPDirectory(uploadurl, username, password);
-                                            uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                            CreateSFTPDirectory(uploadurl, username, password);
+                                            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/";// + phienLV.NgayLamViec.Month;
                                             if (!FtpDirectoryExists(uploadurl, username, password))
                                             {
-                                                CreateFTPDirectory(uploadurl, username, password);
-
+                                                CreateSFTPDirectory(uploadurl, username, password);
+                                                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                                if (!FtpDirectoryExists(uploadurl, username, password))
+                                                {
+                                                    CreateSFTPDirectory(uploadurl, username, password);
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
+                                                
+                                                }
                                             }
                                         }
                                     }
+                                
                                 }
+
                             }
                             else
                             {
-                                uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID;
+                                uploadurl = urlfiles + "/Files/"; //+ phienLV.DonViId + "/" + phienLV.PhongBanID;
                                 if (!FtpDirectoryExists(uploadurl, username, password))
                                 {
-                                    CreateFTPDirectory(uploadurl, username, password);
-                                    uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
+                                    CreateSFTPDirectory(uploadurl, username, password);
+                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/";// + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
                                     if (!FtpDirectoryExists(uploadurl, username, password))
                                     {
-                                        CreateFTPDirectory(uploadurl, username, password);
-                                        uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                        CreateSFTPDirectory(uploadurl, username, password);
+                                        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/";// + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
                                         if (!FtpDirectoryExists(uploadurl, username, password))
                                         {
-                                            CreateFTPDirectory(uploadurl, username, password);
-                                            uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                            CreateSFTPDirectory(uploadurl, username, password);
+                                            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/";// + phienLV.NgayLamViec.Month;
                                             if (!FtpDirectoryExists(uploadurl, username, password))
                                             {
-                                                CreateFTPDirectory(uploadurl, username, password);
+                                                CreateSFTPDirectory(uploadurl, username, password);
+                                                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                                if (!FtpDirectoryExists(uploadurl, username, password))
+                                                {
+                                                    CreateSFTPDirectory(uploadurl, username, password);
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
 
+                                                }
                                             }
                                         }
                                     }
+
                                 }
                                 else
                                 {
-                                    uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
+                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/";// + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
                                     if (!FtpDirectoryExists(uploadurl, username, password))
                                     {
-                                        CreateFTPDirectory(uploadurl, username, password);
-                                        uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                        CreateSFTPDirectory(uploadurl, username, password);
+                                        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/";// + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
                                         if (!FtpDirectoryExists(uploadurl, username, password))
                                         {
-                                            CreateFTPDirectory(uploadurl, username, password);
-                                            uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                            CreateSFTPDirectory(uploadurl, username, password);
+                                            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/";// + phienLV.NgayLamViec.Month;
                                             if (!FtpDirectoryExists(uploadurl, username, password))
                                             {
-                                                CreateFTPDirectory(uploadurl, username, password);
+                                                CreateSFTPDirectory(uploadurl, username, password);
+                                                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                                if (!FtpDirectoryExists(uploadurl, username, password))
+                                                {
+                                                    CreateSFTPDirectory(uploadurl, username, password);
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
 
+                                                }
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                        
+                                        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/";// + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
                                         if (!FtpDirectoryExists(uploadurl, username, password))
                                         {
-                                            CreateFTPDirectory(uploadurl, username, password);
-                                            uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                            CreateSFTPDirectory(uploadurl, username, password);
+                                            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/";// + phienLV.NgayLamViec.Month;
                                             if (!FtpDirectoryExists(uploadurl, username, password))
                                             {
-                                                CreateFTPDirectory(uploadurl, username, password);
+                                                CreateSFTPDirectory(uploadurl, username, password);
+                                                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                                if (!FtpDirectoryExists(uploadurl, username, password))
+                                                {
+                                                    CreateSFTPDirectory(uploadurl, username, password);
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
 
+                                                }
                                             }
                                         }
                                         else
                                         {
-                                            uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/";// + phienLV.NgayLamViec.Month;
                                             if (!FtpDirectoryExists(uploadurl, username, password))
                                             {
-                                                CreateFTPDirectory(uploadurl, username, password);
+                                                CreateSFTPDirectory(uploadurl, username, password);
+                                                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                                if (!FtpDirectoryExists(uploadurl, username, password))
+                                                {
+                                                    CreateSFTPDirectory(uploadurl, username, password);
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
 
+                                                }
+                                            }
+                                            else
+                                            {
+                                                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                                if (!FtpDirectoryExists(uploadurl, username, password))
+                                                {
+                                                    CreateSFTPDirectory(uploadurl, username, password);
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                                    if (!FtpDirectoryExists(uploadurl, username, password))
+                                                    {
+                                                        CreateSFTPDirectory(uploadurl, username, password);
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                            #endregion
 
-                            string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
+                                #region check and directory
+                                //if (!FtpDirectoryExists(uploadurl, username, password))
+                                //{
+                                //    CreateSFTPDirectory(uploadurl, username, password);
+                                //    //CreateFTPDirectory(uploadurl, username, password);
+                                //    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID;
+                                //    if (!FtpDirectoryExists(uploadurl, username, password))
+                                //    {
+                                //        CreateSFTPDirectory(uploadurl, username, password);
+                                //        //CreateFTPDirectory(uploadurl, username, password);
+                                //        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
+                                //        if (!FtpDirectoryExists(uploadurl, username, password))
+                                //        {
+                                //            CreateSFTPDirectory(uploadurl, username, password);
+                                //            //CreateFTPDirectory(uploadurl, username, password);
+                                //            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                //            if (!FtpDirectoryExists(uploadurl, username, password))
+                                //            {
+                                //                CreateSFTPDirectory(uploadurl, username, password);
+                                //                //CreateFTPDirectory(uploadurl, username, password);
+                                //                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                //                if (!FtpDirectoryExists(uploadurl, username, password))
+                                //                {
+                                //                    //CreateFTPDirectory(uploadurl, username, password);
+                                //                    CreateSFTPDirectory(uploadurl, username, password);
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID;
+                                //    if (!FtpDirectoryExists(uploadurl, username, password))
+                                //    {
+                                //        CreateSFTPDirectory(uploadurl, username, password);
+                                //        //CreateFTPDirectory(uploadurl, username, password);
+                                //        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
+                                //        if (!FtpDirectoryExists(uploadurl, username, password))
+                                //        {
+                                //            CreateSFTPDirectory(uploadurl, username, password);
+                                //            //CreateFTPDirectory(uploadurl, username, password);
+                                //            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                //            if (!FtpDirectoryExists(uploadurl, username, password))
+                                //            {
+                                //                CreateSFTPDirectory(uploadurl, username, password);
+                                //                // CreateFTPDirectory(uploadurl, username, password);
+                                //                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                //                if (!FtpDirectoryExists(uploadurl, username, password))
+                                //                {
+                                //                    //CreateFTPDirectory(uploadurl, username, password);
+                                //                    CreateSFTPDirectory(uploadurl, username, password);
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year;
+                                //        if (!FtpDirectoryExists(uploadurl, username, password))
+                                //        {
+                                //            CreateSFTPDirectory(uploadurl, username, password);
+                                //            //CreateFTPDirectory(uploadurl, username, password);
+                                //            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                //            if (!FtpDirectoryExists(uploadurl, username, password))
+                                //            {
+                                //                CreateSFTPDirectory(uploadurl, username, password);
+                                //                //CreateFTPDirectory(uploadurl, username, password);
+                                //                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                //                if (!FtpDirectoryExists(uploadurl, username, password))
+                                //                {
+                                //                    //CreateFTPDirectory(uploadurl, username, password);
+                                //                    CreateSFTPDirectory(uploadurl, username, password);
+                                //                }
+                                //            }
+                                //        }
+                                //        else
+                                //        {
+                                //            uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month;
+                                //            if (!FtpDirectoryExists(uploadurl, username, password))
+                                //            {
+                                //                CreateSFTPDirectory(uploadurl, username, password);
+                                //                //CreateFTPDirectory(uploadurl, username, password);
+                                //                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                //                if (!FtpDirectoryExists(uploadurl, username, password))
+                                //                {
+                                //                    //CreateFTPDirectory(uploadurl, username, password);
+                                //                    CreateSFTPDirectory(uploadurl, username, password);
+                                //                }
+                                //            }
+                                //            else
+                                //            {
+                                //                uploadurl = urlfiles + "/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day;
+                                //                if (!FtpDirectoryExists(uploadurl, username, password))
+                                //                {
+                                //                    //CreateFTPDirectory(uploadurl, username, password);
+                                //                    CreateSFTPDirectory(uploadurl, username, password);
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                #endregion
+
+                                string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
 
                             var uploadfilename = DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
                             Stream streamObj = file.InputStream;
@@ -282,14 +474,16 @@ namespace ECP_V2.WebApplication.Controllers
                             streamObj.Close();
                             streamObj = null;
                             string ftpurl = String.Format("{0}/{1}", uploadurl, uploadfilename);
-                            var requestObj = FtpWebRequest.Create(ftpurl) as FtpWebRequest;
-                            requestObj.Method = WebRequestMethods.Ftp.UploadFile;
-                            requestObj.Credentials = new NetworkCredential(username, password);
-                            Stream requestStream = requestObj.GetRequestStream();
-                            requestStream.Write(buffer, 0, buffer.Length);
-                            requestStream.Flush();
-                            requestStream.Close();
-                            requestObj = null;
+                            //var requestObj = FtpWebRequest.Create(ftpurl) as FtpWebRequest;
+                            //requestObj.Method = WebRequestMethods.Ftp.UploadFile;
+                            //requestObj.Credentials = new NetworkCredential(username, password);
+                            //Stream requestStream = requestObj.GetRequestStream();
+                            //requestStream.Write(buffer, 0, buffer.Length);
+                            //requestStream.Flush();
+                            //requestStream.Close();
+                            //requestObj = null;
+
+                            UploadSFTPFile(buffer, ftpurl, username, password);
 
                             //var databaseName = imagesRepository.Context.Database.Connection.Database;
                             //string path = Server.MapPath("~/Files/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/");
@@ -338,20 +532,102 @@ namespace ECP_V2.WebApplication.Controllers
 
         public bool FtpDirectoryExists(string directoryPath, string ftpUser, string ftpPassword)
         {
-            bool IsExists = true;
+            bool IsExists = false;
+            var client = new SftpClient(pathsftp, 22, ftpUser, ftpPassword);
+            client.Connect();
+            if (client.Exists(directoryPath))
+            {
+                SftpFileAttributes attrs = client.GetAttributes(directoryPath);
+                if (attrs.IsDirectory)
+                {
+                    IsExists = true;
+                    //throw new Exception("not directory");
+                }
+            }
+            
+            //var uploadFile = @"D:\\yourfilegoeshere.txt";
+            //using (var client = new SftpClient(directoryPath.Replace("/PNGV00",""), 22, ftpUser, ftpPassword))
+            //{
+            //    client.Connect();
+
+            //    client.CreateDirectory(ftpUser);
+
+            //    if (client.IsConnected)
+            //    {
+            //        Debug.WriteLine("I'm connected to the client");
+
+            //        using (var fileStream = new FileStream(uploadFile, FileMode.Open))
+            //        {
+
+            //            client.BufferSize = 4 * 1024; // bypass Payload error large files
+            //            client.UploadFile(fileStream, Path.GetFileName(uploadFile));
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Debug.WriteLine("I couldn't connect");
+            //    }
+            //}
+            return IsExists;
+            //try
+            //{
+
+            //    //FtpWebRequest request = (FtpWebRequest)WebRequest.Create(directoryPath);
+            //    //request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
+            //    //request.Method = WebRequestMethods.Ftp.ListDirectory;
+
+            //    //FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            //}
+            //catch (WebException ex)
+            //{
+            //    IsExists = false;
+            //}
+            //return IsExists;
+        }
+
+        //Admin create procedure UploadFile
+        private bool UploadSFTPFile(Byte[] byteArray, string ftpurl, string ftpUser, string ftpPassword)
+        {
+            bool IsUpload = true;
+            var client = new SftpClient(pathsftp, 22, ftpUser, ftpPassword);
+            client.Connect();
+            if (client.IsConnected)
+            {
+
+                var stream = new MemoryStream();
+                stream.Write(byteArray, 0, byteArray.Length);
+                stream.Position = 0;
+                client.BufferSize = 4 * 1024; // bypass Payload error large files
+                client.UploadFile(stream, ftpurl, true);
+
+            }
+            return IsUpload;
+        }
+
+        private bool CreateSFTPDirectory(string directory, string ftpUser, string ftpPassword)
+        {
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(directoryPath);
-                request.Credentials = new NetworkCredential(ftpUser, ftpPassword);
-                request.Method = WebRequestMethods.Ftp.ListDirectory;
+                var client = new SftpClient(pathsftp, 22, ftpUser, ftpPassword);
+                client.Connect();
+                client.CreateDirectory(directory);
 
-                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+                return true;
             }
             catch (WebException ex)
             {
-                IsExists = false;
+                FtpWebResponse response = (FtpWebResponse)ex.Response;
+                if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                {
+                    response.Close();
+                    return true;
+                }
+                else
+                {
+                    response.Close();
+                    return false;
+                }
             }
-            return IsExists;
         }
 
         private bool CreateFTPDirectory(string directory, string ftpUser, string ftpPassword)
@@ -410,10 +686,14 @@ namespace ECP_V2.WebApplication.Controllers
                     //    fileInfo.Delete();
                     //}
 
-                    if (checkFileExists(GetRequest(System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + url, username, password)))
-                    {
-                        DeleteFileOnFtpServer(new Uri(System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + url), username, password);
-                    }
+                    //if (checkFileExists(GetRequest(System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + url, username, password)))
+                    //{
+                    //    DeleteFileOnFtpServer(new Uri(System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + url), username, password);
+                    //}
+
+
+                    //Xoá file theo SFTP
+                    DeleteFileOnSFTPServer(url, username, password);
 
                     imagesRepository.Delete(imgId, ref strError);
 
@@ -450,6 +730,27 @@ namespace ECP_V2.WebApplication.Controllers
                 FtpWebResponse response = (FtpWebResponse)request.GetResponse();
                 //Console.WriteLine("Delete status: {0}", response.StatusDescription);
                 response.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteFileOnSFTPServer(string sftpPath, string ftpUsr, string ftpPwd)
+        {
+            try
+            {
+
+                var sftpClient = new SftpClient(pathsftp, 22, ftpUsr, ftpPwd);
+                sftpClient.Connect();
+                if (sftpClient.IsConnected)
+                {
+                    sftpClient.DeleteFile(sftpPath);
+                    sftpClient.Disconnect();
+                }
+
                 return true;
             }
             catch (Exception ex)
