@@ -1006,25 +1006,30 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     string urlImg = "";
 
                     string path = Server.MapPath("~/Images/UserImagesProfile/" + User.Identity.Name);
-
-                    if (!(Directory.Exists(path)))
+                    string Kieu = System.IO.Path.GetExtension(file.FileName);
+                    if (FilesHelper.ExtenFile(Kieu))
                     {
-                        Directory.CreateDirectory(path);
+
+
+                        if (!(Directory.Exists(path)))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            urlImg = @"/Images/UserImagesProfile/" + User.Identity.Name + "/" + Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName);
+
+                            file.SaveAs(Path.Combine(path, Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName)));
+                        }
+
+                        model.UrlImage = urlImg;
+                        _kh_ser.Update(model, ref strError);
+
+                        DisposeAll();
+
+                        return Json(new { success = true, responseText = urlImg }, JsonRequestBehavior.AllowGet);
                     }
-
-                    if (file != null && file.ContentLength > 0)
-                    {
-                        urlImg = @"/Images/UserImagesProfile/" + User.Identity.Name + "/" + Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName);
-
-                        file.SaveAs(Path.Combine(path, Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName)));
-                    }
-
-                    model.UrlImage = urlImg;
-                    _kh_ser.Update(model, ref strError);
-
-                    DisposeAll();
-
-                    return Json(new { success = true, responseText = urlImg }, JsonRequestBehavior.AllowGet);
                 }
 
                 DisposeAll();

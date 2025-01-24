@@ -81,7 +81,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             CreateDropTinhChat(null);
             CreateDropLoaiTB(null);
             CreateDropNguyenNhan(null);
-            CreateDropLyDoByTinhChat(null, 9999);            
+            CreateDropLyDoByTinhChat(null, 9999);
 
             DisposeAll();
             return View();
@@ -131,7 +131,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         //    return Content(base64);
         //}
 
-       
+
 
         public ActionResult List(int page, int pageSize, string filter, string DateFrom, string DateTo,
             string DonViId, string PhongBanId, string LoaiSuCo, string TinhChat, string LyDo, string NguyenNhan, string TrangThaiNhap,
@@ -429,14 +429,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             if (tc.HasValue)
             {
-                var model = _loaiSuCo_ser.GetListNguyenNhanByTinhChat(tc.Value).Select(x => new {
+                var model = _loaiSuCo_ser.GetListNguyenNhanByTinhChat(tc.Value).Select(x => new
+                {
                     Id = x.Id,
                     Ten = x.TenLoaiSuCo,
                     CapCha = x.CapCha
                 }).ToList();
 
                 return Json(model, JsonRequestBehavior.AllowGet);
-            }           
+            }
             else
             {
                 var model = _loaiSuCo_ser.GetByType(99999).Select(x => new
@@ -810,23 +811,25 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 objtl.Description = ad.FileName;
 
                                 //objtl.Ten = ad.FileName;
-                                //objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
-
-
-                                var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
-                                if (int.Parse(tl.ToString()) != 0)
+                                string Kieu = System.IO.Path.GetExtension(ad.FileName);
+                                if (FilesHelper.ExtenFile(Kieu))
                                 {
-                                    var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
-                                    string path = Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString());
-                                    if (!Directory.Exists(path))
+
+                                    var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
+                                    if (int.Parse(tl.ToString()) != 0)
                                     {
-                                        Directory.CreateDirectory(path);
+                                        var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
+                                        string path = Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString());
+                                        if (!Directory.Exists(path))
+                                        {
+                                            Directory.CreateDirectory(path);
+                                        }
+                                        path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString() + "/"), fileName);
+                                        ad.SaveAs(path);
+                                        var objtlud = _tlieu_SuCo_ser.GetById(tl);
+                                        objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                        _tlieu_SuCo_ser.Update(objtlud, ref strError);
                                     }
-                                    path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString() + "/"), fileName);
-                                    ad.SaveAs(path);
-                                    var objtlud = _tlieu_SuCo_ser.GetById(tl);
-                                    objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                    _tlieu_SuCo_ser.Update(objtlud, ref strError);
                                 }
                             }
                         }
@@ -848,22 +851,25 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                                 //objtl.Ten = ad.FileName;
                                 //objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
-
-
-                                var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
-                                if (int.Parse(tl.ToString()) != 0)
+                                string Kieu = System.IO.Path.GetExtension(ad.FileName);
+                                if (FilesHelper.ExtenFile(Kieu))
                                 {
-                                    var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
-                                    string path = Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString());
-                                    if (!Directory.Exists(path))
+
+                                    var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
+                                    if (int.Parse(tl.ToString()) != 0)
                                     {
-                                        Directory.CreateDirectory(path);
+                                        var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
+                                        string path = Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString());
+                                        if (!Directory.Exists(path))
+                                        {
+                                            Directory.CreateDirectory(path);
+                                        }
+                                        path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString() + "/"), fileName);
+                                        ad.SaveAs(path);
+                                        var objtlud = _tlieu_SuCo_ser.GetById(tl);
+                                        objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                        _tlieu_SuCo_ser.Update(objtlud, ref strError);
                                     }
-                                    path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString() + "/"), fileName);
-                                    ad.SaveAs(path);
-                                    var objtlud = _tlieu_SuCo_ser.GetById(tl);
-                                    objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                    _tlieu_SuCo_ser.Update(objtlud, ref strError);
                                 }
                             }
                         }
@@ -926,12 +932,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Detail(int? id)
         {
-          var selectList2 = new SelectList(
-          new List<SelectListItem>
-          {
+            var selectList2 = new SelectList(
+            new List<SelectListItem>
+            {
                                 new SelectListItem {Text = "Tài sản thuộc điện lực", Value = "true"},
                                 new SelectListItem {Text = "Tài sản thuộc khách hàng", Value = "false"}
-          }, "Value", "Text");
+            }, "Value", "Text");
 
             ViewBag.LstTaiSan = selectList2;
 
@@ -955,7 +961,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 CreateDropTinhChat(obj.TinhChatId);
                 CreateDropNguyenNhan(obj.TinhChatId);
 
-                CreateDropLyDoByTinhChat(obj.LyDoId, int.Parse(obj.LoaiTB==null?"0":obj.LoaiTB));
+                CreateDropLyDoByTinhChat(obj.LyDoId, int.Parse(obj.LoaiTB == null ? "0" : obj.LoaiTB));
 
                 CreateDropLoaiTB(obj.LoaiTB);
                 CreateDropHanhLang(obj.HanhLangId);
@@ -1089,9 +1095,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             {
 
                 var obj = _SuCo_ser.GetById(id);
-                int x =0;
-                if(obj.LoaiTB != null)
-                {                 
+                int x = 0;
+                if (obj.LoaiTB != null)
+                {
                     x = int.Parse(obj.LoaiTB);
                 }
                 CreateDropLoaiSuCo(obj.LoaiSuCoId);
@@ -1216,261 +1222,224 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 //if (ModelState.IsValid)
                 //{
-                    System.TimeSpan timeDiff = new TimeSpan();
+                System.TimeSpan timeDiff = new TimeSpan();
 
-                    var obj = _SuCo_ser.GetById(model.Id);
+                var obj = _SuCo_ser.GetById(model.Id);
 
-                    CreateDropLoaiSuCo(obj.LoaiSuCoId);
-                    CreateDropTinhChat(obj.TinhChatId);
-                    CreateDropNguyenNhan(obj.TinhChatId);
-                    CreateDropLyDo(obj.LyDoId);
+                CreateDropLoaiSuCo(obj.LoaiSuCoId);
+                CreateDropTinhChat(obj.TinhChatId);
+                CreateDropNguyenNhan(obj.TinhChatId);
+                CreateDropLyDo(obj.LyDoId);
 
-                    obj.TomTat = model.TomTat;
-                    obj.CapDienAp = model.CapDienAp;
-                    //obj.DonViId = model.DonViId;
-                    obj.TinhTrangBienBan = model.TinhTrangBienBan;
-                    obj.HinhAnhSuCo = model.HinhAnhSuCo;
-                    obj.ThoiTiet = model.ThoiTiet;
-                    obj.GhiChu = model.GhiChu;
+                obj.TomTat = model.TomTat;
+                obj.CapDienAp = model.CapDienAp;
+                //obj.DonViId = model.DonViId;
+                obj.TinhTrangBienBan = model.TinhTrangBienBan;
+                obj.HinhAnhSuCo = model.HinhAnhSuCo;
+                obj.ThoiTiet = model.ThoiTiet;
+                obj.GhiChu = model.GhiChu;
 
-                    IFormatProvider culture = new System.Globalization.CultureInfo("vi-VN", true);
-                    //DateTime dt1 = DateTime.Parse(model.ThoiGianXuatHien, culture, DateTimeStyles.None);
-                    //DateTime tgianXuatHien = null;
-                    if (model.ThoiGianXuatHien != null)
-                    {
-                        DateTime gioBd = MyString2Timespan(model.GioXuatHien.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
-                        DateTime tgianXuatHien = new DateTime(model.ThoiGianXuatHien.Value.Year, model.ThoiGianXuatHien.Value.Month, model.ThoiGianXuatHien.Value.Day, gioBd.Hour, gioBd.Minute, 0);
-                        obj.ThoiGianXuatHien = tgianXuatHien;
-                    }
+                IFormatProvider culture = new System.Globalization.CultureInfo("vi-VN", true);
+                //DateTime dt1 = DateTime.Parse(model.ThoiGianXuatHien, culture, DateTimeStyles.None);
+                //DateTime tgianXuatHien = null;
+                if (model.ThoiGianXuatHien != null)
+                {
+                    DateTime gioBd = MyString2Timespan(model.GioXuatHien.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
+                    DateTime tgianXuatHien = new DateTime(model.ThoiGianXuatHien.Value.Year, model.ThoiGianXuatHien.Value.Month, model.ThoiGianXuatHien.Value.Day, gioBd.Hour, gioBd.Minute, 0);
+                    obj.ThoiGianXuatHien = tgianXuatHien;
+                }
 
-                    if (model.ThoiGianBatDauKhacPhuc != null)
-                    {
-                        DateTime gioBatDauKhacPhuc = MyString2Timespan(model.GioBDKhacPhuc.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
-                        DateTime tgianBatDauKP = new DateTime(model.ThoiGianBatDauKhacPhuc.Value.Year, model.ThoiGianBatDauKhacPhuc.Value.Month, model.ThoiGianBatDauKhacPhuc.Value.Day, gioBatDauKhacPhuc.Hour, gioBatDauKhacPhuc.Minute, 0);
-                        obj.ThoiGianBatDauKhacPhuc = tgianBatDauKP;
-                    }
+                if (model.ThoiGianBatDauKhacPhuc != null)
+                {
+                    DateTime gioBatDauKhacPhuc = MyString2Timespan(model.GioBDKhacPhuc.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
+                    DateTime tgianBatDauKP = new DateTime(model.ThoiGianBatDauKhacPhuc.Value.Year, model.ThoiGianBatDauKhacPhuc.Value.Month, model.ThoiGianBatDauKhacPhuc.Value.Day, gioBatDauKhacPhuc.Hour, gioBatDauKhacPhuc.Minute, 0);
+                    obj.ThoiGianBatDauKhacPhuc = tgianBatDauKP;
+                }
 
-                    if (model.ThoiGianKhacPhucXong != null)
-                    {
-                        DateTime gioKPX = MyString2Timespan(model.GioKhacPhucXong.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
-                        DateTime tgianKPX = new DateTime(model.ThoiGianKhacPhucXong.Value.Year, model.ThoiGianKhacPhucXong.Value.Month, model.ThoiGianKhacPhucXong.Value.Day, gioKPX.Hour, gioKPX.Minute, 0);
-                        obj.ThoiGianKhacPhucXong = tgianKPX;
-                    }
+                if (model.ThoiGianKhacPhucXong != null)
+                {
+                    DateTime gioKPX = MyString2Timespan(model.GioKhacPhucXong.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
+                    DateTime tgianKPX = new DateTime(model.ThoiGianKhacPhucXong.Value.Year, model.ThoiGianKhacPhucXong.Value.Month, model.ThoiGianKhacPhucXong.Value.Day, gioKPX.Hour, gioKPX.Minute, 0);
+                    obj.ThoiGianKhacPhucXong = tgianKPX;
+                }
 
-                    if (model.ThoiGianKhoiPhuc != null)
-                    {
-                        DateTime gioKhoiPhuc = MyString2Timespan(model.GioKhoiPhuc.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
-                        DateTime tgianKhoiPhuc = new DateTime(model.ThoiGianKhoiPhuc.Value.Year, model.ThoiGianKhoiPhuc.Value.Month, model.ThoiGianKhoiPhuc.Value.Day, gioKhoiPhuc.Hour, gioKhoiPhuc.Minute, 0);
-                        obj.ThoiGianKhoiPhuc = tgianKhoiPhuc;
+                if (model.ThoiGianKhoiPhuc != null)
+                {
+                    DateTime gioKhoiPhuc = MyString2Timespan(model.GioKhoiPhuc.ToString().Trim().Split('-', '–')[0].Replace("h", ":").Replace("H", ":").Trim());
+                    DateTime tgianKhoiPhuc = new DateTime(model.ThoiGianKhoiPhuc.Value.Year, model.ThoiGianKhoiPhuc.Value.Month, model.ThoiGianKhoiPhuc.Value.Day, gioKhoiPhuc.Hour, gioKhoiPhuc.Minute, 0);
+                    obj.ThoiGianKhoiPhuc = tgianKhoiPhuc;
 
-                        timeDiff = obj.ThoiGianKhoiPhuc.Value.Subtract(obj.ThoiGianXuatHien.Value);
-                    }
+                    timeDiff = obj.ThoiGianKhoiPhuc.Value.Subtract(obj.ThoiGianXuatHien.Value);
+                }
 
-                    if (timeDiff.TotalMinutes > 5)
-                    {
-                        obj.LoaiSuCoId = 3;
-                    }
+                if (timeDiff.TotalMinutes > 5)
+                {
+                    obj.LoaiSuCoId = 3;
+                }
+                else
+                {
+                    obj.LoaiSuCoId = 2;
+                }
+
+                obj.T_KhacPhucXongDenKhoiPhuc = model.T_KhacPhucXongDenKhoiPhuc;
+                obj.T_BatDauDenKhacPhucXong = model.T_BatDauDenKhacPhucXong;
+                obj.T_XuatHienBatDauKhacPhuc = model.T_XuatHienBatDauKhacPhuc;
+
+                obj.MaThietBi = model.MaThietBi;
+                obj.MaTbiSco = model.MaTBSco;
+                obj.MaTbiTdong = model.MaTBTdong;
+                obj.TenThietBi = model.TenThietBi;
+                obj.TenTbiSco = model.TenTBSco;
+                obj.TenTbiTdong = model.TenTBTdong;
+                obj.DienBienSuCo = model.DienBienSuCo;
+                obj.IsGianDoan = model.IsGianDoan;
+
+                //obj.LoaiSuCoId = model.LoaiSuCoId;
+                obj.TinhChatId = model.TinhChatId;
+                obj.NguyenNhanId = model.NguyenNhanId;
+                obj.LyDoId = model.LyDoId;
+                obj.HanhLangId = model.HanhLangId;
+                obj.ThoiTietId = model.ThienTaiId;
+
+                if (model.IsTaiSan != null)
+                    obj.IsTaiSan = model.IsTaiSan;
+                else
+                {
+                    obj.IsTaiSan = true;
+                }
+
+                if (!obj.IsChuyenNPC.GetValueOrDefault())
+                {
+                    if (model.IsMienTru != null)
+                        obj.IsMienTru = model.IsMienTru;
                     else
                     {
-                        obj.LoaiSuCoId = 2;
+                        obj.IsMienTru = true;
                     }
+                }
 
-                    obj.T_KhacPhucXongDenKhoiPhuc = model.T_KhacPhucXongDenKhoiPhuc;
-                    obj.T_BatDauDenKhacPhucXong = model.T_BatDauDenKhacPhucXong;
-                    obj.T_XuatHienBatDauKhacPhuc = model.T_XuatHienBatDauKhacPhuc;
+                if (browsefile != null && browsefile.Length > 0)
+                    obj.TinhTrangBienBan = true;
 
-                    obj.MaThietBi = model.MaThietBi;
-                    obj.MaTbiSco = model.MaTBSco;
-                    obj.MaTbiTdong = model.MaTBTdong;
-                    obj.TenThietBi = model.TenThietBi;
-                    obj.TenTbiSco = model.TenTBSco;
-                    obj.TenTbiTdong = model.TenTBTdong;
-                    obj.DienBienSuCo = model.DienBienSuCo;
-                    obj.IsGianDoan = model.IsGianDoan;
+                if (browsefileHA != null && browsefileHA.Length > 0)
+                    obj.HinhAnhSuCo = true;
 
-                    //obj.LoaiSuCoId = model.LoaiSuCoId;
-                    obj.TinhChatId = model.TinhChatId;
-                    obj.NguyenNhanId = model.NguyenNhanId;
-                    obj.LyDoId = model.LyDoId;
-                    obj.HanhLangId = model.HanhLangId;
-                    obj.ThoiTietId = model.ThienTaiId;
-
-                    if (model.IsTaiSan != null)
-                        obj.IsTaiSan = model.IsTaiSan;
-                    else
+                //Tinh khoang thoi gian
+                if (obj.ThoiGianXuatHien != null)
+                {
+                    if (obj.ThoiGianBatDauKhacPhuc != null)
                     {
-                        obj.IsTaiSan = true;
-                    }
-
-                    if (!obj.IsChuyenNPC.GetValueOrDefault())
-                    {
-                        if (model.IsMienTru != null)
-                            obj.IsMienTru = model.IsMienTru;
-                        else
+                        TimeSpan ts = obj.ThoiGianBatDauKhacPhuc.Value - obj.ThoiGianXuatHien.Value;
+                        if (ts.TotalMinutes < 0)
                         {
-                            obj.IsMienTru = true;
+                            kt = "|" + "Tổng thời gian mất điện không được để âm";
+                            return Json(kt, JsonRequestBehavior.AllowGet);
                         }
-                    }
 
-                    if (browsefile != null && browsefile.Length > 0)
-                        obj.TinhTrangBienBan = true;
+                        obj.T_XuatHienBatDauKhacPhuc = ts.TotalMinutes;
+                        obj.T_TongThoiGianMatDien = ts.TotalMinutes;
 
-                    if (browsefileHA != null && browsefileHA.Length > 0)
-                        obj.HinhAnhSuCo = true;
-
-                    //Tinh khoang thoi gian
-                    if (obj.ThoiGianXuatHien != null)
-                    {
-                        if (obj.ThoiGianBatDauKhacPhuc != null)
+                        if (obj.ThoiGianKhacPhucXong != null)
                         {
-                            TimeSpan ts = obj.ThoiGianBatDauKhacPhuc.Value - obj.ThoiGianXuatHien.Value;
-                            if (ts.TotalMinutes < 0)
+                            TimeSpan ts2 = obj.ThoiGianKhacPhucXong.Value - obj.ThoiGianBatDauKhacPhuc.Value;
+                            if (ts2.TotalMinutes < 0)
                             {
                                 kt = "|" + "Tổng thời gian mất điện không được để âm";
                                 return Json(kt, JsonRequestBehavior.AllowGet);
                             }
+                            obj.T_BatDauDenKhacPhucXong = ts2.TotalMinutes;
+                            obj.T_TongThoiGianMatDien = obj.T_TongThoiGianMatDien + ts2.TotalMinutes;
 
-                            obj.T_XuatHienBatDauKhacPhuc = ts.TotalMinutes;
-                            obj.T_TongThoiGianMatDien = ts.TotalMinutes;
-
-                            if (obj.ThoiGianKhacPhucXong != null)
-                            {
-                                TimeSpan ts2 = obj.ThoiGianKhacPhucXong.Value - obj.ThoiGianBatDauKhacPhuc.Value;
-                                if (ts2.TotalMinutes < 0)
-                                {
-                                    kt = "|" + "Tổng thời gian mất điện không được để âm";
-                                    return Json(kt, JsonRequestBehavior.AllowGet);
-                                }
-                                obj.T_BatDauDenKhacPhucXong = ts2.TotalMinutes;
-                                obj.T_TongThoiGianMatDien = obj.T_TongThoiGianMatDien + ts2.TotalMinutes;
-
-                                if (obj.ThoiGianKhoiPhuc != null)
-                                {
-                                    TimeSpan ts3 = obj.ThoiGianKhoiPhuc.Value - obj.ThoiGianKhacPhucXong.Value;
-                                    obj.T_KhacPhucXongDenKhoiPhuc = ts3.TotalMinutes;
-                                    obj.T_TongThoiGianMatDien = obj.T_TongThoiGianMatDien + ts3.TotalMinutes;
-                                }
-                            }
-                        }
-                        else
-                        {
                             if (obj.ThoiGianKhoiPhuc != null)
                             {
-                                TimeSpan tsX = obj.ThoiGianKhoiPhuc.Value - obj.ThoiGianXuatHien.Value;
-                                //obj.T_KhacPhucXongDenKhoiPhuc = tsX.TotalMinutes;                                
-                                obj.T_TongThoiGianMatDien = tsX.TotalMinutes;
+                                TimeSpan ts3 = obj.ThoiGianKhoiPhuc.Value - obj.ThoiGianKhacPhucXong.Value;
+                                obj.T_KhacPhucXongDenKhoiPhuc = ts3.TotalMinutes;
+                                obj.T_TongThoiGianMatDien = obj.T_TongThoiGianMatDien + ts3.TotalMinutes;
                             }
                         }
-                    }
-
-                    if (obj.T_TongThoiGianMatDien < 0)
-                    {
-                        kt = "|" + "Tổng thời gian mất điện không được để âm";
-                        return Json(kt, JsonRequestBehavior.AllowGet);
-                    }
-                    obj.NgaySua = DateTime.Now;
-                    obj.NguoiSua = User.Identity.Name;
-
-
-                    string strError = "";
-                    object x = _SuCo_ser.Update(obj, ref strError);
-                    if (x == null)
-                    {
                     }
                     else
                     {
-                        //xoa su do don vi
-                        foreach (var item in obj.sc_TaiNanSuCo_DonVi)
+                        if (obj.ThoiGianKhoiPhuc != null)
+                        {
+                            TimeSpan tsX = obj.ThoiGianKhoiPhuc.Value - obj.ThoiGianXuatHien.Value;
+                            //obj.T_KhacPhucXongDenKhoiPhuc = tsX.TotalMinutes;                                
+                            obj.T_TongThoiGianMatDien = tsX.TotalMinutes;
+                        }
+                    }
+                }
+
+                if (obj.T_TongThoiGianMatDien < 0)
+                {
+                    kt = "|" + "Tổng thời gian mất điện không được để âm";
+                    return Json(kt, JsonRequestBehavior.AllowGet);
+                }
+                obj.NgaySua = DateTime.Now;
+                obj.NguoiSua = User.Identity.Name;
+
+
+                string strError = "";
+                object x = _SuCo_ser.Update(obj, ref strError);
+                if (x == null)
+                {
+                }
+                else
+                {
+                    //xoa su do don vi
+                    foreach (var item in obj.sc_TaiNanSuCo_DonVi)
+                    {
+                        try
+                        {
+                            _suco_donvi_ser.Delete(item.Id, ref strError);
+                        }
+                        catch (Exception ex)
+                        { }
+                    }
+                    //su co don vi
+                    var objdv = _dvi_ser.List();
+                    foreach (var item in model.lstDonViSuCoId)
+                    {
+                        if (item != "multiselect-all")
                         {
                             try
                             {
-                                _suco_donvi_ser.Delete(item.Id, ref strError);
+                                sc_TaiNanSuCo_DonVi scdv = new sc_TaiNanSuCo_DonVi();
+                                scdv.SuCoId = obj.Id;
+                                scdv.DonViId = item;
+                                var dv = objdv.FirstOrDefault(o => o.Id == item);
+                                if (dv != null)
+                                    scdv.TenDV = dv.TenDonVi;
+                                _suco_donvi_ser.Create(scdv, ref strError);
                             }
                             catch (Exception ex)
                             { }
                         }
-                        //su co don vi
-                        var objdv = _dvi_ser.List();
-                        foreach (var item in model.lstDonViSuCoId)
+                    }
+
+
+
+                    kt = x.ToString() + "|OK";
+
+                    if (browsefile != null && browsefile.Length > 0 && browsefile[0] != null)
+                    {
+                        string strDel = "";
+                        _tlieu_SuCo_ser.DeleteTaiLieuBySuCoId(x.ToString(), ref strDel);
+                        foreach (HttpPostedFileBase ad in browsefile)
                         {
-                            if (item != "multiselect-all")
+                            if (ad != null)
                             {
-                                try
+                                sc_TaiLieu objtl = new sc_TaiLieu();
+                                objtl.NgayTao = DateTime.Now;
+                                objtl.NguoiTao = User.Identity.Name;
+                                objtl.TypeObj = 1;
+                                objtl.SuCoId = int.Parse(x.ToString());
+                                objtl.Description = ad.FileName;
+
+                                //objtl.Ten = ad.FileName;
+                                //objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
+                                string Kieu = System.IO.Path.GetExtension(ad.FileName);
+                                if (FilesHelper.ExtenFile(Kieu))
                                 {
-                                    sc_TaiNanSuCo_DonVi scdv = new sc_TaiNanSuCo_DonVi();
-                                    scdv.SuCoId = obj.Id;
-                                    scdv.DonViId = item;
-                                    var dv = objdv.FirstOrDefault(o => o.Id == item);
-                                    if (dv != null)
-                                        scdv.TenDV = dv.TenDonVi;
-                                    _suco_donvi_ser.Create(scdv, ref strError);
-                                }
-                                catch (Exception ex)
-                                { }
-                            }
-                        }
-
-
-
-                        kt = x.ToString() + "|OK";
-
-                        if (browsefile != null && browsefile.Length > 0 && browsefile[0] != null)
-                        {
-                            string strDel = "";
-                            _tlieu_SuCo_ser.DeleteTaiLieuBySuCoId(x.ToString(), ref strDel);
-                            foreach (HttpPostedFileBase ad in browsefile)
-                            {
-                                if (ad != null)
-                                {
-                                    sc_TaiLieu objtl = new sc_TaiLieu();
-                                    objtl.NgayTao = DateTime.Now;
-                                    objtl.NguoiTao = User.Identity.Name;
-                                    objtl.TypeObj = 1;
-                                    objtl.SuCoId = int.Parse(x.ToString());
-                                    objtl.Description = ad.FileName;
-
-                                    //objtl.Ten = ad.FileName;
-                                    //objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
-
-
-                                    var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
-                                    if (int.Parse(tl.ToString()) != 0)
-                                    {
-                                        var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
-                                        string path = Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString());
-                                        if (!Directory.Exists(path))
-                                        {
-                                            Directory.CreateDirectory(path);
-                                        }
-                                        path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString() + "/"), fileName);
-                                        ad.SaveAs(path);
-                                        var objtlud = _tlieu_SuCo_ser.GetById(tl);
-                                        objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                        _tlieu_SuCo_ser.Update(objtlud, ref strError);
-                                    }
-                                }
-                            }
-                        }
-
-                        //Upload hinh anh
-                        if (browsefileHA != null && browsefileHA.Length > 0 && browsefileHA[0] != null)
-                        {
-                            string strDel = "";
-                            _tlieu_SuCo_ser.DeleteHinhAnhBySuCoId(x.ToString(), ref strDel);
-
-                            foreach (HttpPostedFileBase ad in browsefileHA)
-                            {
-                                if (ad != null)
-                                {
-                                    sc_TaiLieu objtl = new sc_TaiLieu();
-                                    objtl.NgayTao = DateTime.Now;
-                                    objtl.NguoiTao = User.Identity.Name;
-                                    objtl.TypeObj = 2;
-                                    objtl.SuCoId = int.Parse(x.ToString());
-
-                                    objtl.Description = ad.FileName;
-                                    //objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
-
 
                                     var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
                                     if (int.Parse(tl.ToString()) != 0)
@@ -1491,6 +1460,49 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             }
                         }
                     }
+
+                    //Upload hinh anh
+                    if (browsefileHA != null && browsefileHA.Length > 0 && browsefileHA[0] != null)
+                    {
+                        string strDel = "";
+                        _tlieu_SuCo_ser.DeleteHinhAnhBySuCoId(x.ToString(), ref strDel);
+
+                        foreach (HttpPostedFileBase ad in browsefileHA)
+                        {
+                            if (ad != null)
+                            {
+                                sc_TaiLieu objtl = new sc_TaiLieu();
+                                objtl.NgayTao = DateTime.Now;
+                                objtl.NguoiTao = User.Identity.Name;
+                                objtl.TypeObj = 2;
+                                objtl.SuCoId = int.Parse(x.ToString());
+
+                                objtl.Description = ad.FileName;
+                                //objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
+                                string Kieu = System.IO.Path.GetExtension(ad.FileName);
+                                if (FilesHelper.ExtenFile(Kieu))
+                                {
+
+                                    var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
+                                    if (int.Parse(tl.ToString()) != 0)
+                                    {
+                                        var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
+                                        string path = Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString());
+                                        if (!Directory.Exists(path))
+                                        {
+                                            Directory.CreateDirectory(path);
+                                        }
+                                        path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuSuCo/" + Session["DonViID"].ToString() + "/"), fileName);
+                                        ad.SaveAs(path);
+                                        var objtlud = _tlieu_SuCo_ser.GetById(tl);
+                                        objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                        _tlieu_SuCo_ser.Update(objtlud, ref strError);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 //}
                 //else
@@ -2535,19 +2547,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             objtl.Description = file.FileName;
 
                             var tl = _tailieu_kiennghi_ser.Create(objtl, ref strError);
-                            if (int.Parse(tl.ToString()) != 0)
+                            string Kieu = System.IO.Path.GetExtension(file.FileName);
+                            if (FilesHelper.ExtenFile(Kieu))
                             {
-                                var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(file.FileName);
-                                string path = Server.MapPath("~/DocumentFiles/TaiLieuKienNghi/" + Session["DonViID"].ToString());
-                                if (!Directory.Exists(path))
+                                if (int.Parse(tl.ToString()) != 0)
                                 {
-                                    Directory.CreateDirectory(path);
+                                    var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(file.FileName);
+                                    string path = Server.MapPath("~/DocumentFiles/TaiLieuKienNghi/" + Session["DonViID"].ToString());
+                                    if (!Directory.Exists(path))
+                                    {
+                                        Directory.CreateDirectory(path);
+                                    }
+                                    path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuKienNghi/" + Session["DonViID"].ToString() + "/"), fileName);
+                                    file.SaveAs(path);
+                                    var objtlud = _tailieu_kiennghi_ser.GetById(tl);
+                                    objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                    _tailieu_kiennghi_ser.Update(objtlud, ref strError);
                                 }
-                                path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/TaiLieuKienNghi/" + Session["DonViID"].ToString() + "/"), fileName);
-                                file.SaveAs(path);
-                                var objtlud = _tailieu_kiennghi_ser.GetById(tl);
-                                objtlud.Url = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                _tailieu_kiennghi_ser.Update(objtlud, ref strError);
                             }
 
                         }
@@ -2601,8 +2617,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     item.SLCap6KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "6", "", true, "", "");
                     item.SLCap10KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "10", "", true, "", "");
                     item.SLCap22KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "22", "", true, "", "");
-                    item.SLCap35KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "",  "", "", "", "35", "", true, "", "");
-                    item.SLCap110KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "",  "", "", "", "110", "", true, "", "");
+                    item.SLCap35KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "35", "", true, "", "");
+                    item.SLCap110KV = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "110", "", true, "", "");
 
                     item.XuatHienBatDauKhacPhuc = _SuCo_ser.SumXuatHienBatDauKhacPhuc("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "", "", "");
                     item.BatDauDenKhacPhucXong = _SuCo_ser.SumBatDauDenKhacPhucXong("", DateFrom, DateTo, item.Id.ToString(), "", "", "", "", "", "", "", "", "", "", "");
@@ -2623,7 +2639,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     item.SLHanhLang = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "4", "", "", "", "", "", "", "", true, "", "");
                     item.SLThietBi = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "5", "", "", "", "", "", "", "", true, "", "");
-                    item.SLMayBienAp = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "8", "", "", "","", "", "", "", true, "", "");
+                    item.SLMayBienAp = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "8", "", "", "", "", "", "", "", true, "", "");
                     item.SLDuongDay = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "9", "", "", "", "", "", "", "", true, "", "");
                     item.SLChuaXacDinh = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "10", "", "", "", "", "", "", "", true, "", "");
                     item.SLThienTai = _SuCo_ser.CountListPaging("", DateFrom, DateTo, item.Id.ToString(), "", "", "11", "", "", "", "", "", "", "", true, "", "");

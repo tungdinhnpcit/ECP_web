@@ -232,21 +232,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         objtl.Ten = ad.FileName;
                                         objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                         objtl.MaSo = objs.ID;
-
-                                        var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
-                                        if (int.Parse(tl.ToString()) != 0)
+                                        if (FilesHelper.ExtenFile(objtl.Kieu))
                                         {
-                                            var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
-                                            string path = Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString());
-                                            if (!Directory.Exists(path))
+
+                                            var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                            if (int.Parse(tl.ToString()) != 0)
                                             {
-                                                Directory.CreateDirectory(path);
+                                                var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
+                                                string path = Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString());
+                                                if (!Directory.Exists(path))
+                                                {
+                                                    Directory.CreateDirectory(path);
+                                                }
+                                                path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString() + "/"), fileName);
+                                                ad.SaveAs(path);
+                                                var objtlud = _TaiLieuSo_ser.GetById(tl);
+                                                objtlud.URL = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                                _TaiLieuSo_ser.Update(objtlud, ref strError);
                                             }
-                                            path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString() + "/"), fileName);
-                                            ad.SaveAs(path);
-                                            var objtlud = _TaiLieuSo_ser.GetById(tl);
-                                            objtlud.URL = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                            _TaiLieuSo_ser.Update(objtlud, ref strError);
                                         }
                                     }
                                 }
@@ -711,21 +714,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 objtl.Ten = ad.FileName;
                                 objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                 objtl.MaSo = objs.ID;
-
-                                var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
-                                if (int.Parse(tl.ToString()) != 0)
+                                if (FilesHelper.ExtenFile(objtl.Kieu))
                                 {
-                                    var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
-                                    string path = Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString());
-                                    if (!Directory.Exists(path))
+                                    var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                    if (int.Parse(tl.ToString()) != 0)
                                     {
-                                        Directory.CreateDirectory(path);
+                                        var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
+                                        string path = Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString());
+                                        if (!Directory.Exists(path))
+                                        {
+                                            Directory.CreateDirectory(path);
+                                        }
+                                        path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString() + "/"), fileName);
+                                        ad.SaveAs(path);
+                                        var objtlud = _TaiLieuSo_ser.GetById(tl);
+                                        objtlud.URL = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                        _TaiLieuSo_ser.Update(objtlud, ref strError);
                                     }
-                                    path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString() + "/"), fileName);
-                                    ad.SaveAs(path);
-                                    var objtlud = _TaiLieuSo_ser.GetById(tl);
-                                    objtlud.URL = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                    _TaiLieuSo_ser.Update(objtlud, ref strError);
                                 }
                             }
                         }
@@ -981,21 +986,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     objtl.Ten = ad.FileName;
                                     objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                     objtl.MaSo = objs.ID;
-
-                                    var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
-                                    if (int.Parse(tl.ToString()) != 0)
+                                    if (FilesHelper.ExtenFile(objtl.Kieu))
                                     {
-                                        var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
-                                        string path = Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString());
-                                        if (!Directory.Exists(path))
+                                        var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                        if (int.Parse(tl.ToString()) != 0)
                                         {
-                                            Directory.CreateDirectory(path);
+                                            var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
+                                            string path = Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString());
+                                            if (!Directory.Exists(path))
+                                            {
+                                                Directory.CreateDirectory(path);
+                                            }
+                                            path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString() + "/"), fileName);
+                                            ad.SaveAs(path);
+                                            var objtlud = _TaiLieuSo_ser.GetById(tl);
+                                            objtlud.URL = "/" + Session["DonViID"].ToString() + "/" + fileName;
+                                            _TaiLieuSo_ser.Update(objtlud, ref strError);
                                         }
-                                        path = System.IO.Path.Combine(Server.MapPath("~/DocumentFiles/SoTheoDoiTBNN/" + Session["DonViID"].ToString() + "/"), fileName);
-                                        ad.SaveAs(path);
-                                        var objtlud = _TaiLieuSo_ser.GetById(tl);
-                                        objtlud.URL = "/" + Session["DonViID"].ToString() + "/" + fileName;
-                                        _TaiLieuSo_ser.Update(objtlud, ref strError);
                                     }
                                 }
                             }

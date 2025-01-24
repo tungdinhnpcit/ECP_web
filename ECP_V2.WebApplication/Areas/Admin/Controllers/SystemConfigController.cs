@@ -1,5 +1,6 @@
 ﻿using ECP_V2.Business.Repository;
 using ECP_V2.Common.Helpers;
+using ECP_V2.WebApplication.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -157,46 +158,50 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 string serverPath = Server.MapPath("~/");
                 string pathContainDB = serverPath + "Uncompress/";
                 var databaseName = systemConfigRepository.Context.Database.Connection.Database;
-
-                if (!Directory.Exists(serverPath + "Uncompress/" + databaseName + "/"))
+                string Kieu = System.IO.Path.GetExtension(file.FileName);
+                if (FilesHelper.ExtenFile(Kieu))
                 {
-                    Directory.CreateDirectory(serverPath + "Uncompress/" + databaseName + "/");
-                }
 
-                if (Directory.Exists(pathContainDB))
-                {
-                    var files = Directory.GetFiles(pathContainDB + databaseName, "*", SearchOption.AllDirectories);
-
-                    foreach (var item in files)
+                    if (!Directory.Exists(serverPath + "Uncompress/" + databaseName + "/"))
                     {
-                        if (System.IO.File.Exists(item))
+                        Directory.CreateDirectory(serverPath + "Uncompress/" + databaseName + "/");
+                    }
+
+                    if (Directory.Exists(pathContainDB))
+                    {
+                        var files = Directory.GetFiles(pathContainDB + databaseName, "*", SearchOption.AllDirectories);
+
+                        foreach (var item in files)
                         {
-                            System.IO.File.Delete(item);
+                            if (System.IO.File.Exists(item))
+                            {
+                                System.IO.File.Delete(item);
+                            }
                         }
                     }
-                }
 
-                string path = serverPath + "Uncompress/" + databaseName + "/" + Path.GetFileName(file.FileName);
+                    string path = serverPath + "Uncompress/" + databaseName + "/" + Path.GetFileName(file.FileName);
 
-                file.SaveAs(path);
+                    file.SaveAs(path);
 
-                var uncompress = BackUpRestoreDataBaseHelper.uncompressDirectory(path, serverPath + "Uncompress/" + databaseName + "/");
+                    var uncompress = BackUpRestoreDataBaseHelper.uncompressDirectory(path, serverPath + "Uncompress/" + databaseName + "/");
 
-                if (uncompress)
-                {
-                    if (System.IO.File.Exists(path))
+                    if (uncompress)
                     {
-                        System.IO.File.Delete(path);
-                    }
+                        if (System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Delete(path);
+                        }
 
-                    if (Directory.Exists(serverPath + "Uncompress/"))
-                    {
-                        string fileBak = Directory.GetFiles(serverPath + "Uncompress/" + databaseName + "/", "*", SearchOption.AllDirectories).FirstOrDefault();
-                        var restore = BackUpRestoreDataBaseHelper.Restore3(databaseName, fileBak);
+                        if (Directory.Exists(serverPath + "Uncompress/"))
+                        {
+                            string fileBak = Directory.GetFiles(serverPath + "Uncompress/" + databaseName + "/", "*", SearchOption.AllDirectories).FirstOrDefault();
+                            var restore = BackUpRestoreDataBaseHelper.Restore3(databaseName, fileBak);
 
-                        DisposeAll();
+                            DisposeAll();
 
-                        return Json(restore, JsonRequestBehavior.AllowGet);
+                            return Json(restore, JsonRequestBehavior.AllowGet);
+                        }
                     }
                 }
             }

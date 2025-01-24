@@ -226,42 +226,45 @@ namespace ECP_V2.WebApplication.Controllers
                         string nam = CreateDate.Year.ToString();
                         if (!Directory.Exists(Server.MapPath("~/DocumentFiles/")))
                             Directory.CreateDirectory(Server.MapPath("~/DocumentFiles/"));
-
-                        string fileNameSave = Path.GetFileName(uploadFile.FileName).Replace(Path.GetExtension(uploadFile.FileName), "") + "_" + DateTime.Now.ToString("yyMMddHHmmssfff");
-
-                        string newFileNameDocx = fileNameSave + Path.GetExtension(uploadFile.FileName);
-                        string savePathDocx = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileNameDocx);
-                        string newFileName = fileNameSave + ".pdf";
-                        string savePath = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileName);
-
-                        using (System.IO.Stream s = System.IO.File.Create(savePathDocx))
+                        string Kieu = System.IO.Path.GetExtension(uploadFile.FileName);
+                        if (FilesHelper.ExtenFile(Kieu))
                         {
-                            uploadFile.InputStream.CopyTo(s);
-                            s.Close();
+                            string fileNameSave = Path.GetFileName(uploadFile.FileName).Replace(Path.GetExtension(uploadFile.FileName), "") + "_" + DateTime.Now.ToString("yyMMddHHmmssfff");
+
+                            string newFileNameDocx = fileNameSave + Path.GetExtension(uploadFile.FileName);
+                            string savePathDocx = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileNameDocx);
+                            string newFileName = fileNameSave + ".pdf";
+                            string savePath = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileName);
+
+                            using (System.IO.Stream s = System.IO.File.Create(savePathDocx))
+                            {
+                                uploadFile.InputStream.CopyTo(s);
+                                s.Close();
+                            }
+
+                            //uploadFile.(savePathDocx);
+
+                            Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
+                            var wordDocument = word.Documents.Open(savePathDocx, ReadOnly: true);
+                            wordDocument.ExportAsFixedFormat(savePath, Microsoft.Office.Interop.Word.WdExportFormat.wdExportFormatPDF);
+                            word.Quit(false);
+
+                            tblChiTietBaoCaoCuoiNgay objd = new tblChiTietBaoCaoCuoiNgay();
+                            objd.IdBaoCao = (int)x;
+                            objd.FileName = fileNameSave;
+                            objd.NgayTao = DateTime.Now;
+                            objd.NguoiTao = Session["UserName"].ToString();
+                            objd.FileExt = ".pdf";
+                            objd.UrlFile = "/DocumentFiles/" + newFileName;
+                            object ct = _chitietbaocao_ser.Create(objd, ref strErrorct);
+
+                            //if (System.IO.File.Exists(savePathDocx))
+                            //{
+                            //    System.IO.File.Delete(savePathDocx);
+                            //}
+                            //if (ct != null)
+                            //    uploadFile.SaveAs(savePath);
                         }
-
-                        //uploadFile.(savePathDocx);
-
-                        Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
-                        var wordDocument = word.Documents.Open(savePathDocx, ReadOnly: true);
-                        wordDocument.ExportAsFixedFormat(savePath, Microsoft.Office.Interop.Word.WdExportFormat.wdExportFormatPDF);
-                        word.Quit(false);
-
-                        tblChiTietBaoCaoCuoiNgay objd = new tblChiTietBaoCaoCuoiNgay();
-                        objd.IdBaoCao = (int)x;
-                        objd.FileName = fileNameSave;
-                        objd.NgayTao = DateTime.Now;
-                        objd.NguoiTao = Session["UserName"].ToString();
-                        objd.FileExt = ".pdf";
-                        objd.UrlFile = "/DocumentFiles/" + newFileName;
-                        object ct = _chitietbaocao_ser.Create(objd, ref strErrorct);
-
-                        //if (System.IO.File.Exists(savePathDocx))
-                        //{
-                        //    System.IO.File.Delete(savePathDocx);
-                        //}
-                        //if (ct != null)
-                        //    uploadFile.SaveAs(savePath);
                     }
 
                     DisposeAll();
@@ -485,44 +488,48 @@ namespace ECP_V2.WebApplication.Controllers
                             string nam = CreateDate.Year.ToString();
                             if (!Directory.Exists(Server.MapPath("~/DocumentFiles/")))
                                 Directory.CreateDirectory(Server.MapPath("~/DocumentFiles/"));
-
-                            string fileNameSave = Path.GetFileName(uploadFile.FileName).Replace(Path.GetExtension(uploadFile.FileName), "") + "_" + DateTime.Now.ToString("yyMMddHHmmssfff");
-
-                            string newFileNameDocx = fileNameSave + Path.GetExtension(uploadFile.FileName);
-                            string savePathDocx = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileNameDocx);
-                            string newFileName = fileNameSave + ".pdf";
-                            string savePath = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileName);
-
-                            using (System.IO.Stream s = System.IO.File.Create(savePathDocx))
+                            string Kieu = System.IO.Path.GetExtension(uploadFile.FileName);
+                            if (FilesHelper.ExtenFile(Kieu))
                             {
-                                uploadFile.InputStream.CopyTo(s);
-                                s.Close();
+                                string fileNameSave = Path.GetFileName(uploadFile.FileName).Replace(Path.GetExtension(uploadFile.FileName), "") + "_" + DateTime.Now.ToString("yyMMddHHmmssfff");
+
+                                string newFileNameDocx = fileNameSave + Path.GetExtension(uploadFile.FileName);
+                                string savePathDocx = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileNameDocx);
+                                string newFileName = fileNameSave + ".pdf";
+                                string savePath = Path.Combine(Server.MapPath("~/DocumentFiles/"), newFileName);
+
+                                using (System.IO.Stream s = System.IO.File.Create(savePathDocx))
+                                {
+                                    uploadFile.InputStream.CopyTo(s);
+                                    s.Close();
+                                }
+
+                                //uploadFile.SaveAs(savePathDocx);
+
+                                Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
+                                var wordDocument = word.Documents.Open(savePathDocx, ReadOnly: true);
+                                wordDocument.ExportAsFixedFormat(savePath, Microsoft.Office.Interop.Word.WdExportFormat.wdExportFormatPDF);
+                                word.Quit(false);
+
+                                tblChiTietBaoCaoCuoiNgay objd = new tblChiTietBaoCaoCuoiNgay();
+                                objd.IdBaoCao = (int)x;
+                                objd.FileName = fileNameSave;
+                                objd.NgayTao = DateTime.Now;
+                                objd.NguoiTao = Session["UserName"].ToString();
+                                objd.FileExt = ".pdf";
+                                objd.UrlFile = "/DocumentFiles/" + newFileName;
+                                objd.UrlFile = "/DocumentFiles/" + newFileName;
+                                object ct = _chitietbaocao_ser.Create(objd, ref strErrorct);
+
+                                //if (System.IO.File.Exists(savePathDocx))
+                                //{
+                                //    System.IO.File.Delete(savePathDocx);
+                                //}
+
+                                //if (ct != null)
+                                //    uploadFile.SaveAs(savePath);
                             }
-
-                            //uploadFile.SaveAs(savePathDocx);
-
-                            Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
-                            var wordDocument = word.Documents.Open(savePathDocx, ReadOnly: true);
-                            wordDocument.ExportAsFixedFormat(savePath, Microsoft.Office.Interop.Word.WdExportFormat.wdExportFormatPDF);
-                            word.Quit(false);
-
-                            tblChiTietBaoCaoCuoiNgay objd = new tblChiTietBaoCaoCuoiNgay();
-                            objd.IdBaoCao = (int)x;
-                            objd.FileName = fileNameSave;
-                            objd.NgayTao = DateTime.Now;
-                            objd.NguoiTao = Session["UserName"].ToString();
-                            objd.FileExt = ".pdf";
-                            objd.UrlFile = "/DocumentFiles/" + newFileName;
-                            objd.UrlFile = "/DocumentFiles/" + newFileName;
-                            object ct = _chitietbaocao_ser.Create(objd, ref strErrorct);
-
-                            //if (System.IO.File.Exists(savePathDocx))
-                            //{
-                            //    System.IO.File.Delete(savePathDocx);
-                            //}
-
-                            //if (ct != null)
-                            //    uploadFile.SaveAs(savePath);
+                        
                         }
                     }
 

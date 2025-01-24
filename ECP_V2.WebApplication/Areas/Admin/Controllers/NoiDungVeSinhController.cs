@@ -836,41 +836,52 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     var model = new vs_HinhAnh();
 
-                    var filename = formFile.FileName.Trim('"');
-
-                    var saveFolder = $@"{Url}".Replace(@"/", @"\");
-                    string path = System.Web.Hosting.HostingEnvironment.MapPath("~/") + saveFolder;
-
-                    if (!Directory.Exists(path))
+                    var filename = formFile.FileName.Trim('"'); ;
+                    string fileExtension = System.IO.Path.GetExtension(filename);
+                    if (!FilesHelper.ExtenFile(fileExtension))
                     {
-                        Directory.CreateDirectory(path);
-                    }
-                    //string folder = _hostingEnvironment.WebRootPath + imageFolder;
-                    //var filePath = Path.Combine( @"webroot\upload_vmtailieu", Request.Form["Id"]+"_"+formFile.FileName);
-                    string filePath = Path.Combine(path, filename);
-                    string[] fileNameTemp = renameFile(filePath);
-                    model.Url = Path.Combine(saveFolder, fileNameTemp[1]).Replace(@"\", @"/");
-                    model.CreatedBy = Session["UserId"].ToString();
-                    model.DateCreated = DateTime.Now;
-                    model.NoiDungId = ndId;
-                    model.Type = type;
-                    model.Name = Path.GetFileNameWithoutExtension(fileNameTemp[1]);
-                    model.FileSize = formFile.ContentLength;
-                    model.FileType = Path.GetExtension(fileNameTemp[1]).Remove(0, 1);
-                    model.Status = 1;
-
-
-                    try
-                    {
-                        _hinhanhRepository.Add(model);
-
-                        formFile.SaveAs(fileNameTemp[0]);
 
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        //_logger.LogError(ex.Message);
+
+                        var saveFolder = $@"{Url}".Replace(@"/", @"\");
+                        string path = System.Web.Hosting.HostingEnvironment.MapPath("~/") + saveFolder;
+
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        //string folder = _hostingEnvironment.WebRootPath + imageFolder;
+                        //var filePath = Path.Combine( @"webroot\upload_vmtailieu", Request.Form["Id"]+"_"+formFile.FileName);
+                        string filePath = Path.Combine(path, filename);
+                        string[] fileNameTemp = renameFile(filePath);
+                        model.Url = Path.Combine(saveFolder, fileNameTemp[1]).Replace(@"\", @"/");
+                        model.CreatedBy = Session["UserId"].ToString();
+                        model.DateCreated = DateTime.Now;
+                        model.NoiDungId = ndId;
+                        model.Type = type;
+                        model.Name = Path.GetFileNameWithoutExtension(fileNameTemp[1]);
+                        model.FileSize = formFile.ContentLength;
+                        model.FileType = Path.GetExtension(fileNameTemp[1]).Remove(0, 1);
+                        model.Status = 1;
+
+
+
+
+                        try
+                        {
+                            _hinhanhRepository.Add(model);
+
+                            formFile.SaveAs(fileNameTemp[0]);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            //_logger.LogError(ex.Message);
+                        }
                     }
+
 
                 }
 
@@ -896,7 +907,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             int count = 1;
 
             string fileNameOnly = Path.GetFileNameWithoutExtension(filePath);
-            string extension = Path.GetExtension(filePath);
+
+            // string extension = Path.GetExtension(filePath);
+
+            string extension = "jpg";
             string path = Path.GetDirectoryName(filePath);
             string newFullPath = filePath;
             string tempFileName = fileNameOnly;

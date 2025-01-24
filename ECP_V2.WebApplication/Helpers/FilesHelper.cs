@@ -172,7 +172,20 @@ namespace ECP_V2.WebApplication.Helpers
         }
 
 
+        public static bool ExtenFile(string exten)
+        {
+            //min 8 chars
+            string[] DSFile = { "pdf", "doc", "xls", "xlsx", "docx", "jpg", "jpeg", "png", "tiff", "rar", "zip" };
 
+            if (DSFile.Contains(exten.Replace(".", "")))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         private void UploadPartialFile(string fileName, HttpContextBase requestContext, List<ViewDataUploadFilesResult> statuses)
         {
             var request = requestContext.Request;

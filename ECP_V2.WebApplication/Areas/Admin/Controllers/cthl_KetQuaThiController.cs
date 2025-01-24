@@ -349,6 +349,14 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 var file = files[0];
                 string fileExtension = System.IO.Path.GetExtension(file.FileName);
+                if (!FilesHelper.ExtenFile(fileExtension))
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "File không đúng định dạng"
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
                 var folder = Server.MapPath("~/Content/MauNhapLieu/CTHL/AnhThe/");
 
