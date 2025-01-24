@@ -18,6 +18,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ECP_V2.Common.Helpers;
+using ECP_V2.WebApplication.Helpers;
 
 namespace ECP_V2.WebApplication.Upload
 {
@@ -193,7 +194,7 @@ namespace ECP_V2.WebApplication.Upload
         {
             if (!string.IsNullOrEmpty(UserId))
             {
-                ImageHandler imageHandler = new Common.Helpers.ImageHandler();
+                ECP_V2.Common.Helpers.ImageHandler imageHandler = new ECP_V2.Common.Helpers.ImageHandler();
                 ImagesRepository _imagesRepository = new ImagesRepository();
                 List<tblImage> listIMG = new List<tblImage>();
                 for (int i = 0; i < context.Request.Files.Count; i++)
@@ -217,6 +218,11 @@ namespace ECP_V2.WebApplication.Upload
                         img.NgayCapNhat = DateTime.Now;
                         img.IsDelete = false;
                         string extension = Path.GetExtension(file.FileName).ToLower();
+
+                        if (!FilesHelper.ExtenFile(extension))
+                        {
+                            continue;
+                        }
                         if (extension == ".jpg" || extension == ".jpeg" || extension == ".png")
                         {
                             img.isVideo = 0;

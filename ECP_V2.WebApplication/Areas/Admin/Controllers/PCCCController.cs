@@ -267,6 +267,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                             objtl.MaSo = objs.ID;
 
                                             var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                            if (!FilesHelper.ExtenFile(objtl.Kieu))
+                                            {
+                                                return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                            }
                                             if (int.Parse(tl.ToString()) != 0)
                                             {
                                                 var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
@@ -791,6 +795,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 objtl.MaSo = objs.ID;
 
                                 var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                if (!FilesHelper.ExtenFile(objtl.Kieu))
+                                {
+                                    return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                }
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
                                     var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
@@ -1043,6 +1051,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     objtl.MaSo = objs.ID;
 
                                     var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                    if (!FilesHelper.ExtenFile(objtl.Kieu))
+                                    {
+                                        return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                    }
                                     if (int.Parse(tl.ToString()) != 0)
                                     {
                                         var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);

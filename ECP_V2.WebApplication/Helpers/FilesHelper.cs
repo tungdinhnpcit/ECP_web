@@ -111,6 +111,7 @@ namespace ECP_V2.WebApplication.Helpers
             Directory.CreateDirectory(fullPath);
             // Create new folder for thumbs
             Directory.CreateDirectory(fullPath + "/thumbs/");
+            string[] validExtensions = { ".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".doc", ".docx", ".xls", ".xlsx" };
 
             foreach (String inputTagName in httpRequest.Files)
             {
@@ -118,8 +119,15 @@ namespace ECP_V2.WebApplication.Helpers
                 var headers = httpRequest.Headers;
 
                 var file = httpRequest.Files[inputTagName];
-                System.Diagnostics.Debug.WriteLine(file.FileName);
 
+                System.Diagnostics.Debug.WriteLine(file.FileName);
+                string fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (!validExtensions.Contains(fileExtension))
+                {
+                    // Nếu phần mở rộng không hợp lệ, trả về thông báo lỗi
+                    resultList.Add(new ViewDataUploadFilesResult { name = file.FileName });
+                    continue; // Tiếp tục với tệp khác
+                }
                 if (string.IsNullOrEmpty(headers["X-File-Name"]))
                 {
 
@@ -132,7 +140,21 @@ namespace ECP_V2.WebApplication.Helpers
                 }
             }
         }
+        public static bool ExtenFile(string exten)
+        {
+            //min 8 chars
+            string[] DSFile = { "pdf", "doc", "xls", "xlsx", "docx", "jpg", "jpeg", "png", "tiff", "rar", "zip" };
+            string extension = exten.Replace(".", "").ToLower();
 
+            if (DSFile.Contains(exten.Replace(".", "")))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         private void UploadWholeFile(HttpContextBase requestContext, List<ViewDataUploadFilesResult> statuses)
         {

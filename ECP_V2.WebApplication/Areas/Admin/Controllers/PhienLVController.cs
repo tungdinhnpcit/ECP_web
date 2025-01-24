@@ -2462,12 +2462,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
                                     }
                                 }
-                                else
-                                {
-                                    var data = response;
-                                    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                //else
+                                //{
+                                //    var data = response;
+                                //    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
 
-                                }
+                                //}
                             }
                         }
 
@@ -5047,29 +5047,29 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         var jsonContent = JsonConvert.SerializeObject(requestData);
                                                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                                                        using (HttpClient httpClient = new HttpClient())
-                                                        {
-                                                            var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                                                        //using (HttpClient httpClient = new HttpClient())
+                                                        //{
+                                                        //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                                            var response = await httpClient.PostAsync(Api_Notify, content);
+                                                        //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                                            if (response.IsSuccessStatusCode)
-                                                            {
-                                                                var result = await response.Content.ReadAsStringAsync();
-                                                                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                                        //    if (response.IsSuccessStatusCode)
+                                                        //    {
+                                                        //        var result = await response.Content.ReadAsStringAsync();
+                                                        //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                                                if (!apiResponse.Success)
-                                                                {
-                                                                    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                var data = response;
-                                                                return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        if (!apiResponse.Success)
+                                                        //        {
+                                                        //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        var data = response;
+                                                        //        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
 
-                                                            }
-                                                        }
+                                                        //    }
+                                                        //}
                                                     }
 
                                                     //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -5993,29 +5993,29 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         var jsonContent = JsonConvert.SerializeObject(requestData);
                                                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                                                        using (HttpClient httpClient = new HttpClient())
-                                                        {
-                                                            var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                                                        //using (HttpClient httpClient = new HttpClient())
+                                                        //{
+                                                        //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                                            var response = await httpClient.PostAsync(Api_Notify, content);
+                                                        //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                                            if (response.IsSuccessStatusCode)
-                                                            {
-                                                                var result = await response.Content.ReadAsStringAsync();
-                                                                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                                        //    if (response.IsSuccessStatusCode)
+                                                        //    {
+                                                        //        var result = await response.Content.ReadAsStringAsync();
+                                                        //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                                                if (!apiResponse.Success)
-                                                                {
-                                                                    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                var data = response;
-                                                                return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        if (!apiResponse.Success)
+                                                        //        {
+                                                        //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        var data = response;
+                                                        //        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
 
-                                                            }
-                                                        }
+                                                        //    }
+                                                        //}
                                                     }
 
                                                     //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -6928,29 +6928,29 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         var jsonContent = JsonConvert.SerializeObject(requestData);
                                                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                                                        using (HttpClient httpClient = new HttpClient())
-                                                        {
-                                                            var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                                                        //using (HttpClient httpClient = new HttpClient())
+                                                        //{
+                                                        //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                                            var response = await httpClient.PostAsync(Api_Notify, content);
+                                                        //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                                            if (response.IsSuccessStatusCode)
-                                                            {
-                                                                var result = await response.Content.ReadAsStringAsync();
-                                                                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                                        //    if (response.IsSuccessStatusCode)
+                                                        //    {
+                                                        //        var result = await response.Content.ReadAsStringAsync();
+                                                        //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                                                if (!apiResponse.Success)
-                                                                {
-                                                                    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                var data = response;
-                                                                return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        if (!apiResponse.Success)
+                                                        //        {
+                                                        //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        var data = response;
+                                                        //        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
 
-                                                            }
-                                                        }
+                                                        //    }
+                                                        //}
                                                     }
 
                                                     //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -13818,23 +13818,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                            using (HttpClient httpClient = new HttpClient())
-                            {
-                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                var response = await httpClient.PostAsync(Api_Notify, content);
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                if (response.IsSuccessStatusCode)
-                                {
-                                    var result = await response.Content.ReadAsStringAsync();
-                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                    if (!apiResponse.Success)
-                                    {
-                                        //return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                    }
-                                }
-                            }
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            //return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
                         }
 
                         //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -13930,23 +13930,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     var jsonContent = JsonConvert.SerializeObject(requestData);
                                     var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                                    using (HttpClient httpClient = new HttpClient())
-                                    {
-                                        var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                                    //using (HttpClient httpClient = new HttpClient())
+                                    //{
+                                    //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                        var response = await httpClient.PostAsync(Api_Notify, content);
+                                    //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                        if (response.IsSuccessStatusCode)
-                                        {
-                                            var result = await response.Content.ReadAsStringAsync();
-                                            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                    //    if (response.IsSuccessStatusCode)
+                                    //    {
+                                    //        var result = await response.Content.ReadAsStringAsync();
+                                    //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                            if (!apiResponse.Success)
-                                            {
-                                                //return Json(new { success = false, responseText = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                            }
-                                        }
-                                    }
+                                    //        if (!apiResponse.Success)
+                                    //        {
+                                    //            //return Json(new { success = false, responseText = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                    //        }
+                                    //    }
+                                    //}
                                 }
 
                                 //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -14345,23 +14345,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                            using (HttpClient httpClient = new HttpClient())
-                            {
-                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                var response = await httpClient.PostAsync(Api_Notify, content);
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                if (response.IsSuccessStatusCode)
-                                {
-                                    var result = await response.Content.ReadAsStringAsync();
-                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                    if (!apiResponse.Success)
-                                    {
-                                        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                    }
-                                }
-                            }
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
                         }
 
                         //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -14700,23 +14700,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 var jsonContent = JsonConvert.SerializeObject(requestData);
                                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                                using (HttpClient httpClient = new HttpClient())
-                                {
-                                    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                                //using (HttpClient httpClient = new HttpClient())
+                                //{
+                                //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                    var response = await httpClient.PostAsync(Api_Notify, content);
+                                //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                    if (response.IsSuccessStatusCode)
-                                    {
-                                        var result = await response.Content.ReadAsStringAsync();
-                                        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                //    if (response.IsSuccessStatusCode)
+                                //    {
+                                //        var result = await response.Content.ReadAsStringAsync();
+                                //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                        if (!apiResponse.Success)
-                                        {
-                                            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                        }
-                                    }
-                                }
+                                //        if (!apiResponse.Success)
+                                //        {
+                                //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                //        }
+                                //    }
+                                //}
                             }
 
                             //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -15062,23 +15062,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                            using (HttpClient httpClient = new HttpClient())
-                            {
-                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                var response = await httpClient.PostAsync(Api_Notify, content);
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                if (response.IsSuccessStatusCode)
-                                {
-                                    var result = await response.Content.ReadAsStringAsync();
-                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                    if (!apiResponse.Success)
-                                    {
-                                        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                    }
-                                }
-                            }
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
                         }
 
                         //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
@@ -18860,23 +18860,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                            using (HttpClient httpClient = new HttpClient())
-                            {
-                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
 
-                                var response = await httpClient.PostAsync(Api_Notify, content);
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
 
-                                if (response.IsSuccessStatusCode)
-                                {
-                                    var result = await response.Content.ReadAsStringAsync();
-                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
 
-                                    if (!apiResponse.Success)
-                                    {
-                                        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                                    }
-                                }
-                            }
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
                         }
 
                         //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);

@@ -232,7 +232,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         objtl.Ten = ad.FileName;
                                         objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                         objtl.MaSo = objs.ID;
-
+                                        if (!FilesHelper.ExtenFile(objtl.Kieu))
+                                        {
+                                            return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                        }
                                         var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                         if (int.Parse(tl.ToString()) != 0)
                                         {
@@ -711,7 +714,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 objtl.Ten = ad.FileName;
                                 objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                 objtl.MaSo = objs.ID;
-
+                                if (!FilesHelper.ExtenFile(objtl.Kieu))
+                                {
+                                    return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                }
                                 var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -981,7 +987,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     objtl.Ten = ad.FileName;
                                     objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                     objtl.MaSo = objs.ID;
-
+                                    if (!FilesHelper.ExtenFile(objtl.Kieu))
+                                    {
+                                        return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                    }
                                     var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                     if (int.Parse(tl.ToString()) != 0)
                                     {

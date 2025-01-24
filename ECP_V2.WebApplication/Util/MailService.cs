@@ -62,6 +62,7 @@ namespace ECP_V2.WebApplication.Util
                 {
                     System.IO.Directory.CreateDirectory(sZipFileNameTemp);
                 }
+                string[] validExtensions = { ".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".doc", ".docx", ".xls", ".xlsx" };
 
                 // Process the files and move each into the target folder
                 for (int i = 0; i < files.Count(); i++)
@@ -70,8 +71,15 @@ namespace ECP_V2.WebApplication.Util
                     FileInfo fi2 = new FileInfo(filePath);
                     if (fi2.Exists)
                     {
+
                         try
                         {
+                            string fileExtension = fi2.Extension.ToLower();
+                            if (!validExtensions.Contains(fileExtension))
+                            {
+                                System.Diagnostics.Debug.WriteLine("Invalid file format: " + filePath);
+                                continue; 
+                            }
                             fi2.CopyTo(sZipFileNameTemp + "\\" + fi2.Name, true);
                         }
                         catch
