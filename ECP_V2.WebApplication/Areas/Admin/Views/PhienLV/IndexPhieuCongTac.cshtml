@@ -854,7 +854,7 @@
                     </div>
                     <div class="col-md-2" id="content-denngay">
                         <span>Đến ngày: </span>
-                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc" onchange="end_chage()">
                     </div>
                     <div class="col-md-2">
                         <span> &nbsp; Cắt điện: &nbsp;</span>
@@ -1422,7 +1422,7 @@ chuyenNPC = -1
                 }
             }
             //console.log("filter: " + filter);
-            loading('Đang tải dữ liệu...', 1);
+            //loading('Đang tải dữ liệu...', 1);
             //$("#preloader").unbind("click");
             //$('#preloader').click(function () {
             //    ///unloading();
@@ -1488,12 +1488,10 @@ chuyenNPC = -1
                 mainClass: 'my-mfp-zoom-in',
                 modal: true
             }).click(function () {
-
                 $("#spintTongSoPhieuNhay").val(1);
                 $("#inputLoaiPCT").val($(this).attr("id").split("_")[1]);
 
             });
-
                     unloading();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -1501,6 +1499,7 @@ chuyenNPC = -1
                     alert("Có lỗi, hãy kiểm tra kết nối internet.");
                 }
             });
+            unloading();
         }
 
         function pagelength_change(el) {
@@ -1582,7 +1581,7 @@ chuyenNPC = -1
                     unloading();
                 }
             });
-
+            unloading();
         }
 
         function DetailPhieuCongTac(PhienLvId) {
@@ -1604,7 +1603,7 @@ chuyenNPC = -1
                     unloading();
                 }
             });
-
+            unloading();
         }
 
         function AddComment(PhienLvId) {
@@ -1638,7 +1637,7 @@ chuyenNPC = -1
                     unloading();
                 }
             });
-
+            unloading();
         }
 
         //View biên bản khảo sát và PATC
@@ -2541,10 +2540,9 @@ chuyenNPC = -1
 
         function DuyetModalConfirm() {
 
-            if (IdDuyet != "") {
+            if (IdDuyet != "" ) {
 
                 loading('Đang xử lý...', 1);
-
                 $.ajax({
                     type: "GET",
                     contentType: "application/json; charset=utf-8",
@@ -2557,6 +2555,7 @@ chuyenNPC = -1
                     beforeSend: function () {//alert(id);
                     },
                     success: function (data) {
+
                         unloading();
                         if (data.success) {
 
@@ -2590,11 +2589,20 @@ chuyenNPC = -1
                 });
                 unloading();
             }
+            else {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: "Lỗi trạng thái phiếu làm việc!",
+                    type: 'error'
+                });
+            }
 
             $.magnificPopup.close();
+            unloading();
+
     };
 
-    function HuyDuyetModalConfirm() {
+        function HuyDuyetModalConfirm() {
 
         if (IdDuyet != "") {
 
@@ -2694,12 +2702,14 @@ chuyenNPC = -1
                             text: 'Không thể duyệt Phiếu công tác này',
                             type: 'error'
                         });
+                        unloading();
                     }
 
                 });
             }
 
             $.magnificPopup.close();
+            unloading();
         };
 
         function NPCModalConfirm() {
@@ -2748,10 +2758,9 @@ chuyenNPC = -1
                             type: 'error'
                         });
                     }
-
                 });
             }
-
+            unloading();
             $.magnificPopup.close();
         };
 
@@ -2831,6 +2840,7 @@ chuyenNPC = -1
 
             }
             $.magnificPopup.close();
+            unloading();
 
         }
 
@@ -2910,6 +2920,7 @@ chuyenNPC = -1
 
             }
             $.magnificPopup.close();
+            unloading();
 
         }
 

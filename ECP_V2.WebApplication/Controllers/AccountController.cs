@@ -6,12 +6,15 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System;
+using System.Net;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using System.DirectoryServices.Protocols;
+using System.Net.PeerToPeer;
 
 namespace ECP_V2.WebApplication.Controllers
 {
@@ -23,6 +26,7 @@ namespace ECP_V2.WebApplication.Controllers
         private SystemConfigRepository systemConfigRepository = new SystemConfigRepository();
         private AspNetUserRepository aspNetUserRepository = new AspNetUserRepository();
         private AspNetUserHistoryRepository _aspNetUserHistoryRepository = new AspNetUserHistoryRepository();
+        private DirectoryRequest searchRequest;
 
         public AccountController()
         {
@@ -173,85 +177,144 @@ namespace ECP_V2.WebApplication.Controllers
 
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, change to shouldLockout: true
-                var result = SignInManager.PasswordSignIn(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
-                switch (result)
+
+                #region LoginAD
+                bool bContinue = false;
+                bool bCheckAd = false;
+                string ldapServer = "your-ldap-server";
+                int ldapPort = 389; // Cổng LDAP (389 cho không mã hóa, 636 cho SSL)
+                LdapConnection ldapConnection = new LdapConnection(new LdapDirectoryIdentifier(ldapServer, ldapPort));
+                try
                 {
-                    case SignInStatus.Success:
-                        {
-                            var user2 = await UserManager.FindAsync(model.UserName, model.Password);
-                            if (user2.LockoutEnabled)
+                    ldapConnection.AuthType = AuthType.Basic; // Xác thực cơ bản
+                    ldapConnection.Bind(new NetworkCredential(model.UserName, model.Password)); // Xác thực với thông tin username và password
+                    bContinue = true;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Lỗi kết nối LDAP: " + e.Message);
+                }
+
+                if (bContinue)
+                {
+                    string searchBase = model.UserName.Replace("npc\\", "");
+                    string searchFilter = "sAMAccountname=" + searchBase;
+                    SearchRequest searchRequest = new SearchRequest(
+                searchBase, // Base DN
+                searchFilter, // Bộ lọc tìm kiếm
+                SearchScope.Subtree, // Phạm vi tìm kiếm
+                new string[] { "cn", "mail", "sAMAccountName" });// Các thuộc tính cần lấy
+                };
+
+                // Gửi yêu cầu tìm kiếm
+                SearchResponse searchResponse = (SearchResponse)ldapConnection.SendRequest(searchRequest);
+
+                // Kiểm tra kết quả tìm kiếm
+                if (searchResponse.Entries.Count > 0)
+                {
+                    foreach (SearchResultEntry entry in searchResponse.Entries)
+                    {
+                        Console.WriteLine("Thông tin người dùng:");
+                        Console.WriteLine($"Tên đầy đủ (CN): {entry.Attributes["cn"][0]}");
+                        Console.WriteLine($"Email: {entry.Attributes["mail"][0]}");
+                        Console.WriteLine($"Tên đăng nhập (sAMAccountName): {entry.Attributes["sAMAccountName"][0]}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Không tìm thấy người dùng.");
+                }
+
+                #endregion
+
+                if (bContinue || bCheckAd)
+                {
+                    var result = SignInManager.PasswordSignIn(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+                    switch (result)
+                    {
+                        case SignInStatus.Success:
                             {
-                                ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa, vui lòng liên hệ với Quản trị viên !");
-                                return View(model);
+                                var user2 = await UserManager.FindAsync(model.UserName, model.Password);
+                                if (user2.LockoutEnabled)
+                                {
+                                    ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa, vui lòng liên hệ với Quản trị viên !");
+                                    return View(model);
+                                }
+
+                                //Lấy thông tin mã đơn vị theo user
+                                ECP_V2.Business.Repository.NhanVienRepository _ser_nvien = new Business.Repository.NhanVienRepository();
+                                string strErr = "";
+                                string dviId = _ser_nvien.GetDonViByUser(model.UserName, ref strErr);
+                                Session["DonViID"] = dviId;
+                                var getNhanVien = _ser_nvien.GetByUserName(model.UserName);
+                                Session["UserId"] = "";
+                                Session["PhongBanId"] = 0;
+                                Session["UserName"] = "";
+                                Session["HoTen"] = "";
+                                Session["UrlImage"] = "";
+                                if (getNhanVien != null)
+                                {
+                                    Session["UserId"] = getNhanVien.Id;
+                                    Session["PhongBanId"] = getNhanVien.PhongBanId == null ? 0 : getNhanVien.PhongBanId;
+                                    Session["UserName"] = model.UserName;
+                                    Session["HoTen"] = getNhanVien.TenNhanVien;
+                                    Session["UrlImage"] = !string.IsNullOrEmpty(getNhanVien.UrlImage) ? getNhanVien.UrlImage : "/Content/Customs/icon-user-default.png";
+                                }
+                                Session["drlPageSize"] = WebConfigurationManager.AppSettings["PageSize"].ToString();
+
+                                //if the list exists, add this user to it
+                                //if (HttpRuntime.Cache["LoggedInUsers"] != null)
+                                //{
+                                //    //get the list of logged in users from the cache
+                                //    var loggedInUsers = (Dictionary<string, string>) HttpRuntime.Cache["LoggedInUsers"];
+
+                                //    if (!loggedInUsers.ContainsKey(System.Web.HttpContext.Current.Session.SessionID))
+                                //    {
+                                //        //add this user to the list
+                                //        loggedInUsers.Add(System.Web.HttpContext.Current.Session.SessionID, dviId);
+                                //        //add the list back into the cache
+                                //        HttpRuntime.Cache["LoggedInUsers"] = loggedInUsers;
+                                //    }
+                                //}
+
+                                ////the list does not exist so create it
+                                //else
+                                //{
+                                //    //create a new list
+                                //    var loggedInUsers = new Dictionary<string, string>();
+                                //    //add this user to the list
+                                //    loggedInUsers.Add(System.Web.HttpContext.Current.Session.SessionID, dviId);
+                                //    //add the list into the cache
+                                //    HttpRuntime.Cache["LoggedInUsers"] = loggedInUsers;
+                                //}
+
+                                //ApplicationUser user = UserManager.FindByName(model.UserName);                                               
+                                //var user = await UserManager.FindAsync(model.UserName, model.Password);
+                                //return RedirectToLocal(returnUrl, user);
+
+                                string trangThai = "Đăng Nhập";
+                                string IP = Request.UserHostAddress;
+                                AddAspNetUserHistoryViewModel(model.UserName, trangThai, IP);
+
+                                return RedirectToLocal(returnUrl);
                             }
-
-                            //Lấy thông tin mã đơn vị theo user
-                            ECP_V2.Business.Repository.NhanVienRepository _ser_nvien = new Business.Repository.NhanVienRepository();
-                            string strErr = "";
-                            string dviId = _ser_nvien.GetDonViByUser(model.UserName, ref strErr);
-                            Session["DonViID"] = dviId;
-                            var getNhanVien = _ser_nvien.GetByUserName(model.UserName);
-                            Session["UserId"] = "";
-                            Session["PhongBanId"] = 0;
-                            Session["UserName"] = "";
-                            Session["HoTen"] = "";
-                            Session["UrlImage"] = "";
-                            if (getNhanVien != null)
-                            {
-                                Session["UserId"] = getNhanVien.Id;
-                                Session["PhongBanId"] = getNhanVien.PhongBanId == null ? 0 : getNhanVien.PhongBanId;
-                                Session["UserName"] = model.UserName;
-                                Session["HoTen"] = getNhanVien.TenNhanVien;
-                                Session["UrlImage"] = !string.IsNullOrEmpty(getNhanVien.UrlImage) ? getNhanVien.UrlImage : "/Content/Customs/icon-user-default.png";
-                            }
-                            Session["drlPageSize"] = WebConfigurationManager.AppSettings["PageSize"].ToString();
-
-                            //if the list exists, add this user to it
-                            //if (HttpRuntime.Cache["LoggedInUsers"] != null)
-                            //{
-                            //    //get the list of logged in users from the cache
-                            //    var loggedInUsers = (Dictionary<string, string>) HttpRuntime.Cache["LoggedInUsers"];
-
-                            //    if (!loggedInUsers.ContainsKey(System.Web.HttpContext.Current.Session.SessionID))
-                            //    {
-                            //        //add this user to the list
-                            //        loggedInUsers.Add(System.Web.HttpContext.Current.Session.SessionID, dviId);
-                            //        //add the list back into the cache
-                            //        HttpRuntime.Cache["LoggedInUsers"] = loggedInUsers;
-                            //    }
-                            //}
-
-                            ////the list does not exist so create it
-                            //else
-                            //{
-                            //    //create a new list
-                            //    var loggedInUsers = new Dictionary<string, string>();
-                            //    //add this user to the list
-                            //    loggedInUsers.Add(System.Web.HttpContext.Current.Session.SessionID, dviId);
-                            //    //add the list into the cache
-                            //    HttpRuntime.Cache["LoggedInUsers"] = loggedInUsers;
-                            //}
-
-                            //ApplicationUser user = UserManager.FindByName(model.UserName);                                               
-                            //var user = await UserManager.FindAsync(model.UserName, model.Password);
-                            //return RedirectToLocal(returnUrl, user);
-
-                            string trangThai = "Đăng Nhập";
-                            string IP = Request.UserHostAddress;
-                            AddAspNetUserHistoryViewModel(model.UserName, trangThai, IP);
-
-                            return RedirectToLocal(returnUrl);
-                        }
-                    case SignInStatus.LockedOut:
-                        ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa, vui lòng liên hệ với Quản trị viên !");
-                        return View(model);
-                    case SignInStatus.RequiresVerification:
-                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                    case SignInStatus.Failure:
-                    default:
-                        ModelState.AddModelError("", "Sai tên đăng nhập hoặc mật khẩu.");
-                        //return RedirectToAction("Index", "Home", new { area = "", error = true });
-                        return View(model);
+                        case SignInStatus.LockedOut:
+                            ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa, vui lòng liên hệ với Quản trị viên !");
+                            return View(model);
+                        case SignInStatus.RequiresVerification:
+                            return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                        case SignInStatus.Failure:
+                        default:
+                            ModelState.AddModelError("", "Sai tên đăng nhập hoặc mật khẩu.");
+                            //return RedirectToAction("Index", "Home", new { area = "", error = true });
+                            return View(model);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Sai tên đăng nhập hoặc mật khẩu.");
+                    return View(model);
                 }
             }
         }

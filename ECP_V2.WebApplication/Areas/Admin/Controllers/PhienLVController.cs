@@ -92,6 +92,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         //string path = url + "ConvertHtmlToPdf";
         string path = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString() + "jxlsToFile";
+        string ApiNotify = System.Configuration.ConfigurationManager.AppSettings["API_Notify"].ToString();
+
         //Lấy file template từ database
         //[AreaAuthorization]
 
@@ -458,7 +460,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     try
                     {
-                        var objPCT = _pcongtac_ser.GetById(item.MaPCT);
+                        var objPCT = _pcongtac_ser.GetById(item.MaPCT ?? 0);
                         if (objPCT != null)
                         {
                             //item.TT_Phien = (int)objPCT.MaTT;
@@ -476,7 +478,14 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 }
                 DisposeAll();
-                return PartialView("_List", ListNewsPageSize);
+                if ((bool)isShowBtnHoanHuy)
+                {
+                    return PartialView("_ListCTHT", ListNewsPageSize);
+                }
+                else
+                {
+                    return PartialView("_List", ListNewsPageSize);
+                }
             }
             else
             {
@@ -667,22 +676,22 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId)
+        public ActionResult XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId, string LoaiBaoCao, string TuanThang, int TrangThaiBienBan, int IdBienBan, int soBienBan)
         {
             try
             {
-               var model = _plviec_ser.sp_AdvancedSearchPhienLVNewAllCV(0, 0, 0, 0, DateFrom, DateTo, DonViId, "", (int)TrangThaiPhienLV.DaDuyet,  -1, -1, "").ToList();
-               
+                var model = _plviec_ser.sp_AdvancedSearchPhienLVNewAllCV(0, 0, 0, 0, DateFrom, DateTo, DonViId, "", (int)TrangThaiPhienLV.DaDuyet, -1, -1, "").ToList();
+
 
 
                 string format = "dd/MM/yyyy";
                 var donVi = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId);
-                if(donVi == null)
+                if (donVi == null)
                 {
                     return null;
                 }
                 var CVKTKSTT = model.FindAll(x => x.TrangThai_KHLLV == 1).Count();
-                var CVKeHoach = model.FindAll(x => x.TT_Phien==2).Count();
+                var CVKeHoach = model.FindAll(x => x.TT_Phien == 2).Count();
                 var CVBoSung = model.FindAll(x => x.TT_Phien == 1).Count();
                 var CVDotXuat = model.FindAll(x => x.TT_Phien == 3).Count();
                 var tongcv = CVKeHoach + CVBoSung + CVDotXuat;
@@ -690,10 +699,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 ViewBag.CVKeHoach = CVKeHoach;
                 ViewBag.CVBoSung = CVBoSung;
                 ViewBag.CVDotXuat = CVDotXuat;
+                ViewBag.TuanThang = TuanThang;
+                ViewBag.TrangThaiBienBan = TrangThaiBienBan;
+                ViewBag.IdBienBan = IdBienBan;
+                ViewBag.soBienBan = soBienBan;
                 double tyleKH = 0;
                 if (tongcv > 0)
                 {
-
                     tyleKH = CVKeHoach * 100 / tongcv;
                     tyleKH = Math.Round(tyleKH, 2);
 
@@ -703,9 +715,27 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 ViewBag.DonVi = donVi;
                 ViewBag.DonViId = DonViId;
                 ViewBag.DonViCha = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == donVi.DviCha);
+                ViewBag.TenVietTat = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId).TenVietTat;
                 ViewBag.TuNgay = DateTime.ParseExact(DateFrom, format, CultureInfo.InvariantCulture);
                 ViewBag.DenNgay = DateTime.ParseExact(DateTo, format, CultureInfo.InvariantCulture);
+                ViewBag.LoaiBaoCao = LoaiBaoCao;
 
+                string formattedDateFrom = DateTime.Parse(DateFrom).ToString("yyyyMMdd");
+                string formattedDateTo = DateTime.Parse(DateTo).ToString("yyyyMMdd");
+
+                // lấy lại data
+                var data = _plviec_ser.Get_SoLuong_PLV_BaoCao(DonViId, formattedDateFrom, formattedDateTo);
+                if (data != null)
+                {
+                    /// truyền tham số
+                    ViewBag.TongSoPhien = data.TongSoPhien;
+                    ViewBag.TongSoPhienKeHoach = data.TongSoPhienKeHoach;
+                    ViewBag.TongSoBoSung = data.TongSoBoSung;
+                    ViewBag.TongSoDotXuat = data.TongSoDotXuat;
+                    ViewBag.TongSoKTKS_TrucTiep = data.TongSoKTKS_TrucTiep;
+                    ViewBag.TongSoKTKS_HinhAnh = data.TongSoKTKS_HinhAnh;
+                    ViewBag.TyLePhanTram = data.TyLePhanTram;
+                }
                 List<tblNhanVien> nhanVien = _kh_ser.List();
                 if (nhanVien != null && nhanVien.Count > 0)
                 {
@@ -1520,6 +1550,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             Dictionary<string, int> messageList = new Dictionary<string, int>();
 
             tblPhienLamViec plv = new tblPhienLamViec();
+
             try
             {
 
@@ -1661,6 +1692,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 kt = _plviec_ser.PhienLamViec_AddNew(plv);
                 if (kt > 0)
                 {
+
                     #region Insert_plv_KeHoachLichLamViec
                     if (HinhThucKiemTra != null)
                     {
@@ -1670,6 +1702,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             HinhThucKiemTra = HinhThucKiemTra,
                             NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
                             NguoiDaiDienKT = NguoiDaiDienKT,
+                            TrangThai = 1,
                             LyDoHoanHuy = "NULL"
                         };
 
@@ -1678,6 +1711,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     #endregion
 
                     bool save_tbl_NhanVien_PhienLamViec = false;
+
                     if (!string.IsNullOrEmpty(NguoiDuyet_SoPa_Id))
                     {
                         string[] arr_NguoiDuyet_SoPa_Id = NguoiDuyet_SoPa_Id.Split(',');
@@ -2381,7 +2415,70 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     {
 
                     }
+                    #region Gửi notify mobile
+                    var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                    if (userIds.Any())
+                    {
+                        foreach (var userId in userIds)
+                        {
+                            var requestData = new
+                            {
+                                IDConect = "PN",
+                                userId = userId,
+                                title = "Thêm mới phiên làm việc",
+                                name = "NPCIT",
+                                header = " ",
+                                subtitle = " ",
+                                contents = User.Identity.Name + "- Thêm mới phiên làm việc",
+                            };
 
+                            var jsonContent = JsonConvert.SerializeObject(requestData);
+                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                            using (HttpClient httpClient = new HttpClient())
+                            {
+                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    var result = await response.Content.ReadAsStringAsync();
+                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                    if (!apiResponse.Success)
+                                    {
+                                        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                    }
+                                }
+                                //else
+                                //{
+                                //    var data = response;
+                                //    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+
+                                //}
+                            }
+                        }
+
+                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        //return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    #endregion
 
                     //try
                     //{
@@ -2987,7 +3084,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 pct = _pcongtac_ser.GetById(plv.MaPCT);
 
                 byte[] file = safeTrainRepository.GetFileTmpSign(0, pct.MaLP.Value);//System.IO.File.ReadAllBytes("C:\\Users\\Admin\\Downloads\\6. Phieu KT DZ NGAY TT.xls");
-                //Lấy tham số
+                                                                                    //Lấy tham số
                 string param = GetParamSign(plv.Id, pct.MaLP.Value, 0);
 
                 string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + System.Convert.ToBase64String(file) + "\"\r\n}";
@@ -3027,10 +3124,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 //Read file thử 0 phát.
                 byte[] file = safeTrainRepository.GetFileTmpSign(step, loaiphieu);//System.IO.File.ReadAllBytes("C:\\Users\\Admin\\Downloads\\6. Phieu KT DZ NGAY TT.xls");
-                //Lấy tham số
+                                                                                  //Lấy tham số
                 string param = GetParamSign(plv.Id, loaiphieu, step);
+                var datafile = System.Convert.ToBase64String(file);
 
-                string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + System.Convert.ToBase64String(file) + "\"\r\n}";
+                string s = "{\r\n  \"outputType\": \"html\",\r\n  \"parameters\": [\r\n    " + param + "\r\n  ],\r\n  \"template\": \"" + datafile + "\"\r\n}";
 
                 using (HttpClient httpClient = new HttpClient())
                 {
@@ -3056,8 +3154,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     stepSignCheck = 22;
                 }
+                var data = System.Convert.FromBase64String((string)objBase64Pdf.SelectToken("data"));
                 //Gọi ký
-                string kq = (string)SignMobileExampleAsync(System.Convert.FromBase64String((string)objBase64Pdf.SelectToken("data")), stepSignCheck, userSign, loaiphieu);
+                string kq = (string)SignMobileExampleAsync(data, stepSignCheck, userSign, loaiphieu, " ");
 
                 //Ký xong lưu vào database:
                 //byte[] fileSign = System.Convert.FromBase64String((kq));
@@ -3210,13 +3309,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         #region
         //Hàm gọi ký
-        public string SignMobileExampleAsync(byte[] byfile, int stepSign, string userSign, int loaiphieu)
+        public string SignMobileExampleAsync(byte[] byfile, int stepSign, string userSign, int loaiphieu, string usernameSession)
         {
 
             string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
             var httpClient = new HttpClient();
             var uploadServiceBaseAddress = urlSignServer + "api/sign";
-            var objUserSign = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+            //tblNhanVien nvien = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+            var username = "";
+            if (Session != null && !string.IsNullOrEmpty(Session["UserName"].ToString()))
+            {
+                username = Session["UserName"].ToString();
+            }
+            else
+            {
+                username = usernameSession; 
+            }
+
+            var objUserSign = _nhanvien_ser.GetByUserName(username);
             //string path = HttpContext.Current.Server.MapPath("/upload/");
             DataSign dt = new DataSign();
             var k = new KetQuaTimKiem();
@@ -3237,7 +3347,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             dt.FileDataSign = byfile;
             //dt.TypeSign = "Text";
 
-            dt.ImageSign = appPlanRepo.imgSignByUserid(Session["UserName"].ToString());
+            dt.ImageSign = appPlanRepo.imgSignByUserid(username);
             //dt.FileType = "pdf";
             dt.CommentSign = @"test";
             if (loaiphieu == 2)
@@ -3366,7 +3476,17 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
             var httpClient = new HttpClient();
             var uploadServiceBaseAddress = urlSignServer + "api/sign";
-            var objUserSign = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+            var username = "";
+            if (Session != null && !string.IsNullOrEmpty(Session["UserName"].ToString()))
+            {
+                username = Session["UserName"].ToString();
+            }
+            else
+            {
+                username = userSign;
+            }
+
+            var objUserSign = _nhanvien_ser.GetByUserName(username);
             //string path = HttpContext.Current.Server.MapPath("/upload/");
             DataSign dt = new DataSign();
             var k = new KetQuaTimKiem();
@@ -3387,7 +3507,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             dt.FileDataSign = byfile;
             //dt.TypeSign = "Text";
 
-            dt.ImageSign = appPlanRepo.imgSignByUserid(Session["UserName"].ToString());
+            dt.ImageSign = appPlanRepo.imgSignByUserid(username);
             //dt.FileType = "pdf";
             dt.CommentSign = @"test";
             if (loaibienban == 0) // 0  là Biên bản khảo sát
@@ -3697,7 +3817,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #endregion
 
         #region
-        private async Task<string> ConvertHtmlToPdfAsync(string htmlStrBase64)
+        public async Task<string> ConvertHtmlToPdfAsync(string htmlStrBase64)
         {
             string url = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString();
             string path = url + "ConvertHtmlToPdf";
@@ -4118,6 +4238,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     HinhThucKiemTra = input.HinhThucKiemTra,
                     NguoiDaiDienKT_Id = input.NguoiDaiDienKT_Id,
                     NguoiDaiDienKT = input.NguoiDaiDienKT,
+                    TrangThai = 2,
                     LyDoHoanHuy = "NULL"
                 };
 
@@ -4225,7 +4346,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         #region ImportExcelPLV_KH
         [HttpPost]
-        public ActionResult ImportExcelPLV_KH(HttpPostedFileBase file, string typeshow = "")
+        public async Task<ActionResult> ImportExcelPLV_KH(HttpPostedFileBase file, string typeshow = "")
         {
             int tongsophien = 0;
             int sophienthanhcong = 0;
@@ -4444,6 +4565,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                             plv.LanhDaoTrucBan = ds.Tables[0].Rows[i][10].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
                                             plv.LanhDaoCongViec = ds.Tables[0].Rows[i][15].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
                                             plv.NguoiCapPhieu = ds.Tables[0].Rows[i][16].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
+
                                         }
                                         catch
                                         {
@@ -4479,7 +4601,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiDuyet_SoPa = plv.NguoiDuyet_SoPa.Split('-');
                                                     if (arr_SDT_NguoiDuyet_SoPa != null && arr_SDT_NguoiDuyet_SoPa.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiDuyet_SoPa[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiDuyet_SoPa.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4524,7 +4646,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiChiHuy = plv.NguoiChiHuy.Split('-');
                                                     if (arr_SDT_NguoiChiHuy != null && arr_SDT_NguoiChiHuy.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiChiHuy[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiChiHuy.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4568,7 +4690,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_GiamSatVien = plv.GiamSatVien.Split('-');
                                                     if (arr_SDT_GiamSatVien != null && arr_SDT_GiamSatVien.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_GiamSatVien[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_GiamSatVien.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4612,7 +4734,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiKiemSoat = plv.NguoiKiemSoat.Split('-');
                                                     if (arr_SDT_NguoiKiemSoat != null && arr_SDT_NguoiKiemSoat.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiKiemSoat[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiKiemSoat.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4656,7 +4778,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiKiemTraPhieu = plv.NguoiKiemTraPhieu.Split('-');
                                                     if (arr_SDT_NguoiKiemTraPhieu != null && arr_SDT_NguoiKiemTraPhieu.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiKiemTraPhieu[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiKiemTraPhieu.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4700,7 +4822,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_LanhDaoTrucBan = plv.LanhDaoTrucBan.Split('-');
                                                     if (arr_SDT_LanhDaoTrucBan != null && arr_SDT_LanhDaoTrucBan.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_LanhDaoTrucBan[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_LanhDaoTrucBan.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4744,7 +4866,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_LanhDaoCongViec = plv.LanhDaoCongViec.Split('-');
                                                     if (arr_SDT_LanhDaoCongViec != null && arr_SDT_LanhDaoCongViec.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_LanhDaoCongViec[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_LanhDaoCongViec.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4788,7 +4910,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiCapPhieu = plv.NguoiCapPhieu.Split('-');
                                                     if (arr_SDT_NguoiCapPhieu != null && arr_SDT_NguoiCapPhieu.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiCapPhieu[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiCapPhieu.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -4820,12 +4942,71 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         sonhanvienthamgia++;
                                                     }
                                                 }
+
                                             }
                                         }
                                         catch
                                         { }
+                                        #region Kiểm tra hiện trường
+                                        // Kiểm tra hiện trường
+                                        var HinhThucKiemTra = ds.Tables[0].Rows[i][17].ToString().Replace("\n", " ").Replace("  ", " ").Trim().ToUpper(); ;
+                                        var soSanhChuoi = "Kiểm tra giữa giờ".ToUpper();
+                                        var HinhThucKiemTra_number = 1;
+                                        if (HinhThucKiemTra == soSanhChuoi)
+                                        {
+                                            HinhThucKiemTra_number = 2;
+                                        }
+                                        var NguoiDaiDienKT = ds.Tables[0].Rows[i][18].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
+                                        var NguoiDaiDienKT_Id = " ";
+                                        if (NguoiDaiDienKT != "" && NguoiDaiDienKT != null && HinhThucKiemTra != "" && HinhThucKiemTra != null)
+                                            try
+                                            {
+                                                if (!string.IsNullOrEmpty(NguoiDaiDienKT))
+                                                {
+                                                    string[] arr_NguoiDaiDienKT = NguoiDaiDienKT.Replace("  ", "").Split(',');
+                                                    foreach (var item in arr_NguoiDaiDienKT)
+                                                    {
+                                                        tblNhanVien findNhanVien;
+                                                        string[] arr_SDT_DaiDienKT = NguoiDaiDienKT.Split('-');
+                                                        if (arr_SDT_DaiDienKT != null && arr_SDT_DaiDienKT.Length > 1)
+                                                        {
+                                                            string key1 = arr_SDT_DaiDienKT.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
+                                                            if (findNhanVien == null)
+                                                            {
+                                                                string key0 = arr_SDT_DaiDienKT[0].Trim().ToUpper();
+                                                                findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == key0);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == plv.GiamSatVien.ToUpper());
+                                                        }
+                                                        if (findNhanVien != null)
+                                                        {
+                                                            if (NguoiDaiDienKT_Id == null)
+                                                            {
+                                                                NguoiDaiDienKT_Id = findNhanVien.Id;
+                                                                NguoiDaiDienKT = findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+
+                                                            }
+                                                            else
+                                                            {
+                                                                NguoiDaiDienKT_Id = "," + findNhanVien.Id;
+                                                                NguoiDaiDienKT = ", " + findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+                                                            }
+                                                            sonhanvienthamgia++;
+                                                        }
+                                                    }
+
+
+                                                }
+                                            }
+                                            catch
+                                            { }
                                         #endregion
 
+                                        #endregion
                                         if (_plviec_ser.KiemTraTrung2(plv.NgayLamViec, plv.PhongBanID, plv.DiaDiem, plv.GioBd, plv.NoiDung, null))
                                         {
                                             sophientrung++;
@@ -4836,6 +5017,87 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                             kt = _plviec_ser.PhienLamViec_AddNew(plv);
                                             if (kt > 0)
                                             {
+                                                #region Gửi notify mobile
+                                                var userIds = new List<string>
+                                             {
+                                             plv.NguoiDuyet_SoPa_Id,
+                                             plv.NguoiChiHuy_Id,
+                                             plv.GiamSatVien_Id,
+                                             plv.NguoiKiemSoat_Id,
+                                             plv.NguoiKiemTraPhieu_Id,
+                                             plv.LanhDaoTrucBan_Id,
+                                             plv.LanhDaoCongViec_Id,
+                                             plv.NguoiCapPhieu_Id,
+                                             }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                                                if (userIds.Any())
+                                                {
+                                                    foreach (var userId in userIds)
+                                                    {
+                                                        var requestData = new
+                                                        {
+                                                            IDConect = "PN",
+                                                            userId = userId,
+                                                            title = "Thêm mới phiên làm việc",
+                                                            name = "NPCIT",
+                                                            header = " ",
+                                                            subtitle = " ",
+                                                            contents = User.Identity.Name + "- Thêm mới phiên làm việc",
+                                                        };
+
+                                                        var jsonContent = JsonConvert.SerializeObject(requestData);
+                                                        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                                        //using (HttpClient httpClient = new HttpClient())
+                                                        //{
+                                                        //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                                        //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                                        //    if (response.IsSuccessStatusCode)
+                                                        //    {
+                                                        //        var result = await response.Content.ReadAsStringAsync();
+                                                        //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                                        //        if (!apiResponse.Success)
+                                                        //        {
+                                                        //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        var data = response;
+                                                        //        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+
+                                                        //    }
+                                                        //}
+                                                    }
+
+                                                    //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                                                }
+                                                else
+                                                {
+                                                    //return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                                                }
+
+                                                #endregion
+
+                                                #region Insert_plv_KeHoachLichLamViec
+                                                if (HinhThucKiemTra != null)
+                                                {
+                                                    var input_dataKHLLV = new plv_KeHoachLichLamViec
+                                                    {
+                                                        PhienLamViecId = kt,
+                                                        HinhThucKiemTra = HinhThucKiemTra_number,
+                                                        NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
+                                                        NguoiDaiDienKT = NguoiDaiDienKT,
+                                                        TrangThai = 1,
+                                                        LyDoHoanHuy = "NULL"
+                                                    };
+
+                                                    var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
+                                                }
+                                                #endregion
+
                                                 sophienthanhcong++;
                                                 strSuccessSum.AppendLine("<hr/><b>" + plv.NgayLamViec.ToString("dd/MM/yyyy") + "</b> (dòng " + (i + 2) + ") : <b>" + plv.NoiDung + "</b> <br/>Địa điểm: <b>" + plv.DiaDiem + " </b><br/>Thời gian: <b>" + string.Format("{0:hh\\:mm}", plv.GioBd) + "</b> tới <b>" + string.Format("{0:hh\\:mm}", plv.GioKt) + "</b> Đơn vị: <b>" + tenPhongBan + "</b> Số người tham gia: <b>" + sonhanvienthamgia + " </b>");
                                                 //
@@ -4869,6 +5131,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         phieuCongTac.NgayTao = DateTime.Now;
                                                         phieuCongTac.NguoiTao = User.Identity.Name;
                                                         phieuCongTac.DonViId = plv.DonViId;
+
+                                                        // Sửa bổ sung vào thêm người cấp phiếu
+                                                        phieuCongTac.NguoiCapPhieu = plv.NguoiCapPhieu;
+                                                        phieuCongTac.NguoiCapPhieu_Id = plv.NguoiCapPhieu_Id;
 
                                                         _plviec_ser.Context.plv_PhieuCongTac.Add(phieuCongTac);
                                                         _plviec_ser.Context.SaveChanges();
@@ -5274,7 +5540,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiDuyet_SoPa = plv.NguoiDuyet_SoPa.Split('-');
                                                     if (arr_SDT_NguoiDuyet_SoPa != null && arr_SDT_NguoiDuyet_SoPa.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiDuyet_SoPa[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiDuyet_SoPa.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5319,7 +5585,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiChiHuy = plv.NguoiChiHuy.Split('-');
                                                     if (arr_SDT_NguoiChiHuy != null && arr_SDT_NguoiChiHuy.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiChiHuy[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiChiHuy.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5363,7 +5629,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_GiamSatVien = plv.GiamSatVien.Split('-');
                                                     if (arr_SDT_GiamSatVien != null && arr_SDT_GiamSatVien.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_GiamSatVien[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_GiamSatVien.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5407,7 +5673,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiKiemSoat = plv.NguoiKiemSoat.Split('-');
                                                     if (arr_SDT_NguoiKiemSoat != null && arr_SDT_NguoiKiemSoat.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiKiemSoat[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiKiemSoat.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5451,7 +5717,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiKiemTraPhieu = plv.NguoiKiemTraPhieu.Split('-');
                                                     if (arr_SDT_NguoiKiemTraPhieu != null && arr_SDT_NguoiKiemTraPhieu.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiKiemTraPhieu[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiKiemTraPhieu.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5495,7 +5761,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_LanhDaoTrucBan = plv.LanhDaoTrucBan.Split('-');
                                                     if (arr_SDT_LanhDaoTrucBan != null && arr_SDT_LanhDaoTrucBan.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_LanhDaoTrucBan[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_LanhDaoTrucBan.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5539,7 +5805,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_LanhDaoCongViec = plv.LanhDaoCongViec.Split('-');
                                                     if (arr_SDT_LanhDaoCongViec != null && arr_SDT_LanhDaoCongViec.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_LanhDaoCongViec[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_LanhDaoCongViec.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -5618,6 +5884,66 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         }
                                         catch
                                         { }
+
+                                        #region Kiểm tra hiện trường
+                                        // Kiểm tra hiện trường
+                                        var HinhThucKiemTra = ds.Tables[0].Rows[i][18].ToString().Replace("\n", " ").Replace("  ", " ").Trim().ToUpper(); ;
+                                        var soSanhChuoi = "Kiểm tra giữa giờ".ToUpper();
+                                        var HinhThucKiemTra_number = 1;
+                                        if (HinhThucKiemTra == soSanhChuoi)
+                                        {
+                                            HinhThucKiemTra_number = 2;
+                                        }
+                                        var NguoiDaiDienKT = ds.Tables[0].Rows[i][19].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
+                                        var NguoiDaiDienKT_Id = " ";
+                                        if (NguoiDaiDienKT != "" && NguoiDaiDienKT != null && HinhThucKiemTra != "" && HinhThucKiemTra != null)
+                                            try
+                                            {
+                                                if (!string.IsNullOrEmpty(NguoiDaiDienKT))
+                                                {
+                                                    string[] arr_NguoiDaiDienKT = NguoiDaiDienKT.Replace("  ", "").Split(',');
+                                                    foreach (var item in arr_NguoiDaiDienKT)
+                                                    {
+                                                        tblNhanVien findNhanVien;
+                                                        string[] arr_SDT_DaiDienKT = NguoiDaiDienKT.Split('-');
+                                                        if (arr_SDT_DaiDienKT != null && arr_SDT_DaiDienKT.Length > 1)
+                                                        {
+                                                            string key1 = arr_SDT_DaiDienKT.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
+                                                            if (findNhanVien == null)
+                                                            {
+                                                                string key0 = arr_SDT_DaiDienKT[0].Trim().ToUpper();
+                                                                findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == key0);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == plv.GiamSatVien.ToUpper());
+                                                        }
+                                                        if (findNhanVien != null)
+                                                        {
+                                                            if (NguoiDaiDienKT_Id == null)
+                                                            {
+                                                                NguoiDaiDienKT_Id = findNhanVien.Id;
+                                                                NguoiDaiDienKT = findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+
+                                                            }
+                                                            else
+                                                            {
+                                                                NguoiDaiDienKT_Id = "," + findNhanVien.Id;
+                                                                NguoiDaiDienKT = ", " + findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+                                                            }
+                                                            sonhanvienthamgia++;
+                                                        }
+                                                    }
+
+
+                                                }
+                                            }
+                                            catch
+                                            { }
+                                        #endregion
+
                                         #endregion
 
                                         plv.NgayTao = DateTime.Now;
@@ -5637,6 +5963,87 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                             kt = _plviec_ser.PhienLamViec_AddNew(plv);
                                             if (kt > 0)
                                             {
+                                                #region Gửi notify mobile
+                                                var userIds = new List<string>
+                                             {
+                                             plv.NguoiDuyet_SoPa_Id,
+                                             plv.NguoiChiHuy_Id,
+                                             plv.GiamSatVien_Id,
+                                             plv.NguoiKiemSoat_Id,
+                                             plv.NguoiKiemTraPhieu_Id,
+                                             plv.LanhDaoTrucBan_Id,
+                                             plv.LanhDaoCongViec_Id,
+                                             plv.NguoiCapPhieu_Id,
+                                             }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                                                if (userIds.Any())
+                                                {
+                                                    foreach (var userId in userIds)
+                                                    {
+                                                        var requestData = new
+                                                        {
+                                                            IDConect = "PN",
+                                                            userId = userId,
+                                                            title = "Thêm mới phiên làm việc",
+                                                            name = "NPCIT",
+                                                            header = " ",
+                                                            subtitle = " ",
+                                                            contents = User.Identity.Name + "- Thêm mới phiên làm việc",
+                                                        };
+
+                                                        var jsonContent = JsonConvert.SerializeObject(requestData);
+                                                        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                                        //using (HttpClient httpClient = new HttpClient())
+                                                        //{
+                                                        //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                                        //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                                        //    if (response.IsSuccessStatusCode)
+                                                        //    {
+                                                        //        var result = await response.Content.ReadAsStringAsync();
+                                                        //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                                        //        if (!apiResponse.Success)
+                                                        //        {
+                                                        //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        var data = response;
+                                                        //        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+
+                                                        //    }
+                                                        //}
+                                                    }
+
+                                                    //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                                                }
+                                                else
+                                                {
+                                                    //return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                                                }
+
+                                                #endregion
+
+                                                #region Insert_plv_KeHoachLichLamViec
+                                                if (HinhThucKiemTra != null)
+                                                {
+                                                    var input_dataKHLLV = new plv_KeHoachLichLamViec
+                                                    {
+                                                        PhienLamViecId = kt,
+                                                        HinhThucKiemTra = HinhThucKiemTra_number,
+                                                        NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
+                                                        NguoiDaiDienKT = NguoiDaiDienKT,
+                                                        TrangThai = 1,
+                                                        LyDoHoanHuy = "NULL"
+                                                    };
+
+                                                    var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
+                                                }
+                                                #endregion
+
                                                 sophienthanhcong++;
                                                 strSuccessSum.AppendLine("<hr/><b>" + plv.NgayLamViec.ToString("dd/MM/yyyy") + "</b> (dòng " + (i + 2) + ") : <b>" + plv.NoiDung + "</b> <br/>Địa điểm: <b>" + plv.DiaDiem + " </b><br/>Thời gian: <b>" + string.Format("{0:hh\\:mm}", plv.GioBd) + "</b> tới <b>" + string.Format("{0:hh\\:mm}", plv.GioKt) + "</b> Đơn vị: <b>" + tenPhongBan + "</b> Số người tham gia: <b>" + sonhanvienthamgia + " </b>");
                                                 //
@@ -5667,6 +6074,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         phieuCongTac.NgayTao = DateTime.Now;
                                                         phieuCongTac.NguoiTao = User.Identity.Name;
                                                         phieuCongTac.DonViId = plv.DonViId;
+
+                                                        // Sửa bổ sung vào thêm người cấp phiếu
+                                                        phieuCongTac.NguoiCapPhieu = plv.NguoiCapPhieu;
+                                                        phieuCongTac.NguoiCapPhieu_Id = plv.NguoiCapPhieu_Id;
 
                                                         _plviec_ser.Context.plv_PhieuCongTac.Add(phieuCongTac);
                                                         _plviec_ser.Context.SaveChanges();
@@ -6066,7 +6477,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiDuyet_SoPa = plv.NguoiDuyet_SoPa.Split('-');
                                                     if (arr_SDT_NguoiDuyet_SoPa != null && arr_SDT_NguoiDuyet_SoPa.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiDuyet_SoPa[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiDuyet_SoPa.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6111,7 +6522,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiChiHuy = plv.NguoiChiHuy.Split('-');
                                                     if (arr_SDT_NguoiChiHuy != null && arr_SDT_NguoiChiHuy.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiChiHuy[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiChiHuy.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6155,7 +6566,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_GiamSatVien = plv.GiamSatVien.Split('-');
                                                     if (arr_SDT_GiamSatVien != null && arr_SDT_GiamSatVien.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_GiamSatVien[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_GiamSatVien.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6199,7 +6610,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiKiemSoat = plv.NguoiKiemSoat.Split('-');
                                                     if (arr_SDT_NguoiKiemSoat != null && arr_SDT_NguoiKiemSoat.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiKiemSoat[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiKiemSoat.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6243,7 +6654,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiKiemTraPhieu = plv.NguoiKiemTraPhieu.Split('-');
                                                     if (arr_SDT_NguoiKiemTraPhieu != null && arr_SDT_NguoiKiemTraPhieu.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiKiemTraPhieu[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiKiemTraPhieu.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6287,7 +6698,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_LanhDaoTrucBan = plv.LanhDaoTrucBan.Split('-');
                                                     if (arr_SDT_LanhDaoTrucBan != null && arr_SDT_LanhDaoTrucBan.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_LanhDaoTrucBan[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_LanhDaoTrucBan.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6331,7 +6742,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_LanhDaoCongViec = plv.LanhDaoCongViec.Split('-');
                                                     if (arr_SDT_LanhDaoCongViec != null && arr_SDT_LanhDaoCongViec.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_LanhDaoCongViec[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_LanhDaoCongViec.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6375,7 +6786,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     string[] arr_SDT_NguoiCapPhieu = plv.NguoiCapPhieu.Split('-');
                                                     if (arr_SDT_NguoiCapPhieu != null && arr_SDT_NguoiCapPhieu.Length > 1)
                                                     {
-                                                        string key1 = arr_SDT_NguoiCapPhieu[1].Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                        string key1 = arr_SDT_NguoiCapPhieu.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
                                                         findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
                                                         if (findNhanVien == null)
                                                         {
@@ -6410,6 +6821,64 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         }
                                         catch
                                         { }
+                                        #region Kiểm tra hiện trường
+                                        // Kiểm tra hiện trường
+                                        var HinhThucKiemTra = ds.Tables[0].Rows[i][18].ToString().Replace("\n", " ").Replace("  ", " ").Trim().ToUpper(); ;
+                                        var soSanhChuoi = "Kiểm tra giữa giờ".ToUpper();
+                                        var HinhThucKiemTra_number = 1;
+                                        if (HinhThucKiemTra == soSanhChuoi)
+                                        {
+                                            HinhThucKiemTra_number = 2;
+                                        }
+                                        var NguoiDaiDienKT = ds.Tables[0].Rows[i][19].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
+                                        var NguoiDaiDienKT_Id = " ";
+                                        if (NguoiDaiDienKT != "" && NguoiDaiDienKT != null && HinhThucKiemTra != "" && HinhThucKiemTra != null)
+                                            try
+                                            {
+                                                if (!string.IsNullOrEmpty(NguoiDaiDienKT))
+                                                {
+                                                    string[] arr_NguoiDaiDienKT = NguoiDaiDienKT.Replace("  ", "").Split(',');
+                                                    foreach (var item in arr_NguoiDaiDienKT)
+                                                    {
+                                                        tblNhanVien findNhanVien;
+                                                        string[] arr_SDT_DaiDienKT = NguoiDaiDienKT.Split('-');
+                                                        if (arr_SDT_DaiDienKT != null && arr_SDT_DaiDienKT.Length > 1)
+                                                        {
+                                                            string key1 = arr_SDT_DaiDienKT.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
+                                                            if (findNhanVien == null)
+                                                            {
+                                                                string key0 = arr_SDT_DaiDienKT[0].Trim().ToUpper();
+                                                                findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == key0);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == plv.GiamSatVien.ToUpper());
+                                                        }
+                                                        if (findNhanVien != null)
+                                                        {
+                                                            if (NguoiDaiDienKT_Id == null)
+                                                            {
+                                                                NguoiDaiDienKT_Id = findNhanVien.Id;
+                                                                NguoiDaiDienKT = findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+
+                                                            }
+                                                            else
+                                                            {
+                                                                NguoiDaiDienKT_Id = "," + findNhanVien.Id;
+                                                                NguoiDaiDienKT = ", " + findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+                                                            }
+                                                            sonhanvienthamgia++;
+                                                        }
+                                                    }
+
+
+                                                }
+                                            }
+                                            catch
+                                            { }
+                                        #endregion
                                         #endregion
 
                                         plv.NgayTao = DateTime.Now;
@@ -6429,6 +6898,87 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                             kt = _plviec_ser.PhienLamViec_AddNew(plv);
                                             if (kt > 0)
                                             {
+                                                #region Gửi notify mobile
+                                                var userIds = new List<string>
+                                             {
+                                             plv.NguoiDuyet_SoPa_Id,
+                                             plv.NguoiChiHuy_Id,
+                                             plv.GiamSatVien_Id,
+                                             plv.NguoiKiemSoat_Id,
+                                             plv.NguoiKiemTraPhieu_Id,
+                                             plv.LanhDaoTrucBan_Id,
+                                             plv.LanhDaoCongViec_Id,
+                                             plv.NguoiCapPhieu_Id,
+                                             }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                                                if (userIds.Any())
+                                                {
+                                                    foreach (var userId in userIds)
+                                                    {
+                                                        var requestData = new
+                                                        {
+                                                            IDConect = "PN",
+                                                            userId = userId,
+                                                            title = "Thêm mới phiên làm việc",
+                                                            name = "NPCIT",
+                                                            header = " ",
+                                                            subtitle = " ",
+                                                            contents = User.Identity.Name + "- Thêm mới phiên làm việc",
+                                                        };
+
+                                                        var jsonContent = JsonConvert.SerializeObject(requestData);
+                                                        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                                        //using (HttpClient httpClient = new HttpClient())
+                                                        //{
+                                                        //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                                        //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                                        //    if (response.IsSuccessStatusCode)
+                                                        //    {
+                                                        //        var result = await response.Content.ReadAsStringAsync();
+                                                        //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                                        //        if (!apiResponse.Success)
+                                                        //        {
+                                                        //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        var data = response;
+                                                        //        return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+
+                                                        //    }
+                                                        //}
+                                                    }
+
+                                                    //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                                                }
+                                                else
+                                                {
+                                                    //return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                                                }
+
+                                                #endregion
+
+                                                #region Insert_plv_KeHoachLichLamViec
+                                                if (HinhThucKiemTra != null)
+                                                {
+                                                    var input_dataKHLLV = new plv_KeHoachLichLamViec
+                                                    {
+                                                        PhienLamViecId = kt,
+                                                        HinhThucKiemTra = HinhThucKiemTra_number,
+                                                        NguoiDaiDienKT_Id = NguoiDaiDienKT_Id,
+                                                        NguoiDaiDienKT = NguoiDaiDienKT,
+                                                        TrangThai = 1,
+                                                        LyDoHoanHuy = "NULL"
+                                                    };
+
+                                                    var check = await _keHoachLichLamViecRepository.AddNew(input_dataKHLLV);
+                                                }
+                                                #endregion
+
                                                 sophienthanhcong++;
                                                 strSuccessSum.AppendLine("<hr/><b>" + plv.NgayLamViec.ToString("dd/MM/yyyy") + "</b> (dòng " + (i + 2) + ") : <b>" + plv.NoiDung + "</b> <br/>Địa điểm: <b>" + plv.DiaDiem + " </b><br/>Thời gian: <b>" + string.Format("{0:hh\\:mm}", plv.GioBd) + "</b> tới <b>" + string.Format("{0:hh\\:mm}", plv.GioKt) + "</b> Đơn vị: <b>" + tenPhongBan + "</b> Số người tham gia: <b>" + sonhanvienthamgia + " </b>");
                                                 //
@@ -6459,6 +7009,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                         phieuCongTac.NgayTao = DateTime.Now;
                                                         phieuCongTac.NguoiTao = User.Identity.Name;
                                                         phieuCongTac.DonViId = plv.DonViId;
+
+                                                        // Sửa bổ sung vào thêm người cấp phiếu
+                                                        phieuCongTac.NguoiCapPhieu = plv.NguoiCapPhieu;
+                                                        phieuCongTac.NguoiCapPhieu_Id = plv.NguoiCapPhieu_Id;
 
                                                         _plviec_ser.Context.plv_PhieuCongTac.Add(phieuCongTac);
                                                         _plviec_ser.Context.SaveChanges();
@@ -8158,7 +8712,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                         rowIndex++;
                         int j1 = 0;
-                        foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TT_Phien))
+                        foreach (var ttPhien in group.OrderBy(p => p.ViTri)
+                            .GroupBy(x => x.TrangThai_KHLLV == 2 ? 0 : 2))
+                        //foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TrangThai_KHLLV))
                         {
                             j1++;
                             rowTerminal = sheet.CreateRow(rowIndex);
@@ -8166,9 +8722,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             rowTerminal.Cells[0].Row.Height = 350;
                             rowTerminal.Cells[0].CellStyle = styleFooter1;
 
-                            var tcp = ttPhien.FirstOrDefault() != null ? ttPhien.FirstOrDefault().TT_Phien : 0;
+                            var tcp = ttPhien.FirstOrDefault() != null ? ttPhien.FirstOrDefault().TrangThai_KHLLV : 0;
 
-                            rowTerminal.CreateCell(1).SetCellValue(tcp == 1 ? "Thay đổi bổ sung kiểm tra hiện trường" : tcp == 2 ? "Đăng ký KH kiểm tra hiện trường" : tcp == 3 ? "Kiểm tra đột xuất hiện trường" : "");
+                            rowTerminal.CreateCell(1).SetCellValue((tcp == 0 || tcp == 1) ? "Đăng ký KH kiểm tra hiện trường" : tcp == 2 ? "Thay đổi bổ sung kiểm tra hiện trường" : "");
                             rowTerminal.Cells[1].CellStyle = styleTenDvi;
 
                             rowTerminal.CreateCell(2).SetCellValue("");
@@ -13132,64 +13688,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> DuyetPhienLv(string Id)
         {
-
-            //try
-            //{
-
-            //    dynamic requestData = new ExpandoObject();
-            //    string currentTime = DateTime.Now.ToString("HH:mm tt - dd/MM/yyyy");
-
-            //    requestData.IDConect = "PN";
-            //    requestData.userId = "9047e6dd-0408-4e2d-8f99-a665c9f0920e";
-            //    requestData.title = "title";
-            //    requestData.name = "NPCIT";
-            //    requestData.header = "Duyệt thành công phiếu số" + Id;
-            //    requestData.subtitle = "NPCIT nội dung";
-            //    requestData.contents = $"NPCIT duyệt phiếu vào {currentTime}";
-            //    requestData.include_aliases = new ExpandoObject();
-            //    requestData.include_aliases.onesignal_id = new[] { "ac7a3567-4076-42c4-b8f5-99b73388cd73" };
-            //    var jsonContent = JsonConvert.SerializeObject(requestData);
-            //    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            //    using (HttpClient httpClient = new HttpClient())
-            //    {
-            //        var response = await httpClient.PostAsync("http://10.21.3.48:8084/api/v1.0/Notify/PushNotificationByUser", content);
-
-            //        // Kiểm tra nếu API trả về mã trạng thái 200 (OK)
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            var result = await response.Content.ReadAsStringAsync();
-            //            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
-
-            //            // Kiểm tra kết quả trả về từ API
-            //            if (apiResponse.Success)
-            //            {
-            //                Console.WriteLine("Thông báo đã được gửi thành công");
-            //                // Trả về kết quả thành công
-            //                return Json(new { success = true, message = "Thông báo đã được gửi thành công" }, JsonRequestBehavior.AllowGet);
-            //            }
-            //            else
-            //            {
-            //                // Trả về kết quả thất bại từ API
-            //                return Json(new { success = false, message = "Gửi thông báo thất bại: " + apiResponse.Error }, JsonRequestBehavior.AllowGet);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            // Nếu API trả về lỗi, xử lý và trả về thông báo lỗi
-            //            return Json(new { success = false, message = "Không thể gửi yêu cầu đến API. Mã lỗi: " + response.StatusCode }, JsonRequestBehavior.AllowGet);
-            //        }
-            //    }
-
-            //}
-            //catch
-            //{
-            //    return Json(new { success = false, responseText = "Duyệt phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
-
-            //}
-
-
-
             string kt = "";
             try
             {
@@ -13204,6 +13702,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 kt = _plviec_ser.PhienLamViec_Duyet(plv);
                 if (kt == "")
                 {
+
+
                     plv = _plviec_ser.GetById(plv.Id);
 
                     string userName = WebConfigurationManager.AppSettings["userEmail"];
@@ -13239,92 +13739,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         catch
                         {
                         }
-
-                        // gửi thông báo
-                        //try
-                        //{
-
-                        //    dynamic requestData = new ExpandoObject();
-
-                        //    // Thêm các thuộc tính động vào đối tượng
-                        //    requestData.IDConect = "PN";
-                        //    requestData.userId = "9047e6dd-0408-4e2d-8f99-a665c9f0920e";
-                        //    requestData.title = "title";
-                        //    requestData.name = "NPCIT";
-                        //    requestData.header = "header";
-                        //    requestData.subtitle = "NPCIT nội dung";
-                        //    requestData.contents = "NPCIT test vào 10:40 AM - 24/12";
-
-                        //    // Thêm đối tượng con (include_aliases)
-                        //    requestData.include_aliases = new ExpandoObject();
-                        //    requestData.include_aliases.onesignal_id = new[] { "ac7a3567-4076-42c4-b8f5-99b73388cd73" };
-                        //    var jsonContent = JsonConvert.SerializeObject(requestData);
-                        //    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                        //    using (HttpClient httpClient = new HttpClient())
-                        //    {
-                        //        var response = await httpClient.PostAsync("http://10.21.3.48:8084/api/v1.0/Notify/PushNotificationByUser", content);
-
-                        //        // Kiểm tra nếu API trả về mã trạng thái 200 (OK)
-                        //        if (response.IsSuccessStatusCode)
-                        //        {
-                        //            var result = await response.Content.ReadAsStringAsync();
-                        //            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
-
-                        //            // Kiểm tra kết quả trả về từ API
-                        //            if (apiResponse.Success)
-                        //            {
-                        //                Console.WriteLine("Thông báo đã được gửi thành công");
-                        //                // Trả về kết quả thành công
-                        //                return Json(new { success = true, message = "Thông báo đã được gửi thành công" }, JsonRequestBehavior.AllowGet);
-                        //            }
-                        //            else
-                        //            {
-                        //                // Trả về kết quả thất bại từ API
-                        //                return Json(new { success = false, message = "Gửi thông báo thất bại: " + apiResponse.Error }, JsonRequestBehavior.AllowGet);
-                        //            }
-                        //        }
-                        //        else
-                        //        {
-                        //            // Nếu API trả về lỗi, xử lý và trả về thông báo lỗi
-                        //            return Json(new { success = false, message = "Không thể gửi yêu cầu đến API. Mã lỗi: " + response.StatusCode }, JsonRequestBehavior.AllowGet);
-                        //        }
-                        //    }
-
-                        //}
-                        //catch
-                        //{
-
-                        //}
-                        //try
-                        //{
-                        //    string html = RenderViewHelper.RenderRazorViewToString(this.ControllerContext, "~/Areas/Admin/Views/PhienLV/ChiTietCongViecNhanVienEmail.cshtml", model);
-                        //    await Task.Run(() => MailHelper.SendMail(userName, password, nv.Email, "v/v Thông báo duyệt công việc", html));
-                        //}
-                        //catch
-                        //{
-                        //}
-
-                        //try
-                        //{
-                        //    string accountSid = WebConfigurationManager.AppSettings["accountSid"];
-                        //    string authToken = WebConfigurationManager.AppSettings["authToken"];
-                        //    string fromPhoneNumber = WebConfigurationManager.AppSettings["fromPhoneNumber"];
-
-                        //    TwilioClient.Init(accountSid, authToken);
-
-                        //    var from = new PhoneNumber(fromPhoneNumber);
-                        //    var to = new PhoneNumber("+84" + nv.SoDT.Substring(1));
-
-                        //    var sms = await Task.Run(() => MessageResource.Create(
-                        //        to: to,
-                        //        from: from,
-                        //        body: plv.NoiDung + " vừa được duyệt bởi " + User.Identity.Name));
-                        //}
-                        //catch (Exception e)
-                        //{
-
-                        //}
 
                         try
                         {
@@ -13370,6 +13784,68 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
 
                     ////NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} duyệt phiên làm việc {1} thành công", User.Identity.Name, plv.NoiDung));
+                    ///
+                    #region Notify mobile khi update phiên
+                    // plv = _plviec_ser.GetById(plv.Id);
+
+                    var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+                    if (userIds.Any())
+                    {
+                        foreach (var userId in userIds)
+                        {
+                            var requestData = new
+                            {
+                                IDConect = "PN",
+                                userId = userId,
+                                title = "Duyệt phiên làm việc",
+                                name = "NPCIT",
+                                header = " ",
+                                subtitle = " ",
+                                contents = User.Identity.Name + "- Duyệt phiên làm việc",
+                            };
+
+                            var jsonContent = JsonConvert.SerializeObject(requestData);
+                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            //return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
+                        }
+
+                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+
+                    #endregion
 
                     DisposeAll();
 
@@ -13417,7 +13893,71 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         kt = _plviec_ser.PhienLamViec_Duyet(plv);
                         if (kt == "")
                         {
+
+
+
                             plv = _plviec_ser.GetById(plv.Id);
+
+                            #region Notify mobile khi update phiên
+
+                            var userIds = new List<string>
+                         {
+                              plv.NguoiDuyet_SoPa_Id,
+                              plv.NguoiChiHuy_Id,
+                              plv.GiamSatVien_Id,
+                              plv.NguoiKiemSoat_Id,
+                              plv.NguoiKiemTraPhieu_Id,
+                              plv.LanhDaoTrucBan_Id,
+                              plv.LanhDaoCongViec_Id,
+                              plv.NguoiCapPhieu_Id,
+                            //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                         }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+                            if (userIds.Any())
+                            {
+                                foreach (var userId in userIds)
+                                {
+                                    var requestData = new
+                                    {
+                                        IDConect = "PN",
+                                        userId = userId,
+                                        title = "Duyệt phiên làm việc",
+                                        name = "NPCIT",
+                                        header = "header",
+                                        subtitle = " ",
+                                        contents = User.Identity.Name + "- Duyệt phiên làm việc",
+                                    };
+
+                                    var jsonContent = JsonConvert.SerializeObject(requestData);
+                                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                    //using (HttpClient httpClient = new HttpClient())
+                                    //{
+                                    //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                    //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                    //    if (response.IsSuccessStatusCode)
+                                    //    {
+                                    //        var result = await response.Content.ReadAsStringAsync();
+                                    //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                    //        if (!apiResponse.Success)
+                                    //        {
+                                    //            //return Json(new { success = false, responseText = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                    //        }
+                                    //    }
+                                    //}
+                                }
+
+                                //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                //return Json(new { success = false, responseText = "Không có nguòi nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                            }
+
+
+                            #endregion
 
                             string userName = WebConfigurationManager.AppSettings["userEmail"];
                             string password = WebConfigurationManager.AppSettings["passEmail"];
@@ -13774,7 +14314,64 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     IBaseConverter<tblPhienLamViec, PhienLVModel> baseConverter = new AutoMapConverter<tblPhienLamViec, PhienLVModel>();
                     var model = baseConverter.ConvertObject(plv);
+                    #region Gửi notify mobile
+                    var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                    if (userIds.Any())
+                    {
+                        foreach (var userId in userIds)
+                        {
+                            var requestData = new
+                            {
+                                IDConect = "PN",
+                                userId = userId,
+                                title = "Thêm mới phiên làm việc",
+                                name = "NPCIT",
+                                header = "header",
+                                subtitle = " ",
+                                contents = User.Identity.Name + "- Thêm mới phiên làm việc",
+                            };
 
+                            var jsonContent = JsonConvert.SerializeObject(requestData);
+                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
+                        }
+
+                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    #endregion
                     //tblNhanVien nv = _nhanvien_ser.GetByUserName(plv.NguoiTao);
 
                     //if (nv != null)
@@ -14071,6 +14668,66 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             phieuLenh = " [ Lệnh Công Tác ] ";
                         }
                         tblPhienLamViec plv = _plviec_ser.GetByMaPhieuCongTac(idPhieuCongTac);
+
+                        #region Gửi notify mobile
+                        var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                        if (userIds.Any())
+                        {
+                            foreach (var userId in userIds)
+                            {
+                                var requestData = new
+                                {
+                                    IDConect = "PN",
+                                    userId = userId,
+                                    title = "Cấp số phiên làm việc",
+                                    name = "NPCIT",
+                                    header = "header",
+                                    subtitle = " ",
+                                    contents = User.Identity.Name + "- Cấp số phiên làm việc",
+                                };
+
+                                var jsonContent = JsonConvert.SerializeObject(requestData);
+                                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                //using (HttpClient httpClient = new HttpClient())
+                                //{
+                                //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                //    if (response.IsSuccessStatusCode)
+                                //    {
+                                //        var result = await response.Content.ReadAsStringAsync();
+                                //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                //        if (!apiResponse.Success)
+                                //        {
+                                //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                //        }
+                                //    }
+                                //}
+                            }
+
+                            //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        #endregion
+
                         if (idPhieuCongTac > 0)
                         {
 
@@ -14372,6 +15029,66 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
 
                     tblPhienLamViec plv = _plviec_ser.GetByMaPhieuCongTac(idPhieuCongTac);
+
+
+                    #region Gửi notify mobile
+                    var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+                    if (userIds.Any())
+                    {
+                        foreach (var userId in userIds)
+                        {
+                            var requestData = new
+                            {
+                                IDConect = "PN",
+                                userId = userId,
+                                title = "Cấp số phiên làm việc",
+                                name = "NPCIT",
+                                header = "header",
+                                subtitle = " ",
+                                contents = User.Identity.Name + "- Cấp số phiên làm việc",
+                            };
+
+                            var jsonContent = JsonConvert.SerializeObject(requestData);
+                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
+                        }
+
+                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    #endregion
 
                     //string userName = WebConfigurationManager.AppSettings["userEmail"];
                     //string password = WebConfigurationManager.AppSettings["passEmail"];
@@ -16776,7 +17493,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
 
 
-       
+
         public string NextID(string lastID, string prefixID, int MaLP, string TramId)
         {
             if (lastID == "")
@@ -17102,7 +17819,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { success = false, responseText = "Lỗi cập nhật phiếu công tác. Chi tiết: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        #endregion        
+        #endregion
         #region PhieuCongTac
         [HasCredential(MenuCode = "PCT;DSPLCT")]
         public ActionResult IndexPhieuCongTac(string listLCV = "", string id = "", string date = "")
@@ -18059,6 +18776,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         //Bổ sung gọi API PMIS kết thúc
                         try
                         {
+
+
                             ECP_V2Entities db = new ECP_V2Entities();
                             var plv_tb = db.KTDK_PHIENLV.Where(d => d.id_phien == plv.Id).ToList();
                             var tt = db.KTDK_XLTT.Where(d => d.ID_PHIEN == plv.Id).Select(g => new { id_tontai = g.ID_TONTAI }).ToList();
@@ -18110,6 +18829,65 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
 
                     ////NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} kết thúc phiên làm việc {1} thành công", User.Identity.Name, plv.DiaDiem));
+                    #region Gửi notify mobile
+                    var userIds = new List<string>
+                    {
+                     plv.NguoiDuyet_SoPa_Id,
+                     plv.NguoiChiHuy_Id,
+                     plv.GiamSatVien_Id,
+                     plv.NguoiKiemSoat_Id,
+                     plv.NguoiKiemTraPhieu_Id,
+                     plv.LanhDaoTrucBan_Id,
+                     plv.LanhDaoCongViec_Id,
+                     plv.NguoiCapPhieu_Id,
+                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    }.Where(id => !string.IsNullOrEmpty(id)).ToList(); // Loại bỏ Id null hoặc rỗng
+                    if (userIds.Any())
+                    {
+                        foreach (var userId in userIds)
+                        {
+                            var requestData = new
+                            {
+                                IDConect = "PN",
+                                userId = userId,
+                                title = "Kết thúc phiên làm việc",
+                                name = "NPCIT",
+                                header = " ",
+                                subtitle = " ",
+                                contents = User.Identity.Name + "- Kết thúc phiên làm việc",
+                            };
+
+                            var jsonContent = JsonConvert.SerializeObject(requestData);
+                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                            //using (HttpClient httpClient = new HttpClient())
+                            //{
+                            //    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                            //    var response = await httpClient.PostAsync(Api_Notify, content);
+
+                            //    if (response.IsSuccessStatusCode)
+                            //    {
+                            //        var result = await response.Content.ReadAsStringAsync();
+                            //        var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                            //        if (!apiResponse.Success)
+                            //        {
+                            //            return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                            //        }
+                            //    }
+                            //}
+                        }
+
+                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        //return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    #endregion
+
                 }
             }
             catch (Exception ex)
@@ -18822,6 +19600,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
         #endregion
+
 
 
     }

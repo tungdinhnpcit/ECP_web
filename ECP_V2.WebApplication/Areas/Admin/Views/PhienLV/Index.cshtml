@@ -492,7 +492,7 @@
                     </div>
                     <div class="col-md-2" id="content-denngay">
                         <span>Đến ngày: </span>
-                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc" onchange="end_chage()">
                     </div>
                     <div class="col-md-2" style="margin-left:10px">
                         <span>Phiếu ký: &nbsp;</span>
@@ -981,7 +981,7 @@
         }
 
         function Paging(page, pageSize, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, chuyenNPC, phieuky) {
-            loading('Đang tải dữ liệu...', 1);
+            //loading('Đang tải dữ liệu...', 1);
             $("#preloader").unbind("click");
             $('#preloader').click(function () {
                 unloading();
@@ -1035,6 +1035,7 @@
                     unloading();
                 }
             });
+            unloading();
         }
 
 
@@ -1117,6 +1118,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
 
@@ -1140,6 +1142,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
 
@@ -1174,6 +1177,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
         var options4 = {
@@ -1342,6 +1346,7 @@
             }
 
             $.magnificPopup.close();
+            unloading();
         };
 
         function ChuyenHoanModalConfirm() {
@@ -1515,7 +1520,6 @@
 
                         }
                         else {
-
                             new PNotify({
                                 title: 'Thông báo!',
                                 text: 'Duyệt phiên làm việc không thành công',
@@ -1528,7 +1532,7 @@
 
             }
             $.magnificPopup.close();
-
+            unloading();
         }
 
         function DeleteMultipleModalConfirm() {
@@ -1600,7 +1604,7 @@
 
             }
             $.magnificPopup.close();
-
+            unloading();
         }
 
         function GuiNPCAllModalConfirm() {
@@ -1667,6 +1671,7 @@
                                 type: 'error'
                             });
                         }
+                        unloading();
                     }
 
                 });

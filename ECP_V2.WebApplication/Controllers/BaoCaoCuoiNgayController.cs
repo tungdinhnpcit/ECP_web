@@ -223,7 +223,11 @@ namespace ECP_V2.WebApplication.Controllers
                     //luu file
                     if (uploadFile != null)
                     {
-
+                        var fileExtension = Path.GetExtension(uploadFile.FileName).ToLower();
+                        if (!FilesHelper.ExtenFile(fileExtension))
+                        {
+                            return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                        }
                         //objd.FileSize = file.ContentLength;
 
                         DateTime CreateDate = DateTime.Now;
@@ -482,7 +486,11 @@ namespace ECP_V2.WebApplication.Controllers
                         }
                         if (erd == "success" || lstCTBC != null)
                         {
-
+                            var fileExtension = Path.GetExtension(uploadFile.FileName).ToLower();
+                            if (!FilesHelper.ExtenFile(fileExtension))
+                            {
+                                return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                            }
                             //objd.FileSize = file.ContentLength;
 
                             DateTime CreateDate = DateTime.Now;

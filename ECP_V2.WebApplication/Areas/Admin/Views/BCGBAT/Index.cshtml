@@ -1,0 +1,622 @@
+﻿@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@{
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+    string apiFile = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
+    var userId = ViewBag.UserId;
+}
+
+
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>*@
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script> @*dùng dayjs*@
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/isoWeek.js"></script>
+<script>
+    dayjs.extend(dayjs_plugin_isoWeek);  // Kích hoạt plugin isoWeek
+</script>
+
+<input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
+<input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
+<input type="text" value="@Session["UserName"]" id="UserName" style="display:none">
+<input type="text" value="@Session["DonViID"].ToString()" id="DonViID" style="display:none">
+<h4><i id="IdBienBan" class="fa fa-bar-chart-o"> </i> Báo cáo giao ban an toàn</h4>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="form-group">
+                <label for="cbodonvi">Đơn vị:</label>
+                <select class="form-control" id="cboDonvi">
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <label for="cboLoai">Loại báo cáo:</label>
+            <select class="form-control" id="LoaiBaoCao" onchange="onchangeLoaiBaoCao(this)">
+                <option value="">Loại</option>
+                <option value="1">Tuần</option>
+                <option value="2">Tháng</option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <label for="ChonThoiGian">Chọn thời gian:</label>
+            <input type="text" id="ChonThoiGian" onchange="onchangeThoiGian()" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group" id="btnView" style="padding-top:28px;float:right; display:none">
+                <a class="mb-xs mt-xs mr-xs btn btn-primary viewDocBC" href="#modalAnimUpdateSoPhieu" style="cursor:pointer;width:100px ;height:28px;line-height:0; float: right;" id="xuatdoc123" type="button">
+                    <i class="fa fa-file-word-o"></i> &nbsp; Xem
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAnimUpdateSoPhieu" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide" style="max-width: 1200px; height: 100%;">
+        <section class="panel" style="width:100%; height:100%">
+            <header class="panel-heading">
+                <h2 class="panel-title">Biên bản giao ban an toàn </h2>
+                <button class="btn btn-default modal-dismiss" onclick="ClosePhieuCongTac()" id="modal-dismiss" style="position: absolute; right: 10px; top: 10px; font-size: 14px; font-weight: bold;">x</button>
+
+
+            </header>
+
+
+            <div class="panel-body" style="width: 100%; height: 70vh; padding: 5px 0 0 0">
+                <div class="modal-wrapper" style="width:100%; height:100%; padding:0">
+                    <iframe id="baocaoctwords" src="" width="100%" height="100%" style="background:url(/Content/Customs/loading-blue.gif) no-repeat center center; border:none;"></iframe>
+                </div>
+                <div id="thongTinBienBan" style="display:flex; color:#cdc11f">
+                    <div class="col-md-4 text-right">
+                        <div style="display:flex">Trạng thái: &nbsp;<p id="txtTrangThai" style="font-weight:bold"></p> </div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <div style="display:flex">Người thao tác: &nbsp;<p id="txtNguoiTrinh" style="font-weight:bold"></p> </div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <div style="display:flex">Thời gian thao tác: &nbsp;<p id="txtThoiGianTrinh" style="font-weight:bold"></p> </div>
+                    </div>
+                </div>
+                <div class="col-md-12 " style="background-color:white; padding:2px; display:flex; justify-content:right" id="btnThaoTac">
+                    <button class="btn btn-default " id="btnHuyTrinh" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(2)">Hủy trình</button>
+                    <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(4)">Ký duyệt</button>
+                    @*<a href="@Url.Action("KySo", "BCGBAT", new { url = "http://10.21.3.15:8202/4.FILES/PNGV00/FileBaoCaoAnToan/Dvibc-LLV.Tuan_14-01-2025.xlsx" })" download="signed_file.pdf">
+                            Tải file đã ký
+                        </a>*@
+                    <button class="btn btn-default " id="btnTraLai" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(3)">Trả lại</button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section JavaScriptOnePgae{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+}
+
+@section scriptsAdd {
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/jquery.tmpl.js"></script>
+
+    @*nghiệp vụ*@
+    <script src="~/Scripts/KTGS/js/util.js"></script>
+    <script src="~/Scripts/KTGS/js/service.js"></script>
+    <script src="~/Scripts/KTGS/js/bc_ktgs.js"></script>
+}
+<style>
+    .borders div {
+        border-right: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+
+    tr.group,
+    tr.group:hover {
+        background-color: #74b9ff !important;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        $("#ChonThoiGian").datepicker({
+            showWeek: true,
+            firstDay: 1,
+            dateFormat: "dd/mm/yy",
+            regional: "vi-VN",  // Đảm bảo sử dụng ngôn ngữ tiếng Việt
+            onClose: function (dateText, inst) {
+                var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                if (selectedDate) {
+                    const weekNumber = $.datepicker.iso8601Week(selectedDate); // Lấy số tuần
+                    const year = selectedDate.getFullYear(); // Lấy năm
+                    $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+                } else {
+                    $("#ChonThoiGian").val("");
+                }
+            }
+        });
+    });
+
+
+
+    $(function () {
+
+        $('a.viewDocBC').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in',
+            modal: true
+        }).click(async function (event) {
+
+            var thoiGian = $("#ChonThoiGian").val();
+            var TuanThang = "";
+            if (!thoiGian || thoiGian=="") {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Chọn thời gian!',
+                    type: 'error'
+                });
+                return false
+            }
+            else {
+            $('#modalAnimUpdateSoPhieu').modal('show');
+            var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
+            var tuNgay = "";
+            var denNgay = "";
+             if (loaiBaoCao == 2) {
+            var thoiGianParts = thoiGian.split('/');
+            var month = parseInt(thoiGianParts[0]);  // Tháng
+            var year = parseInt(thoiGianParts[1]);  // Năm
+
+            // Tính ngày đầu tháng và ngày cuối tháng
+            var firstDay = new Date(year, month - 1, 1);  // Ngày đầu tháng
+            var lastDay = new Date(year, month, 0);  // Ngày cuối tháng (ngày 0 của tháng tiếp theo)
+            tuNgay = formatDate(firstDay);
+            denNgay = formatDate(lastDay);
+            TuanThang = thoiGianParts[0];
+            $("#ngayBatDau").val(tuNgay.slice(6, 8));
+            $("#thangBatDau").val(tuNgay.slice(4, 6));
+            $("#ngayKetThuc").val(denNgay.slice(6, 8));
+            $("#thangKetThuc").val(denNgay.slice(4, 6));
+            $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+            Get_SoLuong_PLV('@donviId', tuNgay, denNgay )
+             }
+             else {
+            var regex = /Tuần (\d+) năm (\d{4})/;
+            var match = thoiGian.match(regex);
+
+            if (match) {
+                var weekNumber = parseInt(match[1]);  // Tuần thứ mấy
+                var year = parseInt(match[2]);  // Năm
+
+                // Tính ngày bắt đầu của tuần (Thứ Hai)
+                var startOfWeek = getStartOfWeek(year, weekNumber);
+                var endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // Ngày cuối tuần (Chủ Nhật)
+                tuNgay = formatDate(startOfWeek)
+                denNgay = formatDate(endOfWeek)
+                TuanThang = match[1];
+
+                $("#ngayBatDau").val(tuNgay.slice(6, 8));
+                $("#thangBatDau").val(tuNgay.slice(4, 6));
+                $("#ngayKetThuc").val(denNgay.slice(6, 8));
+                $("#thangKetThuc").val(denNgay.slice(4, 6));
+                $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+
+                Get_SoLuong_PLV ('@donviId', tuNgay, denNgay )
+                 }
+             else { console.log("Dữ liệu không hợp lệ"); }
+             }
+            DateFrom = $('#GioBd').val();
+            DateTo = $('#GioKt').val();
+            DonViId = $('#cboDonvi').val();
+            var soBienBanMax = await Get_SoBienBanMax_ByDonVi(DonViId);
+            var DateFrom = tuNgay.slice(6, 8) + "/" + tuNgay.slice(4, 6) + "/" + tuNgay.slice(0, 4);
+            var DateTo = denNgay.slice(6, 8) + "/" + denNgay.slice(4, 6) + "/" + denNgay.slice(0, 4);
+            var TrangThaiBienBan = 0;
+            var TenLoaiBaoCao = loaiBaoCao == 1 ? 'tuần' : "tháng";
+                $.ajax({
+                    url: '/BCGBAT/Get_BienBan_ByTime',
+                    method: 'GET',
+                    data: {
+                        loaiBaoCao: loaiBaoCao,
+                        tuanThang: TuanThang,
+                        nam: 2025,
+                        idDonVi: '@donviId'
+                    },
+                    success: function (response) {
+                        if (response.Data) {
+                            TrangThaiBienBan = response.Data[0].TrangThai;
+                        }
+                        if (response.success) {
+                            console.log('Dữ liệu nhận được:', response.Data[0]);
+                            var data = response.Data[0];
+                            const formattedDate = dayjs(data.NgayCapNhat, "MM/DD/YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+                            $("#IdBienBan").val(data.Id);
+                            $("#txtTrangThai").text(data.TenTrangThai);
+                            if (data.TrangThai == 1 || data.TrangThai == 4) {
+                                $("#btnThaoTac").css("display", "flex");
+                                $("#txtNguoiTrinh").text( data.HoTenNguoiTrinh)
+                                $("#txtThoiGianTrinh").text(formattedDate)
+                                $("#baocaoctwords").attr("src", '@apiFile' + data.URL_FileBienBan)
+                                if (data.TrangThai == 1) {
+                                    if ('@userId' == data.IdNguoiKy) {
+                                        $("#btnKySo").css("display", "flex");
+                                        $("#btnTraLai").css("display", "flex");
+                                    }
+                                    if ('@userId' == data.IdNguoiTrinhKy) {
+                                        $("#btnHuyTrinh").css("display", "flex");
+                                    }
+                                }
+                                else {
+                                        $("#btnThaoTac").css("display", "none");
+                                }
+                            }
+                            if (data.TrangThai == 3 || data.TrangThai== 2 ) {
+                                $("#txtNguoiTrinh").text(data.HoTenNguoiKy)
+                                $("#txtThoiGianTrinh").text(formattedDate)
+                               $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" +  DonViId  +
+                                   "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + data.Id + "&soBienBan=" + data.SoBienBan);
+                            }
+
+
+                        } else {
+                            $("#txtTrangThai").text("Chưa trình");
+                            $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + DateFrom + "&DateTo=" + DateTo + "&DonViId=" + DonViId  +
+                                "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0 + "&soBienBan=" + soBienBanMax);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý lỗi nếu có
+                        console.error('Có lỗi xảy ra:', error);
+                    }
+                });
+            }
+        })
+
+     });
+    let timeout;
+
+    //$.datepicker.regional["vi-VN"] = {
+    //    closeText: "Đóng",
+    //    prevText: "Trước",
+    //    nextText: "Sau",
+    //    currentText: "Hôm nay",
+    //    monthNames: ["Tháng một", "Tháng hai", "Tháng ba", "Tháng tư", "Tháng năm", "Tháng sáu", "Tháng bảy", "Tháng tám", "Tháng chín", "Tháng mười", "Tháng mười một", "Tháng mười hai"],
+    //    monthNamesShort: ["Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Mười một", "Mười hai"],
+    //    dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"],
+    //    dayNamesShort: ["CN", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy"],
+    //    dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+    //    weekHeader: "Tuần",
+    //    dateFormat: "dd/mm/yy",
+    //    firstDay: 1,
+    //    isRTL: false,
+    //    showMonthAfterYear: false,
+    //    yearSuffix: "",
+    //    showWeek: true,
+    //    onChangeMonthYear: function (year, month, inst) {
+    //        // Tính toán và hiển thị số tuần khi thay đổi tháng/năm
+    //        var selectedDate = new Date(year, month - 1, 1);  // Lấy ngày đầu tháng
+    //        var weekNumber = $.datepicker.iso8601Week(selectedDate);
+    //        console.log("Tuần: " + weekNumber);
+    //    }
+
+    //};
+    //$.datepicker.setDefaults($.datepicker.regional["vi-VN"]);
+
+    function onchangeThoiGian() {
+        var thoiGian = $("#ChonThoiGian").val();
+        console.log("check thời gian123", thoiGian)
+        if (thoiGian && thoiGian != "" && thoiGian != null) {
+            $("#btnView").css("display", "flex");
+        } else {
+            $("#btnView").css("display", "none");
+        }
+        var loaiBaoCao = $("#LoaiBaoCao").val()
+        if (loaiBaoCao == "1") {
+            if (thoiGian) {
+                var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                console.log("chek selectedDate", selectedDate)
+                if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+                    const weekNumber = dayjs(selectedDate).isoWeek();
+                    const year = selectedDate.getFullYear(); // Lấy năm
+                    $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+                } else {
+                    $("#ChonThoiGian").val("");
+                }
+            }
+        }
+        else {
+            if (thoiGian) {
+                var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                console.log("Check selectedDate", selectedDate);
+                if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+                    const formattedDate = dayjs(selectedDate).format("MM/YYYY");
+                    $("#ChonThoiGian").val(formattedDate);
+                } else {
+                    $("#ChonThoiGian").val("");
+                }
+            }
+        }
+    };
+
+    //// Thay đổi loại báo cáo
+    function onchangeLoaiBaoCao(element) {
+        var loaiBaoCao = $(element).val();
+        var thoiGianPicker = $("#ChonThoiGian");
+        // Xóa DatePicker cũ nếu có
+        if (thoiGianPicker.data('datepicker')) {
+            thoiGianPicker.datepicker("destroy");
+        }
+        console.log('Check loaiBaoCao', loaiBaoCao)
+        if (loaiBaoCao == "1") {
+            $(".txtThoiGianBC").text("tuần")
+            thoiGianPicker.val("")
+            // Cấu hình chọn tuần
+            thoiGianPicker.attr('placeholder', 'Chọn tuần');
+            //if (thoiGianPicker) {
+            //    console.log("chek thoiGianPicker", thoiGianPicker)
+
+            //    var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+            //    console.log("chek selectedDate", selectedDate)
+            //    if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+            //        const weekNumber = dayjs(selectedDate).isoWeek();
+            //        const year = selectedDate.getFullYear(); // Lấy năm
+            //        $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+            //    } else {
+            //        $("#ChonThoiGian").val("");
+            //    }
+            //    thoiGianPicker.datepicker({
+            //        showWeek: true,
+            //        firstDay: 1,
+            //        dateFormat: "mm/yy",
+            //        onClose: function (dateText, inst) {
+            //            var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+            //            if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+            //                const weekNumber = $.datepicker.iso8601Week(selectedDate); // Lấy số tuần
+            //                const year = selectedDate.getFullYear(); // Lấy năm
+            //                $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+            //            } else {
+            //                $("#ChonThoiGian").val("");
+            //            }
+            //        }
+            //    }).datepicker("show");
+
+            //}
+        } else if (loaiBaoCao == "2") {
+
+            $(".txtThoiGianBC").text("tháng")
+            thoiGianPicker.val("");
+            // Cấu hình chọn ngày bình thường
+            thoiGianPicker.attr('placeholder', 'Chọn ngày');
+            //if (thoiGianPicker) {
+            //    thoiGianPicker.datepicker({
+            //        dateFormat: "dd/mm/yy", // Định dạng ngày
+            //        onClose: function (dateText, inst) {
+            //            var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+            //            if (selectedDate) {
+            //                $("#ChonThoiGian").val($.datepicker.formatDate("mm/yy", selectedDate));
+            //            } else {
+            //                $("#ChonThoiGian").val("");
+            //            }
+            //        }
+            //    }).datepicker("show");
+            //}
+
+        } else {
+            thoiGianPicker.val("")
+            thoiGianPicker.attr('placeholder', 'Chọn thời gian');
+        }
+    }
+
+
+    function ShowData() {
+        var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
+        var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
+        var TuanThang = "";
+
+        if (loaiBaoCao == 2) {
+            var thoiGianParts = thoiGian.split('/');
+            var month = parseInt(thoiGianParts[0]);  // Tháng
+            var year = parseInt(thoiGianParts[1]);  // Năm
+
+            // Tính ngày đầu tháng và ngày cuối tháng
+            var firstDay = new Date(year, month - 1, 1);  // Ngày đầu tháng
+            var lastDay = new Date(year, month, 0);  // Ngày cuối tháng (ngày 0 của tháng tiếp theo)
+            var tuNgay = formatDate(firstDay)
+            var denNgay = formatDate(lastDay)
+            $("#ngayBatDau").val(tuNgay.slice(6, 8));
+            $("#thangBatDau").val(tuNgay.slice(4, 6));
+            $("#ngayKetThuc").val(denNgay.slice(6, 8));
+            $("#thangKetThuc").val(denNgay.slice(4, 6));
+            $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+            Get_SoLuong_PLV('@donviId', tuNgay, denNgay )
+        } else {
+            var regex = /Tuần (\d+) năm (\d{4})/;
+            var match = thoiGian.match(regex);
+
+            if (match) {
+                var weekNumber = parseInt(match[1]);  // Tuần thứ mấy
+                var year = parseInt(match[2]);  // Năm
+
+                // Tính ngày bắt đầu của tuần (Thứ Hai)
+                var startOfWeek = getStartOfWeek(year, weekNumber);
+                var endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // Ngày cuối tuần (Chủ Nhật)
+                var tuNgay = formatDate(startOfWeek)
+                var denNgay = formatDate(endOfWeek)
+                $("#ngayBatDau").val(tuNgay.slice(6, 8));
+                $("#thangBatDau").val(tuNgay.slice(4, 6));
+                $("#ngayKetThuc").val(denNgay.slice(6, 8));
+                $("#thangKetThuc").val(denNgay.slice(4, 6));
+                $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+
+                Get_SoLuong_PLV ('@donviId', tuNgay, denNgay )
+;
+            } else {
+                console.log("Dữ liệu không hợp lệ");
+            }
+        }
+    }
+
+    // Hàm để tính ngày đầu tuần (Thứ Hai) của một tuần trong năm
+    function getStartOfWeek(year, weekNumber) {
+        var date = new Date(year, 0, 1); // Bắt đầu từ ngày 1 tháng 1 của năm
+        var daysOffset = (date.getDay() === 0 ? 6 : date.getDay() - 1); // Điều chỉnh nếu ngày 1 tháng 1 là Chủ Nhật
+        date.setDate(date.getDate() - daysOffset); // Tính Thứ Hai đầu tiên của năm
+
+        // Thêm số tuần để đến tuần cần tính
+        date.setDate(date.getDate() + (weekNumber - 1) * 7);
+
+        return date;
+    }
+
+    // Hàm để định dạng ngày theo định dạng yyyymmdd
+    function formatDate(date) {
+        var year = date.getFullYear();
+        var month = ("0" + (date.getMonth() + 1)).slice(-2); // Đảm bảo tháng có 2 chữ số
+        var day = ("0" + date.getDate()).slice(-2); // Đảm bảo ngày có 2 chữ số
+        return year + month + day;
+    }
+
+
+    function Get_SoLuong_PLV(DonViID, ngayBatDau, ngayKetThuc) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            $.ajax({
+                url: '/BCKHLLV/Get_SoLuong_PLV_BaoCao',
+                type: 'GET',
+                data: {
+                    DonViID: DonViID,
+                    TuNgay: ngayBatDau,
+                    DenNgay: ngayKetThuc
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+                        $('#TongSoPhien').text(data.TongSoPhien);
+                        $('#TongSoPhienKeHoach').text(data.TongSoPhienKeHoach);
+                        $('#TongSoBoSung').text(data.TongSoBoSung);
+                        $('#TongSoDotXuat').text(data.TongSoDotXuat);
+                        $('#TongSoKTKS_TrucTiep').text(data.TongSoKTKS_TrucTiep);
+                        $('#TongSoKTKS_HinhAnh').text(data.TongSoKTKS_HinhAnh);
+                        $('#TyLePhanTram').text(data.TyLePhanTram);
+                    } else {
+                        console.log("Không có dữ liệu:", response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi AJAX:", error);
+                }
+            });
+        }, 2000);
+    };
+
+    function Get_SoBienBanMax_ByDonVi(DonViID) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/BCGBAT/Get_SoBienBanMax_ByDonVi',
+                type: 'GET',
+                data: { DonViID: DonViID },
+                success: function (response) {
+                    if (response.success) {
+                        resolve(response.data);
+                    } else {
+                        resolve(0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi AJAX:", error);
+                    reject(0); // Trả về 0 nếu có lỗi
+                }
+            });
+        });
+    }
+
+    function ClosePhieuCongTac() {
+        $("#txtTrangThai").text("");
+        $("#txtNguoiTrinh").text("");
+        $("#txtThoiGianTrinh").text("");
+        $("#baocaoctwords").attr("src", "");
+        $("#btnKySo").css("display", "none");
+        $("#btnTraLai").css("display", "none");
+        $("#btnHuyTrinh").css("display", "none");
+        $("#IdBienBan").val(0);
+        $.magnificPopup.close();
+    };
+
+    function Update_TrangThaiBienBanAnToan(trangThai) {
+        var Id = $("#IdBienBan").val()
+        $.ajax({
+            url: '/BCGBAT/HuyTrinh_TraLai_BienBanAnToan',
+            type: 'GET',
+            data: {
+                id: Id,
+                trangThai: trangThai
+            },
+            success: function (response) {
+                console.log("response ", response)
+                if (response.success) {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Thành công!',
+                        type: 'success'
+                    });
+                    setTimeout(function () {
+                        ClosePhieuCongTac();
+                    }, 500);
+                } else {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Lỗi!',
+                        type: 'error'
+                    });
+                }
+            },
+            error: function () {
+                alert('Đã có lỗi xảy ra, vui lòng thử lại.');
+            }
+        });
+    }
+
+    function KySo() {
+        var IdBienBan= $('#IdBienBan').val()
+        console.log("check IdBienBan", IdBienBan)
+
+        //var url = $("#baocaoctwords").attr("src");
+        //$.ajax({
+        //    url: '/BCGBAT/KySo',
+        //    type: 'GET',
+        //    data: { url: url },
+        //    success: function (response) {
+        //        console.log('Base64:', response);
+
+        //        if (response.success) {
+        //            console.log('Base64:', response.base64);
+
+        //        } else {
+        //            console.error("Lỗi: " + response.message);
+        //        }
+        //    },
+        //    error: function (xhr, status, error) {
+        //        console.error("Lỗi khi gọi API:", error);
+        //    }
+        //});
+    }
+
+</script>
+<script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>

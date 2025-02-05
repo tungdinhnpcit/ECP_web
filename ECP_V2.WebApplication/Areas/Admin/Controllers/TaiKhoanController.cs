@@ -341,7 +341,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateInput(false)]
-        public  ActionResult Add(NhanVienModel model)
+        public ActionResult Add(NhanVienModel model)
         {
             if (User.IsInRole("AdminDonVi"))
             {
@@ -379,13 +379,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             try
             {
-                if(model.ImageFile != null)
+                if (model.ImageFile != null)
                 {
                     Stream fs = model.ImageFile.InputStream;
                     BinaryReader br = new BinaryReader(fs);
                     byte[] bytes = br.ReadBytes((Int32)fs.Length);
                     model.ChuKySo = bytes;
-                }                
+                }
 
                 if (string.IsNullOrEmpty(model.TenNhanVien))
                 {
@@ -579,7 +579,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         [ValidateInput(false)]
         public async Task<ActionResult> Edit(NhanVienModel model)
         {
-            
+
             if (User.IsInRole("AdminDonVi"))
             {
                 var listDvi = _dv_ser.List().Where(x => x.Id.Equals(Session["DonViID"].ToString())).OrderBy(p => p.TenDonVi).ToList();
@@ -658,7 +658,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 user.UserName = model.UserName;
                 user.Email = model.Email;
                 user.PhoneNumber = model.SoDT;
-                
+
 
                 var userDienThoai = _kh_ser.GetByDienThoai(model.SoDT);
 
@@ -756,9 +756,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             nv.DiaChi = model.DiaChi;
                             nv.ChucVu = model.ChucVu;
                             nv.BacAnToan = model.BacAnToan;
-                            nv.Hsm_type= model.Hsm_type;
+                            nv.Hsm_type = model.Hsm_type;
                             nv.Hsm_serial = model.Hsm_serial;
-                            nv.NhaMangSDT= model.NhaMangSDT;
+                            nv.NhaMangSDT = model.NhaMangSDT;
 
                             if (model.ImageFile != null)
                             {
@@ -770,7 +770,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                             //eKH.NgaySinh = new DateTime(1988, 7, 3);
                             object x = _kh_ser.UpdateV2(nv, ref strError);
-                                                        
+
                             if (x == null)
                             {
                                 DisposeAll();
@@ -1013,9 +1013,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     if (file != null && file.ContentLength > 0)
                     {
-                        urlImg = @"/Images/UserImagesProfile/" + User.Identity.Name + "/" + Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName);
-
-                        file.SaveAs(Path.Combine(path, Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName)));
+                        string[] validExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".pdf", ".doc", ".docx" };
+                        string fileExtension = Path.GetExtension(file.FileName).ToLower(); // Lấy phần mở rộng tệp và chuyển về chữ thường
+                        if (validExtensions.Contains(fileExtension))
+                        {
+                            urlImg = @"/Images/UserImagesProfile/" + User.Identity.Name + "/" + Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName);
+                            file.SaveAs(Path.Combine(path, Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("ddMMyyhhmmsstt") + Path.GetExtension(file.FileName)));
+                        }
                     }
 
                     model.UrlImage = urlImg;

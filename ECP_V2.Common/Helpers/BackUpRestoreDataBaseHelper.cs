@@ -143,6 +143,7 @@ namespace ECP_V2.Common.Helpers
                 string[] files = System.IO.Directory.GetFiles(sourceFolder);
                 foreach (string file in files)
                 {
+
                     name = System.IO.Path.GetFileName(file);
                     dest = System.IO.Path.Combine(destFolder, name);
                     System.IO.File.Copy(file, dest);
