@@ -1,0 +1,10 @@
+-- Lấy danh sách phiếu đang thực hiện để chọn ở LCTGA
+
+SELECT b.NoiDung, b.SoPhieu
+  FROM [ECP_PN].[dbo].[plv_PhieuCongTac] b
+  inner join [ECP_PN].[dbo].[tblPhienLamViec] a on a.MaPCT = b.ID
+  where a.TrangThai = 2 
+  and SoPhieu is not null
+  and a.TT_Phien =2 order by a.NgayTao desc
+
+
