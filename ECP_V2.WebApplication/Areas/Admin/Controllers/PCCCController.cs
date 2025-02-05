@@ -15,6 +15,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -1120,7 +1121,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         public FilePathResult DownloadFile(string URL, string fileName)
         {
-            return File("/DocumentFiles/SoTheoDoiPCCC" + URL, "multipart/form-data", fileName);
+            Regex regex = new Regex(@"(\.\./)|(\.\.\\)");
+
+            if (regex.IsMatch(URL))
+            {
+                return null;
+            }
+            else
+            {
+                return File("/DocumentFiles/SoTheoDoiPCCC" + URL, "multipart/form-data", fileName);
+            }
         }
 
         public ActionResult BieuDoTron(string MaNhom)
