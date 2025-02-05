@@ -162,7 +162,6 @@ namespace ECP_V2.WebApplication.Controllers
             else
             {
                 #region LoginAD
-                bool bContinue = false;
                 bool bCheckAd = false;
                 string ldapServer = "npc.evnnpc.vn";
                 int ldapPort = 389; // Cổng LDAP (389 cho không mã hóa, 636 cho SSL)
@@ -184,6 +183,11 @@ namespace ECP_V2.WebApplication.Controllers
                 {
                     user = await UserManager.FindByNameAsync(model.UserName);
                     result = SignInStatus.Success;
+
+                    if (user != null)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: model.RememberMe, rememberBrowser: false);
+                    }
                 }
                 else
                 {
