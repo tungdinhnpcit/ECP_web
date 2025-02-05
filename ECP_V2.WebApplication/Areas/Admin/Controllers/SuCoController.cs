@@ -1579,7 +1579,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         public FilePathResult DownloadFile(string URL, string fileName)
         {
-            return File("/DocumentFiles/TaiLieuSuCo" + URL, "multipart/form-data", fileName);
+            Regex regex = new Regex(@"(\.\./)|(\.\.\\)");
+
+            if (regex.IsMatch(URL))
+            {
+                return null;
+            }
+            else
+            {
+                return File("/DocumentFiles/TaiLieuSuCo" + URL, "multipart/form-data", fileName);
+            }
         }
 
         public ActionResult DuyetAll(string id)

@@ -9,16 +9,16 @@ namespace ECP_V2.WebApplication.Helpers
     {
         private MenuOfRoleRepository _menuOfRole = new MenuOfRoleRepository();
         private IdentityManager idenM = new IdentityManager();
-
         public string MenuCode { get; set; }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             var listMenu = MenuCode.Split(';');
+            var check = false;
 
             var userId = (HttpContext.Current.Session["UserId"]).ToString();
             var role = idenM.GetRoleOfUserByType(userId, 1);
-            var check = false;
+
 
 
             int roleView;
@@ -33,7 +33,6 @@ namespace ECP_V2.WebApplication.Helpers
             {
                 roleView = 2;
             }
-
             foreach (var item in listMenu)
             {
                 var tmp = _menuOfRole.CheckRole(role, item, roleView);
@@ -44,7 +43,7 @@ namespace ECP_V2.WebApplication.Helpers
                 }
             }
 
-            return true;
+
 
             return check;
         }
