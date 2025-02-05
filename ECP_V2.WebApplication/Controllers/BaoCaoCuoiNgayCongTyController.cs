@@ -238,6 +238,15 @@ namespace ECP_V2.WebApplication.Controllers
                         {
                             return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                         }
+                        string mimeType = FilesHelper.GetMimeType(uploadFile);
+                        if (!FilesHelper.IsValidMimeType(mimeType))
+                        {
+                            return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                        }
+                        if (!FilesHelper.IsValidFileSignature(uploadFile))
+                        {
+                            return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
+                        }
                         //objd.FileSize = file.ContentLength;
 
                         DateTime CreateDate = DateTime.Now;
@@ -427,6 +436,15 @@ namespace ECP_V2.WebApplication.Controllers
                             if (!FilesHelper.ExtenFile(fileExtension))
                             {
                                 return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                            }
+                            string mimeType = FilesHelper.GetMimeType(uploadFile);
+                            if (!FilesHelper.IsValidMimeType(mimeType))
+                            {
+                                return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                            }
+                            if (!FilesHelper.IsValidFileSignature(uploadFile))
+                            {
+                                return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
                             }
                             //objd.FileSize = file.ContentLength;
 

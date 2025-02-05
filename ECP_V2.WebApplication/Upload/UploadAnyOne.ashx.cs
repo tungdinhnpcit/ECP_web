@@ -19,6 +19,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ECP_V2.Common.Helpers;
 using ECP_V2.WebApplication.Helpers;
+using static System.Net.WebRequestMethods;
+using NPOI.SS.Util;
 
 namespace ECP_V2.WebApplication.Upload
 {
@@ -199,6 +201,7 @@ namespace ECP_V2.WebApplication.Upload
                 List<tblImage> listIMG = new List<tblImage>();
                 for (int i = 0; i < context.Request.Files.Count; i++)
                 {
+
                     try
                     {
                         int imgId = 0;
@@ -219,7 +222,7 @@ namespace ECP_V2.WebApplication.Upload
                         img.IsDelete = false;
                         string extension = Path.GetExtension(file.FileName).ToLower();
 
-                        if (!FilesHelper.ExtenFile(extension))
+                        if (!FilesHelper.ExtenFile(extension) || !FilesHelper.IsValidMimeType(file.ContentType))
                         {
                             continue;
                         }

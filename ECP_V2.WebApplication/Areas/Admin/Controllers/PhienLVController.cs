@@ -45,6 +45,7 @@ using System.Web.Helpers;
 using System.Web.Mvc;
 //using System.Web.Services.Description;
 using System.Web.UI.WebControls;
+using WebGrease.Activities;
 using static ECP_V2.WebApplication.Models.ImageModel;
 using static NPOI.HSSF.Util.HSSFColor;
 using static System.Net.WebRequestMethods;
@@ -2747,7 +2748,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
 
                 byte[] image = new byte[file.ContentLength];
+                string mimeType = file.ContentType.ToLower();
+                if (mimeType != "application/pdf")
+                {
+                    return Json("Chỉ cho phép ký file PDF!", JsonRequestBehavior.AllowGet);
 
+                }
                 if (file != null && file.ContentLength > 0)
                 {
                     using (BinaryReader reader = new BinaryReader(file.InputStream))
@@ -2808,9 +2814,26 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             byte[] imageBytes = Convert.FromBase64String(base64File);
 
+            // Kiểm tra PDF
+            if (!IsPdfFile(imageBytes))
+            {
+                return false;
+            }
             System.IO.File.WriteAllBytes(imgPath, imageBytes);
 
             return true;
+        }
+        public static bool IsPdfFile(byte[] fileBytes)
+        {
+            // PDF phải có ít nhất 4 byte
+            if (fileBytes.Length < 4)
+                return false;
+
+            // Magic number của PDF: 25 50 44 46 (ASCII: %PDF)
+            return fileBytes[0] == 0x25 &&
+                   fileBytes[1] == 0x50 &&
+                   fileBytes[2] == 0x44 &&
+                   fileBytes[3] == 0x46;
         }
 
         //Hàm lưu thông tin file ký số BBKS

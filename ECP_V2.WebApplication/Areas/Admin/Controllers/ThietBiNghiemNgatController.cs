@@ -237,6 +237,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         {
                                             return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                         }
+                                        string mimeType = FilesHelper.GetMimeType(ad);
+                                        if (!FilesHelper.IsValidMimeType(mimeType))
+                                        {
+                                            return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                        }
+                                        if (!FilesHelper.IsValidFileSignature(ad))
+                                        {
+                                            return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
+                                        }
                                         var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                         if (int.Parse(tl.ToString()) != 0)
                                         {
@@ -719,6 +728,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                                if (!FilesHelper.IsValidFileSignature(ad))
+                                {
+                                    return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
+                                }
                                 var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -991,6 +1009,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     if (!FilesHelper.ExtenFile(objtl.Kieu))
                                     {
                                         return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                                    }
+                                    string mimeType = FilesHelper.GetMimeType(ad);
+                                    if (!FilesHelper.IsValidMimeType(mimeType))
+                                    {
+                                        return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                    }
+                                    if (!FilesHelper.IsValidFileSignature(ad))
+                                    {
+                                        return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
                                     }
                                     var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                     if (int.Parse(tl.ToString()) != 0)
