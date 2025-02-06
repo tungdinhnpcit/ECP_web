@@ -71,7 +71,6 @@ namespace ECP_V2.WebApplication.Util
                     FileInfo fi2 = new FileInfo(filePath);
                     if (fi2.Exists)
                     {
-
                         try
                         {
                             string fileExtension = fi2.Extension.ToLower();

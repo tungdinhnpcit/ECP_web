@@ -2597,12 +2597,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             {
                                 return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                             }
-                            string mimeType = FilesHelper.GetMimeType(ad);
+                            string mimeType = FilesHelper.GetMimeType(file);
                             if (!FilesHelper.IsValidMimeType(mimeType))
                             {
                                 return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
                             }
-                            if (!FilesHelper.IsValidFileSignature(ad))
+                            if (!FilesHelper.IsValidFileSignature(file))
                             {
                                 return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
                             }

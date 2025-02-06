@@ -171,17 +171,19 @@ namespace ECP_V2.WebApplication.Controllers
                 try
                 {
                     ldapConnection.AuthType = AuthType.Basic; // Xác thực cơ bản
-                    ldapConnection.Bind(new NetworkCredential(model.UserName, model.Password)); // Xác thực với thông tin username và password
+                    ldapConnection.Bind(new NetworkCredential(model.UserName, model.Password));
                     bCheckAd = true;
                     #endregion
                 }
                 catch (Exception e)
                 {
+
                 }
 
                 if (bCheckAd) // LoginAD
                 {
                     user = await UserManager.FindByNameAsync(model.UserName);
+
                     result = SignInStatus.Success;
 
                     if (user != null)
