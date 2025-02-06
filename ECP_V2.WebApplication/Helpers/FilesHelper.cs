@@ -127,7 +127,7 @@ namespace ECP_V2.WebApplication.Helpers
                 {
                     break;
                 }
-               
+
                 string fileExtension = Path.GetExtension(file.FileName).ToLower();
                 if (!validExtensions.Contains(fileExtension))
                 {
@@ -135,7 +135,7 @@ namespace ECP_V2.WebApplication.Helpers
                     resultList.Add(new ViewDataUploadFilesResult { name = file.FileName });
                     continue; // Tiếp tục với tệp khác
                 }
-               
+
                 if (string.IsNullOrEmpty(headers["X-File-Name"]))
                 {
 
@@ -199,7 +199,7 @@ namespace ECP_V2.WebApplication.Helpers
             return allowedMimeTypes.Contains(mimeType);
         }
 
- 
+
 
         private void UploadWholeFile(HttpContextBase requestContext, List<ViewDataUploadFilesResult> statuses)
         {
@@ -245,6 +245,18 @@ namespace ECP_V2.WebApplication.Helpers
             var request = requestContext.Request;
             if (request.Files.Count != 1) throw new HttpRequestValidationException("Attempt to upload chunked file containing more than one fragment per request");
             var file = request.Files[0];
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            if (!FilesHelper.ExtenFile(fileExtension))
+            {
+                throw new HttpRequestValidationException("Unsupported file extension");
+            }
+            var mimeType = file.ContentType.ToLower();
+            if (!FilesHelper.IsValidMimeType(mimeType))
+            {
+                throw new InvalidOperationException("Unsupported file!");
+            }
+           
+           
             var inputStream = file.InputStream;
             String patchOnServer = Path.Combine(StorageRoot);
             var fullName = Path.Combine(patchOnServer, Path.GetFileName(file.FileName));
