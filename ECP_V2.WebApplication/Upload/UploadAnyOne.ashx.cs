@@ -19,7 +19,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ECP_V2.Common.Helpers;
 using ECP_V2.WebApplication.Helpers;
-using static System.Net.WebRequestMethods;
 using NPOI.SS.Util;
 
 namespace ECP_V2.WebApplication.Upload
