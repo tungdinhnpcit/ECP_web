@@ -171,17 +171,38 @@ namespace ECP_V2.WebApplication.Controllers
                 try
                 {
                     ldapConnection.AuthType = AuthType.Basic; // Xác thực cơ bản
-                    ldapConnection.Bind(new NetworkCredential(model.UserName, model.Password)); // Xác thực với thông tin username và password
+                    ldapConnection.Bind(new NetworkCredential(model.UserName, model.Password));
                     bCheckAd = true;
                     #endregion
                 }
                 catch (Exception e)
                 {
+
                 }
 
                 if (bCheckAd) // LoginAD
                 {
-                    user = await UserManager.FindByNameAsync(model.UserName);
+                    AspNetUser aspNetUser = await aspNetUserRepository.GetByUserNameADAsync(model.UserName);
+                    if (aspNetUser == null)
+                        return null;
+
+                    user = new ApplicationUser
+                    {
+                        Id = aspNetUser.Id,
+                        UserName = aspNetUser.UserName,
+                        Email = aspNetUser.Email,
+                        EmailConfirmed = aspNetUser.EmailConfirmed,
+                        PasswordHash = aspNetUser.PasswordHash,
+                        SecurityStamp = aspNetUser.SecurityStamp,
+                        PhoneNumber = aspNetUser.PhoneNumber,
+                        PhoneNumberConfirmed = aspNetUser.PhoneNumberConfirmed,
+                        TwoFactorEnabled = aspNetUser.TwoFactorEnabled,
+                        LockoutEndDateUtc = aspNetUser.LockoutEndDateUtc,
+                        LockoutEnabled = aspNetUser.LockoutEnabled,
+                        AccessFailedCount = aspNetUser.AccessFailedCount,
+                    };
+
+                    //user = await UserManager.FindByNameAsync(model.UserName);
                     result = SignInStatus.Success;
 
                     if (user != null)

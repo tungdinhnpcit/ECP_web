@@ -133,9 +133,9 @@ namespace ECP_V2.WebApplication.Upload
         private void DeleteFile(HttpContext context)
         {
             var filePath = StorageRoot + context.Request["f"];
-            if (File.Exists(filePath))
+            if (System.IO.File.Exists(filePath))
             {
-                File.Delete(filePath);
+                System.IO.File.Delete(filePath);
             }
         }
 
@@ -322,7 +322,7 @@ namespace ECP_V2.WebApplication.Upload
             var filename = context.Request["f"];
             var filePath = StorageRoot + filename;
 
-            if (File.Exists(filePath))
+            if (System.IO.File.Exists(filePath))
             {
                 context.Response.AddHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
                 context.Response.ContentType = "application/octet-stream";
