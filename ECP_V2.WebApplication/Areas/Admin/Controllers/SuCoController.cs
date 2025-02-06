@@ -2589,7 +2589,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             {
                                 return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
                             }
-                           
+
                             var tl = _tailieu_kiennghi_ser.Create(objtl, ref strError);
 
                            
