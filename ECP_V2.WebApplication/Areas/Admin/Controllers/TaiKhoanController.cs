@@ -1018,10 +1018,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
                         }
-                        if (!FilesHelper.IsValidFileSignature(file))
-                        {
-                            return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
-                        }
+                      
                         string[] validExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".pdf", ".doc", ".docx" };
                         string fileExtension = Path.GetExtension(file.FileName).ToLower(); // Lấy phần mở rộng tệp và chuyển về chữ thường
                         if (validExtensions.Contains(fileExtension))

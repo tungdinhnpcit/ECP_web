@@ -360,10 +360,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
                 }
-                if (!FilesHelper.IsValidFileSignature(file))
-                {
-                    return Json(new { success = false, message = "Invalid file signature" }, JsonRequestBehavior.AllowGet);
-                }
+               
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);

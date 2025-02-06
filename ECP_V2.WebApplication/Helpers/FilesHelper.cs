@@ -127,10 +127,7 @@ namespace ECP_V2.WebApplication.Helpers
                 {
                     break;
                 }
-                if (!FilesHelper.IsValidFileSignature(file))
-                {
-                    break;
-                }
+               
                 string fileExtension = Path.GetExtension(file.FileName).ToLower();
                 if (!validExtensions.Contains(fileExtension))
                 {
@@ -202,49 +199,7 @@ namespace ECP_V2.WebApplication.Helpers
             return allowedMimeTypes.Contains(mimeType);
         }
 
-        //Check byte magic 
-        public static bool IsValidFileSignature(HttpPostedFileBase file)
-        {
-            if (file == null || file.ContentLength == 0)
-                return false;
-
-            // Đọc 8 byte đầu tiên của file để kiểm tra chữ ký
-            byte[] fileHeader = new byte[8];
-            using (var stream = file.InputStream)
-            {
-                stream.Read(fileHeader, 0, fileHeader.Length);
-            }
-
-            // Danh sách chữ ký tệp hợp lệ (Magic Number)
-            var validSignatures = new Dictionary<string, byte[][]>
-            {
-                { ".pdf",  new byte[][] { new byte[] { 0x25, 0x50, 0x44, 0x46 } } }, // PDF (%PDF)
-                { ".doc",  new byte[][] { new byte[] { 0xD0, 0xCF, 0x11, 0xE0 } } }, // DOC (OLE)
-                { ".xls",  new byte[][] { new byte[] { 0xD0, 0xCF, 0x11, 0xE0 } } }, // XLS (OLE)
-                { ".docx", new byte[][] { new byte[] { 0x50, 0x4B, 0x03, 0x04 } } }, // DOCX (ZIP-based)
-                { ".xlsx", new byte[][] { new byte[] { 0x50, 0x4B, 0x03, 0x04 } } }, // XLSX (ZIP-based)
-                { ".jpg",  new byte[][] { new byte[] { 0xFF, 0xD8, 0xFF } } }, // JPG (JFIF/EXIF)
-                { ".jpeg", new byte[][] { new byte[] { 0xFF, 0xD8, 0xFF } } }, // JPEG
-                { ".png",  new byte[][] { new byte[] { 0x89, 0x50, 0x4E, 0x47 } } }, // PNG (‰PNG)
-                { ".tiff", new byte[][] { new byte[] { 0x49, 0x49, 0x2A, 0x00 }, new byte[] { 0x4D, 0x4D, 0x00, 0x2A } } }, // TIFF (Little/Big Endian)
-                { ".rar",  new byte[][] { new byte[] { 0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00 } } }, // RAR (Rar!)
-                { ".zip",  new byte[][] { new byte[] { 0x50, 0x4B, 0x03, 0x04 } } }, // ZIP
-            };
-
-            string fileExtension = Path.GetExtension(file.FileName).ToLower();
-
-            if (validSignatures.ContainsKey(fileExtension))
-            {
-                foreach (var signature in validSignatures[fileExtension])
-                {
-                    if (fileHeader.Take(signature.Length).SequenceEqual(signature))
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
+ 
 
         private void UploadWholeFile(HttpContextBase requestContext, List<ViewDataUploadFilesResult> statuses)
         {
