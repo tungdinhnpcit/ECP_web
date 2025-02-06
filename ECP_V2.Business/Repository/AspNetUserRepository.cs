@@ -1,4 +1,5 @@
-﻿using ECP_V2.Business.UnitOfWork;
+﻿using Dapper;
+using ECP_V2.Business.UnitOfWork;
 using ECP_V2.Common.Helpers;
 using ECP_V2.DataAccess;
 using System;
@@ -14,6 +15,8 @@ namespace ECP_V2.Business.Repository
     public class AspNetUserRepository : RepositoryBase<AspNetUser>
     {
         static string DBName { get; set; }
+        public string connectionString;
+
         public AspNetUserRepository()
             : base()
         {
@@ -21,6 +24,8 @@ namespace ECP_V2.Business.Repository
             {
                 var connection = new SqlConnection(Context.Database.Connection.ConnectionString);
                 DBName = connection.Database;
+                var con = new SqlConnection(Context.Database.Connection.ConnectionString);
+                connectionString = con.ConnectionString;
             }
             catch (Exception ex)
             { }
@@ -180,5 +185,33 @@ namespace ECP_V2.Business.Repository
         {
             throw new NotImplementedException();
         }
+        public async Task<AspNetUser> GetByUserNameADAsync(string userNameAD)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"select b.* from 
+                           tblNhanVien a inner join AspNetUsers b on a.Id= b.Id 
+                           WHERE UPPER(a.UserAD) = @userNameAD";
+
+                    var aspNetUser = await connection.QueryFirstOrDefaultAsync<AspNetUser>(
+                        sql,
+                        new { userNameAD = userNameAD.ToUpper() }
+                    );
+
+                    return aspNetUser;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+
     }
 }

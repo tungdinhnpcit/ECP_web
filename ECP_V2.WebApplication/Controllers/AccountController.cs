@@ -182,8 +182,27 @@ namespace ECP_V2.WebApplication.Controllers
 
                 if (bCheckAd) // LoginAD
                 {
-                    user = await UserManager.FindByNameAsync(model.UserName);
+                    AspNetUser aspNetUser = await aspNetUserRepository.GetByUserNameADAsync(model.UserName);
+                    if (aspNetUser == null)
+                        return null;
 
+                    user = new ApplicationUser
+                    {
+                        Id = aspNetUser.Id,
+                        UserName = aspNetUser.UserName,
+                        Email = aspNetUser.Email,
+                        EmailConfirmed = aspNetUser.EmailConfirmed,
+                        PasswordHash = aspNetUser.PasswordHash,
+                        SecurityStamp = aspNetUser.SecurityStamp,
+                        PhoneNumber = aspNetUser.PhoneNumber,
+                        PhoneNumberConfirmed = aspNetUser.PhoneNumberConfirmed,
+                        TwoFactorEnabled = aspNetUser.TwoFactorEnabled,
+                        LockoutEndDateUtc = aspNetUser.LockoutEndDateUtc,
+                        LockoutEnabled = aspNetUser.LockoutEnabled,
+                        AccessFailedCount = aspNetUser.AccessFailedCount,
+                    };
+
+                    //user = await UserManager.FindByNameAsync(model.UserName);
                     result = SignInStatus.Success;
 
                     if (user != null)
