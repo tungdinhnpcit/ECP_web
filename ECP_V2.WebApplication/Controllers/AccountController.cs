@@ -182,10 +182,11 @@ namespace ECP_V2.WebApplication.Controllers
 
                 if (bCheckAd) // LoginAD
                 {
-                    AspNetUser aspNetUser = await aspNetUserRepository.GetByUserNameADAsync(model.UserName);
+                    
+                    var dataTblNhanVien = await aspNetUserRepository.Get_InfoUserAsync(model.UserName);
+                    AspNetUser aspNetUser = await aspNetUserRepository.GetByUserNameADAsync(dataTblNhanVien.UserName);
                     if (aspNetUser == null)
                         return null;
-
                     user = new ApplicationUser
                     {
                         Id = aspNetUser.Id,
@@ -215,7 +216,7 @@ namespace ECP_V2.WebApplication.Controllers
                     user = await UserManager.FindAsync(model.UserName, model.Password);
                     result = SignInManager.PasswordSignIn(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
                 }
-               
+
 
                 /// Check User
                 if (user != null && user.LockoutEndDateUtc != null)
@@ -247,9 +248,9 @@ namespace ECP_V2.WebApplication.Controllers
                             //Lấy thông tin mã đơn vị theo user
                             ECP_V2.Business.Repository.NhanVienRepository _ser_nvien = new Business.Repository.NhanVienRepository();
                             string strErr = "";
-                            string dviId = _ser_nvien.GetDonViByUser(model.UserName, ref strErr);
+                            string dviId = _ser_nvien.GetDonViByUser(user.UserName, ref strErr);
                             Session["DonViID"] = dviId;
-                            var getNhanVien = _ser_nvien.GetByUserName(model.UserName);
+                            var getNhanVien = _ser_nvien.GetByUserName(user.UserName);
                             Session["UserId"] = "";
                             Session["PhongBanId"] = 0;
                             Session["UserName"] = "";
@@ -259,7 +260,7 @@ namespace ECP_V2.WebApplication.Controllers
                             {
                                 Session["UserId"] = getNhanVien.Id;
                                 Session["PhongBanId"] = getNhanVien.PhongBanId == null ? 0 : getNhanVien.PhongBanId;
-                                Session["UserName"] = model.UserName;
+                                Session["UserName"] = user.UserName;
                                 Session["HoTen"] = getNhanVien.TenNhanVien;
                                 Session["UrlImage"] = !string.IsNullOrEmpty(getNhanVien.UrlImage) ? getNhanVien.UrlImage : "/Content/Customs/icon-user-default.png";
                             }
@@ -267,7 +268,7 @@ namespace ECP_V2.WebApplication.Controllers
                             string trangThai = "Đăng Nhập";
                             var data = WebConfigurationManager.AppSettings["PageSize"].ToString();
                             string IP = Request.UserHostAddress;
-                            AddAspNetUserHistoryViewModel(model.UserName, trangThai, IP);
+                            AddAspNetUserHistoryViewModel(user.UserName, trangThai, IP);
                             return RedirectToLocal(returnUrl);
                         }
                     case SignInStatus.LockedOut:

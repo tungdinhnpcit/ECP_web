@@ -185,7 +185,7 @@ namespace ECP_V2.Business.Repository
         {
             throw new NotImplementedException();
         }
-        public async Task<AspNetUser> GetByUserNameADAsync(string userNameAD)
+        public async Task<AspNetUser> GetByUserNameADAsync(string UserName)
         {
             try
             {
@@ -195,7 +195,31 @@ namespace ECP_V2.Business.Repository
 
                     string sql = @"select b.* from 
                            tblNhanVien a inner join AspNetUsers b on a.Id= b.Id 
-                           WHERE UPPER(a.UserAD) = @userNameAD";
+                           WHERE UPPER(a.Username) = @UserName";
+
+                    var aspNetUser = await connection.QueryFirstOrDefaultAsync<AspNetUser>(
+                        sql,
+                        new { UserName = UserName.ToUpper() }
+                    );
+
+                    return aspNetUser;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public async Task<AspNetUser> Get_InfoUserAsync(string userNameAD)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string sql = @"select * from tblNhanVien 
+                           WHERE UPPER(UserAD) = @userNameAD";
 
                     var aspNetUser = await connection.QueryFirstOrDefaultAsync<AspNetUser>(
                         sql,
@@ -210,7 +234,6 @@ namespace ECP_V2.Business.Repository
                 return null;
             }
         }
-
 
 
     }

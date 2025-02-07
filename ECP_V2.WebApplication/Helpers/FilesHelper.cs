@@ -155,7 +155,7 @@ namespace ECP_V2.WebApplication.Helpers
             string[] DSFile = { "pdf", "doc", "xls", "xlsx", "docx", "jpg", "jpeg", "png", "tiff", "rar", "zip" };
             string extension = exten.Replace(".", "").ToLower();
 
-            if (DSFile.Contains(exten.Replace(".", "")))
+            if (DSFile.Contains(extension))
             {
                 return true;
             }

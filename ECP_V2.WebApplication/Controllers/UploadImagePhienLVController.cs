@@ -274,7 +274,7 @@ namespace ECP_V2.WebApplication.Controllers
                             }
                             #endregion
 
-                            string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
+                            //string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
 
                             // Lấy phần mở rộng của file
                             string fileExtension = Path.GetExtension(file.FileName).ToLower();
@@ -313,6 +313,7 @@ namespace ECP_V2.WebApplication.Controllers
                             var user = identityManager.GetUser(User.Identity.Name);
 
                             tblImage model = new tblImage();
+                            string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + uploadfilename;
 
                             model.Url = url;
                             model.Note = "C";
