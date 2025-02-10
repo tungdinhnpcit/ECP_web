@@ -3239,8 +3239,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
 
             var pdfKq = JsonConvert.DeserializeObject<ResponseDataX>(kq);
-
-            return Json(pdfKq.Data.ToString(), JsonRequestBehavior.AllowGet);
+            var data = pdfKq.Data.ToString();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -14476,21 +14476,23 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 string errorUpdatePhieuCongTac = "";
                 plv_PhieuCongTac phieuCongTacObj = _pcongtac_ser.GetById(int.Parse(Id));
-                phieuCongTacObj.MaTT = 1;
-                phieuCongTacObj.NgayDuyet = null;
-                phieuCongTacObj.NguoiDuyet = null;
-
-                int idPhieuCongTac = (int)_pcongtac_ser.Update(phieuCongTacObj, ref errorUpdatePhieuCongTac);
                 string phieuLenh = " [ Phiếu Công Tác ] ";
                 if (phieuCongTacObj.MaLP == 2)
                 {
                     phieuLenh = " [ Lệnh Công Tác ] ";
                 }
-
                 if (phieuCongTacObj.SoPhieu != null)
                 {
                     return Json(new { success = false, responseText = "Không thể hủy do " + phieuLenh + " đã cấp số." }, JsonRequestBehavior.AllowGet);
                 }
+                phieuCongTacObj.MaTT = 1;
+                phieuCongTacObj.NgayDuyet = null;
+                phieuCongTacObj.NguoiDuyet = null;
+
+                int idPhieuCongTac = (int)_pcongtac_ser.Update(phieuCongTacObj, ref errorUpdatePhieuCongTac);
+               
+
+               
 
                 if (idPhieuCongTac > 0)
                 {
