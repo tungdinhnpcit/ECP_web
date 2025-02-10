@@ -27,6 +27,8 @@ namespace ECP_V2.WebApplication.Controllers
         private SystemConfigRepository systemConfigRepository = new SystemConfigRepository();
         private AspNetUserRepository aspNetUserRepository = new AspNetUserRepository();
         private AspNetUserHistoryRepository _aspNetUserHistoryRepository = new AspNetUserHistoryRepository();
+        private NhanVienRepository _kh_ser = new NhanVienRepository();
+
         //private DirectoryRequest searchRequest;
 
         public AccountController()
@@ -182,8 +184,10 @@ namespace ECP_V2.WebApplication.Controllers
 
                 if (bCheckAd) // LoginAD
                 {
-                    
+
                     var dataTblNhanVien = await aspNetUserRepository.Get_InfoUserAsync(model.UserName);
+                    //tblNhanVien User = _kh_ser.GetByUserName(model.UserName);
+
                     AspNetUser aspNetUser = await aspNetUserRepository.GetByUserNameADAsync(dataTblNhanVien.UserName);
                     if (aspNetUser == null)
                         return null;

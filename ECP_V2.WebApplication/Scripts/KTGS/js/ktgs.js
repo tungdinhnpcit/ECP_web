@@ -14,7 +14,7 @@
         $('#cbothang').html(html);
 
         html = "";
-        for (i = 0; i < util.donvis.length; ++i) {
+        for (i = 0; i < util.donvis.length; ++i) { 
             if (i == 0) {
                 html += "<option select value=" + util.donvis[i].ma_dviqly + ">" + util.donvis[i].ten_donvi + "</option>";
             } else {

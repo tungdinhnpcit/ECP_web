@@ -678,14 +678,19 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 if (exSign.Equals("ERROR"))
                 {
-                    DisposeAll();
+                    //DisposeAll();
 
                     //return JsonError("Cập nhật chưa đúng alias/serial ký số EVNCA.");
                     SetNotification("Cập nhật chưa đúng alias/serial ký số EVNCA.", NotificationEnumeration.Error, true);
-                    return View(model);
+                    strError = "Cập nhật chưa đúng alias/serial ký số EVNCA.";
+                    //return View(model);
+                }
+                else
+                {
+                    aspNetUserRepository.Update(user, ref strErrorUser);
+
                 }
 
-                aspNetUserRepository.Update(user, ref strErrorUser);
 
                 if (string.IsNullOrEmpty(strErrorUser))
                 {
@@ -773,21 +778,22 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                             if (x == null)
                             {
-                                DisposeAll();
 
                                 NLoger.Error("loggerDatabase", "Không sửa được bản ghi:" + strError);
+                                DisposeAll();
                                 //return JsonError("Không sửa được bản ghi: " + strError);
                                 SetNotification("Không sửa được bản ghi: " + strError, NotificationEnumeration.Error, true);
                                 return View(model);
                             }
                             else
                             {
+                                NLoger.Error("loggerDatabase", "Sửa bản ghi thành công:" + strError);
                                 DisposeAll();
-
                                 //NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} thêm nhân viên {1} thành công", User.Identity.Name, eKH.TenNhanVien));
                                 //return JsonSuccess(Url.Action("Index"), "Sửa bản ghi thành công!");
-                                SetNotification("Sửa bản ghi thành công!", NotificationEnumeration.Success, true);
-                                return RedirectToAction("Index");
+                                SetNotification("Sửa bản ghi thành công!"+ strError, NotificationEnumeration.Success, true);
+                                return View(model);
+                                //return RedirectToAction("Index");
 
                             }
                         }
