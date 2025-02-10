@@ -89,11 +89,8 @@
     <Compile Include="Repository\atvs_DanhMucRepository.cs" />
     <Compile Include="Repository\atvs_KeHoachRepository.cs" />
     <Compile Include="Repository\atvs_KetQuaRepository.cs" />
-<<<<<<< HEAD
     <Compile Include="Repository\LCTGARepository.cs" />
-=======
     <Compile Include="Repository\BaoCaoAnToanRepository.cs" />
->>>>>>> DEV_TuanAnh
     <Compile Include="Repository\bcbs_ChiTieuRepository.cs" />
     <Compile Include="Repository\bcbs_LichSuRepository.cs" />
     <Compile Include="Repository\bcbs_NoiDungRepository.cs" />

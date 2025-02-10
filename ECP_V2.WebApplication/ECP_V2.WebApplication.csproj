@@ -4849,17 +4849,14 @@
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachPLVChuaKiemTra.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\ViewBienBanQDKTKS.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachChuTriGiaoBan.cshtml" />
-<<<<<<< HEAD
     <Content Include="Areas\Admin\Views\LCTGA\_HistoryModal.cshtml" />
     <Content Include="Areas\Admin\Views\LCTGA\Index.cshtml" />
-=======
     <Content Include="Areas\Admin\Views\PhienLV\_ListCTHT.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\_Partial_ListCTHT.cshtml" />
     <Content Include="Content\MauNhapLieu\HPPC\Ctybc-LLV.Tuan2.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Admin\Views\BCGBAT\Index.cshtml" />
->>>>>>> DEV_TuanAnh
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
