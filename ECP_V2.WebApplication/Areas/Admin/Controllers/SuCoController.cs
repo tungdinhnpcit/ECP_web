@@ -812,11 +812,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                                 //objtl.Ten = ad.FileName;
                                 string Kieu = System.IO.Path.GetExtension(ad.FileName);
-
                                 if (!FilesHelper.ExtenFile(Kieu))
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                              
                                 var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -857,6 +862,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
+                               
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                                
                                 var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -1443,6 +1455,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                                
                                 var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -1484,7 +1502,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
-
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                               
                                 var tl = _tlieu_SuCo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -1579,7 +1602,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         public FilePathResult DownloadFile(string URL, string fileName)
         {
-            return File("/DocumentFiles/TaiLieuSuCo" + URL, "multipart/form-data", fileName);
+            Regex regex = new Regex(@"(\.\./)|(\.\.\\)");
+
+            if (regex.IsMatch(URL))
+            {
+                return null;
+            }
+            else
+            {
+                return File("/DocumentFiles/TaiLieuSuCo" + URL, "multipart/form-data", fileName);
+            }
         }
 
         public ActionResult DuyetAll(string id)
@@ -2548,12 +2580,19 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             objtl.Description = file.FileName;
                             string Kieu = System.IO.Path.GetExtension(file.FileName);
 
-                            var tl = _tailieu_kiennghi_ser.Create(objtl, ref strError);
-
                             if (!FilesHelper.ExtenFile(Kieu))
                             {
                                 return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                             }
+                            string mimeType = FilesHelper.GetMimeType(file);
+                            if (!FilesHelper.IsValidMimeType(mimeType))
+                            {
+                                return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                            }
+
+                            var tl = _tailieu_kiennghi_ser.Create(objtl, ref strError);
+
+                           
                             if (int.Parse(tl.ToString()) != 0)
                             {
                                 var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(file.FileName);

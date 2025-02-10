@@ -14,6 +14,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -264,12 +265,20 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                             objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                             objtl.MaSo = objs.ID;
 
-                                            var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
-
                                             if (!FilesHelper.ExtenFile(objtl.Kieu))
                                             {
                                                 return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                             }
+                                            string mimeType = FilesHelper.GetMimeType(ad);
+                                            if (!FilesHelper.IsValidMimeType(mimeType))
+                                            {
+                                                return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                            }
+                                           
+
+                                            var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+
+                                           
                                             if (int.Parse(tl.ToString()) != 0)
                                             {
                                                 var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
@@ -792,12 +801,18 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 objtl.Ten = ad.FileName;
                                 objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                 objtl.MaSo = objs.ID;
-
-                                var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                 if (!FilesHelper.ExtenFile(objtl.Kieu))
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                              
+                                var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                               
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
                                     var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
@@ -1049,11 +1064,18 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     objtl.Kieu = System.IO.Path.GetExtension(ad.FileName);
                                     objtl.MaSo = objs.ID;
 
-                                    var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                     if (!FilesHelper.ExtenFile(objtl.Kieu))
                                     {
                                         return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                     }
+                                    string mimeType = FilesHelper.GetMimeType(ad);
+                                    if (!FilesHelper.IsValidMimeType(mimeType))
+                                    {
+                                        return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                    }
+                                  
+                                    var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
+                                    
                                     if (int.Parse(tl.ToString()) != 0)
                                     {
                                         var fileName = tl.ToString() + "_" + string.Format("{0:HH_mm_ss_dd_MM_yyyy}", DateTime.Now) + System.IO.Path.GetExtension(ad.FileName);
@@ -1119,7 +1141,20 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         public FilePathResult DownloadFile(string URL, string fileName)
         {
-            return File("/DocumentFiles/SoTheoDoiCCDCAT" + URL, "multipart/form-data", fileName);
+          
+
+            // Biểu thức chính quy phát hiện "../" hoặc "..\"
+            Regex regex = new Regex(@"(\.\./)|(\.\.\\)");
+
+            if (regex.IsMatch(URL))
+            {
+                return null;
+            }
+            else
+            {
+                return File("/DocumentFiles/SoTheoDoiCCDCAT" + URL, "multipart/form-data", fileName);
+            }
+                
         }
 
         [HasCredential(MenuCode = "BDCCDC;BieuDoCCDC;BDCCLD")]

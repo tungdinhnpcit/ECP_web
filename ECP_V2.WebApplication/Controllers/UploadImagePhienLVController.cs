@@ -1,6 +1,7 @@
 ﻿using ECP_V2.Business.Repository;
 using ECP_V2.Common.Helpers;
 using ECP_V2.DataAccess;
+using ECP_V2.WebApplication.Helpers;
 using ECP_V2.WebApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -273,7 +274,21 @@ namespace ECP_V2.WebApplication.Controllers
                             }
                             #endregion
 
-                            string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
+                            //string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
+
+                            // Lấy phần mở rộng của file
+                            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+                            // Kiểm tra xem phần mở rộng của file có hợp lệ không
+                            if (!FilesHelper.ExtenFile(fileExtension))
+                            {
+                                throw new InvalidOperationException("Unsupported file extension.");
+                            }
+                            var mimeType = file.ContentType.ToLower();
+                            if (!FilesHelper.IsValidMimeType(mimeType))
+                            {
+                                throw new InvalidOperationException("Unsupported file!");
+                            }
 
                             var uploadfilename = DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
                             Stream streamObj = file.InputStream;
@@ -298,6 +313,7 @@ namespace ECP_V2.WebApplication.Controllers
                             var user = identityManager.GetUser(User.Identity.Name);
 
                             tblImage model = new tblImage();
+                            string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + uploadfilename;
 
                             model.Url = url;
                             model.Note = "C";

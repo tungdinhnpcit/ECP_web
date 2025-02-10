@@ -14,6 +14,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -236,6 +237,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         {
                                             return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                         }
+                                        string mimeType = FilesHelper.GetMimeType(ad);
+                                        if (!FilesHelper.IsValidMimeType(mimeType))
+                                        {
+                                            return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                        }
+                                       
                                         var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                         if (int.Parse(tl.ToString()) != 0)
                                         {
@@ -718,6 +725,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                 }
+                                string mimeType = FilesHelper.GetMimeType(ad);
+                                if (!FilesHelper.IsValidMimeType(mimeType))
+                                {
+                                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                }
+                               
                                 var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                 if (int.Parse(tl.ToString()) != 0)
                                 {
@@ -991,6 +1004,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     {
                                         return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
                                     }
+                                    string mimeType = FilesHelper.GetMimeType(ad);
+                                    if (!FilesHelper.IsValidMimeType(mimeType))
+                                    {
+                                        return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                                    }
+                                    
                                     var tl = _TaiLieuSo_ser.Create(objtl, ref strError);
                                     if (int.Parse(tl.ToString()) != 0)
                                     {
@@ -1057,7 +1076,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         public FilePathResult DownloadFile(string URL, string fileName)
         {
-            return File("/DocumentFiles/SoTheoDoiTBNN" + URL, "multipart/form-data", fileName);
+            Regex regex = new Regex(@"(\.\./)|(\.\.\\)");
+
+            if (regex.IsMatch(URL))
+            {
+                return null;
+            }
+            else
+            {
+                return File("/DocumentFiles/SoTheoDoiTBNN" + URL, "multipart/form-data", fileName);
+            }
         }
 
         public ActionResult BieuDoTron()

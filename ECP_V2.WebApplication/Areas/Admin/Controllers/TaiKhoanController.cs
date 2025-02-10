@@ -1013,6 +1013,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     if (file != null && file.ContentLength > 0)
                     {
+                        string mimeType = FilesHelper.GetMimeType(file);
+                        if (!FilesHelper.IsValidMimeType(mimeType))
+                        {
+                            return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                        }
+                      
                         string[] validExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".pdf", ".doc", ".docx" };
                         string fileExtension = Path.GetExtension(file.FileName).ToLower(); // Lấy phần mở rộng tệp và chuyển về chữ thường
                         if (validExtensions.Contains(fileExtension))

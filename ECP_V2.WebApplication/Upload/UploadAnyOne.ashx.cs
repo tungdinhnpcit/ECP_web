@@ -19,6 +19,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ECP_V2.Common.Helpers;
 using ECP_V2.WebApplication.Helpers;
+using NPOI.SS.Util;
 
 namespace ECP_V2.WebApplication.Upload
 {
@@ -132,9 +133,9 @@ namespace ECP_V2.WebApplication.Upload
         private void DeleteFile(HttpContext context)
         {
             var filePath = StorageRoot + context.Request["f"];
-            if (File.Exists(filePath))
+            if (System.IO.File.Exists(filePath))
             {
-                File.Delete(filePath);
+                System.IO.File.Delete(filePath);
             }
         }
 
@@ -199,6 +200,7 @@ namespace ECP_V2.WebApplication.Upload
                 List<tblImage> listIMG = new List<tblImage>();
                 for (int i = 0; i < context.Request.Files.Count; i++)
                 {
+
                     try
                     {
                         int imgId = 0;
@@ -219,7 +221,7 @@ namespace ECP_V2.WebApplication.Upload
                         img.IsDelete = false;
                         string extension = Path.GetExtension(file.FileName).ToLower();
 
-                        if (!FilesHelper.ExtenFile(extension))
+                        if (!FilesHelper.ExtenFile(extension) || !FilesHelper.IsValidMimeType(file.ContentType))
                         {
                             continue;
                         }
@@ -320,7 +322,7 @@ namespace ECP_V2.WebApplication.Upload
             var filename = context.Request["f"];
             var filePath = StorageRoot + filename;
 
-            if (File.Exists(filePath))
+            if (System.IO.File.Exists(filePath))
             {
                 context.Response.AddHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
                 context.Response.ContentType = "application/octet-stream";
