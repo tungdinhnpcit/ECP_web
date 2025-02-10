@@ -836,6 +836,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             {
                                 if (phieuCongTac != null)
                                 {
+                                    //Update thêm người cấp phiếu
+                                    phieuCongTac.NguoiCapPhieu_Id = NguoiCapPhieu_Id;
+                                    phieuCongTac.NguoiCapPhieu = NguoiCapPhieu;
+
                                     phieuCongTac.NoiDung = plv.NoiDung;
                                     phieuCongTac.MaLP = PhieuLenh;
                                     _plviec_ser.Context.SaveChanges();
@@ -857,6 +861,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 phieuCongTac.NgayTao = DateTime.Now;
                                 phieuCongTac.NguoiTao = User.Identity.Name;
                                 phieuCongTac.DonViId = plv.DonViId;
+                                
+                                //Update thêm người cấp phiếu
+                                phieuCongTac.NguoiCapPhieu_Id = NguoiCapPhieu_Id;
+                                phieuCongTac.NguoiCapPhieu = NguoiCapPhieu;
 
                                 _plviec_ser.Context.plv_PhieuCongTac.Add(phieuCongTac);
                                 _plviec_ser.Context.SaveChanges();
