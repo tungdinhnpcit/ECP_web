@@ -2118,7 +2118,8 @@
                 success: function (data) {
 
                     $("#contentKyso").empty();
-                    if (data == "") {
+                    if (data == "" || data == " |  | ") {
+                        $("#contentKyso").append("Chưa ký số");
 
                     }
                     else {

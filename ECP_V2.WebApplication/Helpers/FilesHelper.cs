@@ -6,6 +6,7 @@ using System.Net;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
+using System.Web.Mvc;
 
 namespace ECP_V2.WebApplication.Helpers
 {
@@ -111,6 +112,7 @@ namespace ECP_V2.WebApplication.Helpers
             Directory.CreateDirectory(fullPath);
             // Create new folder for thumbs
             Directory.CreateDirectory(fullPath + "/thumbs/");
+            string[] validExtensions = { ".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".doc", ".docx", ".xls", ".xlsx" };
 
             foreach (String inputTagName in httpRequest.Files)
             {
@@ -118,7 +120,21 @@ namespace ECP_V2.WebApplication.Helpers
                 var headers = httpRequest.Headers;
 
                 var file = httpRequest.Files[inputTagName];
+
                 System.Diagnostics.Debug.WriteLine(file.FileName);
+                string mimeType = FilesHelper.GetMimeType(file);
+                if (!FilesHelper.IsValidMimeType(mimeType))
+                {
+                    break;
+                }
+
+                string fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (!validExtensions.Contains(fileExtension))
+                {
+                    // Nếu phần mở rộng không hợp lệ, trả về thông báo lỗi
+                    resultList.Add(new ViewDataUploadFilesResult { name = file.FileName });
+                    continue; // Tiếp tục với tệp khác
+                }
 
                 if (string.IsNullOrEmpty(headers["X-File-Name"]))
                 {
@@ -132,6 +148,57 @@ namespace ECP_V2.WebApplication.Helpers
                 }
             }
         }
+        // Check extension
+        public static bool ExtenFile(string exten)
+        {
+            //min 8 chars
+            string[] DSFile = { "pdf", "doc", "xls", "xlsx", "docx", "jpg", "jpeg", "png", "tiff", "rar", "zip" };
+            string extension = exten.Replace(".", "").ToLower();
+
+            if (DSFile.Contains(extension))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string GetMimeType(HttpPostedFileBase file)
+        {
+            try
+            {
+                return MimeMapping.GetMimeMapping(file.FileName);
+            }
+            catch
+            {
+                return "application/octet-stream"; // Trả về mặc định nếu không xác định được
+            }
+        }
+        //check mime type
+        public static bool IsValidMimeType(string mimeType)
+        {
+            // Danh sách MIME Type hợp lệ
+            var allowedMimeTypes = new HashSet<string>
+            {
+                "application/pdf",
+                "application/msword", // .doc
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+                "application/vnd.ms-excel", // .xls
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+                "image/jpeg", // .jpg, .jpeg
+                "image/png", // .png
+                "image/tiff", // .tiff
+                "application/x-rar-compressed", // .rar
+                "application/zip", // .zip
+                "application/x-zip-compressed", // Một số hệ thống dùng kiểu này cho .zip
+                "multipart/x-zip" // Một số hệ thống khác cũng dùng kiểu này cho .zip
+            };
+
+            return allowedMimeTypes.Contains(mimeType);
+        }
+
 
 
         private void UploadWholeFile(HttpContextBase requestContext, List<ViewDataUploadFilesResult> statuses)
@@ -178,6 +245,18 @@ namespace ECP_V2.WebApplication.Helpers
             var request = requestContext.Request;
             if (request.Files.Count != 1) throw new HttpRequestValidationException("Attempt to upload chunked file containing more than one fragment per request");
             var file = request.Files[0];
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            if (!FilesHelper.ExtenFile(fileExtension))
+            {
+                throw new HttpRequestValidationException("Unsupported file extension");
+            }
+            var mimeType = file.ContentType.ToLower();
+            if (!FilesHelper.IsValidMimeType(mimeType))
+            {
+                throw new InvalidOperationException("Unsupported file!");
+            }
+           
+           
             var inputStream = file.InputStream;
             String patchOnServer = Path.Combine(StorageRoot);
             var fullName = Path.Combine(patchOnServer, Path.GetFileName(file.FileName));

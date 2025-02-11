@@ -217,6 +217,12 @@ namespace ECP_V2.WebApplication.Models
             var um = new UserManager<ApplicationUser>(
                 new UserStore<ApplicationUser>(new ApplicationDbContext()));
             var user = um.FindByName(userName);
+            // Bổ sung kiểm tra nếu tồn tại role thì trả về true
+            if (um.IsInRole(user.Id, roleName))
+            {
+                return true;
+            }
+
             var idResult = um.AddToRole(user.Id, roleName);
             return idResult.Succeeded;
         }

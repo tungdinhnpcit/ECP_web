@@ -351,7 +351,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 string fileExtension = System.IO.Path.GetExtension(file.FileName);
 
                 var folder = Server.MapPath("~/Content/MauNhapLieu/CTHL/AnhThe/");
-
+                if (!FilesHelper.ExtenFile(fileExtension))
+                {
+                    return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                }
+                string mimeType = FilesHelper.GetMimeType(file);
+                if (!FilesHelper.IsValidMimeType(mimeType))
+                {
+                    return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                }
+               
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);

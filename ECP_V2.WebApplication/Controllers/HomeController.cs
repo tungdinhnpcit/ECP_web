@@ -173,7 +173,7 @@ namespace ECP_V2.WebApplication.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         public ActionResult Index(bool? error = null)
         {
             if (User.Identity.IsAuthenticated)
