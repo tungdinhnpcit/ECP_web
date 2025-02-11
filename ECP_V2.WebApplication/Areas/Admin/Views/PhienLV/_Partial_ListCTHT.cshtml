@@ -7,7 +7,7 @@
 }
 @foreach (var item in items)
 {
-  
+
     i = i + 1;
     var comments = ECP_V2.Business.Repository.CommentRepository.GetCommentByPienLVId(item.Id);
     string style = item.TrangThai_KHLLV == 2 ? "BoSung" : "DaDuyet";
@@ -170,7 +170,9 @@
         </td>
 
         <td class="actions" style="width:10%">
-            @if (item.TrangThai_KHLLV == 1)
+            @if (item.TrangThai_KHLLV == 1
+                //|| item.TrangThai_KHLLV == 2
+                )
             {
                 <a id="khllvDLT_" href="#modalAnimDeleteKHLLV" title="Xóa kế hoạch" data="@item.KeHoachLV_Id" class="on-default remove-row deleteKhLLV" )">
                     <i class="fa fa-times" style="font-size: 25px; cursor: pointer; color: red;"></i>

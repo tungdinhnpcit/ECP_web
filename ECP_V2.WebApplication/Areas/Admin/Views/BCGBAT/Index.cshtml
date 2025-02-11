@@ -127,21 +127,39 @@
 <script>
 
     $(document).ready(function () {
+        $("#ChonThoiGian").val(""); 
         $("#ChonThoiGian").datepicker({
             showWeek: true,
             firstDay: 1,
             dateFormat: "dd/mm/yy",
             regional: "vi-VN",  // Đảm bảo sử dụng ngôn ngữ tiếng Việt
             onClose: function (dateText, inst) {
-                var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                var selectedDate = $(this).datepicker("getDate");
                 if (selectedDate) {
-                    const weekNumber = $.datepicker.iso8601Week(selectedDate); // Lấy số tuần
-                    const year = selectedDate.getFullYear(); // Lấy năm
-                    $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+                    const weekNumber = dayjs(selectedDate).isoWeek();
+                    const year = selectedDate.getFullYear();
+                    $(this).val("Tuần " + weekNumber + " năm " + year);
                 } else {
-                    $("#ChonThoiGian").val("");
+                    $(this).val(""); // Không chọn gì thì để trống
                 }
             }
+        });
+        $.datepicker.setDefaults({
+            closeText: "Đóng",
+            prevText: "Trước",
+            nextText: "Sau",
+            currentText: "Hôm nay",
+            monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+                "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+            monthNamesShort: ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6",
+                "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"],
+            dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+            weekHeader: "Tuần",
+            dateFormat: "mm/yy",
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ""
         });
     });
 
@@ -329,27 +347,26 @@
         var loaiBaoCao = $("#LoaiBaoCao").val()
         if (loaiBaoCao == "1") {
             if (thoiGian) {
-                var selectedDate = $("#ChonThoiGian").datepicker("getDate");
-                console.log("chek selectedDate", selectedDate)
-                if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
-                    const weekNumber = dayjs(selectedDate).isoWeek();
-                    const year = selectedDate.getFullYear(); // Lấy năm
-                    $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
-                } else {
-                    $("#ChonThoiGian").val("");
-                }
+                //var selectedDate = thoiGian.datepicker("getDate");
+                //if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+                //    const weekNumber = dayjs(selectedDate).isoWeek();
+                //    const year = selectedDate.getFullYear(); // Lấy năm
+                //    thoiGian.val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+                //} else {
+                //    thoiGian.val("");
+                //}
             }
         }
         else {
             if (thoiGian) {
-                var selectedDate = $("#ChonThoiGian").datepicker("getDate");
-                console.log("Check selectedDate", selectedDate);
-                if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
-                    const formattedDate = dayjs(selectedDate).format("MM/YYYY");
-                    $("#ChonThoiGian").val(formattedDate);
-                } else {
-                    $("#ChonThoiGian").val("");
-                }
+                //var selectedDate = thoiGian.datepicker("getDate");
+                //console.log("Check selectedDate", selectedDate);
+                //if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+                //    const formattedDate = dayjs(selectedDate).format("MM/YYYY");
+                //    thoiGian.val(formattedDate);
+                //} else {
+                //    thoiGian.val("");
+                //}
             }
         }
     };
@@ -358,70 +375,54 @@
     function onchangeLoaiBaoCao(element) {
         var loaiBaoCao = $(element).val();
         var thoiGianPicker = $("#ChonThoiGian");
-        // Xóa DatePicker cũ nếu có
+
         if (thoiGianPicker.data('datepicker')) {
             thoiGianPicker.datepicker("destroy");
         }
-        console.log('Check loaiBaoCao', loaiBaoCao)
-        if (loaiBaoCao == "1") {
-            $(".txtThoiGianBC").text("tuần")
-            thoiGianPicker.val("")
-            // Cấu hình chọn tuần
-            thoiGianPicker.attr('placeholder', 'Chọn tuần');
-            //if (thoiGianPicker) {
-            //    console.log("chek thoiGianPicker", thoiGianPicker)
 
-            //    var selectedDate = $("#ChonThoiGian").datepicker("getDate");
-            //    console.log("chek selectedDate", selectedDate)
-            //    if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
-            //        const weekNumber = dayjs(selectedDate).isoWeek();
-            //        const year = selectedDate.getFullYear(); // Lấy năm
-            //        $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
-            //    } else {
-            //        $("#ChonThoiGian").val("");
-            //    }
-            //    thoiGianPicker.datepicker({
-            //        showWeek: true,
-            //        firstDay: 1,
-            //        dateFormat: "mm/yy",
-            //        onClose: function (dateText, inst) {
-            //            var selectedDate = $("#ChonThoiGian").datepicker("getDate");
-            //            if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
-            //                const weekNumber = $.datepicker.iso8601Week(selectedDate); // Lấy số tuần
-            //                const year = selectedDate.getFullYear(); // Lấy năm
-            //                $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
-            //            } else {
-            //                $("#ChonThoiGian").val("");
-            //            }
-            //        }
-            //    }).datepicker("show");
+        thoiGianPicker.val("").attr('placeholder', 'Chọn thời gian');
 
-            //}
-        } else if (loaiBaoCao == "2") {
+        if (loaiBaoCao == "1") {  // Chọn tuần
+            $(".txtThoiGianBC").text("tuần");
+            thoiGianPicker.attr('placeholder', 'Chọn tuần').datepicker({
+                showWeek: true,
+                firstDay: 1,
+                dateFormat: "dd/mm/yy",
+                regional: "vi-VN",  // Đảm bảo sử dụng ngôn ngữ tiếng Việt
+                onClose: function () {
+                    var selectedDate = thoiGianPicker.datepicker("getDate");
+                    if (selectedDate) {
+                        const weekNumber = dayjs(selectedDate).isoWeek();
+                        const year = selectedDate.getFullYear(); // Lấy năm
+                        thoiGianPicker.val(`Tuần ${weekNumber} năm ${year}`);
+                    } else {
+                        thoiGianPicker.val("");
+                    }
+                }
+            }).datepicker("show");
 
-            $(".txtThoiGianBC").text("tháng")
-            thoiGianPicker.val("");
-            // Cấu hình chọn ngày bình thường
-            thoiGianPicker.attr('placeholder', 'Chọn ngày');
-            //if (thoiGianPicker) {
-            //    thoiGianPicker.datepicker({
-            //        dateFormat: "dd/mm/yy", // Định dạng ngày
-            //        onClose: function (dateText, inst) {
-            //            var selectedDate = $("#ChonThoiGian").datepicker("getDate");
-            //            if (selectedDate) {
-            //                $("#ChonThoiGian").val($.datepicker.formatDate("mm/yy", selectedDate));
-            //            } else {
-            //                $("#ChonThoiGian").val("");
-            //            }
-            //        }
-            //    }).datepicker("show");
-            //}
-
+        } else if (loaiBaoCao == "2") {  // Chọn tháng
+            $(".txtThoiGianBC").text("tháng");
+            thoiGianPicker.attr('placeholder', 'Chọn tháng').datepicker({
+                dateFormat: "mm/yy",
+                //changeMonth: true,
+                //changeYear: true,
+                showButtonPanel: true,
+                regional: "vi-VN", 
+                onClose: function () {
+                    var selectedDate = thoiGianPicker.datepicker("getDate");
+                    if (selectedDate) {
+                        //thoiGianPicker.val(datepicker.formatDate("mm/yy", selectedDate));
+                    } else {
+                        thoiGianPicker.val("");
+                    }
+                }
+            }).datepicker("show");
         } else {
-            thoiGianPicker.val("")
-            thoiGianPicker.attr('placeholder', 'Chọn thời gian');
+            $(".txtThoiGianBC").text("thời gian");
         }
     }
+
 
 
     function ShowData() {

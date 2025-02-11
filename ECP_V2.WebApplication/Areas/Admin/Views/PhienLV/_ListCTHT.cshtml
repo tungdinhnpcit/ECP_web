@@ -681,19 +681,19 @@
                                                                         .OrderBy(x => x.KeHoachLV_Id)
                                                                         .ToList();
                                                 <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
-                                                    <td colspan="18">
+                                                    <td colspan="24">
                                                         <span class="h5">@ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(@group.Key)</span>
                                                     </td>
                                                 </tr>
 
                                                 <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
-                                                    <td colspan="18">
+                                                    <td colspan="24">
                                                         <span class="h5">KIỂM TRA THEO KẾ HOẠCH</span>
                                                     </td>
                                                 </tr>
                                                 @Html.Partial("_Partial_ListCTHT", dataKeHoach)
                                                 <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
-                                                    <td colspan="18">
+                                                    <td colspan="24">
                                                         <span class="h5">KIỂM TRA Bổ SUNG</span>
                                                     </td>
                                                 </tr>

@@ -174,12 +174,12 @@
                     <th>
                         Thay đổi (nếu có), lý do thay đổi
                     </th>
-                    @*<th>
+                    <th>
                         Hình thức kiểm tra hiện trường
                     </th>
                     <th>
                         Đại diện Đoàn KT hiện trường
-                    </th>*@
+                    </th>
                     <th>
                         Trạng thái
                     </th>
@@ -648,7 +648,7 @@
                 </td>
 
                 @*2 cột kế hoạch lịch làm việc*@
-                <!--<td class="radioStyle" onlyone="1">
+                <td class="radioStyle" onlyone="1">
                     <span id="spanHinhThucKiemTra_@item.Id">@(tenHinhThucKT)</span>
                     <span>
                         @Html.TextArea("HinhThucKiemTra_" + (string)item.Id.ToString(), tenHinhThucKT, new { @class = "PhieuLenh_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Hình thức kiểm tra hiện trường", @datasourceidname = "listhinhthuckt", @dataempid = (loaiHinhThucKT > 0 ? loaiHinhThucKT.ToString() : "") })
@@ -661,7 +661,7 @@
                         @Html.TextArea("NguoiDaiDienKT_" + (string)item.Id.ToString(), (string)item.NguoiDaiDienKT, new { @class = "LanhDaoCongViec_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Đại diện đoàn KT hiện trường", @datasourceidname = "listlanhdaocongviec", @dataempid = item.LanhDaoCongViec_Id, @searchbox = "1" })
                     </span>
                     <div class="multiselect-wap"></div>
-                </td>-->
+                </td>
                 @*end kế hoạch*@
 
                 <td class="text-center" style="text-align:center">
