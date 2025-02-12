@@ -3298,7 +3298,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         private async Task<string> LogInApi(string dv)
         {
             string url = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
-            string path = url + "api/v1/Auth/ECPAuth";
+            string path = url + "api/v1/Auth/GetToken";
             string kq = "";
             string pwd = "Dungpv123";
             string s = "{\r\n  \"UserName\": \"" + Session["UserName"].ToString() + "\",\r\n  \"Password\": \"" + pwd + "\",\r\n  \"ID_DV\": \"" + dv + "\"\r\n}";
