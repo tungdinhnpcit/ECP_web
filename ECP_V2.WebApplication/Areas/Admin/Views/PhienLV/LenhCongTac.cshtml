@@ -10,6 +10,8 @@
         phieuCongTac = ViewBag.PhieuCongTac;
     }
 
+    string TenLanhDaoDuyet = TempData["TenLanhDaoDuyet"] != null ? TempData["TenLanhDaoDuyet"].ToString() : "";
+  
     List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV = null;
     List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV3 = null;
     List<ECP_V2.DataAccess.plv_ThuocTinhPhien> listThuocTinhPhienLV4 = null;
@@ -245,16 +247,16 @@
                             <span class="multiselect-wap"></span>
                         </span>
                         @*@if (lstTram != null && lstTram.Count > 0)
-        {
-            <p class=MsoNormal style='margin-top:2.0pt;text-align:center'>
-                <b>
-                    <span class="selectboxv1 radio-style" onlyone="1">
-                        <input style="width: 260px; font-size:12px" name="txtTop_Tram" value="@(phieuCongTac.TramId > 0 ? (lstTram.FirstOrDefault(x => x.Id == phieuCongTac.TramId).TenPB) : "")" data-id="@phieuCongTac.TramId" searchbox="1" datasourceidname="lstTram" class="Tram_SelectEmp input-style input-style1 selectbox-control" id="txtTop_Tram" type="text" placeholder="chọn trạm………………………" autocomplete="off" />
-                        <span class="multiselect-wap"></span>
-                    </span>
-                </b>
-            </p>
-        }   *@
+                            {
+                                <p class=MsoNormal style='margin-top:2.0pt;text-align:center'>
+                                    <b>
+                                        <span class="selectboxv1 radio-style" onlyone="1">
+                                            <input style="width: 260px; font-size:12px" name="txtTop_Tram" value="@(phieuCongTac.TramId > 0 ? (lstTram.FirstOrDefault(x => x.Id == phieuCongTac.TramId).TenPB) : "")" data-id="@phieuCongTac.TramId" searchbox="1" datasourceidname="lstTram" class="Tram_SelectEmp input-style input-style1 selectbox-control" id="txtTop_Tram" type="text" placeholder="chọn trạm………………………" autocomplete="off" />
+                                            <span class="multiselect-wap"></span>
+                                        </span>
+                                    </b>
+                                </p>
+                            }   *@
                     </td>
                     <td style="width: 300px; vertical-align: top; text-align:center" valign="top">
                         <b>
@@ -278,7 +280,7 @@
                         {
                             <div style="width:100%;text-align:center">
                                 <img src="~/Content/images/check-128.png" style="width:30px;height:30px" />
-                                <p style="font-style:italic;padding:0px 0px; margin:0px 0px;">LĐ đã duyệt - @string.Format("{0:dd/MM/yyyy HH:mm}", phieuCongTac.NgayDuyet)</p>
+                                <p style="font-style:italic;padding:0px 0px; margin:0px 0px;">@(TenLanhDaoDuyet) - @string.Format("{0:dd/MM/yyyy HH:mm}", phieuCongTac.NgayDuyet)</p>
                             </div>
                         }
                     </td>
@@ -357,10 +359,10 @@
         </p>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px; text-align: left;">Danh sách nhân viên đơn vị công tác và thay đổi người <em>(nếu có)</em>:</p>
         <div class="rheaderTB1">
-                <div class="row" style="margin-left:6px">
-                    <button class="tbnThemDong tbnThemDongTB1 col-md-3" onclick="addRowTB1()">Thêm dòng</button>
-                    <button class="tbnXoaDong tbnXoaDongTB1 col-md-3" onclick="removeRowTB1()">Xóa dòng</button>
-                </div>
+            <div class="row" style="margin-left:6px">
+                <button class="tbnThemDong tbnThemDongTB1 col-md-3" onclick="addRowTB1()">Thêm dòng</button>
+                <button class="tbnXoaDong tbnXoaDongTB1 col-md-3" onclick="removeRowTB1()">Xóa dòng</button>
+            </div>
             <div id="divtb1" align="center" style="margin-bottom:3px;margin-top:5px;font-size:17px;text-align:left; resize:both;overflow:auto;width:90%;height:300px">
                 <table class="tb1 table-resizable" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:none;margin-left: 5px;">
                     <thead>
@@ -567,10 +569,10 @@
         </p>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;">Danh sách nhân viên đơn vị công tác và thay đổi người <em>(nếu có)</em>:</p>
         <div class="rheaderTB2">
-                <div class="row" style="margin-left:6px">
-                    <button class="tbnThemDong tbnThemDongTB2 col-md-3" onclick="addRowTB2()">Thêm dòng</button>
-                    <button class="tbnXoaDong tbnXoaDongTB2 col-md-3" onclick="removeRowTB2()">Xóa dòng</button>
-                </div>
+            <div class="row" style="margin-left:6px">
+                <button class="tbnThemDong tbnThemDongTB2 col-md-3" onclick="addRowTB2()">Thêm dòng</button>
+                <button class="tbnXoaDong tbnXoaDongTB2 col-md-3" onclick="removeRowTB2()">Xóa dòng</button>
+            </div>
             <div id="divtb2" align="center" style="margin-bottom:3px;font-size:17px;text-align:left; resize:both;overflow:auto;width:90%;height:400px">
                 <table class="tb2 table-resizable" border="1" cellpadding="0" cellspacing="0" style="margin-left:5.95pt;border-collapse:collapse;border:none;">
                     <thead>
@@ -735,10 +737,10 @@
         <div class="pagebreak"></div>
         <p style="margin: 0in 0in 0.0001pt; font-size: 15px;  text-align: left;"><strong>2.3.</strong> <strong>Trình tự công việc và biện pháp an toàn từ lúc bắt đầu đến lúc kết thúc công việc</strong></p>
         <div class="rheaderTB3">
-                <div class="row" style="margin-left:6px">
-                    <button class="tbnThemDong tbnThemDongTB3 col-md-3" onclick="addRowTB3()">Thêm dòng</button>
-                    <button class="tbnXoaDong tbnXoaDongTB3 col-md-3" onclick="removeRowTB3()">Xóa dòng</button>
-                </div>
+            <div class="row" style="margin-left:6px">
+                <button class="tbnThemDong tbnThemDongTB3 col-md-3" onclick="addRowTB3()">Thêm dòng</button>
+                <button class="tbnXoaDong tbnXoaDongTB3 col-md-3" onclick="removeRowTB3()">Xóa dòng</button>
+            </div>
             <div id="divtb3" align="center" style="margin-bottom:3px;text-align:left; resize:both;overflow:auto;width:1030px;height:744px">
                 <table class="tb3 table-resizable" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:none;">
                     <thead>
@@ -1132,16 +1134,16 @@
                     IN LỆNH
                 </button>
             </a>
-                <button class="btn btn-primary modal-confirm" onclick="UpdatePhieuCongTac()" id="modal-confirm">
-                    @if (string.IsNullOrEmpty(sophieu))
-                    {
-                        <span>Tạo lệnh và lưu</span>
-                    }
-                    else
-                    {
-                        <span>Sửa lệnh và lưu</span>
-                    }
-                </button>
+            <button class="btn btn-primary modal-confirm" onclick="UpdatePhieuCongTac()" id="modal-confirm">
+                @if (string.IsNullOrEmpty(sophieu))
+                {
+                    <span>Tạo lệnh và lưu</span>
+                }
+                else
+                {
+                    <span>Sửa lệnh và lưu</span>
+                }
+            </button>
 
             <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Hủy</button>
         </div>
