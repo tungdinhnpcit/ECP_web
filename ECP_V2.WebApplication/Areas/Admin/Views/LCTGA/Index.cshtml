@@ -28,6 +28,25 @@
     <link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 
     <style>
+        .hasDatepicker {
+            display: block;
+            width: 100%;
+            height: 38px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+
         .listRolesName table thead th {
             padding-left: 8px;
             padding-right: 8px !important;
@@ -169,10 +188,12 @@
                             <select class="form-control" onchange="TrangThaiLCT(this)" id="drlTrangThaiLCT" style="height:38px">
                                 <option value="">Chọn trạng thái kiểm định</option>
                                 <option value="100" selected>Tất cả</option>
-                                <option value="0">Khởi tạo</option>
-                                <option value="1">Nhận lênh</option>
-                                <option value="2">Hoàn Thành</option>
-                                <option value="3">Không nhận lệnh</option>
+                                <option value="0">Chờ duyệt</option>
+                                <option value="1">Đã duyệt/Chờ nhận lệnh</option>
+                                <option value="2">Nhận lệnh</option>
+                                <option value="3">Đã hoàn thành</option>
+                                <option value="10">Hủy duyệt</option>
+                                <option value="11">Không nhận lệnh</option>
                             </select>
                         </div>
                         <div class="col-sm-12 col-md-3" style="padding-top: 10px">
@@ -189,15 +210,18 @@
                                 <thead>
                                     <tr class="gradeX">
 
-                                        <th style="width:5% ;text-align:center">STT</th>
-                                        <th style="width:10%">Đơn vị cấp phiếu</th>
-                                        <th style="width:10%">Số phiếu</th>
+                                        <th style="width:3% ;text-align:center">STT</th>
+                                        <th style="width:10%">Đơn vị thực hiện</th>
+                                        <th style="width:5%">Số phiếu</th>
                                         <th style="width:10%; text-align:center">Người giao</th>
                                         <th style="width:10%; text-align:center">Người nhận lênh</th>
+                                        <th style="width:10%; text-align:center">Người duyệt</th>
                                         <th style="width:10%; text-align:center">Tình trạng</th>
-                                        <th style="width:10%; text-align:center">Thời gian giao</th>
-                                        <th style="width:10%; text-align:center">Thời gian nhận</th>
-                                        <th style="width:10%; text-align:center">Thao tác</th>
+                                        <th style="width:10%; text-align:center">TG giao</th>
+                                        <th style="width:10%; text-align:center">TG duyệt</th>
+                                        <th style="width:10%; text-align:center">TG nhận</th>
+                                        <th style="width:10%; text-align:center">TG hoàn thành</th>
+                                        <th style="width:10%; text-align:center">Ghi chú</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbl-content">
@@ -228,9 +252,6 @@
    var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now.AddDays(1))'.split(' ')[0];
    var end = $("#GioKt").datepicker({
        dateFormat: 'dd/mm/yy',
-       onSelect: function () {
-           end_chage();
-       }
    }).val(xNgay);
 
     });
@@ -244,11 +265,15 @@
         <td>{{SoPhieu}}</td>
         <td>{{TenNguoiNhap}}</td>
     <td>{{TenNhanLenh}}</td>
+           <td>{{TenNguoiDuyet}}</td>
      <td>{{TrangThai}}</td>
          <td>{{NgayNhap}}</td>
+           <td>{{NgayDuyet}}</td>
         <td>{{NgayNhanLenh}}</td>
-        <th scope="row" style="text-align:center">
-         <a href="#" class="btn btn-sm btn-view-chitiet" title="Xem lịch sử thay đổi" data-id="{{Id}}" style="font-size:18px;{{color}}"><i class="fa fa-clock-o"></i></a>
+         <td>{{TGHoanThanh}}</td>
+         <td>{{GhiChu}}</td>
+         <th scope="row" style="text-align:center">
+         <a href="#" class="btn btn-sm btn-view-chitiet {{hienthi}}" title="Xem lịch sử thay đổi" data-id="{{Id}}" data-iddv="{{DViCPhieu}}" style="font-size:18px;{{color}}"><i class="fa fa-clock-o"></i></a>
         </th>
     </tr>
     </script>

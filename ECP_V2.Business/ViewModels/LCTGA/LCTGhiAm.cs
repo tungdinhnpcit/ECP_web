@@ -35,17 +35,30 @@ namespace ECP_V2.Business.ViewModels.LCTGA
 
         public string NguoiNhap { get; set; }
         public string NguoiNhanLenh { get; set; }
+        public string LanhDao { get; set; }
         public string NgayNhap { get; set; }
         public string NgayNhanLenh { get; set; }
+        public string NgayDuyet { get; set; }
         public int PhanLoai { get; set; }
-        public string LanhDao { get; set; }
         public string NgayCTac { get; set; }
         public int TrangThai { get; set; }
         public string LinkFile { get; set; }
         public string TGHoanThanh { get; set; }
         public string TenNguoiNhap { get; set; }
         public string TenNhanLenh { get; set; }
-
-       
+        public string TenNguoiDuyet { get; set; }
+        public string GCNhanLenh { get; set; }
+        public string GCDuyet { get; set; }
+        public int IdPhienLV { get; set; }
     }
+
+    public partial class DSPCTGA
+    {
+        public int ID { get; set; }
+        public string NoiDung { get; set; }
+        public string SoPhieu { get; set; }
+
+      
+    }
+
 }

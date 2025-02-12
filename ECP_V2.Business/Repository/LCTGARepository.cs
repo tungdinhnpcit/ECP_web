@@ -46,24 +46,32 @@ namespace ECP_V2.Business.Repository
             }
         }
 
-        public string GetChiTietLCT(Int64 LCTGhiAmId)
+        public List<DSPCTGA> GetDsPhieuLV(string  DonViId)
         {
             try
             {
                 using (IDbConnection db = new SqlConnection(Connectstr))
                 {
-                    string query = "exec dbo.ws_get_chi_tiet_lct @LCTGhiAmId;";
-                    var data = db.Query<dynamic>(query, new { LCTGhiAmId });
-                    var dataRT = data.First();
-                    if (dataRT.JSON != null)
-                    {
-                       
-                        return dataRT.JSON.ToString();
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    string query = "exec dbo.ws_get_ds_PhieuCongTac_BoSung @DonViId;";
+                    var data = db.Query<DSPCTGA>(query, new { DonViId }).ToList(); ;
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public dynamic UpdatePhienLvLctga(Int64 Id, int IdPhienLV)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Connectstr))
+                {
+                    string query = "exec dbo.ws_update_phienlv_lctga @Id, @IdPhienLV;";
+                    var data = db.Query<dynamic>(query, new { Id, IdPhienLV }).ToList(); ;
+                    return data;
                 }
             }
             catch (Exception ex)

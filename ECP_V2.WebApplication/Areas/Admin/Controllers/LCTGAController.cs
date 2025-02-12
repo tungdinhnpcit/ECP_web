@@ -59,18 +59,20 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetChiTietLCT(Int64 LCTGhiAmId)
+        public ActionResult GetDsPhieuLV(string donviId)
         {
-            var model = _lctGA.GetChiTietLCT(LCTGhiAmId);
-            if(model == null)
-            {
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-            var obj = JsonConvert.DeserializeObject<List<LCTGhiAm>>(model);
+            var model = _lctGA.GetDsPhieuLV(donviId);
             return Json(new
             {
-                data = obj[0],
+                data = model,
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult UpdatePhienLvLctga(Int64 Id, int IdPhienLV)
+        {
+            var model = _lctGA.UpdatePhienLvLctga(Id, IdPhienLV);
+            return Json(true, JsonRequestBehavior.AllowGet);
         }
 
 

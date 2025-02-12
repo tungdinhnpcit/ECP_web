@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" style="max-width:1400px; width: auto; left:0px">
         <div class="modal-content" style="padding-bottom: 15px">
             <div class="modal-header">
-                <h4 class="modal-title title-popup-modal">Thông tin chi tiết quá trình thực hiện LCT</h4>
+                <h4 class="modal-title title-popup-modal">Chọn phiếu công tác bổ sung</h4>
                 <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="font-size:40px; color:red; margin-top:-30px">×</button>
             </div>
             <div class="modal-body">
@@ -11,58 +11,12 @@
                     <form class="form-horizontal" role="form" id="frmMaintainance" @*style="min-height:650px"*@>
 
                         <div class="form-group row" style="margin-left: 30px;margin-right:30px">
-                            <div class="row css-buoc-lctga">
-                                <div class="col-lg-5 b1" id="thuchien-b1">
-
-                                </div>
-                                <div class="col-lg-2">
-                                    <i class="fa fa-arrow-right css-arrow-lctga"></i>
-                                </div>
-                                <div class="col-lg-5 b2" id="thuchien-b2">
-
-                                </div>
-                            </div>
-                            <div>
-                                <div class="col-lg-7">
-                                </div>
-                                <div class="col-lg-5">
-                                    <i class="fa fa-arrow-down css-arrow-lctga"></i>
-                                </div>
-                            </div>
-                            <div class="row css-buoc-lctga">
-                                <div class="col-lg-5 b3" id="thuchien-b4">
-
-                                </div>
-                                <div class="col-lg-2" style="">
-                                    <i class="fa fa-arrow-left  css-arrow-lctga"></i>
-                                </div>
-                                <div class="col-lg-5 b4" id="thuchien-b3">
-                                </div>
-
-                            </div>
-                            <div  class="row css-buoc-lctga">
-                                <div class="col-lg-5">
-                                    <i class="fa fa-arrow-down css-arrow-lctga"></i>
-                                </div>
-                                <div class="col-lg-7">
-
-                                </div>
-                            </div>
-                            
-                            <div class="row css-buoc-lctga">
-                                <div class="col-lg-5  b5" id="thuchien-b5">
-
-                                </div>
-                                <div class="col-lg-2">
-                                    <i class="fa fa-arrow-right css-arrow-lctga"></i>
-                                </div>
-                                <div class="col-lg-5 b6" id="thuchien-b6">
-
-                                </div>
-                            </div>
+                            <select class="form-control" id="ddPCT" style="height:38px">
+                            </select>
 
                             <div class="form-group row pt-md">
                                 <div class="col-sm-12">
+                                    <button type="button" id="btnCapNhatPLV" data-dismiss="modal" class="btn btn-success float-left " style="float:left"><i class="fa fa-save" style="margin-right:6px"></i>Cập nhật</button>
                                     <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger float-right" style="float:right"><i class="fa fa-times" style="margin-right:6px"></i>Đóng</button>
                                 </div>
                             </div>
