@@ -177,7 +177,7 @@ var service = {
             "ID_DV": this.ID_CONNECT,
         }
 
-        this.ExcuteAjaxtPost("api/v1/Auth/ECPAuth", JSON.stringify(data), function (d) {
+        this.ExcuteAjaxtPost("api/v1/Auth/GetToken", JSON.stringify(data), function (d) {
             service.token = d.Data.Token;
         });
         // get donvi

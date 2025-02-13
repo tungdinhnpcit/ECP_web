@@ -54,6 +54,11 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using static ECP_V2.WebApplication.Areas.Admin.Controllers.PhienLVController;
 using ECP_V2.WebApplication.NotificationService;
 using static ECP_V2.WebApplication.Areas.Admin.Controllers.SendNotifyController;
+using static ECP_V2.WebApplication.Areas.Admin.Controllers.KySoController;
+using System.Web.Http.Results;
+using NLog.Targets;
+using System.Runtime.InteropServices.ComTypes;
+using WebGrease.Activities;
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -101,7 +106,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         //string path = url + "ConvertHtmlToPdf";
         string path = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString() + "jxlsToFile";
         string apiFile = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
-       
+
         //Lấy file template từ database
         //[AreaAuthorization]
         public class FileUploadResponse
@@ -373,7 +378,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 var fileKeHoachSize = form["fileKeHoachSize"];
                 if (IdTaiLieu > 0 && fileKeHoach != null && fileKeHoach.ContentLength > 0)
                 {
-                    
+
 
                     result = await UploadFileToApi(fileKeHoach, bienBan.IdDonVi);
                     if (result.Status)
@@ -390,6 +395,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             IdNguoiCapNhat = dataNguoiTrinh.Id,
                         };
                         await _baocaoantoan.Insert_FilePath(InfoFile);
+                    }
+                    else
+                    {
+                        return Json(new { message = "Lỗi", success = false });
                     }
                 }
                 if (IdTaiLieu > 0 && file != null && file.ContentLength > 0)
@@ -425,6 +434,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         await _baocaoantoan.Insert_FilePath(InfoFile);
 
                     }
+                    else
+                    {
+                        return Json(new { message = "Lỗi", success = false });
+                    }
                 }
                 if (result.Status)
                 {
@@ -451,23 +464,29 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 using (var client = new HttpClient())
                 {
                     var content = new MultipartFormDataContent();
-
                     var fileStream = file.InputStream;
-                    content.Add(new StreamContent(fileStream), "file", file.FileName);
+                    var fileContent = new StreamContent(fileStream);
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/pdf");
+                    content.Add(fileContent, "file", file.FileName);
                     var API = apiFile + "api/v1.0/File/UploadFile?IdDonVi=" + IdDonVi;
                     var response = await client.PostAsync(API, content);
 
                     if (response.IsSuccessStatusCode)
                     {
+                        var memoryStream = new MemoryStream();
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+
                         res.Status = true;
                         var data = await response.Content.ReadAsStringAsync();
                         var responseObj = JsonConvert.DeserializeObject<FileUploadResponse>(data);
                         res.Data = responseObj.Data;
+                
                         return res;
                     }
                     else
                     {
                         var errorContent = await response.Content.ReadAsStringAsync();
+                      
                         return res;
                     }
                 }
@@ -478,6 +497,78 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return res;
             }
         }
+        public MemoryStream ConvertBase64ToStream(string base64String)
+        {
+            // Giải mã chuỗi base64 thành byte[]
+            byte[] fileBytes = Convert.FromBase64String(base64String);
+
+            // Tạo một MemoryStream từ byte[]
+            var memoryStream = new MemoryStream(fileBytes);
+
+            return memoryStream;
+        }
+
+        public async Task<ResponseData> UploadBase64File(string base64String, string fileName, string contentType, string IdDonVi, int IdBienBan, string IdNguoiThaoTac)
+        {
+            var res = new ResponseData();
+            res.Status = false;
+
+            try
+            {
+                // Chuyển base64 thành MemoryStream
+                var memoryStream = ConvertBase64ToStream(base64String);
+                memoryStream.Seek(0, SeekOrigin.Begin); // Đảm bảo stream bắt đầu từ đầu
+
+                using (var client = new HttpClient())
+                {
+                    var content = new MultipartFormDataContent();
+                    var fileContent = new StreamContent(memoryStream);
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+                    content.Add(fileContent, "file", "123");
+                    var API = apiFile + "api/v1.0/File/UploadFile?IdDonVi=" + IdDonVi;
+
+                    // Gửi yêu cầu lên API
+                    var response = await client.PostAsync(API, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+
+                        res.Status = true;
+                        res.Message = "Tải lên thành công";
+                        res.Data = await response.Content.ReadAsStringAsync(); // Nhận dữ liệu trả về từ API
+
+
+                        var InfoFile = new ModelFilePath
+                        {
+                            IdLoaiFile = 1,
+                            IdTaiLieu = IdBienBan,
+                            TenFile = fileName,
+                            MimeType = contentType,
+                            Size = 0,
+                            URL = res.Data,
+                            TrangThai = 1,
+                            IdNguoiCapNhat = IdNguoiThaoTac,
+                        };
+
+                        await _baocaoantoan.Insert_FilePath(InfoFile);
+                     
+                    }
+                    else
+                    {
+                        res.Message = "Lỗi khi tải lên API";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Message = "Lỗi: " + ex.Message;
+            }
+
+            return res;
+        }
+
 
         public async Task<Object> Get_BienBan_ByTime(int loaiBaoCao, int tuanThang, int nam, string idDonVi)
         {
@@ -499,7 +590,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
 
-        public async Task<ActionResult> HuyTrinh_TraLai_BienBanAnToan(int id, int trangThai)
+        public async Task<ActionResult> UpdateTrangThai_BienBanAnToan(int id, int trangThai)
         {
             var IdUser = User.Identity.GetUserId();
             if (id <= 0)
@@ -531,7 +622,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     //await _notificationService.SendNotificationsAsync(new string[] { bienBan.IdNguoiTrinhKy.ToString() }, baseRequestData);
 
                 }
-               
+
                 if (trangThai == 3)// trả lại
                 {
                     baseRequestData.Title = "Trả lại biên bản báo cáo AT";
@@ -544,7 +635,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 var trangThaiFile = 0;
                 if (trangThai == 4)
                 {
-                    trangThaiFile = 1;
+                    trangThaiFile = 0;
                 };
                 await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, trangThaiFile, IdUser);
 
@@ -603,6 +694,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         };
                         await _baocaoantoan.Insert_FilePath(InfoFile);
                     }
+                    else
+                    {
+                        return Json(new { message = "Lỗi", success = false });
+                    }
                 }
                 if (IdTaiLieu > 0 && file != null && file.ContentLength > 0)
                 {
@@ -637,6 +732,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         await _baocaoantoan.Insert_FilePath(InfoFile);
 
                     }
+                    else
+                    {
+                        return Json(new { message = "Lỗi", success = false });
+                    }
                 }
                 if (result.Status)
                 {
@@ -653,89 +752,106 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { message = ex.Message, success = false });
             }
         }
-        public async Task<ActionResult> KySo(string url)
+        public async Task<ActionResult> KySo(string url, int IdBienBan)
         {
             try
             {
-                string kt = "";
-
-                // Tải file từ URL (giả sử file này sẽ được ký)
                 using (WebClient client = new WebClient())
                 {
-                    byte[] fileBytes = client.DownloadData(url);
-                    //string base64File = Convert.ToBase64String(fileBytes);
-                    tblNhanVien nvien = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
+                    var userId = User.Identity.GetUserId();
+                    var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+                        .FirstOrDefault(x => x.Id == userId);
 
-                    // Tạo đối tượng chứa thông tin để ký (ví dụ về ký số EVN)
-                    DataSign dt = new DataSign();
-                    var k = new KetQuaTimKiem();
-                    k.Height = 40;
-                    k.Width = 150;
-                    k.X = 100;
-                    k.Y = 100;
-                    k.PageNumber = 2;
-                    dt.k = k;
-                    dt.Provider = "EVN_CA";
-                    dt.DinhDanhKy = nvien.Hsm_serial;
-                    dt.MESSAGE = nvien.TenNhanVien + " Đã ký lúc " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                    dt.LoaiHThi = "TEXT";
-                    dt.FileDataSign = fileBytes;  // Truyền file bytes vào để ký
-                    dt.ImageSign = appPlanRepo.imgSignByUserid(nvien.Username);  // Thêm hình ảnh chữ ký
-                    dt.CommentSign = @"test";  // Thêm chú thích cho chữ ký
-                    dt.KeyWord = "((LENH_STEP_4))";  // Thêm từ khóa nếu cần
-
-                    // Lấy địa chỉ URL của dịch vụ ký
-                    string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
-                    var uploadServiceBaseAddress = urlSignServer + "api/sign";
-
-                    // Tạo nội dung gửi yêu cầu POST tới API
-                    var content = new StringContent(JsonConvert.SerializeObject(dt), System.Text.Encoding.UTF8, "application/json");
-                    var request = new HttpRequestMessage(HttpMethod.Post, uploadServiceBaseAddress)
+                    byte[] fileData = await client.DownloadDataTaskAsync(new Uri(url));
+                    string base64String = Convert.ToBase64String(fileData);
+                    var ApiKySoController = new KySoController();
+                    var Model2 = new Model_Ky_CA();
+                    Model2.strAlias = dataNguoiTrinh.Hsm_serial;
+                    Model2.marginBottom = 790;
+                    Model2.marginLeft = 20;
+                    Model2.fileAsBase64String = base64String;
+                    ResponseData result = await ApiKySoController.KyCA(Model2);
+                    if (result == null || !result.Status)
                     {
-                        Content = content
-                    };
+                        return Json(new { Status = false, message = "Lỗi ký số CA" }, JsonRequestBehavior.AllowGet);
+                    }
 
-                    // Gửi yêu cầu POST để ký
-                    var httpResponseMessage = await new HttpClient().SendAsync(request);
-
-                    // Xử lý kết quả trả về từ API
-                    string kqSign = "";
-                    if (httpResponseMessage.IsSuccessStatusCode)
+                    var data = await UpdateTrangThai_BienBanAnToan(IdBienBan, 4);
+                    var stringbase64 = result.Data;
+                    if (data != null )
                     {
-                        // Đọc dữ liệu trả về từ API (dữ liệu PDF đã ký)
-                        var data_pdf = JsonConvert.DeserializeObject<ResponseDataX>(httpResponseMessage.Content.ReadAsStringAsync().Result);
-                        if (data_pdf.Data != null)
+                        string fileName = "document.pdf";
+                        string contentType = "application/pdf";
+                        HttpPostedFileBase file = ConvertBase64ToPostedFile(stringbase64, fileName, contentType);
+                        var memoryFile = file as MemoryPostedFile;
+                        if (memoryFile != null)
                         {
-                            kqSign = data_pdf.Data.ToString(); // Chứa chuỗi base64 của file PDF đã ký
+                            memoryFile.ResetStream();
+                        }
+                        result = await UploadFileToApi(file, dataNguoiTrinh.DonViId);
+                        var InfoFile = new ModelFilePath
+                        {
+                            IdLoaiFile = 1,
+                            IdTaiLieu = IdBienBan,
+                            TenFile = fileName,
+                            MimeType = contentType,
+                            Size = 0,
+                            URL = result.Data,
+                            TrangThai = 1,
+                            IdNguoiCapNhat = dataNguoiTrinh.Id,
+                        };
+
+                        await _baocaoantoan.Insert_FilePath(InfoFile);
+                        //result = await UploadBase64File(stringbase64, stringbase64, contentType,  dataNguoiTrinh.DonViId, IdBienBan, dataNguoiTrinh.Id);
+
+                        if (result.Status)
+                        {
+                            
+
+                        }
+                        else
+                        {
+                            return Json(new { message = "Lỗi", success = false });
                         }
                     }
-                    else
-                    {
-                        // Xử lý lỗi nếu có
-                        kqSign = "Lỗi khi ký file: " + httpResponseMessage.ReasonPhrase;
-                    }
 
-                    // Trả lại file đã ký cho người dùng
-                    if (!string.IsNullOrEmpty(kqSign))
+                    return new LargeJsonResult
                     {
-                        byte[] signedFileBytes = Convert.FromBase64String(kqSign);
-                        return File(signedFileBytes, "application/pdf", "signed_file.pdf");
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "Không thể ký file" }, JsonRequestBehavior.AllowGet);
-                    }
+                        Data = new { Status = true, data = stringbase64 },
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                    };
                 }
             }
             catch (Exception ex)
             {
-                // Trả về lỗi nếu có ngoại lệ
-                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { Status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+        
+        public class LargeJsonResult : JsonResult
+        {
+            public override void ExecuteResult(ControllerContext context)
+            {
+                var response = context.HttpContext.Response;
+                response.ContentType = "application/json";
+
+                if (Data != null)
+                {
+                    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                    serializer.MaxJsonLength = int.MaxValue; // Tăng lên mức tối đa
+                    response.Write(serializer.Serialize(Data));
+                }
+            }
+        }
+        public HttpPostedFileBase ConvertBase64ToPostedFile(string base64String, string fileName, string contentType)
+        {
+            byte[] fileBytes = Convert.FromBase64String(base64String); // Chuyển Base64 thành byte[]
+            return new MemoryPostedFile(fileBytes, fileName, contentType); // Trả về MemoryPostedFile chứa byte[]
+        }
+
 
         #endregion
 
-      
+
     }
 }

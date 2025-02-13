@@ -98,6 +98,8 @@
 
 }
 @*Xuất PDF*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 
@@ -238,13 +240,13 @@
         </b>
     </p>
     @*<div class=MsoNormal id="txtThongTinKy">
-        <p>
-            Bùi Duy Đức - PGĐ ĐL
-        </p> 
-        <p>
-            15:48:24 18/01/2025
-        </p>
-    </div>*@
+            <p>
+                Bùi Duy Đức - PGĐ ĐL
+            </p>
+            <p>
+                15:48:24 18/01/2025
+            </p>
+        </div>*@
     <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0 id="top"
            style='border-collapse:collapse;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:none;mso-border-insidev:none'>
         <tr>
@@ -1061,142 +1063,152 @@
     });
 
     function ExportModalToPdf(thaoTac) {
-        const element = document.querySelector('.Section1');
-        const targetElement = element.querySelector('#top');
-        const tenDonVi = element.querySelector('#tenDonVi');
-        var HoTenNguoiKy = $("#txtchutrigiaoban").val();
-        var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
+    const { jsPDF } = window.jspdf;
+    const element = document.querySelector('.Section1');
+    const targetElement = element.querySelector('#top');
+    const tenDonVi = element.querySelector('#tenDonVi');
+    var HoTenNguoiKy = $("#txtchutrigiaoban").val();
+    var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
 
-        if (targetElement && IdNguoiKy) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (targetElement && IdNguoiKy) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        } else {
-            console.error("Không tìm thấy phần tử có ID trong modal");
-            new PNotify({
-                title: 'Thông báo!',
-                text: 'Chọn chủ trì giao ban!',
-                type: 'error'
-            });
-            return;
+        if (thaoTac == 2) {
+            // Thao tác 2 sẽ được xử lý ở dưới
         }
-        element.style.padding = '0 0 0 0';
-        element.style.width = '55vw';
-        tenDonVi.style.margin = '-0.5rem 0 0 0';
 
-            const options = {
-                margin: 10,
-                filename: 'FileTaiLieu.pdf',
-                image: { type: 'jpeg', quality: 1.0 },
-                html2canvas: { scale: 3, useCORS: true  },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-              }
+    } else {
+        console.error("Không tìm thấy phần tử có ID trong modal");
+        new PNotify({
+            title: 'Thông báo!',
+            text: 'Chọn chủ trì giao ban!',
+            type: 'error'
+        });
+        return;
+    }
 
-       if (thaoTac == 1) {
-         html2pdf().set(options).from(element).save();
-       }
-       if (thaoTac == 2) {
-        var dateFrom = convertToDate('@ViewBag.TuNgay');
-        var dateTo = convertToDate('@ViewBag.DenNgay');
+    // Thay đổi style của phần tử
+    element.style.padding = '0 0 0 0';
+    element.style.width = '55vw';
+    tenDonVi.style.margin = '-0.5rem 0 0 0';
 
-         html2pdf()
-             .set(options)
-             .from(element)
-             .toPdf()
-             .get('pdf')
-             .then(function (pdf) {
-                const pdfBlob = pdf.output('blob');
-                var IdLoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
+    // Cấu hình cho html2pdf
+    const options = {
+        margin: 5,
+        filename: 'FileTaiLieu.pdf',
+        image: { type: 'jpeg', quality: 0.3 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }
 
-                const formData = new FormData();
-                formData.append('LoaiBaoCao', IdLoaiBaoCao);
-                formData.append('SoBienBan', '@soBienBan');
-                formData.append('TuanThang', '@ViewBag.TuanThang');
-                formData.append('Nam', 2025);
-                formData.append('NgayBatDau', dateFrom);
-                formData.append('NgayKetThuc', dateTo);
-                formData.append('TrangThai', 1);
-                formData.append('IdNguoiTrinhKy', "");
-                formData.append('HoTenNguoiTrinh', "");
-                formData.append('HoTenNguoiKy', HoTenNguoiKy);
-                formData.append('IdNguoiKy', IdNguoiKy);
-                formData.append('IdDonVi', '@donViID');
-                formData.append('file', pdfBlob, 'TaiLieu.pdf');
-                formData.append('fileSize', pdfBlob.size);
-                console.log(Object.fromEntries(formData))
+    if (thaoTac == 1) {
+        html2pdf().set(options).from(element).save();
+    }
+    if (thaoTac == 2) {
+        setTimeout(function () {
+            var dateFrom = convertToDate('@ViewBag.TuNgay');
+            var dateTo = convertToDate('@ViewBag.DenNgay');
 
-                const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
-                const fileKeHoach = document.getElementById('fileKeHoach').files[0];
-                if (fileKeHoach) {
-                const fileExtension = fileKeHoach.name.substring(fileKeHoach.name.lastIndexOf(".")).toLowerCase();
-                if (!allowedExtensions.includes(fileExtension)) {
-                    alert("Định dạng tệp không được hỗ trợ.");
-                    this.value = ""; // Xóa tệp đã chọn
-                    return false
-                }
-                formData.append('fileKeHoach', fileKeHoach);
-                formData.append('fileKeHoachSize', fileKeHoach.size);
-                }
+            html2pdf()
+                .set(options)
+                .from(element)
+                .toPdf()
+                .get('pdf')
+                .then(function (pdf) {
+                    const pdfBlob = pdf.output('blob');
+                    var IdLoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
 
-            var url = "";
-                if ('@ViewBag.TrangThaiBienBan' == 1 || '@ViewBag.TrangThaiBienBan' == 0) {
-                   $("#soBienBan").text(" Số:@soBienBan /BBGBAT-KHKT-@tenVietTat");
-                    url = '/BCGBAT/Insert_BienBanAnToan'
-                }
-                if ('@ViewBag.TrangThaiBienBan' == 3 || '@ViewBag.TrangThaiBienBan' == 2) {
-                    ////$("#soBienBan").text(" Số:@soBienBan /BBGBAT-KHKT-@tenVietTat");
-                    url = '/BCGBAT/TrinhKyLai_BienBanAnToan'
-                    formData.append('Id', '@ViewBag.IdBienBan');
-                }
+                    const formData = new FormData();
+                    formData.append('LoaiBaoCao', IdLoaiBaoCao);
+                    formData.append('SoBienBan', '@soBienBan');
+                    formData.append('TuanThang', '@ViewBag.TuanThang');
+                    formData.append('Nam', 2025);
+                    formData.append('NgayBatDau', dateFrom);
+                    formData.append('NgayKetThuc', dateTo);
+                    formData.append('TrangThai', 1);
+                    formData.append('IdNguoiTrinhKy', "");
+                    formData.append('HoTenNguoiTrinh', "");
+                    formData.append('HoTenNguoiKy', HoTenNguoiKy);
+                    formData.append('IdNguoiKy', IdNguoiKy);
+                    formData.append('IdDonVi', '@donViID');
+                    formData.append('file', pdfBlob, 'TaiLieu.pdf');
+                    formData.append('fileSize', pdfBlob.size);
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    console.log('Success:', data);
-                    if (data.success) {
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Trình ký thành công!',
-                            type: 'success'
-                        });
-                        setTimeout(function () {
-                            parent.ClosePhieuCongTac();
-                        }, 2000);
+                    console.log(Object.fromEntries(formData));
+
+                    const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
+                    const fileKeHoach = document.getElementById('fileKeHoach').files[0];
+
+                    if (fileKeHoach) {
+                        const fileExtension = fileKeHoach.name.substring(fileKeHoach.name.lastIndexOf(".")).toLowerCase();
+                        if (!allowedExtensions.includes(fileExtension)) {
+                            alert("Định dạng tệp không được hỗ trợ.");
+                            this.value = ""; // Xóa tệp đã chọn
+                            return false;
+                        }
+                        formData.append('fileKeHoach', fileKeHoach);
+                        formData.append('fileKeHoachSize', fileKeHoach.size);
                     }
-                    else {
-                        new PNotify({
-                            title: 'Thông báo!',
-                            text: 'Lỗi!',
-                            type: 'error'
-                        });
-                        return false
+
+                    var url = "";
+                    if ('@ViewBag.TrangThaiBienBan' == 1 || '@ViewBag.TrangThaiBienBan' == 0) {
+                        $("#soBienBan").text(" Số:@soBienBan /BBGBAT-KHKT-@tenVietTat");
+                        url = '/BCGBAT/Insert_BienBanAnToan';
                     }
-                },
-                error: function (error) {
-                    console.error('Error:', error);
+                    if ('@ViewBag.TrangThaiBienBan' == 3 || '@ViewBag.TrangThaiBienBan' == 2) {
+                        url = '/BCGBAT/TrinhKyLai_BienBanAnToan';
+                        formData.append('Id', '@ViewBag.IdBienBan');
+                    }
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log('Success:', data);
+                            if (data.success) {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Trình ký thành công!',
+                                    type: 'success'
+                                });
+                                setTimeout(function () {
+                                    parent.ClosePhieuCongTac();
+                                }, 2000);
+                            } else {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Lỗi!',
+                                    type: 'error'
+                                });
+                                return false;
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi!',
+                                type: 'error'
+                            });
+                            return false;
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Lỗi khi tạo PDF:", error);
                     new PNotify({
                         title: 'Thông báo!',
-                        text: 'Lỗi!',
+                        text: 'Có lỗi xảy ra khi tạo PDF.',
                         type: 'error'
                     });
-                    return false
-                }
                 });
-            })
-            .catch(function (error) {
-            console.error("Lỗi khi tạo PDF:", error);
-            new PNotify({
-                title: 'Thông báo!',
-                text: 'Có lỗi xảy ra khi tạo PDF.',
-                type: 'error'
-              });
-            });
-        }
-
+        }, 2000); // Chờ 2 giây để kéo lên top
     }
+}
+
 </script>
 
 

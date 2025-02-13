@@ -86,7 +86,7 @@
                 </div>
                 <div class="col-md-12 " style="background-color:white; padding:2px; display:flex; justify-content:right" id="btnThaoTac">
                     <button class="btn btn-default " id="btnHuyTrinh" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(2)">Hủy trình</button>
-                    <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(4)">Ký duyệt</button>
+                    <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="KyDuyet()">Ký duyệt</button>
                     @*<a href="@Url.Action("KySo", "BCGBAT", new { url = "http://10.21.3.15:8202/4.FILES/PNGV00/FileBaoCaoAnToan/Dvibc-LLV.Tuan_14-01-2025.xlsx" })" download="signed_file.pdf">
                             Tải file đã ký
                         </a>*@
@@ -127,7 +127,7 @@
 <script>
 
     $(document).ready(function () {
-        $("#ChonThoiGian").val(""); 
+        $("#ChonThoiGian").val("");
         $("#ChonThoiGian").datepicker({
             showWeek: true,
             firstDay: 1,
@@ -308,7 +308,43 @@
 
      });
     let timeout;
+    function KyDuyet() {
+        var IdBienBan = $("#IdBienBan").val();
+        var srcValue = $("#baocaoctwords").attr("src");
+        $.ajax({
+            url: "/BCGBAT/KySo",
+            type: "GET",
+            data: { url: srcValue, IdBienBan: IdBienBan },
+            success: function (response) {
+                console.log("check respone", response)
+                if (response.Status) {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Ký thành công!',
+                        type: 'success'
+                    });
+                    setTimeout(function () {
+                        ClosePhieuCongTac();
+                    }, 500);
+                    //let base64 = response.data;
+                    //let fileType = "application/pdf";
+                    //$("#baocaoctwords").attr("src", "data:" + fileType + ";base64," + base64);
 
+                } else {
+                    console.log("check respone", response)
+
+                    setTimeout(function () {
+                        ClosePhieuCongTac();
+                    }, 500);
+                }
+
+            },
+            error: function (xhr) {
+                console.log("check xhr", xhr)
+
+            }
+        });
+    }
     //$.datepicker.regional["vi-VN"] = {
     //    closeText: "Đóng",
     //    prevText: "Trước",
@@ -408,7 +444,7 @@
                 //changeMonth: true,
                 //changeYear: true,
                 showButtonPanel: true,
-                regional: "vi-VN", 
+                regional: "vi-VN",
                 onClose: function () {
                     var selectedDate = thoiGianPicker.datepicker("getDate");
                     if (selectedDate) {
@@ -563,7 +599,7 @@
     function Update_TrangThaiBienBanAnToan(trangThai) {
         var Id = $("#IdBienBan").val()
         $.ajax({
-            url: '/BCGBAT/HuyTrinh_TraLai_BienBanAnToan',
+            url: '/BCGBAT/UpdateTrangThai_BienBanAnToan',
             type: 'GET',
             data: {
                 id: Id,
@@ -594,30 +630,7 @@
         });
     }
 
-    function KySo() {
-        var IdBienBan= $('#IdBienBan').val()
-        console.log("check IdBienBan", IdBienBan)
 
-        //var url = $("#baocaoctwords").attr("src");
-        //$.ajax({
-        //    url: '/BCGBAT/KySo',
-        //    type: 'GET',
-        //    data: { url: url },
-        //    success: function (response) {
-        //        console.log('Base64:', response);
-
-        //        if (response.success) {
-        //            console.log('Base64:', response.base64);
-
-        //        } else {
-        //            console.error("Lỗi: " + response.message);
-        //        }
-        //    },
-        //    error: function (xhr, status, error) {
-        //        console.error("Lỗi khi gọi API:", error);
-        //    }
-        //});
-    }
 
 </script>
 <script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>
