@@ -3894,8 +3894,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 }
                 var role = _roleManager.Roles.Where(x => x.Name == roles).FirstOrDefault();
-
-                List<tblNhanVien> listNhanVienTemp = _kh_ser.ListNhanVienByRoleId(role.Id);
+                List<tblNhanVien> listNhanVienTemp = new List<tblNhanVien>();
+                if (role != null)
+                {
+                    listNhanVienTemp = _kh_ser.ListNhanVienByRoleId(role.Id);
+                }
                 if (listNhanVienTemp != null && listNhanVienTemp.Count > 0)
                 {
                     if (option == "tatca")
@@ -17505,10 +17508,14 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     if (phieuCongTacObj.MaLP == 2)
                     {
                         var TenLanhDaoDuyet = _dvi_ser.Context.tblNhanViens.FirstOrDefault(x => x.Username == (string)phieuCongTacObj.NguoiDuyet);
-                        phieuCongTacObj.NguoiDuyet = TenLanhDaoDuyet.TenNhanVien ?? "";
-                        ViewBag.TenLanhDaoDuyet = TenLanhDaoDuyet.TenNhanVien ?? "";
+                        string LanhDao = "";
+                        if(TenLanhDaoDuyet != null)
+                        {
+                            LanhDao = TenLanhDaoDuyet.TenNhanVien;
+                        }
+                        phieuCongTacObj.NguoiDuyet = LanhDao;
                         TempData["TenLanhDaoDuyet"] = phieuCongTacObj.NguoiDuyet;
-                        return RedirectToAction("LenhCongTac", "PhienLV", new { phienlvid = phienlvid, lenhcongtacid = phieuCongTacObj.ID, TenLanhDaoDuyet = TenLanhDaoDuyet.TenNhanVien });
+                        return RedirectToAction("LenhCongTac", "PhienLV", new { phienlvid = phienlvid, lenhcongtacid = phieuCongTacObj.ID, TenLanhDaoDuyet = LanhDao });
                     }
                     ViewBag.PhieuCongTac = phieuCongTacObj;
                 }
@@ -17769,6 +17776,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     phieuCongTacObj.MaYeuCauCRM = model.MaYeuCauCRM;
                     phieuCongTacObj.NgayCN = DateTime.Now;
                     phieuCongTacObj.NguoiCN = User.Identity.Name;
+
+                    // Update người cấp phiếu
+                    phieuCongTacObj.NguoiCapPhieu = model.NguoiCapPhieu;
+                    phieuCongTacObj.NguoiCapPhieu_Id = model.NguoiCapPhieu_Id;
 
                     int intSoNguoiThamGia = 0;
                     if (!string.IsNullOrEmpty(model.SoNguoiThamGia))
