@@ -10,19 +10,39 @@
     var userId = ViewBag.UserId;
 }
 
-
-<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
-<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-@*<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>*@
-<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script> @*dùng dayjs*@
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/isoWeek.js"></script>
 <script>
-    dayjs.extend(dayjs_plugin_isoWeek);  // Kích hoạt plugin isoWeek
+    dayjs.extend(dayjs_plugin_isoWeek); // Kích hoạt plugin isoWeek
 </script>
+
+<script>
+    console.log("jQuery Version:", $.fn.jquery); // Kiểm tra jQuery
+    console.log("jQuery UI Version:", $.ui ? $.ui.version : "Chưa được tải!"); // Kiểm tra jQuery UI
+
+    // Nếu jQuery UI chưa được tải hoặc là phiên bản cũ, thêm phiên bản mới vào DOM
+    if (typeof $.ui === "undefined" || $.ui.version !== "1.12.1") {
+        console.warn("⚠️ jQuery UI cũ hoặc chưa được tải, đang tải phiên bản mới...");
+
+        // Tạo và thêm link và script vào DOM
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css";
+        document.head.appendChild(link);
+
+        var script1 = document.createElement("script");
+        script1.src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js";
+        document.body.appendChild(script1);
+
+        var script2 = document.createElement("script");
+        script2.src = "https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.js";
+        document.body.appendChild(script2);
+    }
+</script>
+
 
 <input type="text" value="@Session["baseurl"]" id="baseurl" style="display:none">
 <input type="text" value="@Session["UserId"]" id="UserId" style="display:none">
@@ -103,9 +123,9 @@
 
 @section scriptsAdd {
 
-    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
-    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
-    <script src="~/Scripts/jquery.tmpl.js"></script>
+    @*<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+        <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+        <script src="~/Scripts/jquery.tmpl.js"></script>*@
 
     @*nghiệp vụ*@
     <script src="~/Scripts/KTGS/js/util.js"></script>
@@ -127,11 +147,24 @@
 <script>
 
     $(document).ready(function () {
+        if (!$.datepicker) {
+            console.error("Datepicker chưa được tải!");
+            return;
+        }
+        $.datepicker.setDefaults($.datepicker.regional["vi"]);
+        $("#thoiGianPicker").datepicker({
+            dateFormat: "mm/yy",
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true
+        });
+
+        console.log("Datepicker đã được khởi tạo!");
         $("#ChonThoiGian").val("");
         $("#ChonThoiGian").datepicker({
             showWeek: true,
             firstDay: 1,
-            dateFormat: "dd/mm/yy",
+            dateFormat: "mm/yy",
             regional: "vi-VN",  // Đảm bảo sử dụng ngôn ngữ tiếng Việt
             onClose: function (dateText, inst) {
                 var selectedDate = $(this).datepicker("getDate");
@@ -144,6 +177,7 @@
                 }
             }
         });
+        if ($.datepicker) {
         $.datepicker.setDefaults({
             closeText: "Đóng",
             prevText: "Trước",
@@ -160,7 +194,8 @@
             isRTL: false,
             showMonthAfterYear: false,
             yearSuffix: ""
-        });
+        })
+        };
     });
 
 
@@ -633,4 +668,3 @@
 
 
 </script>
-<script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>
