@@ -108,7 +108,7 @@ public class BaoCaoAnToanRepository
                 left join filepath b on a.Id= b.IdTaiLieu and b.IdLoaiFile= 1 and b.TrangThai=1 
                 left join filepath c on a.Id= c.IdTaiLieu and c.IdLoaiFile= 2 and c.TrangThai=1 
                 inner join DM_TrangThai_BienBanAnToan d on a.TrangThai= d.Id 
-                WHERE LoaiBaoCao = @LoaiBaoCao AND TuanThang = @TuanThang AND Nam = @Nam AND IdDonVi = @IdDonVi";
+                WHERE LoaiBaoCao = @LoaiBaoCao AND (TuanThang = @TuanThang or @TuanThang = -1) AND Nam = @Nam AND IdDonVi = @IdDonVi";
             var parameters = new { LoaiBaoCao, TuanThang, Nam, IdDonVi };
             var data = await connection.QueryAsync<ModelBaoCaoAnToan>(query, parameters);
            
