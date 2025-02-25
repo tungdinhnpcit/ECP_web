@@ -35,11 +35,28 @@ public class BaoCaoAnToanRepository
         public string HoTenNguoiTrinh { get; set; }
         public string IdNguoiKy { get; set; }
         public string HoTenNguoiKy { get; set; }
+        public string ChucVu { get; set; }
         public string NgayCapNhat { get; set; }
         public int SoBienBan { get; set; }
         public string IdDonVi { get; set; }
         public string URL_FileBienBan { get; set; }
         public string URL_FileDinhKem { get; set; }
+        public string TenDonVi { get; set; }
+        public string DiaDiem { get; set; }
+        public string ThanhPhanThamGia { get; set; }
+        public string NoiDungDanhGia { get; set; }
+        public string KiemDiemAnToan { get; set; }
+        public string TrachNhiemBoPhan { get; set; }
+        public string ChiDaoKhacPhuc { get; set; }
+        public string ViPhamKhac { get; set; }
+        public string PhanTichDanhGia { get; set; }
+        public string LuuYAnToan { get; set; }
+        public string ChiDaoLienQuan { get; set; }
+        public string ChiDaoAnToan { get; set; }
+        public int? SoLuongNguoiViPham { get; set; }
+        public int? SoLuongGiamThuong { get; set; }
+        public int? SoLuongCatThuong { get; set; }
+        public int? SoLuongKyLuat { get; set; }
     }
 
     public class ModelFilePath
@@ -77,9 +94,13 @@ public class BaoCaoAnToanRepository
         using (var connection = CreateConnection())
         {
             string query = @"
-            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, HoTenNguoiKy, IdNguoiKy,  IdDonVi, NgayCapNhat, SoBienBan)
+            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, HoTenNguoiKy, IdNguoiKy,  IdDonVi, NgayCapNhat, SoBienBan,
+TenDonVi, DiaDiem, ThanhPhanThamGia, NoiDungDanhGia, KiemDiemAnToan, TrachNhiemBoPhan, ChiDaoKhacPhuc, ViPhamKhac, PhanTichDanhGia, LuuYAnToan, ChiDaoLienQuan, ChiDaoAnToan, SoLuongNguoiViPham, 
+SoLuongGiamThuong, SoLuongCatThuong, SoLuongKyLuat, ChucVu)
             OUTPUT INSERTED.ID
-            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh,@HoTenNguoiKy, @IdNguoiKy, @IdDonVi, GetDate(), @SoBienBan)";
+            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh,@HoTenNguoiKy, @IdNguoiKy, @IdDonVi, GetDate(), @SoBienBan,
+@TenDonVi, @DiaDiem,@ThanhPhanThamGia,@NoiDungDanhGia,@KiemDiemAnToan,@TrachNhiemBoPhan,@ChiDaoKhacPhuc,@ViPhamKhac,@PhanTichDanhGia,@LuuYAnToan,@ChiDaoLienQuan,@ChiDaoAnToan,@SoLuongNguoiViPham,
+@SoLuongGiamThuong,@SoLuongCatThuong,@SoLuongKyLuat, @ChucVu)";
             var id = await connection.QuerySingleAsync<int>(query, model);
 
             return id;  // Trả về ID của bản ghi vừa được thêm

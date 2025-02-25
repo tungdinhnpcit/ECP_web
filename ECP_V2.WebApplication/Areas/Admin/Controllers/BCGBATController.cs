@@ -369,7 +369,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien,
                     HoTenNguoiKy = form["HoTenNguoiKy"],
                     IdNguoiKy = form["IdNguoiKy"],
-                    IdDonVi = form["IdDonVi"]
+                    IdDonVi = form["IdDonVi"],
+                    TenDonVi = form["TenDonVi"],
+                    DiaDiem = form["DiaDiem"],
+                    ThanhPhanThamGia = form["ThanhPhanThamGia"],
+                    NoiDungDanhGia = form["NoiDungDanhGia"],
+                    KiemDiemAnToan = form["KiemDiemAnToan"],
+                    TrachNhiemBoPhan = form["TrachNhiemBoPhan"],
+                    ChiDaoKhacPhuc = form["ChiDaoKhacPhuc"],
+                    ViPhamKhac = form["ViPhamKhac"],
+                    PhanTichDanhGia = form["PhanTichDanhGia"],
+                    LuuYAnToan = form["LuuYAnToan"],
+                    ChiDaoLienQuan = form["ChiDaoLienQuan"],
+                    ChiDaoAnToan = form["ChiDaoAnToan"],
+                    SoLuongNguoiViPham = Convert.ToInt32(form["SoLuongNguoiViPham"]),
+                    SoLuongGiamThuong = Convert.ToInt32(form["SoLuongGiamThuong"]),
+                    SoLuongCatThuong = Convert.ToInt32(form["SoLuongCatThuong"]),
+                    SoLuongKyLuat = Convert.ToInt32(form["SoLuongKyLuat"]),
+
                 };
 
                 var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(bienBan);
@@ -455,6 +472,34 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> LuuNhap_BienBanAnToan(ModelBaoCaoAnToan DataInsert)
+        {
+            try
+            {
+                var userId = User.Identity.GetUserId();
+                var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+                    .FirstOrDefault(x => x.Id == userId);
+                DataInsert.IdNguoiTrinhKy = dataNguoiTrinh.Id;
+                DataInsert.HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien;
+                var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(DataInsert);
+                if (IdTaiLieu > 0)
+                {
+                    return Json(new { message = "Insert thành công", success = true });
+                }
+                else
+                {
+                    return Json(new { message = "Lỗi", success = false });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message, success = false });
+            }
+        }
+
+
         private async Task<ResponseData> UploadFileToApi(HttpPostedFileBase file, string IdDonVi)
         {
             var res = new ResponseData();
@@ -480,13 +525,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         var data = await response.Content.ReadAsStringAsync();
                         var responseObj = JsonConvert.DeserializeObject<FileUploadResponse>(data);
                         res.Data = responseObj.Data;
-                
+
                         return res;
                     }
                     else
                     {
                         var errorContent = await response.Content.ReadAsStringAsync();
-                      
+
                         return res;
                     }
                 }
@@ -553,7 +598,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         };
 
                         await _baocaoantoan.Insert_FilePath(InfoFile);
-                     
+
                     }
                     else
                     {
@@ -778,7 +823,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     var data = await UpdateTrangThai_BienBanAnToan(IdBienBan, 4);
                     var stringbase64 = result.Data;
-                    if (data != null )
+                    if (data != null)
                     {
                         string fileName = "document.pdf";
                         string contentType = "application/pdf";
@@ -806,7 +851,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                         if (result.Status)
                         {
-                            
+
 
                         }
                         else
@@ -827,7 +872,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { Status = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         public class LargeJsonResult : JsonResult
         {
             public override void ExecuteResult(ControllerContext context)

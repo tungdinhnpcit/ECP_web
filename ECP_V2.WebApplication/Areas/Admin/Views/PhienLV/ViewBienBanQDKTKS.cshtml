@@ -530,16 +530,16 @@
                 </p>
                 <p class=MsoNormal style=" text-align: left;">
                     - Người lao động vi phạm, số lượng
-                    <input name="txtchidaoctatkhac" style="width:80px" id="txtchidaoctatkhac" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /><i>Trong đó:</i>
+                    <input name="txtnguoilaodongvipham" style="width:80px" id="txtnguoilaodongvipham" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /><i>Trong đó:</i>
                 </p>
                 <p class=MsoNormal style=" text-align: left;">
-                    + Đề nghị hình thức xử lý giảm thưởng vận hành an toàn, số lượng <input name="txtdenghigiamthuong" style="width:80px" id="txtdenghigiamthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+                    + Đề nghị hình thức xử lý giảm thưởng vận hành an toàn, số lượng <input name="txtdenghigiamthuong" style="width:80px" id="txtdenghigiamthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /> người.
                 </p>
                 <p class=MsoNormal style=" text-align: left;">
-                    + Đề nghị hình thức xử lý cắt thưởng vận hành an toàn, số lượng  <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+                    + Đề nghị hình thức xử lý cắt thưởng vận hành an toàn, số lượng  <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /> người.
                 </p>
                 <p class=MsoNormal style=" text-align: left;">
-                    + Đề nghị hình thức kỷ luật, số lượng <input name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" /> người.
+                    + Đề nghị hình thức kỷ luật, số lượng <input name="txtdenghikyluat" style="width:80px" id="txtdenghikyluat" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /> người.
                 </p>
             </div>
         }
@@ -689,6 +689,9 @@
         <div class="col-md-6 text-right">
             <button class="btn btn-default modal-confirm" onclick="ExportModalToPdf(1)">
                 Tải xuống
+            </button>
+            <button class="btn btn-default " onclick="LuuNhap()">
+                Lưu nháp
             </button>
             @if (ViewBag.TrangThaiBienBan == 0 || ViewBag.TrangThaiBienBan == 3 || ViewBag.TrangThaiBienBan == 2)
             {
@@ -1069,6 +1072,23 @@
     const tenDonVi = element.querySelector('#tenDonVi');
     var HoTenNguoiKy = $("#txtchutrigiaoban").val();
     var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
+    var SoLuongKyLuat = $("#txtdenghikyluat").val()||'0';
+    var SoLuongCatThuong = $("#txtdenghicatthuong").val() || '0';
+    var SoLuongGiamThuong = $("#txtdenghigiamthuong").val() || '0';
+    var SoLuongNguoiViPham = $("#txtnguoilaodongvipham").val() || '0';
+    var ChiDaoAnToan = $("#txtchidaoctatkhac").val();
+    var ChiDaoLienQuan = $("#txtchidaolienquanth").val();
+    var LuuYAnToan = $("#txtluuychotuanketiep").val();
+    var PhanTichDanhGia = $("#txtphantichdanhgiabpat").val();
+    var ViPhamKhac = $("#NoiDung_tongtaikhac").val();
+    var ChiDaoKhacPhuc = $("#txtchidao3").val();
+    var TrachNhiemBoPhan = $("#txttrachnghiembp").val();
+    var KiemDiemAnToan = $("#txtkiemdiemAT").val();
+    var NoiDungDanhGia = $("#NoiDung_DanhGia").val();
+    var ThanhPhanThamGia = $("#thanhPhanThamGia").val();
+    var DiaDiem = $("#txtS62_tinh").val();
+    var TenDonVi = $("#txtTenDonVi").val();
+    var ChucVu = $("#txtChucVuChuTri").val();
 
     if (targetElement && IdNguoiKy) {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1133,6 +1153,24 @@
                     formData.append('IdDonVi', '@donViID');
                     formData.append('file', pdfBlob, 'TaiLieu.pdf');
                     formData.append('fileSize', pdfBlob.size);
+
+                    formData.append('SoLuongKyLuat', SoLuongKyLuat);
+                    formData.append('SoLuongCatThuong', SoLuongCatThuong);
+                    formData.append('SoLuongGiamThuong', SoLuongGiamThuong);
+                    formData.append('SoLuongNguoiViPham', SoLuongNguoiViPham);
+                    formData.append('ChiDaoAnToan', ChiDaoAnToan);
+                    formData.append('ChiDaoLienQuan', ChiDaoLienQuan);
+                    formData.append('LuuYAnToan', LuuYAnToan);
+                    formData.append('PhanTichDanhGia', PhanTichDanhGia);
+                    formData.append('ViPhamKhac', ViPhamKhac);
+                    formData.append('ChiDaoKhacPhuc', ChiDaoKhacPhuc);
+                    formData.append('TrachNhiemBoPhan', TrachNhiemBoPhan);
+                    formData.append('KiemDiemAnToan', KiemDiemAnToan);
+                    formData.append('NoiDungDanhGia', NoiDungDanhGia);
+                    formData.append('ThanhPhanThamGia', ThanhPhanThamGia);
+                    formData.append('DiaDiem', DiaDiem);
+                    formData.append('TenDonVi', TenDonVi);
+                    formData.append('ChucVu', ChucVu);
 
                     console.log(Object.fromEntries(formData));
 
@@ -1208,6 +1246,107 @@
         }, 2000); // Chờ 2 giây để kéo lên top
     }
 }
+
+function LuuNhap() {
+    var soBienBan = $("#soBienBan").text();
+    var match = soBienBan.match(/\d+/);
+
+    if (match) {
+        soBienBan = match[0];
+    }
+    var LoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
+    var SoLuongKyLuat = $("#txtdenghikyluat").val() || '0';
+    var SoLuongCatThuong = $("#txtdenghicatthuong").val() || '0';
+    var SoLuongGiamThuong = $("#txtdenghigiamthuong").val() || '0';
+    var SoLuongNguoiViPham = $("#txtnguoilaodongvipham").val() || '0';
+    var ChiDaoAnToan = $("#txtchidaoctatkhac").val();
+    var ChiDaoLienQuan = $("#txtchidaolienquanth").val();
+    var LuuYAnToan = $("#txtluuychotuanketiep").val();
+    var PhanTichDanhGia = $("#txtphantichdanhgiabpat").val();
+    var ViPhamKhac = $("#NoiDung_tongtaikhac").val();
+    var ChiDaoKhacPhuc = $("#txtchidao3").val();
+    var TrachNhiemBoPhan = $("#txttrachnghiembp").val();
+    var KiemDiemAnToan = $("#txtkiemdiemAT").val();
+    var NoiDungDanhGia = $("#NoiDung_DanhGia").val();
+    var ThanhPhanThamGia = $("#thanhPhanThamGia").val();
+    var DiaDiem = $("#txtS62_tinh").val();
+    var TenDonVi = $("#txtTenDonVi").val();
+    var HoTenNguoiKy = $("#txtchutrigiaoban").val();
+    var ChucVu = $("#txtChucVuChuTri").val();
+    var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
+    var dateFrom = convertToDate('@ViewBag.TuNgay');
+    var dateTo = convertToDate('@ViewBag.DenNgay');
+    var TuanThang = parseInt('@ViewBag.TuanThang', 10);
+    console.log("check dateFrom", dateFrom)
+    var modelBaoCao = {
+        IdDonVi:  '@donViID' ,
+        SoBienBan: soBienBan,
+        LoaiBaoCao: LoaiBaoCao,  // Loại báo cáo (tuần hoặc tháng)
+        SoLuongKyLuat: SoLuongKyLuat,  // Số lượng kỷ luật
+        SoLuongCatThuong: SoLuongCatThuong,  // Số lượng cắt thưởng
+        SoLuongGiamThuong: SoLuongGiamThuong,  // Số lượng giảm thưởng
+        SoLuongNguoiViPham: SoLuongNguoiViPham,  // Số lượng người vi phạm
+        ChiDaoAnToan: ChiDaoAnToan,  // Chỉ đạo an toàn
+        ChiDaoLienQuan: ChiDaoLienQuan,  // Chỉ đạo liên quan
+        LuuYAnToan: LuuYAnToan,  // Lưu ý an toàn
+        PhanTichDanhGia: PhanTichDanhGia,  // Phân tích đánh giá
+        ViPhamKhac: ViPhamKhac,  // Vi phạm khác
+        ChiDaoKhacPhuc: ChiDaoKhacPhuc,  // Chỉ đạo khắc phục
+        TrachNhiemBoPhan: TrachNhiemBoPhan,  // Trách nhiệm bộ phận
+        KiemDiemAnToan: KiemDiemAnToan,  // Kiểm điểm an toàn
+        NoiDungDanhGia: NoiDungDanhGia,  // Nội dung đánh giá
+        ThanhPhanThamGia: ThanhPhanThamGia,  // Thành phần tham gia
+        DiaDiem: DiaDiem,  // Địa điểm
+        TenDonVi: TenDonVi,  // Tên đơn vị
+        HoTenNguoiKy: HoTenNguoiKy,  // Họ tên người ký
+        IdNguoiKy: IdNguoiKy,  // ID người ký
+        ChucVu: ChucVu, // Chức vụ
+        NgayBatDau: dateFrom,  // Ngày bắt đầu
+        NgayKetThuc: dateTo,  // Ngày kết thúc
+        TrangThai: 5, 
+        TuanThang: TuanThang,
+        Nam: dateFrom.slice(0,4)
+    };
+
+
+    $.ajax({
+        url: '/BCGBAT/LuuNhap_BienBanAnToan',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(modelBaoCao),  
+        success: function (data) {
+            console.log('Success:', data);
+            if (data.success) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Lưu nháp thành công!',
+                    type: 'success'
+                });
+                setTimeout(function () {
+                    parent.Getdata();
+                    parent.ClosePhieuCongTac();
+                }, 2000);
+            } else {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Lỗi!',
+                    type: 'error'
+                });
+                return false;
+            }
+        },
+        error: function (error) {
+            console.error('Error:', error);
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Lỗi!',
+                type: 'error'
+            });
+            return false;
+        }
+    });
+}
+
 
 </script>
 
