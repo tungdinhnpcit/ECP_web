@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Linq;
 using ECP_V2.Business.Repository;
 using ECP_V2.DataAccess;
+using System.Security.Cryptography;
 
 public class BaoCaoAnToanRepository
 {
@@ -93,19 +94,93 @@ public class BaoCaoAnToanRepository
     {
         using (var connection = CreateConnection())
         {
-            string query = @"
-            INSERT INTO BienBanAnToan (LoaiBaoCao, TuanThang, Nam, NgayBatDau, NgayKetThuc, TrangThai, IdNguoiTrinhKy, HoTenNguoiTrinh, HoTenNguoiKy, IdNguoiKy,  IdDonVi, NgayCapNhat, SoBienBan,
-TenDonVi, DiaDiem, ThanhPhanThamGia, NoiDungDanhGia, KiemDiemAnToan, TrachNhiemBoPhan, ChiDaoKhacPhuc, ViPhamKhac, PhanTichDanhGia, LuuYAnToan, ChiDaoLienQuan, ChiDaoAnToan, SoLuongNguoiViPham, 
-SoLuongGiamThuong, SoLuongCatThuong, SoLuongKyLuat, ChucVu)
-            OUTPUT INSERTED.ID
-            VALUES (@LoaiBaoCao, @TuanThang, @Nam, @NgayBatDau, @NgayKetThuc, @TrangThai, @IdNguoiTrinhKy, @HoTenNguoiTrinh,@HoTenNguoiKy, @IdNguoiKy, @IdDonVi, GetDate(), @SoBienBan,
-@TenDonVi, @DiaDiem,@ThanhPhanThamGia,@NoiDungDanhGia,@KiemDiemAnToan,@TrachNhiemBoPhan,@ChiDaoKhacPhuc,@ViPhamKhac,@PhanTichDanhGia,@LuuYAnToan,@ChiDaoLienQuan,@ChiDaoAnToan,@SoLuongNguoiViPham,
-@SoLuongGiamThuong,@SoLuongCatThuong,@SoLuongKyLuat, @ChucVu)";
-            var id = await connection.QuerySingleAsync<int>(query, model);
-
-            return id;  // Trả về ID của bản ghi vừa được thêm
+            var parameters = new
+            {
+                model.LoaiBaoCao,
+                model.TuanThang,
+                model.Nam,
+                model.NgayBatDau,
+                model.NgayKetThuc,
+                model.TrangThai,
+                model.IdNguoiTrinhKy,
+                model.HoTenNguoiTrinh,
+                model.HoTenNguoiKy,
+                model.IdNguoiKy,
+                model.IdDonVi,
+                model.SoBienBan,
+                model.TenDonVi,
+                model.DiaDiem,
+                model.ThanhPhanThamGia,
+                model.NoiDungDanhGia,
+                model.KiemDiemAnToan,
+                model.TrachNhiemBoPhan,
+                model.ChiDaoKhacPhuc,
+                model.ViPhamKhac,
+                model.PhanTichDanhGia,
+                model.LuuYAnToan,
+                model.ChiDaoLienQuan,
+                model.ChiDaoAnToan,
+                model.SoLuongNguoiViPham,
+                model.SoLuongGiamThuong,
+                model.SoLuongCatThuong,
+                model.SoLuongKyLuat,
+                model.ChucVu
+            };
+            var id = await connection.QuerySingleAsync<int>("Insert_BienBanAnToan", parameters, commandType: CommandType.StoredProcedure);
+            return id;
         }
     }
+    public async Task<int> Update_LuuNhap_BienBanAnToan(ModelBaoCaoAnToan model)
+    {
+        using (var connection = CreateConnection())
+        {
+            var parameters = new
+            {
+                model.Id,
+                model.LoaiBaoCao,
+                model.TuanThang,
+                model.Nam,
+                model.NgayBatDau,
+                model.NgayKetThuc,
+                model.TrangThai,
+                model.IdNguoiTrinhKy,
+                model.HoTenNguoiTrinh,
+                model.HoTenNguoiKy,
+                model.IdNguoiKy,
+                model.IdDonVi,
+                model.SoBienBan,
+                model.TenDonVi,
+                model.DiaDiem,
+                model.ThanhPhanThamGia,
+                model.NoiDungDanhGia,
+                model.KiemDiemAnToan,
+                model.TrachNhiemBoPhan,
+                model.ChiDaoKhacPhuc,
+                model.ViPhamKhac,
+                model.PhanTichDanhGia,
+                model.LuuYAnToan,
+                model.ChiDaoLienQuan,
+                model.ChiDaoAnToan,
+                model.SoLuongNguoiViPham,
+                model.SoLuongGiamThuong,
+                model.SoLuongCatThuong,
+                model.SoLuongKyLuat,
+                model.ChucVu
+            };
+            var rowsAffected = await connection.ExecuteAsync("Update_BienBanAnToan", parameters, commandType: CommandType.StoredProcedure );
+            return rowsAffected;
+        }
+    }
+    public async Task<int> Delete_LuuNhap_BienBanAnToan(int id)
+    {
+        using (var connection = CreateConnection())
+        {
+            string query = "DELETE FROM BienBanAnToan WHERE Id = @Id;";
+            var rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+            return rowsAffected; 
+        }
+    }
+
     public async Task<int> Insert_FilePath(ModelFilePath model)
     {
         using (var connection = CreateConnection())
@@ -132,7 +207,7 @@ SoLuongGiamThuong, SoLuongCatThuong, SoLuongKyLuat, ChucVu)
                 WHERE LoaiBaoCao = @LoaiBaoCao AND (TuanThang = @TuanThang or @TuanThang = -1) AND Nam = @Nam AND IdDonVi = @IdDonVi";
             var parameters = new { LoaiBaoCao, TuanThang, Nam, IdDonVi };
             var data = await connection.QueryAsync<ModelBaoCaoAnToan>(query, parameters);
-           
+
             return data;
         }
     }
@@ -152,7 +227,7 @@ SoLuongGiamThuong, SoLuongCatThuong, SoLuongKyLuat, ChucVu)
                 TrangThai
             });
 
-            return rowsAffected; 
+            return rowsAffected;
         }
     }
     public async Task<int> Update_TrangThaiFilePathByBienBan(int Id, int TrangThai, string IdNguoiCapNhat)
@@ -184,16 +259,16 @@ SoLuongGiamThuong, SoLuongCatThuong, SoLuongKyLuat, ChucVu)
                 NgayCapNhat = GETDATE(),  
                 IdNguoiKy = @IdNguoiKy,   
                 HoTenNguoiKy = @HoTenNguoiKy 
-            WHERE Id = @Id"; 
-    
-        var rowsAffected = await connection.ExecuteAsync(query, new
-        {
-            Id = model.Id,           
-            IdNguoiKy = model.IdNguoiKy,  
-            HoTenNguoiKy = model.HoTenNguoiKy  
-        });
+            WHERE Id = @Id";
 
-            return rowsAffected; 
+            var rowsAffected = await connection.ExecuteAsync(query, new
+            {
+                Id = model.Id,
+                IdNguoiKy = model.IdNguoiKy,
+                HoTenNguoiKy = model.HoTenNguoiKy
+            });
+
+            return rowsAffected;
         }
     }
     public int Get_SoBienBanMax_ByDonVi(string DonViID)

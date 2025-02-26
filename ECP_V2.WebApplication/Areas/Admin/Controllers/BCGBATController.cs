@@ -59,6 +59,7 @@ using System.Web.Http.Results;
 using NLog.Targets;
 using System.Runtime.InteropServices.ComTypes;
 using WebGrease.Activities;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -498,7 +499,53 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { message = ex.Message, success = false });
             }
         }
+        public async Task<ActionResult> Update_LuuNhap_BienBanAnToan(ModelBaoCaoAnToan DataUpdate)
+        {
+            try
+            {
+                var userId = User.Identity.GetUserId();
+                var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+                    .FirstOrDefault(x => x.Id == userId);
+                DataUpdate.IdNguoiTrinhKy = dataNguoiTrinh.Id;
+                DataUpdate.HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien;
+                var IdTaiLieu = await _baocaoantoan.Update_LuuNhap_BienBanAnToan(DataUpdate);
+                if (IdTaiLieu > 0)
+                {
+                    return Json(new { message = "Insert thành công", success = true });
+                }
+                else
+                {
+                    return Json(new { message = "Lỗi", success = false });
+                }
 
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message, success = false });
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> Delete_LuuNhap_BienBanAnToan(int Id)
+        {
+            try
+            {
+            
+                var IdTaiLieu = await _baocaoantoan.Delete_LuuNhap_BienBanAnToan(Id);
+                if (IdTaiLieu > 0)
+                {
+                    return Json(new { message = "Xóa thành công", success = true });
+                }
+                else
+                {
+                    return Json(new { message = "Lỗi", success = false });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message, success = false });
+            }
+        }
 
         private async Task<ResponseData> UploadFileToApi(HttpPostedFileBase file, string IdDonVi)
         {
@@ -893,6 +940,92 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             byte[] fileBytes = Convert.FromBase64String(base64String); // Chuyển Base64 thành byte[]
             return new MemoryPostedFile(fileBytes, fileName, contentType); // Trả về MemoryPostedFile chứa byte[]
         }
+
+        [HttpGet]
+        public async Task<ActionResult> XuatBCKHLLVDoc(string DateFrom, string DateTo, string DonViId, string LoaiBaoCao, string TuanThang, int TrangThaiBienBan, int IdBienBan, int soBienBan, int TrangThaiBaoCao)
+        {
+            try
+            {
+                var model = _plviec_ser.sp_AdvancedSearchPhienLVNewAllCV(0, 0, 0, 0, DateFrom, DateTo, DonViId, "", (int)TrangThaiPhienLV.DaDuyet, -1, -1, "").ToList();
+                var nam = 2025;
+                var loaiBaoCao = LoaiBaoCao == "tuần" ? 1 : 2;
+
+                // Sử dụng await để đợi kết quả từ phương thức bất đồng bộ
+                var dataBienBan = await _baocaoantoan.Get_BienBan_ByTime(loaiBaoCao, int.Parse(TuanThang), nam, DonViId);
+
+                string format = "dd/MM/yyyy";
+                var donVi = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId);
+                if (donVi == null)
+                {
+                    return null;
+                }
+
+                var CVKTKSTT = model.FindAll(x => x.TrangThai_KHLLV == 1).Count();
+                var CVKeHoach = model.FindAll(x => x.TT_Phien == 2).Count();
+                var CVBoSung = model.FindAll(x => x.TT_Phien == 1).Count();
+                var CVDotXuat = model.FindAll(x => x.TT_Phien == 3).Count();
+                var tongcv = CVKeHoach + CVBoSung + CVDotXuat;
+
+                ViewBag.CVKTKSTT = CVKTKSTT;
+                ViewBag.CVKeHoach = CVKeHoach;
+                ViewBag.CVBoSung = CVBoSung;
+                ViewBag.CVDotXuat = CVDotXuat;
+                ViewBag.TuanThang = TuanThang;
+                ViewBag.TrangThaiBienBan = TrangThaiBienBan;
+                ViewBag.IdBienBan = IdBienBan;
+                ViewBag.soBienBan = soBienBan;
+                ViewBag.TrangThaiBaoCao = TrangThaiBaoCao;
+
+                double tyleKH = 0;
+                if (tongcv > 0)
+                {
+                    tyleKH = CVKeHoach * 100 / tongcv;
+                    tyleKH = Math.Round(tyleKH, 2);
+                }
+
+                ViewBag.tyleKH = tyleKH;
+                ViewBag.tongcv = tongcv;
+                ViewBag.DonVi = donVi;
+                ViewBag.DonViId = DonViId;
+                ViewBag.DonViCha = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == donVi.DviCha);
+                ViewBag.TenVietTat = _dvi_ser.Context.tblDonVis.FirstOrDefault(x => x.Id == DonViId).TenVietTat;
+                ViewBag.TuNgay = DateTime.ParseExact(DateFrom, format, CultureInfo.InvariantCulture);
+                ViewBag.DenNgay = DateTime.ParseExact(DateTo, format, CultureInfo.InvariantCulture);
+                ViewBag.LoaiBaoCao = LoaiBaoCao;
+
+                string formattedDateFrom = DateTime.Parse(DateFrom).ToString("yyyyMMdd");
+                string formattedDateTo = DateTime.Parse(DateTo).ToString("yyyyMMdd");
+
+                // lấy lại data
+                var data = _plviec_ser.Get_SoLuong_PLV_BaoCao(DonViId, formattedDateFrom, formattedDateTo);
+                if (data != null)
+                {
+                    ViewBag.TongSoPhien = data.TongSoPhien;
+                    ViewBag.TongSoPhienKeHoach = data.TongSoPhienKeHoach;
+                    ViewBag.TongSoBoSung = data.TongSoBoSung;
+                    ViewBag.TongSoDotXuat = data.TongSoDotXuat;
+                    ViewBag.TongSoKTKS_TrucTiep = data.TongSoKTKS_TrucTiep;
+                    ViewBag.TongSoKTKS_HinhAnh = data.TongSoKTKS_HinhAnh;
+                    ViewBag.TyLePhanTram = data.TyLePhanTram;
+                }
+
+                List<tblNhanVien> nhanVien = _kh_ser.List();
+                if (nhanVien != null && nhanVien.Count > 0)
+                {
+                    ViewBag.nhanVien = nhanVien;
+                }
+                ViewBag.DataBienBan = dataBienBan;
+                DisposeAll();
+
+                return View("ViewBienBanQDKTKS");
+            }
+            catch (Exception)
+            {
+                DisposeAll();
+                throw;
+            }
+        }
+
 
 
         #endregion

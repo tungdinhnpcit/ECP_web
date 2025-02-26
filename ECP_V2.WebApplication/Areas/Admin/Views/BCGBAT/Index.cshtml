@@ -42,7 +42,7 @@
         background-color: lightgray;
         color: black;
     }
- </style>
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -112,7 +112,7 @@
         <div class="col-lg-2">
             <div class="form-group" id="btnView" style="padding-top:18px;float:right;">
                 <a onclick="Getdata()" class="mb-xs mt-xs mr-xs btn btn-primary " style="cursor:pointer; width:120px; height:40px; line-height:40px; float:right; display:flex; align-items:center; justify-content:center;" id="xuatdoc123" type="button">
-                    <i class="fa fa-download" style="margin-right: 8px;" ></i> Lấy dữ liệu
+                    <i class="fa fa-download" style="margin-right: 8px;"></i> Lấy dữ liệu
                 </a>
             </div>
         </div>
@@ -694,13 +694,25 @@
             if (response.success) {
                 var data = response.Data[0];
                 const formattedDate = dayjs(data.NgayCapNhat, "MM/DD/YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
-
+                var TrangThaiBaoCao = data.TrangThai ?? 0;
                 // Điền dữ liệu vào form
                 $("#IdBienBan").val(data.Id);
                 $("#txtTrangThai").text(data.TenTrangThai);
 
                 // Hiển thị các thao tác tùy thuộc vào trạng thái của biên bản
                 if (data.TrangThai == 1 || data.TrangThai == 4) {
+                    if (data.TrangThai == 1) {
+                       if ('@userId' == data.IdNguoiKy) {
+                         $("#btnKySo").css("display", "flex");
+                            $("#btnTraLai").css("display", "flex");
+                       }
+                       if ('@userId' == data.IdNguoiTrinhKy) {
+                       $("#btnHuyTrinh").css("display", "flex");
+                       }
+                    }
+                    else {
+                      $("#btnThaoTac").css("display", "none");
+                    };
                     $("#btnThaoTac").css("display", "flex");
                     $("#txtNguoiTrinh").text(data.HoTenNguoiTrinh);
                     $("#txtThoiGianTrinh").text(formattedDate);
@@ -712,22 +724,25 @@
                     $("#txtThoiGianTrinh").text(formattedDate);
 
                     // Hiển thị báo cáo chi tiết
-                    $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + tuNgay + "&DateTo=" + denNgay + "&DonViId=" + DonViId +
-                        "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + data.Id + "&soBienBan=" + data.SoBienBan);
+                    $("#baocaoctwords").attr("src", "/Admin/BCGBAT/XuatBCKHLLVDoc?DateFrom=" + tuNgay + "&DateTo=" + denNgay + "&DonViId=" + DonViId +
+                        "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + data.Id + "&soBienBan=" + data.SoBienBan
+                        + "&TrangThaiBaoCao=" + TrangThaiBaoCao);
                 } else { // data.TrangThai==5
                     $("#txtNguoiTrinh").text(data.HoTenNguoiKy);
                     $("#txtThoiGianTrinh").text(formattedDate);
                     $("#txtTrangThai").text("Lưu nháp");
-                    $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + tuNgay + "&DateTo=" + denNgay + "&DonViId=" + DonViId +
-                        "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0 + "&soBienBan=" + soBienBanMax);
+                    $("#baocaoctwords").attr("src", "/Admin/BCGBAT/XuatBCKHLLVDoc?DateFrom=" + tuNgay + "&DateTo=" + denNgay + "&DonViId=" + DonViId +
+                        "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0 + "&soBienBan=" + soBienBanMax
+                        + "&TrangThaiBaoCao=" + TrangThaiBaoCao);
                 }
-                
+
 
             } else {
                 // Nếu không có dữ liệu biên bản
                 $("#txtTrangThai").text("Chưa trình");
-                $("#baocaoctwords").attr("src", "/Admin/PhienLV/XuatBCKHLLVDoc?DateFrom=" + tuNgay + "&DateTo=" + denNgay + "&DonViId=" + DonViId +
-                    "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0 + "&soBienBan=" + soBienBanMax);
+                $("#baocaoctwords").attr("src", "/Admin/BCGBAT/XuatBCKHLLVDoc?DateFrom=" + tuNgay + "&DateTo=" + denNgay + "&DonViId=" + DonViId +
+                    "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + 0 + "&soBienBan=" + soBienBanMax
+                    + "&TrangThaiBaoCao=" + 0);
             }
         },
         error: function (xhr, status, error) {
