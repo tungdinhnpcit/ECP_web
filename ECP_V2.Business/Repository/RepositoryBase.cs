@@ -34,6 +34,7 @@ namespace ECP_V2.Business.Repository
 
         public ECP_V2Entities Context { get { return unit.Context; } }        
         public abstract object Create(T entity, ref string strError);
+ 
         //public abstract object ImportList(List<T> entity, ref string strError);
         public abstract object Update(T entity, ref string strError);
         public abstract string Delete(object entityId, ref string strError);

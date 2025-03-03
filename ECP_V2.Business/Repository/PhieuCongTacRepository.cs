@@ -71,6 +71,8 @@ namespace ECP_V2.Business.Repository
             catch (Exception ex) { strError = ex.Message; return "error"; }
         }
 
+      
+
         public override object Create(plv_PhieuCongTac entity, ref string strError)
         {
             try
@@ -301,6 +303,8 @@ namespace ECP_V2.Business.Repository
                 throw ex;
             }
         }
+
+
 
     }
 

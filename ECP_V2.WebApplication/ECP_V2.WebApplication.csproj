@@ -18,9 +18,9 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44302</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -1567,6 +1567,7 @@
     <Content Include="Content\admin\atvs_DanhMuc\index.js" />
     <Content Include="Content\admin\atvs_KeHoach\index.js" />
     <Content Include="Content\admin\atvs_KetQua\index.js" />
+    <Content Include="Content\admin\LCTGA\lctgaPhien.js" />
     <Content Include="Content\admin\LCTGA\index.js" />
     <Content Include="Content\admin\bcbs_NoiDung\index.js" />
     <Content Include="Content\admin\bcbs_TonThat\index.js" />
@@ -4293,6 +4294,7 @@
     <Content Include="Scripts\HluAt\hluat_kh.js" />
     <Content Include="Scripts\HluAt\hluat_report.js" />
     <Content Include="Scripts\HluAt\hluyen_antoan.js" />
+    <Content Include="Scripts\howler\howler.min.js" />
     <Content Include="Scripts\jquery.TextareaLineCount.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\KTGS\html\template.html" />
@@ -5406,7 +5408,7 @@
           <IISUrl>http://localhost:7417/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>http://10.21.3.15:7418/</CustomServerUrl>
+          <CustomServerUrl>http://10.21.3.133:7418/</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

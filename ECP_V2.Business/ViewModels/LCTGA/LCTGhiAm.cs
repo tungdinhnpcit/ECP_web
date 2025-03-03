@@ -20,8 +20,11 @@ namespace ECP_V2.Business.ViewModels.LCTGA
         public int TrangThai { get; set; }
         public string LinkFile { get; set; }
         public DateTime? TGHoanThanh { get; set; }
+        public DateTime? NgayDuyet { get; set; }
+        public string GCNhanLenh { get; set; }
+        public string GCDuyet { get; set; }
+        public int IdPhienLV { get; set; }
 
-        public List<LCTGhiAmThucHien> ThucHien { get; set; }
 
         public List<tblNhanVien> NhanVien { get; set; }
     }

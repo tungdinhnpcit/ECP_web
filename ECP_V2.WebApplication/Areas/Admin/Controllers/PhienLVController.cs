@@ -69,6 +69,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         private KeHoachLichLamViecRepository _keHoachLichLamViecRepository = new KeHoachLichLamViecRepository();
         private string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
 
+        private readonly LCTGARepository _lctGA = new LCTGARepository(System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString);
         SafeTrainRepository safeTrainRepository = new SafeTrainRepository();
         ApprovePlanReponsitory appPlanRepo = new ApprovePlanReponsitory();
 
@@ -14879,7 +14880,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CapSoPhieuLenh(string Id)
+        public async Task<ActionResult> CapSoPhieuLenh(string Id, string LoaiLCT, string NguoiNhanLenh)
         {
             string kt = "";
             try
@@ -14986,6 +14987,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     PhieuCongTacRepository pctRepo = new PhieuCongTacRepository();
                     sophieu = pctRepo.GetSoPhieuCtac(phieuCongTacObj.DonViId, DateTime.Now.Year, phieuCongTacObj.MaLP, Session["UserName"].ToString(), 0);
                     phieuCongTacObj.SoPhieu = sophieu;
+                    if(int.Parse(LoaiLCT)== 1)
+                    {
+                        _lctGA.sp_GA_CapPhieuLCTGATuWeb(int.Parse(Id), NguoiNhanLenh);
+                    }
+                 
 
                     //Cấp thành công thì cập nhật lịch sử cấp
                     #region Luu lich su cap phieu
@@ -18048,7 +18054,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 model = model.ToList().Where(x => (x.TrangThai == 2 || x.TrangThai == 3) && x.NguoiDuyet != null).ToList();
                 foreach (var item in model)
                 {
-                    var objPCT = _pcongtac_ser.GetById(item.MaPCT);
+                    //var objPCT = _pcongtac_ser.GetById(item.MaPCT);
+                    var objPCT = _lctGA.get_plv_PhieuCongTac(item.MaPCT??0);
+
                     if (objPCT != null)
                     {
                         //item.TT_Phien = (int)objPCT.MaTT;
@@ -18060,6 +18068,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         item.MaYeuCauCRM = objPCT.MaYeuCauCRM;
                         item.NguoiCNPCT = objPCT.NguoiCN != null ? objPCT.NguoiCN : objPCT.NguoiTao;
                         item.NgayCNPCT = objPCT.NgayCN != null ? objPCT.NgayCN : objPCT.NgayTao;
+                        item.LoaiLCT = objPCT.LoaiLCT;
+                        item.LinkFile = objPCT.LinkFile;
                     }
                 }
                 if (filterOption == 0 && !string.IsNullOrEmpty(filterTemp) && model != null)

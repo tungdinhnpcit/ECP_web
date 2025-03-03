@@ -197,7 +197,8 @@
                             NgayNhanLenh: item.NgayNhanLenh,
                             TGHoanThanh: item.TGHoanThanh,
                             GhiChu: ghichu,
-                            hienthi: hienthi
+                            hienthi: hienthi,
+                            LinkFile: item.LinkFile
                         });
                         d++;
                     });
@@ -350,5 +351,41 @@
             }
         });
 
+    });
+
+
+    var currentSound = null;
+
+    $(document).on("click", ".play-btn", function () {
+        var songSrc = $(this).data('linkfile');
+        var idvoice = $(this).data('id');
+
+        if (currentSound) {
+         
+            currentSound.stop();
+        }
+
+        currentSound = new Howl({
+            src: [songSrc],
+            volume: 1.0
+        });
+
+        if ($('#playvoice-' + idvoice).hasClass('fa-play')) {
+            $('#playvoice-' + idvoice).removeClass('fa-play');
+            $('#playvoice-' + idvoice).addClass('fa-stop');
+            if (currentSound) {
+
+                currentSound.play();
+            }
+        } else {
+            $('#playvoice-' + idvoice).addClass('fa-play');
+            $('#playvoice-' + idvoice).removeClass('fa-stop');
+            if (currentSound) {
+
+                currentSound.stop();
+            }
+
+        }
+      
     });
 }

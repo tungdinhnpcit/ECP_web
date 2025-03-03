@@ -3,7 +3,7 @@
     int i = 0;
 
     <script type="text/javascript">
-        
+
 
         $(function () {
 
@@ -14,7 +14,7 @@
             //});
 
             //$('.prev').on('click', function (e) {
-            //    e.preventDefault();              
+            //    e.preventDefault();
             //    Paging(1, $("#drlPageSize").val(), $('#txtSearch').val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val());
             //});
 
@@ -244,7 +244,7 @@
 
                 });
             }
-            
+
             //Nút ký
             //khai bao Popup cho nut them comment
             $('a.SignSoPhieu').magnificPopup({
@@ -259,9 +259,9 @@
                 mainClass: 'my-mfp-zoom-in',
                 modal: true
             }).click(function () {
-                IdSign = $(this).attr("id").split("_")[1];               
+                IdSign = $(this).attr("id").split("_")[1];
                 getBuocKy(IdSign);
-            });            
+            });
 
             $('a.ViewSign').magnificPopup({
                 type: 'inline',
@@ -299,7 +299,7 @@
                 document.getElementById("fileBBKS").value = null;
 
             });
-            
+
             //Phương án thi công
             $('a.KsPATC').magnificPopup({
                 type: 'inline',
@@ -413,7 +413,6 @@
             background-position: 50% 80%;
             background-size: 40px 40px;
         }
-        
     </style>
 
 
@@ -426,7 +425,7 @@
         //var donVi = _dvi_ser.GetById(donviId);
 
         <div class="row" style="margin-top:10px">
-            <input type="hidden" id="buocky"/>
+            <input type="hidden" id="buocky" />
             <div class="col-md-12">
                 <div class="tabs tabs-primary">
                     <ul class="nav nav-tabs">
@@ -714,13 +713,20 @@
                                                             @if (item.TrangThai != 7 && item.TrangThai != 5)
                                                             {
                                                                 <td class="text-center @(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")" style="text-align:center;">
-                                                                    <input type="checkbox" class="chkbox" id="ckh_@item.IdPhieuCongTac" value="@item.IdPhieuCongTac" />
+                                                                    <div style="display: flex; flex-direction:column">
+                                                                        <input type="checkbox" class="chkbox" id="ckh_@item.IdPhieuCongTac" value="@item.IdPhieuCongTac" />
+                                                                        @if (item.LoaiLCT != null && item.LoaiLCT == 1)
+                                                                        {
+                                                                            <i class="fa fa-headphones" style="font-size: 25px; cursor: pointer; padding-top:10px; color:blue"></i>
+                                                                        }
+                                                                    </div>
                                                                 </td>
                                                             }
                                                             else
                                                             {
                                                                 <td class="@(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")"></td>
                                                             }
+
                                                             <td>
 
                                                                 <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">STT: @i</span>
@@ -857,6 +863,15 @@
                                                                 <a id="KsPATC_@item.Id" href="#modalPATC" title="Phương án thi công" class="KsPATC"><i class="fa fa-file-powerpoint-o" style="font-size: 20px;color:red; cursor: pointer"></i></a>
 
                                                                 @*  }*@
+
+                                                                @if (item.LoaiLCT == 1)
+                                                                {
+                                                                    <a id="GhiAm_@item.MaPCT" data-id="@item.Id" title="Ghi âm" data-bs-toggle="modal" data-bs-target="#modal-GhiAmFile" class="modalGhiAmFile"><i class="fa fa-microphone" style="font-size: 25px; cursor: pointer; color: blue;"></i></a>
+                                                                    if (item.LinkFile != null && item.LinkFile != "")
+                                                                    {
+                                                                        <i data-linkfile="@item.LinkFile" title="Lệnh ghi âm" data-id="@item.Id" id="playvoice-@item.Id" class="play-btn fa fa-play mic-link-ghiam" aria-hidden="true"></i>
+                                                                    }
+                                                                }
                                                             </td>
                                                         </tr>
                                                     }

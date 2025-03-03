@@ -11,6 +11,8 @@
 
 @section ScriptSignalR{
     <script src="~/Scripts/AdminJS/chosen/chosen.jquery.js"></script>
+    <script src="~/Scripts/howler/howler.min.js"></script>
+    <script src="~/Content/admin/LCTGA/lctgaPhien.js"></script>
 }
 
 @section Styles{
@@ -229,6 +231,8 @@
         </section>
     </div>
 
+
+
     <!--Dialog Hủy duyệt phiếu/lệnh-->
     <!--Đã cấp số ko được hủy, Người duyệt được hủy-->
     <div id="modalAnimHuyDuyet" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
@@ -374,6 +378,20 @@
                     <div class="modal-text">
                         <h3>Bạn có chắc muốn cấp số Phiếu/Lệnh công tác đã chọn ?</h3>
                     </div>
+                    <div class="col-md-12" style="margin-left:10px">
+                        <h4>Loại phiếu công tác: &nbsp;</h4>
+                        <select class="form-control" id="cmbLoaiLCT">
+                            <option value="0" selected>Lệnh Công Tác Giấy</option>
+                            <option value="1">Lệnh Công Tác Ghi âm</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 hide lctga-nguoinhanlenh" style="margin-left:10px">
+                        <h4>Loại phiếu công tác: &nbsp;</h4>
+                        <select class="form-control" id="cmbNguoiNhanLenh">
+                            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "" });}
+                        </select>
+                    </div>
+
                 </div>
             </div>
             <footer class="panel-footer">
@@ -713,6 +731,24 @@
     </div>
 
     <div class="clear">
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-GhiAmFile" tabindex="-1" aria-labelledby="recordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between">
+                <h5 class="modal-title" id="recordModalLabel">Ghi Âm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <button id="startRecord" class="btn btn-success">Bắt đầu</button>
+                <button id="stopRecord" class="btn btn-danger" disabled>Dừng</button>
+                <audio id="audioPlayer" controls class="mt-3 w-100"></audio>
+                <button id="uploadAudio" class="btn btn-primary mt-3" disabled>Tải lên</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1318,6 +1354,9 @@ chuyenNPC = -1
             }).click(function () {
                 ModalConfirmTongHop();
             });
+
+
+
 
             //$("#txtNgayTongHop").kendoDatePicker({
             //    format: 'dd/MM/yyyy',
@@ -3524,12 +3563,18 @@ chuyenNPC = -1
 
             //loading('Đang xử lý...', 1);
 
+            let loaiLCT = $('#cmbLoaiLCT').val();
+            let NguoiNhanLenh = $('#cmbNguoiNhanLenh').val();
+            if (NguoiNhanLenh == null) NguoiNhanLenh = '';
+
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 url: '/Admin/PhienLV/CapSoPhieuLenh',
                 data: JSON.stringify({
-                    "Id": IdPCT
+                    "Id": IdPCT,
+                    "loaiLCT": loaiLCT,
+                    "NguoiNhanLenh": NguoiNhanLenh
                 }),
                 dataType: "json",
                 beforeSend: function () {//alert(id);
@@ -3737,6 +3782,8 @@ chuyenNPC = -1
         }
 
         }
+
+
     </script>
 }
 

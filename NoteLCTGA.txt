@@ -8,3 +8,9 @@ SELECT b.NoiDung, b.SoPhieu
   and a.TT_Phien =2 order by a.NgayTao desc
 
 
+
+
+// Mới
+alter table plv_PhieuCongTac
+add  LoaiLCT int null
+ALTER TABLE plv_PhieuCongTac ADD CONSTRAINT DF_plv_PhieuCongTac_LoaiLCT DEFAULT 0 FOR LoaiLCT;

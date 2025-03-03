@@ -80,6 +80,56 @@ namespace ECP_V2.Business.Repository
             }
         }
 
+        //Renew 250225
+        public dynamic sp_GA_CapPhieuLCTGATuWeb( int IdPhienLV, string NguoiNhanLenh)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Connectstr))
+                {
+                    string query = "exec dbo.sp_GA_CapPhieuLCTGATuWeb @IdPhienLV,@NguoiNhanLenh;";
+                    var data = db.Query<dynamic>(query, new {  IdPhienLV, NguoiNhanLenh }).ToList(); ;
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public plv_PhieuCongTac get_plv_PhieuCongTac(int IdPhieuCT)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Connectstr))
+                {
+                    string query = "exec sp_GA_PhieuCongTac @IdPhieuCT ;";
+                    var data = db.QuerySingleOrDefault<plv_PhieuCongTac>(query, new { IdPhieuCT }); ;
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public dynamic UpdateLinkFileGhiAm(int IdPhieuCT, string LinkFile)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Connectstr))
+                {
+                    string query = "update [dbo].[plv_PhieuCongTac_GhiAm] set  LinkFile = @LinkFile where IdPhieuCT=@IdPhieuCT ;";
+                    var data = db.Query(query, new { IdPhieuCT, LinkFile }); ;
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 
 }
