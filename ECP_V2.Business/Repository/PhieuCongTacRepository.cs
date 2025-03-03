@@ -138,6 +138,45 @@ namespace ECP_V2.Business.Repository
         {
             return Context.plv_PhieuCongTac_Sign.Where(e => e.PhienLamViecID == idphien).ToList();
         }
+        public int XoaPhieucongtacSignByPlvId(int idphien)
+        {
+            var phieuCongTacs = Context.plv_PhieuCongTac_Sign.Where(e => e.PhienLamViecID == idphien).ToList();
+            if (phieuCongTacs.Any())
+            {
+                Context.plv_PhieuCongTac_Sign.RemoveRange(phieuCongTacs);
+                Context.SaveChanges();
+                return phieuCongTacs.Count;
+            }
+
+            return 0;
+        }
+        public bool Revert_KySoLoi(string constr, int PhienLamViecId)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(constr))
+                {
+                    // Câu lệnh xóa các bản ghi liên quan đến PhienLamViecID
+                    string query = @"
+                delete from plv_PhieuCongTac_Sign where PhienLamViecID= @PhienLamViecID;
+                delete from plv_PhieuCongTac_hientruong where PhienLamViecID= @PhienLamViecID;
+                delete from plv_PhieuCT_NhanVien_hientruong where PhienLamViecID= @PhienLamViecID; ";
+
+                    var rowsAffected = db.Execute(query, new { PhienLamViecId });
+
+                    if (rowsAffected > 0)
+                    {
+                        return true; 
+                    }
+
+                    return false; 
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         public override object Update(plv_PhieuCongTac entity, ref string strError)
         {

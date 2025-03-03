@@ -2997,6 +2997,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 if (kq != "OK")
                                 {
                                     // Revert lại thủ tục pkg_plv_ins_filesign
+                                 Boolean soDongXoa= _pcongtac_ser.Revert_KySoLoi(strcon, plv.Id);
                                 }
 
                             }
