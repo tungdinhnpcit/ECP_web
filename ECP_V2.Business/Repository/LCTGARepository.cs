@@ -97,14 +97,14 @@ namespace ECP_V2.Business.Repository
                 return null;
             }
         }
-        public plv_PhieuCongTac get_plv_PhieuCongTac(int IdPhieuCT)
+        public plv_PhieuCongTac_view2 get_plv_PhieuCongTac(int IdPhieuCT)
         {
             try
             {
                 using (IDbConnection db = new SqlConnection(Connectstr))
                 {
                     string query = "exec sp_GA_PhieuCongTac @IdPhieuCT ;";
-                    var data = db.QuerySingleOrDefault<plv_PhieuCongTac>(query, new { IdPhieuCT }); ;
+                    var data = db.QuerySingleOrDefault<plv_PhieuCongTac_view2>(query, new { IdPhieuCT }); ;
                     return data;
                 }
             }
@@ -130,6 +130,8 @@ namespace ECP_V2.Business.Repository
                 return null;
             }
         }
+
+
     }
 
 }
