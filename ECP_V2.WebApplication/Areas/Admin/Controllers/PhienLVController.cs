@@ -2986,7 +2986,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 if (plvSigns.Count == 0)
                 {
                     //Check người cấp phiếu Id mới đc ký
-                    if (pct.NguoiCapPhieu_Id.Equals(Session["UserId"].ToString()))
+                    if (pct.NguoiCapPhieu_Id.ToString() == Session["UserId"].ToString())
                     {
                         if (pct.MaLP == 2)
                         {
@@ -2997,13 +2997,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 if (kq != "OK")
                                 {
                                     // Revert lại thủ tục pkg_plv_ins_filesign
-                                 Boolean soDongXoa= _pcongtac_ser.Revert_KySoLoi(strcon, plv.Id);
+                                    Boolean soDongXoa = _pcongtac_ser.Revert_KySoLoi(strcon, plv.Id);
                                 }
                             }
                             else
                             {
                                 DisposeAll();
-                                return Json("Lỗi ký số insert file", JsonRequestBehavior.AllowGet);
+                                return Json(kq + ", Lỗi insert file", JsonRequestBehavior.AllowGet);
                             }
                         }
                         else
@@ -3198,7 +3198,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
                 else
                 {
-                    return "Có lỗi ký số";
+                    return kq;
                 }
 
                 return "OK";
@@ -3490,7 +3490,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-
+                return ex.Message;
             }
 
             return kqSign;
