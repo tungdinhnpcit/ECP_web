@@ -2999,12 +2999,11 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                     // Revert lại thủ tục pkg_plv_ins_filesign
                                  Boolean soDongXoa= _pcongtac_ser.Revert_KySoLoi(strcon, plv.Id);
                                 }
-
                             }
                             else
                             {
                                 DisposeAll();
-                                return Json("ERROR", JsonRequestBehavior.AllowGet);
+                                return Json("Lỗi ký số insert file", JsonRequestBehavior.AllowGet);
                             }
                         }
                         else
