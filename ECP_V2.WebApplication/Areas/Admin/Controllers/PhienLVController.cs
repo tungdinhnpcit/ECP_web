@@ -2755,7 +2755,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
                 }
 
-                string base64File = SignBBKS_PATCAsync(image, nvien.Id, 0);
+                string base64File = await SignBBKS_PATCAsync(image, nvien.Id, 0);
 
                 //Ghi file xuống thư mục
                 saveFileToFolder(file.FileName.Replace(".pdf", ""), base64File);
@@ -2922,7 +2922,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
 
-                var response = httpClient.PostAsync(path, content).Result;
+                var response = await httpClient.PostAsync(path, content);
 
                 kq = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
@@ -2998,12 +2998,18 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     // Revert lại thủ tục pkg_plv_ins_filesign
                                     Boolean soDongXoa = _pcongtac_ser.Revert_KySoLoi(strcon, plv.Id);
+                                    DisposeAll();
+                                    return Json(kq + ", Lỗi insert file bước 1", JsonRequestBehavior.AllowGet);
+                                }
+                                else
+                                {
+                                    return Json(kq, JsonRequestBehavior.AllowGet);
                                 }
                             }
                             else
                             {
                                 DisposeAll();
-                                return Json(kq + ", Lỗi insert file", JsonRequestBehavior.AllowGet);
+                                return Json(kq + ", Lỗi insert file bước 0", JsonRequestBehavior.AllowGet);
                             }
                         }
                         else
@@ -3045,11 +3051,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     kq = await CallSignPhieuStep(plv, pct.MaLP.Value, 4, nvien.TenNhanVien);
 
                 }
-
-
                 ////Gọi ký bước 1
                 //await CallSignPhieuStep1(plv.Id.ToString(), pct.MaLP.Value);
-
                 return Json(kq, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -3068,7 +3071,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             var uploadServiceBaseAddress = urlSignServer + "api/Sign?DinhDanhKy=" + hsmalias + "&provider=EVN_CA";
             var client = new HttpClient();
             string kq = "ERROR";
-            HttpResponseMessage response = await client.GetAsync(uploadServiceBaseAddress);
+            HttpResponseMessage response = await client.GetAsync(uploadServiceBaseAddress).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 kq = await response.Content.ReadAsAsync<string>();
@@ -3124,7 +3127,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
 
-                    var response = httpClient.PostAsync(path, content).Result;
+                    var response = await httpClient.PostAsync(path, content).ConfigureAwait(false);
 
                     kt = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
@@ -3163,7 +3166,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 {
                     var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
 
-                    var response = httpClient.PostAsync(path, content).Result;
+                    var response = await httpClient.PostAsync(path, content).ConfigureAwait(false);
 
                     kt = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
@@ -3185,7 +3188,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 }
                 var data = System.Convert.FromBase64String((string)objBase64Pdf.SelectToken("data"));
                 //Gọi ký
-                string kq = (string)SignMobileExampleAsync(data, stepSignCheck, userSign, loaiphieu, " ");
+                string kq = await SignMobileExampleAsync(data, stepSignCheck, userSign, loaiphieu, " ");
 
                 //Ký xong lưu vào database:
                 //byte[] fileSign = System.Convert.FromBase64String((kq));
@@ -3193,20 +3196,19 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 //appPlanRepo.insFileSignToDb(plv.Id,0, Session["UserId"].ToString(), fileSign);
                 if (!kq.Equals(""))
                 {
-                    await UploadFileSign(plv.Id.ToString(), step.ToString(), loaiphieu.ToString(), Session["UserId"].ToString(), kq);
-                    return "OK";
+                    kq = await UploadFileSign(plv.Id.ToString(), step.ToString(), loaiphieu.ToString(), Session["UserId"].ToString(), kq);
+
+                    return kq;
                 }
                 else
                 {
                     return kq;
                 }
-
-                return "OK";
             }
             catch (Exception ex)
             {
                 DisposeAll();
-                return null;
+                return ex.Message;
             }
         }
         #endregion
@@ -3246,7 +3248,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
 
-                var response = httpClient.PostAsync(path, content).Result;
+                var response = await httpClient.PostAsync(path, content).ConfigureAwait(false);
 
                 kq = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
@@ -3278,35 +3280,58 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
         public async Task<string> UploadFileSign(string phienid, string stepsign, string loaiphieu, string username, string strfile)
         {
-            //Lấy đơn vị
-            string dv = _dvi_ser.GetDvConnect();
-            string token = await LogInApi(dv);
-            string url = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
-            string path = url + "api/v1/PLV/UploadFileSign";
-            string kq = "";
-
-            string s = "{\r\n  \"phienid\": \"" + phienid + "\",\r\n  \"stepsign\": \"" + stepsign + "\",\r\n  \"loaiphieu\": \"" + loaiphieu + "\",\r\n  \"username\": \"" + username + "\",\r\n  \"strfile\":\"" + strfile + "\",\r\n  \"idconnect\":\"" + dv + "\"\r\n}";
-            ServicePointManager.ServerCertificateValidationCallback = new
-                RemoteCertificateValidationCallback
-                (
-                   delegate { return true; }
-                );
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            using (HttpClient httpClient = new HttpClient())
+            try
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
-                var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
+                // Lấy đơn vị
+                string dv = _dvi_ser.GetDvConnect();
+                string token = await LogInApi(dv);
+                Console.WriteLine($"token từ LogInApi: {token}");
 
-                var response = httpClient.PostAsync(path, content).Result;
+                string url = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
+                string path = url + "api/v1/PLV/UploadFileSign";
 
-                kq = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                string s = "{\r\n  \"phienid\": \"" + phienid + "\",\r\n  \"stepsign\": \"" + stepsign + "\",\r\n  \"loaiphieu\": \"" + loaiphieu + "\",\r\n  \"username\": \"" + username + "\",\r\n  \"strfile\":\"" + strfile + "\",\r\n  \"idconnect\":\"" + dv + "\"\r\n}";
+
+                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(delegate { return true; });
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                    var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await httpClient.PostAsync(path, content).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode(); // Ném ngoại lệ nếu HTTP không thành công
+                    var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    Console.WriteLine($"Response từ API: {jsonString}");
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                    {
+                        return "Lỗi: API /UploadFileSign trả về phản hồi trống.";
+                    }
+                    if (!jsonString.Trim().StartsWith("{") && !jsonString.Trim().StartsWith("["))
+                    {
+                        return $"Lỗi: API trả về dữ liệu không phải JSON - Nội dung: {jsonString}";
+                    }
+                    var result = JsonConvert.DeserializeObject<ResponseModel>(jsonString);
+                    
+                    return result?.State == true ? result.Data ?? string.Empty : result.Message ?? "Lỗi Uploadfile đã ký đến API /UploadFileSign";
+                }
             }
-
-
-            return kq;
+            catch (HttpRequestException ex)
+            {
+                return $"Lỗi HTTP /UploadFileSign: {ex.Message}";
+            }
+            catch (TaskCanceledException ex)
+            {
+                return $"Lỗi: Yêu cầu bị hủy hoặc timeout /UploadFileSign - {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                return $"Lỗi không xác định /UploadFileSign: {ex.Message} \n StackTrace: {ex.StackTrace}";
+            }
         }
+
 
         private async Task<string> LogInApi(string dv)
         {
@@ -3327,22 +3352,21 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             {
                 var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
 
-                var response = httpClient.PostAsync(path, content).Result;
+                var response = await httpClient.PostAsync(path, content).ConfigureAwait(false);
 
                 kq = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             JObject jObject = JObject.Parse(kq);
-            string x = (string)jObject.SelectToken("Data").SelectToken("Result");
+            string x = (string)jObject.SelectToken("Data").SelectToken("Token");
             return x.Replace("{", "").Replace("}", "");
         }
 
         #region
         //Hàm gọi ký
-        public string SignMobileExampleAsync(byte[] byfile, int stepSign, string userSign, int loaiphieu, string usernameSession)
+        public async Task<string> SignMobileExampleAsync(byte[] byfile, int stepSign, string userSign, int loaiphieu, string usernameSession)
         {
 
             string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
-            var httpClient = new HttpClient();
             var uploadServiceBaseAddress = urlSignServer + "api/sign";
             //tblNhanVien nvien = _nhanvien_ser.GetByUserName(Session["UserName"].ToString());
             var username = "";
@@ -3476,30 +3500,32 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             };
             var client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            string kqSign = "";
             try
             {
-                var httpResponseMessage = client.SendAsync(request).Result;
-
-                if (httpResponseMessage.IsSuccessStatusCode)
-                {
-                    var data_pdf = JsonConvert.DeserializeObject<ResponseDataX>(httpResponseMessage.Content.ReadAsStringAsync().Result);
-                    kqSign = data_pdf.Data.ToString();
-                }
-
+                var httpResponseMessage = await client.SendAsync(request).ConfigureAwait(false);
+                httpResponseMessage.EnsureSuccessStatusCode();
+                var jsonString = await httpResponseMessage.Content.ReadAsStringAsync();
+                var dataPdf = JsonConvert.DeserializeObject<ResponseDataX>(jsonString);
+                return dataPdf?.Data?.ToString() ?? "Lỗi ký số SignServer 10.21.10.86:8888";
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex) // Lỗi HTTP
             {
-                return ex.Message;
+                return $"Lỗi HTTP ký số SignServer: {ex.Message}";
             }
-
-            return kqSign;
+            catch (TaskCanceledException ex) // Timeout
+            {
+                return $"Lỗi: Yêu cầu bị timeout SignServer- {ex.Message}";
+            }
+            catch (Exception ex) // Lỗi chung
+            {
+                return $"Lỗi không xác định ký số SignServer {ex.Message}";
+            }
 
         }
 
         #endregion
         #region 'Gọi hàm ký số BBKS và PATC'
-        public string SignBBKS_PATCAsync(byte[] byfile, string userSign, int loaibienban)
+        public async Task<string> SignBBKS_PATCAsync(byte[] byfile, string userSign, int loaibienban)
         {
 
             string urlSignServer = ConfigurationManager.AppSettings["SignServer"].ToString();
@@ -3561,7 +3587,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             string kqSign = "";
             try
             {
-                var httpResponseMessage = client.SendAsync(request).Result;
+                var httpResponseMessage = await client.SendAsync(request).ConfigureAwait(false);
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -3576,7 +3602,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-
+                return ex.Message;
             }
 
             return kqSign;
@@ -3850,20 +3876,47 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             string url = System.Configuration.ConfigurationManager.AppSettings["API_CONVERT"].ToString();
             string path = url + "ConvertHtmlToPdf";
-            string kt = "";
-            string s = "{\r\n  \"bottomMargin\": 0.7,\r\n  \"footerDistance\": 0,\r\n  \"headerDistance\": 0,\r\n  \"html\": \"" + htmlStrBase64 + "\",\r\n  \"leftMargin\": 0.5,\r\n  \"orientation\": 1,\r\n  \"paperSize\": 4,\r\n  \"rightMargin\": 0.2,\r\n  \"topMargin\": 0.7\r\n}";
-            using (HttpClient httpClient = new HttpClient())
+
+            try
             {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    var requestBody = new
+                    {
+                        bottomMargin = 0.7,
+                        footerDistance = 0,
+                        headerDistance = 0,
+                        html = htmlStrBase64,
+                        leftMargin = 0.5,
+                        orientation = 1,
+                        paperSize = 4,
+                        rightMargin = 0.2,
+                        topMargin = 0.7
+                    };
 
-                var content = new StringContent(s, System.Text.Encoding.UTF8, "application/json");
+                    string jsonPayload = JsonConvert.SerializeObject(requestBody);
+                    var content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json");
 
-                var response = httpClient.PostAsync(path, content).Result;
-
-                kt = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
+                    var response =await httpClient.PostAsync(path, content).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode(); // Ném lỗi nếu mã trạng thái không thành công
+                    var data = await response.Content.ReadAsStringAsync();
+                    return data;
+                }
             }
-            return kt;
+            catch (HttpRequestException ex)
+            {
+                return $"Lỗi HTTP ConvertHtmlToPdf: {ex.Message}";
+            }
+            catch (TaskCanceledException ex)
+            {
+                return $"Lỗi Timeout ConvertHtmlToPdf: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                return $"Lỗi không xác định ConvertHtmlToPdf: {ex.Message}";
+            }
         }
+
 
         #endregion
 
@@ -16507,7 +16560,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     valuePairs.Add("account", camSessionAcc);
                     valuePairs.Add("password", camSessionPw);
 
-                    var response = httpClient.PostAsync(linkSession, new FormUrlEncodedContent(valuePairs)).Result;
+                    var response = await httpClient.PostAsync(linkSession, new FormUrlEncodedContent(valuePairs));
 
                     var kq = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(kq);
@@ -18853,7 +18906,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 ////// tạo form post
                                 var form = new MultipartFormDataContent();
                                 form.Add(new StringContent(strbody), "ds_tt");
-                                var res = c.PostAsync(baseUrlpmis + path, form).Result;
+                                var res = await c.PostAsync(baseUrlpmis + path, form);
                                 if (res.IsSuccessStatusCode)
                                 {
                                     foreach (var v in plv_tb)
@@ -19728,4 +19781,11 @@ public class ResponseDataX
         return new ResponseData() { State = 0, Data = null, Mess = mess };
 
     }
+
+}
+public class ResponseModel
+{
+    public bool State { get; set; }
+    public string Message { get; set; }
+    public string Data { get; set; }
 }
