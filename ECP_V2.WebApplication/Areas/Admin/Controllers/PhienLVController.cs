@@ -3314,7 +3314,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         return $"Lỗi: API trả về dữ liệu không phải JSON - Nội dung: {jsonString}";
                     }
                     var result = JsonConvert.DeserializeObject<ResponseModel>(jsonString);
-                    
+
                     return result?.State == true ? result.Data ?? string.Empty : result.Message ?? "Lỗi Uploadfile đã ký đến API /UploadFileSign";
                 }
             }
@@ -3897,7 +3897,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     string jsonPayload = JsonConvert.SerializeObject(requestBody);
                     var content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json");
 
-                    var response =await httpClient.PostAsync(path, content).ConfigureAwait(false);
+                    var response = await httpClient.PostAsync(path, content).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode(); // Ném lỗi nếu mã trạng thái không thành công
                     var data = await response.Content.ReadAsStringAsync();
                     return data;
@@ -7577,6 +7577,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 rowTerminal.CreateCell(19).SetCellValue("Số phiếu/lệnh");
                 rowTerminal.Cells[19].CellStyle = styleHeader;
 
+                // Cột lãnh đạo công việc
+                rowTerminal.CreateCell(20).SetCellValue("Lãnh đạo công việc");
+                rowTerminal.Cells[20].CellStyle = styleHeader;
+
 
                 rowIndex++;
                 ICellStyle style2 = workbook.CreateCellStyle();
@@ -7652,6 +7656,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 rowTerminal.CreateCell(19).SetCellValue("20");
                 rowTerminal.Cells[19].CellStyle = style2;
+
+                // Bổ sung cột lãnh đạo công việc
+                rowTerminal.CreateCell(20).SetCellValue("21");
+                rowTerminal.Cells[20].CellStyle = style2;
 
                 rowIndex++;
                 int i = 0, j = 0;
@@ -7800,6 +7808,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     }
                     rowTerminal.CreateCell(19).SetCellValue("");
                     rowTerminal.Cells[19].CellStyle = styleFooter1;
+
+                    // Bổ sung cột lãnh đạo công việc
+                    rowTerminal.CreateCell(20).SetCellValue("");
+                    rowTerminal.Cells[20].CellStyle = styleFooter1;
                     sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 19));
 
 
@@ -7981,6 +7993,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                             rowTerminal.CreateCell(19).SetCellValue(item.SoPhieu);
                             rowTerminal.Cells[19].CellStyle = stylerow;
+
+                            // Bổ sung cột lãnh đạo công việc
+                            rowTerminal.CreateCell(20).SetCellValue(item.LanhDaoCongViec);
+                            rowTerminal.Cells[20].CellStyle = stylerow;
 
                             rowIndex++;
                         }
@@ -9091,6 +9107,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 sheet.SetColumnWidth(16, 3000);
                 sheet.SetColumnWidth(17, 3000);
                 sheet.SetColumnWidth(21, 6000);
+                sheet.SetColumnWidth(22, 6000);
 
 
                 //gop cell
@@ -9417,6 +9434,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 rowTerminal.CreateCell(21).SetCellValue("Số phiếu/lệnh");
                 rowTerminal.Cells[21].CellStyle = styleHeader;
 
+                // Cột lãnh đạo công việc
+                rowTerminal.CreateCell(22).SetCellValue("Lãnh đạo công việc");
+                rowTerminal.Cells[22].CellStyle = styleHeader;
+
                 rowIndex++;
                 rowTerminal = sheet.CreateRow(rowIndex);
 
@@ -9502,6 +9523,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 rowTerminal.CreateCell(21).SetCellValue(22);
                 rowTerminal.Cells[21].CellStyle = styleHeader0;
+
+                // Lãnh đạo công việc
+                rowTerminal.CreateCell(22).SetCellValue(23);
+                rowTerminal.Cells[22].CellStyle = styleHeader0;
 
                 rowIndex++;
 
@@ -9621,7 +9646,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     rowTerminal.Cells[20].CellStyle = styleHeader;
                     rowTerminal.CreateCell(21).SetCellValue("");
                     rowTerminal.Cells[21].CellStyle = styleFoote4;
-                    sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 21));
+                    // Lãnh đạo công việc
+                    rowTerminal.CreateCell(22).SetCellValue("");
+                    rowTerminal.Cells[22].CellStyle = styleFoote4;
+                    sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 22));
 
 
 
@@ -9732,7 +9760,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         }
                         rowTerminal.CreateCell(21).SetCellValue("");
                         rowTerminal.Cells[21].CellStyle = styleFooter1;
-                        sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 21));
+                        rowTerminal.CreateCell(22).SetCellValue("");
+                        rowTerminal.Cells[22].CellStyle = styleFooter1;
+                        sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 22));
 
 
 
@@ -9957,6 +9987,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                                 rowTerminal.CreateCell(21).SetCellValue(item.SoPhieu);
                                 rowTerminal.Cells[21].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(22).SetCellValue(item.LanhDaoCongViec);
+                                rowTerminal.Cells[22].CellStyle = stylerow;
 
                                 rowIndex++;
                             }
@@ -12543,6 +12576,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 sheet.SetColumnWidth(16, 3000);
                 sheet.SetColumnWidth(17, 4500);
                 sheet.SetColumnWidth(22, 6000);
+                sheet.SetColumnWidth(23, 6000);
 
                 if (donviId == null)
                 {
@@ -12907,6 +12941,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 rowTerminal.CreateCell(22).SetCellValue("Số phiếu/lệnh");
                 rowTerminal.Cells[22].CellStyle = styleHeader;
 
+                rowTerminal.CreateCell(23).SetCellValue("Lãnh đạo công việc");
+                rowTerminal.Cells[23].CellStyle = styleHeader;
 
                 rowIndex++;
                 ICellStyle style2 = workbook.CreateCellStyle();
@@ -12991,6 +13027,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 rowTerminal.CreateCell(22).SetCellValue("23");
                 rowTerminal.Cells[22].CellStyle = style2;
+
+                rowTerminal.CreateCell(23).SetCellValue("24");
+                rowTerminal.Cells[23].CellStyle = style2;
 
                 rowIndex++;
                 int i = 0, j = 0, k = 0;
@@ -13106,7 +13145,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     rowTerminal.Cells[21].CellStyle = styleHeader;
                     rowTerminal.CreateCell(22).SetCellValue("");
                     rowTerminal.Cells[22].CellStyle = styleFoote4;
-                    sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 22));
+                    rowTerminal.CreateCell(23).SetCellValue("");
+                    rowTerminal.Cells[23].CellStyle = styleFoote4;
+                    sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 23));
 
 
                     rowIndex++;
@@ -13216,7 +13257,10 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         }
                         rowTerminal.CreateCell(22).SetCellValue("");
                         rowTerminal.Cells[22].CellStyle = stylerow;
-                        sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 22));
+
+                        rowTerminal.CreateCell(23).SetCellValue("");
+                        rowTerminal.Cells[23].CellStyle = stylerow;
+                        sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 23));
 
 
 
@@ -13442,6 +13486,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                                 rowTerminal.CreateCell(22).SetCellValue(item.SoPhieu);
                                 rowTerminal.Cells[22].CellStyle = stylerow;
+
+                                rowTerminal.CreateCell(23).SetCellValue(item.LanhDaoCongViec);
+                                rowTerminal.Cells[23].CellStyle = stylerow;
 
                                 rowIndex++;
                             }
@@ -13697,7 +13744,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 if (phongBanId == 0)
                 {
-                    var listDonViCon = _dvi_ser.List().Where(x => x.DviCha.Equals(DonViId)).Select(x => x.Id).ToList();
+                    var listDonViCon = _dvi_ser.List().Where(x => x.DviCha != null && x.DviCha.Equals(DonViId)).Select(x => x.Id).ToList();
                     var lstdv = _dvi_ser.List().Where(x => x.Id.Equals(DonViId) || (listDonViCon != null && listDonViCon.Count > 0 && listDonViCon.Contains(x.Id))).ToList();
                     //}
 
@@ -17571,18 +17618,22 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         ViewBag.PhongBanObj = _dvi_ser.Context.tblPhongBans.FirstOrDefault(x => x.Id == (int)phieuCongTacObj.PhongBanID_PCT);
                         ViewBag.TenLanhDaoDuyet = _dvi_ser.Context.tblNhanViens.FirstOrDefault(x => x.Username == (string)phieuCongTacObj.NguoiDuyet);
                     }
+
+                    var TenLanhDaoDuyet = _dvi_ser.Context.tblNhanViens.FirstOrDefault(x => x.Username == (string)phieuCongTacObj.NguoiDuyet);
+                    string LanhDao = "";
+                    if (TenLanhDaoDuyet != null)
+                    {
+                        LanhDao = TenLanhDaoDuyet.TenNhanVien;
+                    }
+
                     if (phieuCongTacObj.MaLP == 2)
                     {
-                        var TenLanhDaoDuyet = _dvi_ser.Context.tblNhanViens.FirstOrDefault(x => x.Username == (string)phieuCongTacObj.NguoiDuyet);
-                        string LanhDao = "";
-                        if (TenLanhDaoDuyet != null)
-                        {
-                            LanhDao = TenLanhDaoDuyet.TenNhanVien;
-                        }
+                        
                         phieuCongTacObj.NguoiDuyet = LanhDao;
                         TempData["TenLanhDaoDuyet"] = phieuCongTacObj.NguoiDuyet;
                         return RedirectToAction("LenhCongTac", "PhienLV", new { phienlvid = phienlvid, lenhcongtacid = phieuCongTacObj.ID, TenLanhDaoDuyet = LanhDao });
                     }
+                    TempData["TenLanhDaoDuyet"] = LanhDao;
                     ViewBag.PhieuCongTac = phieuCongTacObj;
                 }
                 ViewBag.phieucongtacid = phieucongtacid;
