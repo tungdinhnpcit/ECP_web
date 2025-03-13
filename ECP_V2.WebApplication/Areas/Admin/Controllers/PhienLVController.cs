@@ -18188,6 +18188,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         item.NgayCNPCT = objPCT.NgayCN != null ? objPCT.NgayCN : objPCT.NgayTao;
                         item.LoaiLCT = objPCT.LoaiLCT;
                         item.LinkFile = objPCT.LinkFile;
+                        item.LinkFileHT = objPCT.LinkFileHT;
                         item.TrangThaiDuyetGA = objPCT.TrangThaiDuyetGA;
                         item.LanhDaoDuyetId = objPCT.LanhDaoDuyetId;
                         item.IdGhiAm = objPCT.IdGhiAm;

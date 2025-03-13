@@ -2446,6 +2446,7 @@ namespace ECP_V2.Business.Repository
         public Boolean isShowBtnHoanHuy { set; get; }
         public int? LoaiLCT { set; get; }
         public string LinkFile { set; get; }
+        public string LinkFileHT { set; get; }
         public int? TrangThaiDuyetGA { set; get; }
         public string LanhDaoDuyetId { set; get; }
         public int? IdGhiAm { set; get; }

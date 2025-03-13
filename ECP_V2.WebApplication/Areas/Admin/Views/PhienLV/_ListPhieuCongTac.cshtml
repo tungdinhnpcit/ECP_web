@@ -869,9 +869,9 @@
                                                             <td class="actions" style="width:10%">
 
                                                                 @*@if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
-                                                                    {
-                                                                        <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
-                                                                    }*@
+        {
+            <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
+        }*@
                                                                 @if (item.LoaiLCT == 0 || item.TrangThaiDuyetGA == 10)
                                                                 {
                                                                     <a id="UpdateSoPhieu_@(item.Id)_@(item.MaPCT)" href="#modalAnimUpdateSoPhieu" title="Cập nhật phiếu công tác" class="on-default updateSoPhieu"><i class="fa fa-bookmark" style="font-size: 25px; cursor: pointer"></i></a>
@@ -896,10 +896,10 @@
                                                                     <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)_@(item.MaLP)" href="#modalAnimChonSoPhieu" title="Chọn số phiếu/lệnh công tác" class="on-default ChonSoPhieuLenh"><i class="fa fa-hand-o-up" style="font-size: 25px; cursor: pointer"></i></a>
                                                                 }
                                                                 @if (User.IsInRole("NguoiCapSoPhieu") && string.IsNullOrEmpty(item.SoPhieu) && (item.IdGhiAm == null || item.TrangThaiDuyetGA == 10))
-                                                                            {
+                                                                {
                                                                     <a data-id="@item.MaPCT" href="#modalAnimChuyenSangGhiAm" title="Chuyển sang cấp lệnh ghi âm" class="on-default DuyetGA"><i class="fa fa-mobile" style="font-size: 25px; color:blue; cursor: pointer"></i></a>
                                                                 }
-                                                                    @if (User.IsInRole("NguoiCapSoPhieu") && string.IsNullOrEmpty(item.SoPhieu) && item.TrangThaiDuyetGA == 0 && item.TrangThaiDuyetGA == 10)
+                                                                @if (User.IsInRole("NguoiCapSoPhieu") && string.IsNullOrEmpty(item.SoPhieu) && item.TrangThaiDuyetGA == 0 && item.TrangThaiDuyetGA == 10)
                                                                 {
                                                                     <a data-id="@item.MaPCT" href="#modalHuyDuyetLCTGhiAm" title="Hủy chuyển lệnh ghi âm" class="on-default"><i class="fa fa-undo" style="font-size: 25px; color:red; cursor: pointer"></i></a>
                                                                 }
@@ -917,8 +917,12 @@
 
                                                                     }
                                                                     if (item.LinkFile != null && item.LinkFile != "" && item.TrangThaiDuyetGA != 10)
-                                                                {
-                                                                        <i data-linkfile="@item.LinkFile" title="Lệnh ghi âm" data-id="@item.Id" id="playvoice-@item.Id" class="play-btn fa fa-play mic-link-ghiam" aria-hidden="true"></i>
+                                                                    {
+                                                                        <i data-linkfile="@item.LinkFile" title="Lệnh ghi âm" data-id="@item.Id"  data-loai="giao" id="playvoice-@item.Id" style="color:blue" class="play-btn fa fa-play mic-link-ghiam" aria-hidden="true"></i>
+                                                                    }
+                                                                    if (item.LinkFileHT != null && item.LinkFileHT != "" && item.TrangThaiDuyetGA != 10)
+                                                                    {
+                                                                        <i data-linkfile="@item.LinkFile" title="Báo cáo hoàn thành ghi âm" data-id="@item.Id" data-loai="ht" id="playvoice-ht-@item.Id" style="color:orange; font-size:large" class="play-btn fa fa-play-circle mic-link-ghiam" aria-hidden="true"></i>
                                                                     }
                                                                 }
 
@@ -929,7 +933,7 @@
                                                                 <!----Ký số-->
                                                                 <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
                                                                 @*@if (User.IsInRole("BBKSPATC"))
-                                                                    {*@
+        {*@
                                                                 <a id="KsBBKS_@item.Id" href="#modalBBKS" title="Biên bản khảo sát" class="KsBBKS"><i class="fa fa-shirtsinbulk" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
                                                                 <a id="KsPATC_@item.Id" href="#modalPATC" title="Phương án thi công" class="KsPATC"><i class="fa fa-file-powerpoint-o" style="font-size: 20px;color:red; cursor: pointer"></i></a>
 
