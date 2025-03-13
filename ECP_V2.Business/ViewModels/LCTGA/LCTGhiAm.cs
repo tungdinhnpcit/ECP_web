@@ -56,7 +56,10 @@ namespace ECP_V2.Business.ViewModels.LCTGA
         public string MaYeuCauCRM { get; set; }
         public Nullable<int> TramId { get; set; }
         public Nullable<int> LoaiLCT { get; set; }
+        public Nullable<int> TrangThaiDuyetGA { get; set; }
         public string LinkFile { get; set; }
+        public string LanhDaoDuyetId { get; set; }
+        public Nullable<int> IdGhiAm { get; set; }
     }
 
 

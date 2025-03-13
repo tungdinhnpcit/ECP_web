@@ -126,6 +126,7 @@
     });
     $(document).on("click", ".play-btn", function () {
         var songSrc = $(this).data('linkfile');
+        songSrc = songSrc.replace('10.21.3.133:7077', '10.21.3.133:8998');
         var idvoice = $(this).data('id');
 
         if (currentSound) {

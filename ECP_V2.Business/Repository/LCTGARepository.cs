@@ -81,14 +81,30 @@ namespace ECP_V2.Business.Repository
         }
 
         //Renew 250225
-        public dynamic sp_GA_CapPhieuLCTGATuWeb( int IdPhienLV, string NguoiNhanLenh)
+        public dynamic sp_GA_CapPhieuLCTGATuWeb( int IdPhieuCT, string NguoiNhanLenhId, string NguoiTaoId)
         {
             try
             {
                 using (IDbConnection db = new SqlConnection(Connectstr))
                 {
-                    string query = "exec dbo.sp_GA_CapPhieuLCTGATuWeb @IdPhienLV,@NguoiNhanLenh;";
-                    var data = db.Query<dynamic>(query, new {  IdPhienLV, NguoiNhanLenh }).ToList(); ;
+                    string query = "exec dbo.sp_GA_CapPhieuLCTGATuWeb @IdPhieuCT,@NguoiNhanLenhId, @NguoiTaoId;";
+                    var data = db.Query<dynamic>(query, new { IdPhieuCT, NguoiNhanLenhId, NguoiTaoId }).ToList(); ;
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public dynamic sp_GA_DuyetLctGhiAmTuWeb(int IdPhieuCT, int TrangThai, string NguoiTaoId)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Connectstr))
+                {
+                    string query = "exec dbo.sp_GA_DuyetLctGhiAmTuWeb @IdPhieuCT,@TrangThai, @NguoiTaoId;";
+                    var data = db.Query<dynamic>(query, new { IdPhieuCT, TrangThai, NguoiTaoId }).ToList(); ;
                     return data;
                 }
             }
@@ -113,6 +129,23 @@ namespace ECP_V2.Business.Repository
                 return null;
             }
         }
+        public plv_PhieuCongTac_view2 sp_GA_PhieuCongTac_ByPhienLV(int IdPhienLV)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Connectstr))
+                {
+                    string query = "exec sp_GA_PhieuCongTac_ByPhienLV @IdPhienLV ;";
+                    var data = db.QuerySingleOrDefault<plv_PhieuCongTac_view2>(query, new { IdPhienLV }); ;
+                    return data;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         public dynamic UpdateLinkFileGhiAm(int IdPhieuCT, string LinkFile)
         {

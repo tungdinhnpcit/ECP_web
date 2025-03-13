@@ -231,7 +231,56 @@
         </section>
     </div>
 
-
+    <div id="modalAnimDuyetGhiAm" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn duyệt lệnh công tác ghi âm đã chọn ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DuyetGhiAmModalConfirm(1)" id="modal-confirm"><span class="fa fa-check-circle" style="color: #fff;"></span> Duyệt</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DuyetModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+    <div id="modalAnimKhongDuyetGhiAm" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn có chắc muốn hủy duyệt lệnh công tác ghi âm đã chọn ?</h3>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="DuyetGhiAmModalConfirm(10)" id="modal-confirm"><span class="fa fa-check-circle" style="color: #fff;"></span> Duyệt</button>
+                        <button class="btn btn-default modal-dismiss" onclick="DuyetModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
 
     <!--Dialog Hủy duyệt phiếu/lệnh-->
     <!--Đã cấp số ko được hủy, Người duyệt được hủy-->
@@ -364,6 +413,39 @@
             </footer>
         </section>
     </div>
+    <div id="modalAnimChuyenSangGhiAm" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+        <section class="panel">
+            <header class="panel-heading">
+                <h2 class="panel-title">Thông báo</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <h3>Bạn muốn cấp lệnh công tác ghi âm?</h3>
+                    </div>
+                    <div class="col-md-12  lctga-nguoinhanlenh" style="margin-left:10px">
+                        <h4>Người nhận lệnh: &nbsp;</h4>
+                        <select class="form-control" id="cmbNguoiNhanLenh">
+                            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "" });}
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary modal-confirm" onclick="ChuyenSangLCTGhiAmConfirm()" id="modal-confirm">Có</button>
+                        <button class="btn btn-default modal-dismiss" onclick="LCTGAModalDismiss()" id="modal-dismiss">Không</button>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
 
     <div id="modalAnimCapSoPhieuLenh" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
         <section class="panel">
@@ -378,20 +460,6 @@
                     <div class="modal-text">
                         <h3>Bạn có chắc muốn cấp số Phiếu/Lệnh công tác đã chọn ?</h3>
                     </div>
-                    <div class="col-md-12" style="margin-left:10px">
-                        <h4>Loại phiếu công tác: &nbsp;</h4>
-                        <select class="form-control" id="cmbLoaiLCT">
-                            <option value="0" selected>Lệnh Công Tác Giấy</option>
-                            <option value="1">Lệnh Công Tác Ghi âm</option>
-                        </select>
-                    </div>
-                    <div class="col-md-12 hide lctga-nguoinhanlenh" style="margin-left:10px">
-                        <h4>Loại phiếu công tác: &nbsp;</h4>
-                        <select class="form-control" id="cmbNguoiNhanLenh">
-                            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "" });}
-                        </select>
-                    </div>
-
                 </div>
             </div>
             <footer class="panel-footer">
@@ -730,6 +798,7 @@
         </section>
     </div>
 
+
     <div class="clear">
     </div>
 </div>
@@ -742,7 +811,7 @@
                 <h5 class="modal-title" id="recordModalLabel">Ghi Âm</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
+            <div class="modal-body text-center" style="display: flex; justify-content: space-around;">
                 <button id="startRecord" class="btn btn-success">Bắt đầu</button>
                 <button id="stopRecord" class="btn btn-danger" disabled>Dừng</button>
                 <audio id="audioPlayer" controls class="mt-3 w-100"></audio>
@@ -1380,6 +1449,7 @@ chuyenNPC = -1
                 modal: true
             }).click(function () {
             });
+
 
 
             $('#cmbDuyetNPC').change(function () {
@@ -2641,6 +2711,59 @@ chuyenNPC = -1
 
     };
 
+        function DuyetGhiAmModalConfirm(TrangThai) {
+                loading('Đang xử lý...', 1);
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/PhienLV/CapNhatDuyetLCTGhiAm',
+                    data:
+                    {
+                        "Id": IdPCT,
+                        "TrangThai": TrangThai
+
+                    },
+                    dataType: "json",
+                    beforeSend: function () {//alert(id);
+                    },
+                    success: function (data) {
+
+                        unloading();
+                        if (data.success) {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+
+                            Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+
+                        }
+                        else {
+
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Không thể duyệt Phiếu công tác này',
+                            type: 'error'
+                        });
+                    }
+
+                });
+                unloading();
+            $.magnificPopup.close();
+
+
+        };
         function HuyDuyetModalConfirm() {
 
         if (IdDuyet != "") {
@@ -3626,7 +3749,65 @@ chuyenNPC = -1
             $.magnificPopup.close();
         }
 
+        function ChuyenSangLCTGhiAmConfirm() {
+
+            //loading('Đang xử lý...', 1);
+
+            let NguoiNhanLenh = $('#cmbNguoiNhanLenh').val();
+            if (NguoiNhanLenh == null) NguoiNhanLenh = '';
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Admin/PhienLV/ChuyenSangLCTGhiAm',
+                data: JSON.stringify({
+                    "Id": IdPCT,
+                    "NguoiNhanLenh": NguoiNhanLenh
+                }),
+                dataType: "json",
+                beforeSend: function () {//alert(id);
+                },
+                success: function (data) {
+                    LCTGAModalDismiss();
+                    if (data != null) {
+
+                        if (data.success) {
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: data.responseText,
+                                type: 'success'
+                            });
+                        } else {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: data.responseText,
+                                    type: 'warning'
+                                });
+                        }
+
+                        Paging(1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
+
+                    }
+                    else {
+
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Cấp số Phiếu công tác không thành công',
+                            type: 'error'
+                        });
+                    }
+                }
+
+            });
+
+            LCTGAModalDismiss();
+        }
+
         function CapSoModalDismiss() {
+            $.magnificPopup.close();
+        }
+
+        function LCTGAModalDismiss() {
             $.magnificPopup.close();
         }
 

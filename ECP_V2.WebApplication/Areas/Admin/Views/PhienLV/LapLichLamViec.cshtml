@@ -161,16 +161,16 @@
                                 <h4>Tải file mẫu</h4>
                             </a>
                             @*@if (User.IsInRole("Admin"))
-                            { }
-                            else
-                            {*@
-                                @*<a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-LLV.Tuan.xlsx")" style="cursor:pointer">
-                <h4>Tải file mẫu</h4>
-            </a>*@
-                                @*<a href="javascript:;" id="btnDownloadTuanCty">
+                                { }
+                                else
+                                {*@
+                            @*<a href="@Url.Content("~/Content/MauNhapLieu/HPPC/Dvibc-LLV.Tuan.xlsx")" style="cursor:pointer">
                                     <h4>Tải file mẫu</h4>
                                 </a>*@
-                       
+                            @*<a href="javascript:;" id="btnDownloadTuanCty">
+                                    <h4>Tải file mẫu</h4>
+                                </a>*@
+
                         </div>
                         @using (Html.BeginForm("ImportExcelPLV_KH", "PhienLV", FormMethod.Post, new { id = "frmImportPhienLvKH", enctype = "multipart/form-data", @class = "form-horizontal form-bordered" }))
                         {
@@ -846,8 +846,24 @@
 
         }
 
-
-        function edit(el) {
+        function GetInfoPhieuCongTac(id) {
+            return $.ajax({
+                type: "GET",
+                url: `/Admin/PhienLV/GetInfoPhieuCongTac?Id=${id}`,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).then(function (data) {
+                if (data.success) {
+                    return data.data.LoaiLCT==1 ? true : false;
+                }
+                return false;
+            }).catch(function (error) {
+                console.error("Lỗi khi gọi API:", error);
+                return false;
+            });
+        }
+        let BoSungLCTGA = false;
+        async function edit(el) {
             ControllScrollLeft();
 
             //ReturnSelectionPosition();
@@ -856,11 +872,18 @@
             var status = $(el).data('status');
 
             id = str[1];
+            let isLCTGA = await GetInfoPhieuCongTac(id);
+            BoSungLCTGA = isLCTGA;
+
 
             var tr = $(el).parents('tr:first');
+
             tr.find('#spanPhongBanID_' + id + ', #spanGioBd_' + id + ', #spanGioKt_' + id + ', #spanPhieuLenh_' + id + ', #spanCatDien_' + id + ', #spanTiepDia_' + id + ', #spanTinhChat_' + id + ', #spanNguoiDuyet_SoPa_' + id + ', #spanNguoiChiHuy_' + id + ', #spanGiamSatVien_' + id + ', #spanNguoiKiemSoat_' + id + ', #spanNguoiKiemTraPhieu_' + id + ', #spanLanhDaoTrucBan_' + id + ', #spanLanhDaoCongViec_' + id + ', #spanNguoiCapPhieu_' + id + ', #spanLyDoThayDoi_' + id + ', #spanNgayKt_' + id + '' + ', #spanHinhThucKiemTra_' + id + '' + ', #spanNguoiDaiDienKT_' + id + '').hide();
             tr.find('#PhongBanID_' + id + ', #GioBd_' + id + ', #GioKt_' + id + ', #PhieuLenh_' + id + ', #CatDien_' + id + ', #TiepDia_' + id + ', #TinhChat_' + id + ', #NguoiDuyet_SoPa_' + id + ', #NguoiChiHuy_' + id + ', #GiamSatVien_' + id + ', #NguoiKiemSoat_' + id + ', #NguoiKiemTraPhieu_' + id + ', #LanhDaoTrucBan_' + id + ', #LanhDaoCongViec_' + id + ', #NguoiCapPhieu_' + id + ', #LyDoThayDoi_' + id + ', #wapGioKt_' + id + '' + ', #HinhThucKiemTra_' + id + '' + ', #NguoiDaiDienKT_' + id + '').show();
-
+            if (isLCTGA) {
+                tr.find('#spanNoiDung_' + id + ',  #spanDiaDiem_' + id).hide()
+                tr.find('#NoiDung_' + id + ',  #DiaDiem_' + id).show()
+            }
             //if (status != '' && parseInt(status) == 2) {
 
             //    tr.find('#spanLyDoThayDoi_' + id + '').hide();
@@ -967,8 +990,7 @@
             var tr = $(el).parents('tr:first');
 
             if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
-
-                if ($("#LyDoThayDoi_" + id).val() == '') {
+                    if (BoSungLCTGA == false && $("#LyDoThayDoi_" + id).val() == '') {
                     new PNotify({
                         title: 'Thông báo!',
                         text: 'Nhập: Lý do hủy/Lý do sửa',
@@ -1356,7 +1378,7 @@
             var str = $(el).attr("id").split("_");
             var id = str[1];
             var tr = $(el).parents('tr:first');
-           
+
 
             if (id != "" && $("#NoiDung_" + id).val() != "" && $("#DiaDiem_" + id).val() != "") {
                 $.ajax({
