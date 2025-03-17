@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17628,7 +17629,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     if (phieuCongTacObj.MaLP == 2)
                     {
-                        
+
                         phieuCongTacObj.NguoiDuyet = LanhDao;
                         TempData["TenLanhDaoDuyet"] = phieuCongTacObj.NguoiDuyet;
                         return RedirectToAction("LenhCongTac", "PhienLV", new { phienlvid = phienlvid, lenhcongtacid = phieuCongTacObj.ID, TenLanhDaoDuyet = LanhDao });
@@ -18946,19 +18947,26 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 string baseUrlpmis = System.Configuration.ConfigurationManager.AppSettings["API_PMIS"].ToString();
                                 string keypdf = System.Configuration.ConfigurationManager.AppSettings["PDKEY"].ToString();
                                 string strbody = Newtonsoft.Json.JsonConvert.SerializeObject(tt);
+
+
+
                                 // update cho pmis
-                                var path = String.Format("/PMIS_Web/shared/service/S_ServiceClient.jsf?SOAP_NAME=at_ktdk_end_JSON&PDKEY={0}&id_phien={1}&MA_DVIQLY={2}&ngay={3}&nguoiph={4}",
+                                var path = String.Format(baseUrlpmis + "/PMIS_Web/shared/service/S_ServiceClient.jsf?SOAP_NAME=at_ktdk_end_JSON&PDKEY={0}&id_phien={1}&MA_DVIQLY={2}&ngay={3}&nguoiph={4}",
                                                                                                    keypdf, plv.Id, plv.DonViId, plv.NgayLamViec.ToString("yyyy-MM-dd"), User.Identity.Name);
 
-                                HttpClient c = new HttpClient();
 
+                                var client = new RestClient(path);
+                                var request = new RestRequest();
 
+                                // Thêm Header
+                                request.AddHeader("Accept", "application/x-www-form-urlencoded");
+                                request.AddParameter(strbody, "ds_tt", ParameterType.GetOrPost);
 
-                                ////// tạo form post
-                                var form = new MultipartFormDataContent();
-                                form.Add(new StringContent(strbody), "ds_tt");
-                                var res = await c.PostAsync(baseUrlpmis + path, form);
-                                if (res.IsSuccessStatusCode)
+                                // Gửi request
+                                RestResponse response = client.PostAsync(request).Result;
+                                // Kiểm tra kết quả
+                                //return response.IsSuccessful ? response.Content : null;
+                                if (response.IsSuccessful)
                                 {
                                     foreach (var v in plv_tb)
                                     {
@@ -18966,13 +18974,31 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         if (tbi != null)
                                             tbi.NGAY_TH_MAX = plv.NgayLamViec;
                                     }
-                                    //new ElogService(config).SaveLog(plv.Id, plv.DonViId, "PLV_KT_PMIS_OK", res.Content.ReadAsStringAsync().Result, strbody, baseUrlpmis + path);
+                                }
 
-                                }
-                                else
-                                {
-                                    //new ElogService(config).SaveLog(plv.Id, plv.DonViId, "PLV_KT_PMIS_Fail", res.Content.ReadAsStringAsync().Result, strbody, baseUrlpmis + path);
-                                }
+                                //HttpClient c = new HttpClient();
+
+
+
+                                //////// tạo form post
+                                //var form = new MultipartFormDataContent();
+                                //form.Add(new StringContent(strbody), "ds_tt");
+                                //var res = await c.PostAsync(baseUrlpmis + path, form);
+                                //if (res.IsSuccessStatusCode)
+                                //{
+                                //    foreach (var v in plv_tb)
+                                //    {
+                                //        var tbi = db.KTDK_TBI_LOAI.Where(d => d.ASSETID == v.assetid && d.ID_LOAIKTR == v.id_loaiktr).FirstOrDefault();
+                                //        if (tbi != null)
+                                //            tbi.NGAY_TH_MAX = plv.NgayLamViec;
+                                //    }
+                                //    //new ElogService(config).SaveLog(plv.Id, plv.DonViId, "PLV_KT_PMIS_OK", res.Content.ReadAsStringAsync().Result, strbody, baseUrlpmis + path);
+
+                                //}
+                                //else
+                                //{
+                                //    //new ElogService(config).SaveLog(plv.Id, plv.DonViId, "PLV_KT_PMIS_Fail", res.Content.ReadAsStringAsync().Result, strbody, baseUrlpmis + path);
+                                //}
                             }
 
                         }

@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -37,33 +38,61 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             string org = Session["DonViID"].ToString();
 
-            using (HttpClient httpClient = new HttpClient())
+            var client = new RestClient(path);
+            var request = new RestRequest();
+
+            // Thêm Header
+            request.AddHeader("Accept", "application/x-www-form-urlencoded");
+
+            // Thêm dữ liệu vào form-data (POST)
+            request.AddParameter("GET_ORGMAP_JSON", "SOAP_NAME");
+            request.AddParameter("0AAE2B8A-F901-4270-AFD4-3EF3494E1C29", "PDKEY");
+            request.AddParameter(org, "PORGID");
+
+            // Gửi request
+            RestResponse response = client.PostAsync(request).Result;
+            // Kiểm tra kết quả
+            //return response.IsSuccessful ? response.Content : null;
+            if (response.IsSuccessful)
             {
-                httpClient.Timeout = TimeSpan.FromMinutes(10);
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                var kq = response.Content;
 
-                MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
-                multipartFormDataContent.Add(new StringContent("GET_ORGMAP_JSON"), "SOAP_NAME");
-                multipartFormDataContent.Add(new StringContent("0AAE2B8A-F901-4270-AFD4-3EF3494E1C29"), "PDKEY");
-                multipartFormDataContent.Add(new StringContent(org), "PORGID");
+                kq = kq.Replace("[{\"lstData\":\"", "").Replace("\"}]", "");
 
-                var res = httpClient.PostAsync(path, multipartFormDataContent).Result;
-
-                if (res.IsSuccessStatusCode)
-                {
-                    var kq = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    kq = kq.Replace("[{\"lstData\":\"", "").Replace("\"}]", "");
-
-                    return kq;
-                }
-                else
-                {
-                    return null;
-                }
-
+                return kq;
             }
+            else
+            {
+                return null;
+            }
+
+            //using (HttpClient httpClient = new HttpClient())
+            //{
+            //    httpClient.Timeout = TimeSpan.FromMinutes(10);
+            //    httpClient.DefaultRequestHeaders.Clear();
+            //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+
+            //    MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
+            //    multipartFormDataContent.Add(new StringContent("GET_ORGMAP_JSON"), "SOAP_NAME");
+            //    multipartFormDataContent.Add(new StringContent("0AAE2B8A-F901-4270-AFD4-3EF3494E1C29"), "PDKEY");
+            //    multipartFormDataContent.Add(new StringContent(org), "PORGID");
+
+            //    var res = httpClient.PostAsync(path, multipartFormDataContent).Result;
+
+            //    if (res.IsSuccessStatusCode)
+            //    {
+            //        var kq = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            //        kq = kq.Replace("[{\"lstData\":\"", "").Replace("\"}]", "");
+
+            //        return kq;
+            //    }
+            //    else
+            //    {
+            //        return null;
+            //    }
+
+            //}
         }
         public async Task<string> GetToken()
         {
