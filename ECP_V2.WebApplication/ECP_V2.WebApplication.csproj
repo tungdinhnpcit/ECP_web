@@ -4806,7 +4806,7 @@
     <Content Include="Areas\Admin\Views\ApprovePlan\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Plan\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BCKTGS\Index.cshtml" />
-	<Content Include="Areas\Admin\Views\BCGBAT\ViewBienBanQDKTKS.cshtml" />
+    <Content Include="Areas\Admin\Views\BCGBAT\ViewBienBanQDKTKS.cshtml" />
     <Content Include="Areas\Admin\Views\LoaiCCDC\CmbPhongBan.cshtml" />
     <Content Include="Areas\Admin\Views\LoaiCCDC\Create.cshtml" />
     <Content Include="Areas\Admin\Views\LoaiCCDC\Edit.cshtml" />
