@@ -234,16 +234,16 @@ Yêu cầu ĐVCT đặt nối đất tại:";
                     </b>
                 </p>
                 @*@if (lstTram != null && lstTram.Count > 0)
-                {
-                    <p class=MsoNormal style='margin-top:2.0pt;text-align:center'>
-                        <b>
-                            <span class="selectboxv1 radio-style" onlyone="1">
-                                <input style="width: 260px; font-size:12px" name="txtTop_Tram" value="@(phieuCongTac.TramId > 0 ? (lstTram.FirstOrDefault(x => x.Id == phieuCongTac.TramId).TenPB) : "")" data-id="@phieuCongTac.TramId" searchbox="1" datasourceidname="lstTram" class="Tram_SelectEmp input-style input-style1 selectbox-control" id="txtTop_Tram" type="text" placeholder="chọn trạm………………………" autocomplete="off" />
-                                <span class="multiselect-wap"></span>
-                            </span>
-                        </b>
-                    </p>
-                }*@
+                    {
+                        <p class=MsoNormal style='margin-top:2.0pt;text-align:center'>
+                            <b>
+                                <span class="selectboxv1 radio-style" onlyone="1">
+                                    <input style="width: 260px; font-size:12px" name="txtTop_Tram" value="@(phieuCongTac.TramId > 0 ? (lstTram.FirstOrDefault(x => x.Id == phieuCongTac.TramId).TenPB) : "")" data-id="@phieuCongTac.TramId" searchbox="1" datasourceidname="lstTram" class="Tram_SelectEmp input-style input-style1 selectbox-control" id="txtTop_Tram" type="text" placeholder="chọn trạm………………………" autocomplete="off" />
+                                    <span class="multiselect-wap"></span>
+                                </span>
+                            </b>
+                        </p>
+                    }*@
             </td>
             <td valign="top" style="text-align:right;width:170px;">
                 <p class=MsoNormal align=right style='text-align:center; font-weight:normal'>
@@ -270,7 +270,9 @@ Yêu cầu ĐVCT đặt nối đất tại:";
                 {
                     <div style="width:100%;text-align:center">
                         <img src="~/Content/images/check-128.png" style="width:30px;height:30px" />
-                        <p style="font-style:italic;padding:0px 0px; margin:0px 0px;">LĐ đã duyệt - @string.Format("{0:dd/MM/yyyy HH:mm}", phieuCongTac.NgayDuyet)</p>
+                        <p style="font-style:italic">
+                            @TempData["TenLanhDaoDuyet"] - @String.Format("{0:dd/MM/yyyy HH:mm}", phieuCongTac.NgayDuyet)
+                        </p>
                     </div>
                 }
             </td>
@@ -314,25 +316,25 @@ Yêu cầu ĐVCT đặt nối đất tại:";
         </span>
         <span style='mso-bidi-font-size:12.0pt;float:right'>
             Bậc ATĐ
-            
-                @{
-                    var nhanVien_LanhDaoCongViec = nhanvienRepository.GetById(Model.LanhDaoCongViec_Id);
-                    if (nhanVien_LanhDaoCongViec != null)
-                    {
-                        <span class="selectboxv1 radio-style" onlyone="1">
-                            <input value="@(nhanVien_LanhDaoCongViec.BacAnToan)" readonly name="txtS11_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS11_bat" type="text" autocomplete="off" />
-                            <span class="multiselect-wap"></span>
-                        </span><span>/5</span>
-                    }
-                    else
-                    {
-                        <span class="selectboxv1 radio-style" onlyone="1">
-                            <input value="" readonly name="txtS11_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS11_bat" type="text" autocomplete="off" />
-                            <span class="multiselect-wap"></span>
-                        </span><span>/5</span>
-                            }
+
+            @{
+                var nhanVien_LanhDaoCongViec = nhanvienRepository.GetById(Model.LanhDaoCongViec_Id);
+                if (nhanVien_LanhDaoCongViec != null)
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="@(nhanVien_LanhDaoCongViec.BacAnToan)" readonly name="txtS11_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS11_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
                 }
-                         
+                else
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="" readonly name="txtS11_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="LanhDaoCongViec_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS11_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
+                }
+            }
+
         </span>
     </p>
     <p class=MsoNormal>
@@ -344,26 +346,26 @@ Yêu cầu ĐVCT đặt nối đất tại:";
             </span>
         </span>
         <span style="color:black;float:right">
-            Bậc ATĐ            
-                @{
-                    var nhanVien_NguoiChiHuy = nhanvienRepository.GetById(Model.NguoiChiHuy_Id);
-                    if (nhanVien_NguoiChiHuy != null)
-                    {
-                        <span class="selectboxv1 radio-style" onlyone="1">
-                            <input value="@(nhanVien_NguoiChiHuy.BacAnToan)" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
-                            <span class="multiselect-wap"></span>
-                        </span><span>/5</span>
-                    }
-                    else
-                    {
-                        <span class="selectboxv1 radio-style" onlyone="1">
-                            <input value="@(" /5")" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
-                            <span class="multiselect-wap"></span>
-                        </span><span>/5</span>
-                    }
+            Bậc ATĐ
+            @{
+                var nhanVien_NguoiChiHuy = nhanvienRepository.GetById(Model.NguoiChiHuy_Id);
+                if (nhanVien_NguoiChiHuy != null)
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="@(nhanVien_NguoiChiHuy.BacAnToan)" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
                 }
-               
-                    </span>
+                else
+                {
+                    <span class="selectboxv1 radio-style" onlyone="1">
+                        <input value="@(" /5")" readonly name="txtS12_bat" placeholder="……" searchbox="0" datasourceidname="listbacantoan" class="ChiHuyTrucTiep_BAT_SelectEmp input-style input-style2 text-right selectbox-control" id="txtS12_bat" type="text" autocomplete="off" />
+                        <span class="multiselect-wap"></span>
+                    </span><span>/5</span>
+                }
+            }
+
+        </span>
     </p>
     <p class=MsoNormal>
         <span style='mso-bidi-font-size:12.0pt;color:black;mso-bidi-font-weight:bold'>
@@ -1699,16 +1701,16 @@ margin-left:0in'>
                     IN PHIẾU
                 </button>
             </a>
-                <button class="btn btn-primary modal-confirm" onclick="UpdatePhieuCongTac()" id="modal-confirm">
-                    @if (string.IsNullOrEmpty(sophieu))
-                    {
-                        <span>Tạo phiếu và lưu</span>
-                    }
-                    else
-                    {
-                        <span>Sửa phiếu và lưu</span>
-                    }
-                </button>
+            <button class="btn btn-primary modal-confirm" onclick="UpdatePhieuCongTac()" id="modal-confirm">
+                @if (string.IsNullOrEmpty(sophieu))
+                {
+                    <span>Tạo phiếu và lưu</span>
+                }
+                else
+                {
+                    <span>Sửa phiếu và lưu</span>
+                }
+            </button>
 
             <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Hủy</button>
         </div>

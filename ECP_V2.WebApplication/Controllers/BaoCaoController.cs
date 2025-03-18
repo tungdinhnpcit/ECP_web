@@ -222,7 +222,7 @@ namespace ECP_V2.WebApplication.Controllers
                         {
                             return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
                         }
-                      
+
                         //objd.FileSize = file.ContentLength;
 
                         DateTime CreateDate = DateTime.Now;
@@ -428,7 +428,7 @@ namespace ECP_V2.WebApplication.Controllers
                             {
                                 return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
                             }
-                            
+
                             //objd.FileSize = file.ContentLength;
 
                             DateTime CreateDate = DateTime.Now;

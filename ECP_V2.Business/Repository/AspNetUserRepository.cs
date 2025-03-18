@@ -195,7 +195,7 @@ namespace ECP_V2.Business.Repository
 
                     string sql = @"select b.* from 
                            tblNhanVien a inner join AspNetUsers b on a.Id= b.Id 
-                           WHERE UPPER(a.Username) = @UserName";
+                           WHERE UPPER(a.Username) = @UserName and LockoutEnabled = 0";
 
                     var aspNetUser = await connection.QueryFirstOrDefaultAsync<AspNetUser>(
                         sql,

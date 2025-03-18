@@ -190,7 +190,10 @@ namespace ECP_V2.WebApplication.Controllers
 
                     AspNetUser aspNetUser = await aspNetUserRepository.GetByUserNameADAsync(dataTblNhanVien.UserName);
                     if (aspNetUser == null)
-                        return null;
+                    {
+                        ModelState.AddModelError("", "Sai tên đăng nhập hoặc mật khẩu.");
+                        return View(model);
+                    }
                     user = new ApplicationUser
                     {
                         Id = aspNetUser.Id,
