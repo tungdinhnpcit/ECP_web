@@ -5017,6 +5017,65 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                         //    { }
                                         //#endregion
 
+                                        #region Kiểm tra hiện trường
+                                        // Kiểm tra hiện trường
+                                        var HinhThucKiemTra = ds.Tables[0].Rows[i][18].ToString().Replace("\n", " ").Replace("  ", " ").Trim().ToUpper(); ;
+                                        var soSanhChuoi = "Kiểm tra giữa giờ".ToUpper();
+                                        var HinhThucKiemTra_number = 1;
+                                        if (HinhThucKiemTra == soSanhChuoi)
+                                        {
+                                            HinhThucKiemTra_number = 2;
+                                        }
+                                        var NguoiDaiDienKT = ds.Tables[0].Rows[i][19].ToString().Replace("\n", " ").Replace("  ", " ").Trim();
+                                        var NguoiDaiDienKT_Id = " ";
+                                        if (NguoiDaiDienKT != "" && NguoiDaiDienKT != null && HinhThucKiemTra != "" && HinhThucKiemTra != null)
+                                            try
+                                            {
+                                                if (!string.IsNullOrEmpty(NguoiDaiDienKT))
+                                                {
+                                                    string[] arr_NguoiDaiDienKT = NguoiDaiDienKT.Replace("  ", "").Split(',');
+                                                    foreach (var item in arr_NguoiDaiDienKT)
+                                                    {
+                                                        tblNhanVien findNhanVien;
+                                                        string[] arr_SDT_DaiDienKT = NguoiDaiDienKT.Split('-');
+                                                        if (arr_SDT_DaiDienKT != null && arr_SDT_DaiDienKT.Length > 1)
+                                                        {
+                                                            string key1 = arr_SDT_DaiDienKT.Last().Replace("  ", "").Replace(" ", "").Replace(".", "").Trim();
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.SoDT == key1);
+                                                            if (findNhanVien == null)
+                                                            {
+                                                                string key0 = arr_SDT_DaiDienKT[0].Trim().ToUpper();
+                                                                findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == key0);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            findNhanVien = _nhanvien_ser.Context.tblNhanViens.FirstOrDefault(x => x.DonViId == donviId && x.TenNhanVien.ToUpper() == plv.GiamSatVien.ToUpper());
+                                                        }
+                                                        if (findNhanVien != null)
+                                                        {
+                                                            if (NguoiDaiDienKT_Id == null)
+                                                            {
+                                                                NguoiDaiDienKT_Id = findNhanVien.Id;
+                                                                NguoiDaiDienKT = findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+
+                                                            }
+                                                            else
+                                                            {
+                                                                NguoiDaiDienKT_Id = "," + findNhanVien.Id;
+                                                                NguoiDaiDienKT = ", " + findNhanVien.TenNhanVien + " - " + findNhanVien.SoDT;
+                                                            }
+                                                            sonhanvienthamgia++;
+                                                        }
+                                                    }
+
+
+                                                }
+                                            }
+                                            catch
+                                            { }
+                                        #endregion
+
                                         #endregion
                                         if (_plviec_ser.KiemTraTrung2(plv.NgayLamViec, plv.PhongBanID, plv.DiaDiem, plv.GioBd, plv.NoiDung, null))
                                         {
