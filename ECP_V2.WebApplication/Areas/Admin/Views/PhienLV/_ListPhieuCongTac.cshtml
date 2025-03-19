@@ -754,7 +754,7 @@
                                                                 <td class="text-center @(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")" style="text-align:center;">
                                                                     <div style="display: flex; flex-direction:column">
                                                                         <input type="checkbox" class="chkbox" id="ckh_@item.IdPhieuCongTac" value="@item.IdPhieuCongTac" />
-                                                                        @if (item.LoaiLCT != null && item.LoaiLCT == 1)
+                                                                        @if (item.LoaiLCT != null && (item.LoaiLCT == 1 && item.TrangThaiDuyetGA < 4))
                                                                         {
                                                                             <i class="fa fa-headphones" style="font-size: 25px; cursor: pointer; padding-top:10px; color:blue"></i>
                                                                         }

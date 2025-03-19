@@ -1,6 +1,9 @@
 ﻿$(document).ready(function () {
     let idPhienCT = 0;
     var filesArray = [];
+    $('body').on('click', '.btn-close-ghiam', function (e) {
+        $('#modal-GhiAmFile').modal('hide');
+    });
     $('body').on('click', '.modalGhiAmFile', function (e) {
         idPhienCT = $(this).data('id');
         filesArray = [];
@@ -127,7 +130,7 @@
     $(document).on("click", ".play-btn", function () {
         var songSrc = $(this).data('linkfile');
         var loai = $(this).data('loai');
-        songSrc = songSrc.replace('10.21.3.133:7077', '10.21.3.133:8998');
+        //songSrc = songSrc.replace('10.21.3.133:7077', '10.21.3.133:8998');
         var idvoice = $(this).data('id');
 
         if (currentSound) {
