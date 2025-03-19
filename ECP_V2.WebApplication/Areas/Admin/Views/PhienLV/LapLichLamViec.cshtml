@@ -1399,13 +1399,10 @@
                             "TiepDia": $("#TiepDia_" + id).attr("dataempid"),
                             "TinhChat": $("#TinhChat_" + id).attr("dataempid"),
 
-                            //param của báo cáo kế hoạch lịch làm việc
-                            "NguoiDaiDienKT": $("#NguoiDaiDienKT" + id).val(),
-                            "NguoiDaiDienKT_Id": $("#NguoiDaiDienKT" + id).attr("dataempid"),
+                             //param của báo cáo kế hoạch lịch làm việc
+                            "NguoiDaiDienKT": $("#NguoiDaiDienKT_" + id).val(),
+                            "NguoiDaiDienKT_Id": $("#NguoiDaiDienKT_" + id).attr("dataempid"),
                             "HinhThucKiemTra": $("#HinhThucKiemTra_" + id).attr("dataempid"),
-
-
-
                         }),
                     dataType: "json",
                     beforeSend: function () {

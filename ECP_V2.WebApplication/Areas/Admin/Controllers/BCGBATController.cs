@@ -396,8 +396,6 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 var fileKeHoachSize = form["fileKeHoachSize"];
                 if (IdTaiLieu > 0 && fileKeHoach != null && fileKeHoach.ContentLength > 0)
                 {
-
-
                     result = await UploadFileToApi(fileKeHoach, bienBan.IdDonVi);
                     if (result.Status)
                     {

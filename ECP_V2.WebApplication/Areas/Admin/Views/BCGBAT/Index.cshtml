@@ -154,10 +154,16 @@
                         <div style="display:flex">Thời gian thao tác: &nbsp;<p id="txtThoiGianTrinh" style="font-weight:bold"></p> </div>
                     </div>
                 </div>
-                <div class="col-md-12 " style="background-color:white; padding:2px; display:flex; justify-content:right" id="btnThaoTac">
-                    <button class="btn btn-default " id="btnHuyTrinh" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(2)">Hủy trình</button>
-                    <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="KyDuyet()">Ký duyệt</button>
-                    <button class="btn btn-default " id="btnTraLai" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(3)">Trả lại</button>
+                <div style="display: flex; background-color: white">
+                    <p id="kehoachtuantieptheo" style="background-color:white; display:none; justify-content:left; width:30rem !important; ">
+                        Kế hoạch tuần tiếp theo: <a href="#" id="xemLienKet" style="text-decoration: none; color: blue;">Xem</a>
+                    </p>
+
+                    <div class="col-md-12 " style="background-color:white; padding:2px; display:flex; justify-content:right" id="btnThaoTac">
+                        <button class="btn btn-default " id="btnHuyTrinh" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(2)">Hủy trình</button>
+                        <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color: white; display: none" onclick="KyDuyet()">Ký duyệt</button>
+                        <button class="btn btn-default " id="btnTraLai" style="background-color: #bb2828; color: white; display: none" onclick="Update_TrangThaiBienBanAnToan(3)">Trả lại</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -701,6 +707,18 @@
 
                 // Hiển thị các thao tác tùy thuộc vào trạng thái của biên bản
                 if (data.TrangThai == 1 || data.TrangThai == 4) {
+                    //var newText = "Kế hoạch tuần tiếp theo: " + (data.someField || "Không có kế hoạch mới");
+                    var newHref ='@apiFile'+ data.URL_FileDinhKem || "#";  // Giá trị của href (có thể lấy từ response)
+                    $('#kehoachtuantieptheo').css('display', 'block');
+                    $('#xemLienKet').on('click', function (event) {
+                        event.preventDefault();  // Ngăn chặn hành động mặc định (điều hướng)
+                        window.open(newHref, '_blank');  // Mở URL trong cửa sổ mới
+                    });
+                    // Cập nhật nội dung và liên kết cho thẻ a
+                    //$('#xemLienKet')
+                    //    .text("Xem")  // Cập nhật văn bản cho thẻ a
+                    //    .attr('href', newHref);  // Cập nhật liên kết (href) cho thẻ a
+
                     if (data.TrangThai == 1) {
                        if ('@userId' == data.IdNguoiKy) {
                          $("#btnKySo").css("display", "flex");
