@@ -293,7 +293,7 @@ fc.datepickerLang = function(langCode, datepickerLangCode, options) {
 		$.datepicker.regional.en = $.datepicker.regional[''];
 
 		// Set as Datepicker's global defaults.
-		$.datepicker.setDefaults(options);
+		$.datepicker?.setDefaults(options);
 	}
 };
 

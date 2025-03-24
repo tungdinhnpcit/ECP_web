@@ -1,11 +1,14 @@
 ﻿using ECP_V2.Business.Repository;
+using ECP_V2.DataAccess;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -134,7 +137,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             //    path = url + "PMIS_Web/shared/service/S_ServiceClient.jsf?SOAP_NAME=at_share_dz_JSON&PDKEY="+pdkey+"&DONVI=" + donvi;
             //}
             //else
-            //{
+            //{/
             //    path = url + "PMIS_Web/shared/service/S_ServiceClient.jsf?SOAP_NAME=at_share_dz_JSON&PDKEY=?&DONVI=" + donvi;
             //}
 
@@ -149,18 +152,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            using (HttpClient httpClient = new HttpClient())
+            var client = new RestClient(path);
+            var request = new RestRequest();
+
+            // Thêm Header
+            request.AddHeader("Accept", "application/x-www-form-urlencoded");
+
+            // Thêm dữ liệu vào form-data (POST)
+            request.AddParameter("SOAP_NAME", "at_share_dz_JSON");
+            request.AddParameter("PDKEY", "?");
+            request.AddParameter("DONVI", donvi);
+
+            // Gửi request
+            RestResponse response = client.PostAsync(request).Result;
+            // Kiểm tra kết quả
+            //return response.IsSuccessful ? response.Content : null;
+            if (response.IsSuccessful)
             {
-                Dictionary<string, string> valuePairs = new Dictionary<string, string>();
-                valuePairs.Add("SOAP_NAME", "at_share_dz_JSON");
-                valuePairs.Add("PDKEY", "?");
-                valuePairs.Add("DONVI", donvi);
-
-                var response = httpClient.PostAsync(path, new FormUrlEncodedContent(valuePairs)).Result;
-
-                var kq = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                kq = kq.Replace("lst", "lstXT");
+               var kq = response.Content.Replace("lst", "lstXT");
 
                 var data = JsonConvert.DeserializeObject<List<pmisdata>>(kq);
                 var dataAudit = convertListXTtoAssetAudit(data[0].lstXT);
@@ -169,44 +178,47 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                 return JsonConvert.SerializeObject(t);
             }
+            else
+            {
+                return null;
+            }
+
 
         }
-        //Hàm lấy giá trị (kiểm tra) từ PMIS
+        
+
         private async Task<string> getAssetFromPmis(string dsAsset, string maNhomkt, string thang, string nam)
-        //private async Task<string> getAssetFromPmis(string dsAsset, string thang, string nam)
         {
-
             string path = url + "/shared/service/S_ServiceClient.jsf";
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            using (HttpClient httpClient = new HttpClient())
+            var client = new RestClient(path);
+            var request = new RestRequest();
+
+            // Thêm Header
+            request.AddHeader("Accept", "application/x-www-form-urlencoded");
+
+            // Thêm dữ liệu vào form-data (POST)
+            request.AddParameter("SOAP_NAME", "at_type_info_JSON");
+            request.AddParameter("PDKEY", "?");
+            request.AddParameter("ds_dt", dsAsset);
+            request.AddParameter("ma_nhom_ktr", maNhomkt);
+            request.AddParameter("thang", thang);
+            request.AddParameter("nam", nam);
+
+            // Gửi request
+            RestResponse response =  client.PostAsync(request).Result; 
+            // Kiểm tra kết quả
+            //return response.IsSuccessful ? response.Content : null;
+            if (response.IsSuccessful)
             {
-                httpClient.Timeout = TimeSpan.FromMinutes(10);
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
-
-                MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
-                multipartFormDataContent.Add(new StringContent("at_type_info_JSON"), "SOAP_NAME");
-                multipartFormDataContent.Add(new StringContent("?"), "PDKEY");
-                multipartFormDataContent.Add(new StringContent(dsAsset), "ds_dt");
-                multipartFormDataContent.Add(new StringContent(maNhomkt), "ma_nhom_ktr");
-                multipartFormDataContent.Add(new StringContent(thang), "thang");
-                multipartFormDataContent.Add(new StringContent(nam), "nam");
-
-                var res = httpClient.PostAsync(path, multipartFormDataContent).Result;
-
-                if (res.IsSuccessStatusCode)
-                {
-                    var kq = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return JsonConvert.SerializeObject(kq);
-                }
-                else
-                {
-                    return null;
-                }
-
+                return JsonConvert.SerializeObject(response.Content);
+            }
+            else
+            {
+                return null;
             }
         }
+
         //Hàm lấy giá trị từ Ecp
 
         private List<LstAssetAudit> convertListXTtoAssetAudit(List<LstXT> lstXTs)
@@ -330,7 +342,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             //dsPhancongAll = getDsPcongByMadvql();
 
             // create root
-            TreeLeaf root = new TreeLeaf("", "99", "root", "", 1, false, true, 0, 0, 0, 0, 0, null, null,null,null);
+            TreeLeaf root = new TreeLeaf("", "99", "root", "", 1, false, true, 0, 0, 0, 0, 0, null, null, null, null);
 
             // nhung thang khong cha gan vao cay luon
             var dzs = data[0].lstAssetAudit.Where(d => d.MA_CHA == "").ToList();

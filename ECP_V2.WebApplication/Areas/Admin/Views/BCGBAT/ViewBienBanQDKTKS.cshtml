@@ -1,0 +1,1421 @@
+﻿@using ECP_V2.DataAccess;
+@model ECP_V2.Business.Repository.PhienLVModel
+@{
+    tblDonVi DonVi = null;
+    if (ViewBag.DonVi != null)
+    {
+        DonVi = ViewBag.DonVi;
+    }
+    tblDonVi DonViCha = null;
+    if (ViewBag.DonViCha != null)
+    {
+        DonViCha = ViewBag.DonViCha;
+    }
+    dynamic dataBienBan = new System.Dynamic.ExpandoObject();
+    if (ViewBag.dataBienBan.Count > 0)
+    {
+        dataBienBan = ViewBag.dataBienBan[0];
+    }
+    int TrangThaiBienBan = ViewBag.TrangThaiBienBan;
+
+    string donViID = "";
+    if (ViewBag.DonViCha != null)
+    {
+        donViID = ViewBag.DonViId;
+    }
+
+    int CVKeHoach = 0;
+    if (ViewBag.CVKeHoach != null)
+    {
+        CVKeHoach = ViewBag.CVKeHoach;
+    }
+
+    int CVBoSung = 0;
+    if (ViewBag.CVBoSung != null)
+    {
+        CVBoSung = ViewBag.CVBoSung;
+    }
+
+    int CVDotXuat = 0;
+    if (ViewBag.CVDotXuat != null)
+    {
+        CVDotXuat = ViewBag.CVDotXuat;
+    }
+
+
+    int CVKTKSTT = 0;
+    if (ViewBag.CVKTKSTT != null)
+    {
+        CVKTKSTT = ViewBag.CVKTKSTT;
+    }
+
+    int tongcv = 0;
+    if (ViewBag.tongcv != null)
+    {
+        tongcv = ViewBag.tongcv;
+    }
+
+    double tyleKH = 0;
+    if (ViewBag.tongcv != null)
+    {
+        tyleKH = ViewBag.tyleKH;
+    }
+    var loaiBaoCao = " ";
+    if (ViewBag.LoaiBaoCao != null)
+    {
+        loaiBaoCao = ViewBag.LoaiBaoCao;
+    }
+    var soBienBan = 0;
+    if (ViewBag.soBienBan != null)
+    {
+        if (ViewBag.TrangThaiBienBan == 0 || ViewBag.TrangThaiBienBan == 1)
+        {
+            soBienBan = ViewBag.soBienBan + 1;
+        }
+        else
+        {
+            soBienBan = ViewBag.soBienBan;
+        }
+    }
+    var tenVietTat = " ";
+    if (ViewBag.TenVietTat != null)
+    {
+        tenVietTat = ViewBag.TenVietTat;
+    }
+    var TuNgay = ((DateTime)ViewBag.TuNgay).ToString("dd/MM/yyyy");
+
+    var DenNgay = ((DateTime)ViewBag.DenNgay).ToString("dd/MM/yyyy");
+
+
+    ECP_V2.Business.Repository.DonViRepository donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    ECP_V2.Business.Repository.d_LoaiCongViecRepository loaiCongViecRepository = new ECP_V2.Business.Repository.d_LoaiCongViecRepository();
+    ECP_V2.Business.Repository.NhanVienRepository nhanvienRepository = new ECP_V2.Business.Repository.NhanVienRepository();
+    ECP_V2.Business.Repository.TramRepository tramRepository = new ECP_V2.Business.Repository.TramRepository();
+
+
+
+    List<tblNhanVien> nhanVien = new List<tblNhanVien>();
+    if (ViewBag.nhanVien != null)
+    {
+        nhanVien = (List<tblNhanVien>)ViewBag.nhanVien;
+    }
+    string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
+
+
+}
+@*Xuất PDF*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+<link href="/Content/wordsstyle.css?v=@(DateTime.Now.ToString("HHmmssfff"))" rel="stylesheet" />
+@Styles.Render("~/Content/themes/admindesign/css")
+<link href="/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="/Scripts/fbphotobox/css/fbphotobox.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script src="/Scripts/jquery-3.6.3.js"></script>
+<script src="/Scripts/AdminPanel/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="/Scripts/bootstrap.min.js"></script>
+
+@Styles.Render("~/Content/themes/admindesign/css")
+@Scripts.Render("~/bundles/admin/jqueryIndex")
+
+<script src="/Scripts/autoresize.jquery.min.js"></script>
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+
+<style>
+    * {
+        font-family: Times New Roman Arial !important;
+    }
+
+    .daky {
+        font-weight: bold;
+    }
+
+    .tbnXoaDong {
+        display: none;
+        background-color: orangered;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 112px;
+        line-height: 34px;
+        color: #fff;
+    }
+
+    .tbnThemDong {
+        display: none;
+        background: #00b000;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-size: 15px;
+        width: 112px;
+        line-height: 32px;
+        color: #fff;
+    }
+
+    .rheaderTB4:hover .tbnThemDongTB4 {
+        display: block !important;
+    }
+
+    .rheaderTB4:hover .tbnXoaDongTB4 {
+        display: block !important;
+    }
+
+    .rheaderTB5:hover .tbnThemDongTB5 {
+        display: block !important;
+    }
+
+    .rheaderTB5:hover .tbnXoaDongTB5 {
+        display: block !important;
+    }
+
+    @@media print {
+        .pagebreak {
+            page-break-before: always;
+        }
+    }
+
+    .table-resizable {
+        width: 99%;
+        height: 99%
+    }
+
+        .table-resizable .resizing {
+            cursor: col-resize;
+            user-select: none;
+        }
+
+        .table-resizable th {
+            position: relative;
+        }
+
+            .table-resizable th:before {
+                cursor: col-resize;
+                user-select: none;
+                content: '';
+                display: block;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 1em;
+            }
+
+            .table-resizable th:last-of-type:before {
+                display: none;
+            }
+
+
+        .table-resizable td {
+            max-width: 0;
+            /*overflow: hidden;*/
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+</style>
+
+<div class=Section1 style="width: 65vw; height: auto; margin: 0 auto; margin-bottom:80px; background-color: white; padding: 0px 5rem 2rem">
+    @if (User.IsInRole("Admin"))
+    {
+        <div style="display: inline-block;min-width:150px;position: relative;margin-left:5px">
+            <select class="chosen-select" id="LoaiBaoCao">
+                <option value="">Loại báo cáo</option>
+                <option value="1">Báo cáo tuần</option>
+                <option value="2">Báo cáo tháng</option>
+            </select>
+        </div>
+        <div style="display: inline-block;position: relative;margin-left:10px">
+            <input type="text" id="ChonThoiGian" class="form-control tooltips" data-toggle="tooltip" data-placement="top" data-title="Chọn thời gian" placeholder="Chọn thời gian">
+        </div>
+
+        <div style="display: inline-block;position: relative;top:-5px">
+            <a title="Làm mới" onclick="ShowData()" class="btn btn-success btn-sm"><i class="fa "> Làm mới</i></a>
+        </div>
+    }
+
+
+    <p class=MsoNormal>
+        <a name="_GoBack"></a><b>
+            <span><o:p>&nbsp;</o:p></span>
+        </b>
+    </p>
+
+    <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0 id="top"
+           style='border-collapse:collapse;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh:none;mso-border-insidev:none'>
+        <tr>
+            <td valign=top style='width:280px;'>
+                <p class=MsoNormal align="center" style='text-align:left' id="tenDonVi">
+
+                    @if (DonViCha != null && DonVi != null)
+                    {
+                        <span>
+                            <b>
+                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonViCha" id="txtTenDonViCha" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="2" placeholder="TÊN ĐƠN VỊ CHA" searchbox="1">@(DonViCha.TenDonVi)</textarea>
+
+                            </b>
+                            <br />
+                            <b>
+                                <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="2" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonVi.TenDonVi)</textarea>
+
+                            </b>
+                        </span>
+                    }
+                    else if (DonVi != null)
+                    {
+                        <b>
+                            <textarea style="font-size: 11px; width: 280px; resize: none; font-weight: bold !important; text-align: center;" maxlength="250" name="txtTenDonVi" id="txtTenDonVi" class="DieuKienAnToan_SelectEmp1 input-style noResz" rows="4" placeholder="TÊN ĐƠN VỊ" searchbox="1">@(DonVi.TenDonVi)</textarea>
+
+                        </b>
+                    }
+                </p>
+
+            </td>
+            <td valign="top" style='width:400px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal>
+                    <b style="text-align: center; display: flex; flex-direction: column;">
+                        <span style='font-size:16px;color:black'>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </span>
+                    </b>
+
+                    <span style='font-size: 13px; color: black; text-align: center; display: flex; flex-direction: column;'>
+                        Độc lập - Tự do - Hạnh phúc
+                    </span>
+
+                </p>
+
+            </td>
+
+        </tr>
+        <tr>
+            <td valign=top style='width:280px;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal align="center" style='text-align:center'>
+                    <span style="font-size:11px;" id="soBienBan">
+                        Số: @(TrangThaiBienBan== 5 ? dataBienBan.SoBienBan : soBienBan) /BBGBAT-KHKT-@tenVietTat
+                    </span>
+
+                </p>
+
+            </td>
+            <td valign="top" style='width:15rem;padding:0in 5.4pt 0in 5.4pt'>
+                <p class=MsoNormal style=" text-align: right; ">
+                    <i style="text-align:center; display:flex !important">
+                        <span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="20" name="txtS62_tinh" id="txtS62_tinh"
+                                   placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style1 text-right selectbox-control"
+                                   type="text" autocomplete="off"
+                                   value="@(TrangThaiBienBan == 5 ? dataBienBan.DiaDiem : "")" />
+                            <span class="multiselect-wap"></span>
+                            ,
+                        </span> ngày<span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>tháng <span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@DateTime.Now.ToString("MM")" name="txtS62_thang" id="txtS62_thang" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>năm<span class="selectboxv1 radio-style" onlyone="1">
+                            <input maxlength="4" value="@DateTime.Now.ToString("yyyy")" name="txtS62_nam" maxlength="4" id="txtS62_nam" placeholder="………" searchbox="0" datasourceidname="listnam" class="S62_nam_SelectEmp1 input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                            <span class="multiselect-wap"></span>
+                        </span>
+                    </i>
+                </p>
+
+            </td>
+
+        </tr>
+
+
+    </table>
+
+    <div style="width:100%">
+        <p class=MsoNormal id="divKLGBAT">
+            <div>
+                <div style='font-size: 12.0pt; color: black; display: flex; text-transform: uppercase; font-weight: bold; justify-content:center'>
+                    <span class=" radio-style" onlyone="1">
+                    </span> BIÊN BẢN KẾT LUẬN GIAO BAN AN TOÀN&nbsp;<div class="selectboxv1 radio-style text-right" onlyone="1">
+                        <P class="txtThoiGianBC" style="text-transform: uppercase; font-weight: bold">@ViewBag.LoaiBaoCao</P>
+                    </div>
+                </div>
+            </div>
+        </p>
+    </div>
+    <div style="width:100%; text-align:center">
+        <p class=MsoNormal style=" text-align: center;">
+            <i style="text-align:center">
+                Từ <span>@TuNgay</span> đến <span>@DenNgay</span>
+                @*(Từ  ngày <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayBatDau" id="ngayBatDau" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    tháng <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangBatDau" id="thangBatDau" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    đến ngày <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("dd")" name="ngayKetThuc" id="ngayKetThuc" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    tháng <span class="selectboxv1 radio-style" onlyone="1">
+                        <input maxlength="2" value="@DateTime.Now.ToString("MM")" name="thangKetThuc" id="thangKetThuc" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" disabled />
+                        <span class="multiselect-wap"></span>
+                    </span>
+                    năm <span class="selectboxv1 radio-style" style="font-weight:bold" name="namKetThuc" id="namKetThuc" onlyone="1">...)</span>*@
+            </i>
+        </p>
+    </div>
+
+    <div style="width: 100%; text-align: left">
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                I. Thời gian, thành phần:
+            </b>
+
+        </p>
+        <p>
+            1. Thời gian:  <span class="selectboxv1 radio-style" onlyone="1">
+                lúc  <input maxlength="5" name="txtS62_tinh" style="width:40px" value="@DateTime.Now.ToString("HH:mm")" id="txtS62_tinh" placeholder="……" searchbox="0" class="S62_phut_SelectEmp1 input-style input-style2 text-right selectbox-control" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>, ngày<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 31)" value="@DateTime.Now.ToString("dd")" name="txtS62_ngay" id="txtS62_ngay" placeholder="……" searchbox="0" datasourceidname="listngay" class="S62_ngay_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="31" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>tháng <span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="2" onchange="EditLengthTime(this, 1, 12)" value="@DateTime.Now.ToString("MM")" name="txtS62_thang" id="txtS62_thang" placeholder="……" searchbox="0" datasourceidname="listthang" class="S62_thang_SelectEmp1 input-style input-style2 text-right selectbox-control" type="number" max="12" min="1" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>năm<span class="selectboxv1 radio-style" onlyone="1">
+                <input maxlength="4" value="@DateTime.Now.ToString("yyyy")" name="txtS62_nam" id="txtS62_nam" placeholder="………" searchbox="0" datasourceidname="listnam" class="S62_nam_SelectEmp1 input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />
+                <span class="multiselect-wap"></span>
+            </span>
+        </p>
+        <p>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                2. Chủ trì giao ban: <span class="selectboxv1 radio-style " onlyone="1">
+                    <input readonly style="width: 250px;" name="txtchutrigiaoban"
+                           searchbox="1" datasourceidname="listchutrigiaoban"
+                           class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control" id="txtchutrigiaoban"
+                           type="text" placeholder="……………………………………" autocomplete="off"
+                           value="@(TrangThaiBienBan==5?dataBienBan.HoTenNguoiKy:"")"
+                           data-id="@(TrangThaiBienBan == 5 ? dataBienBan.IdNguoiKy : "")" />
+
+                    <span class="multiselect-wap"></span>
+                </span>
+                <span class="selectboxv1 radio-style" onlyone="1">
+                    Chức vụ:  <input style="width: 200px;" name="txtChucVuChuTri" searchbox="" class="NguoiChuTri_SelectEmp1 input-style input-style1 selectbox-control"
+                                     id="txtChucVuChuTri" type="text"
+                                     placeholder="…………………………………"
+                                     autocomplete="off"
+                                     value="@(TrangThaiBienBan==5?dataBienBan.ChucVu:"")" />
+                    @*<span class="multiselect-wap"></span>*@
+                </span>
+            </span>
+
+        </p>
+        <p>
+            <span style='mso-bidi-font-size:12.0pt;color:black'>
+                3. Thành phần tham gia: <span class="selectboxv1">
+                    <textarea class="form-control" rows="2" id="thanhPhanThamGia" placeholder="Thành phần tham gia..."
+                              style="outline:none !important"> @(TrangThaiBienBan==5?dataBienBan.ThanhPhanThamGia:"")</textarea>
+                </span>
+            </span>
+        </p>
+
+    </div>
+    <div style="width: 100%; text-align: left">
+        <p class=MsoNormal style=" text-align: left;">
+            <div style="text-align: left; display: flex; font-weight: bold">
+                II. Đánh giá, kiểm điểm công tác an toàn trong &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P> :
+            </div>
+
+        </p>
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            <div style="text-align: left; display: flex; font-weight: bold">
+                1. Số lượng công việc đơn vị đã thực hiện trong &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>:&nbsp;
+            </div>
+            <p id="TongSoPhien" style="font-weight:bold">@ViewBag.TongSoPhien</p> &nbsp;
+        </div>
+
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            <p style="font-style:italic">Trong đó: </p> &nbsp;
+            Có kế hoạch:&nbsp; <p id="TongSoPhienKeHoach" style="font-weight:bold"> @ViewBag.TongSoPhienKeHoach</p> &nbsp;
+            Phát sinh, bổ sung:&nbsp; <p id="TongSoBoSung" style="font-weight:bold">@ViewBag.TongSoBoSung</p> &nbsp;
+            Đột xuất:&nbsp; <p id="TongSoDotXuat" style="font-weight:bold">@ViewBag.TongSoDotXuat</p> &nbsp;
+        </div>
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            Tỷ lệ PLV bổ sung, đột xuất:&nbsp;<p id="TyLePhanTram" style="font-weight:bold">@ViewBag.TyLePhanTram</p>% PLV được lập trong KH &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>.
+        </div>
+        <p class=MsoNormal style=" text-align: left;">
+            Đánh giá: cần đánh giá, phân tích được chất lượng công tác lập KH công việc, tỷ lệ bổ sung, đột xuất, hoãn huỷ cao hay thấp, nguyên nhân, lý do. Trách nhiệm thuộc về bộ phận, cá nhân nào. Từ đó, có các chỉ đạo để công tác lập KH công việc chất lượng hơn.
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                2. Công tác  KTKS ATLĐ PLV:
+            </b>
+        </p>
+        <div class=MsoNormal style=" text-align: left; display:flex">
+            - Số lượng PLV được KTKS ATLĐ trực tiếp tại hiện trường:&nbsp; <p id="TongSoKTKS_TrucTiep" style="font-weight:bold">@ViewBag.TongSoKTKS_TrucTiep</p>&nbsp; PLV;
+        </div>
+        <div class=MsoNormal style=" text-align: left; display: flex">
+            - Số lượng PLV được KTKS ATLĐ qua hình ảnh trên ECP:&nbsp;<p id="TongSoKTKS_HinhAnh" style="font-weight:bold">@ViewBag.TongSoKTKS_HinhAnh</p> &nbsp;PLV;
+        </div>
+        <p class=MsoNormal style=" text-align: left;">
+            <b>Đánh giá:</b> cần đánh giá, phân tích được (không giới hạn) các nội dung sau:
+        </p>
+        <textarea class="form-control" rows="2" id="NoiDung_DanhGia" placeholder="Nội dung đánh giá">@(TrangThaiBienBan==5?dataBienBan.NoiDungDanhGia:"")</textarea>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                3. Công tác QLKT-VH và thao tác điều độ liên quan an toàn:
+            </b>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Kiểm điểm nội dung về QLKT-VH liên quan tới an toàn: Việc tổ chức thi công các PLV; Việc cập nhập, xử lý các vị trí có mối nguy mất an toàn trên lưới (giao chéo, song song, đấu tắt, đấu chập, máy phát, không đảm bảo 5S đối với dây sau công tơ và cáp viễn thông, dây đi trên mặt sàn thao tác TBA,…); việc cập nhập đánh số thiết bị giữa thực tế và sơ đồ (Chuẩn hóa lưới điện),…
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Kiểm điểm an toàn trong thực hiện công tác điều độ, thao tác:
+            <textarea class="form-control" rows="2" id="txtkiemdiemAT" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.KiemDiemAnToan:"")</textarea>
+            @*<input name="txtkiemdiemAT" style="width:250px" id="txtkiemdiemAT" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Trách nhiệm bộ phận, tập thể liên quan các tồn tại, vi phạm:
+            <textarea class="form-control" rows="2" id="txttrachnghiembp" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.TrachNhiemBoPhan:"")</textarea>
+            @*<input name="txttrachnghiembp" style="width:250px" id="txttrachnghiembp" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            - Các chỉ đạo để tránh tái diễn các tồn tại, vi phạm tương tự:
+            <textarea class="form-control" rows="2" id="txtchidao3" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.ChiDaoKhacPhuc:"")</textarea>
+            @*<input name="txtchidao3" style="width:250px" id="txtchidao3" placeholder="……………………………………………………………………………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="text" autocomplete="off" />*@
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            <b style="text-align: left">
+                4. Các tồn tại, vi phạm khác trong công tác an toàn:
+            </b>
+        </p>
+        <textarea class="form-control" rows="2" id="NoiDung_tongtaikhac" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.ViPhamKhac:"")</textarea>
+
+        <p class=MsoNormal style=" text-align: left;">
+            <div style="text-align: left; display:flex; font-weight:bold">
+                III. Công tác ATLĐ &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>&nbsp;tiếp theo:
+            </div>
+        </p>
+        <div class=MsoNormal style=" text-align: left">
+            <div class=MsoNormal style=" text-align: left;display:flex">
+                1. Kế hoạch công việc của &nbsp;<P class="txtThoiGianBC">@ViewBag.LoaiBaoCao</P>&nbsp;tiếp theo: (theo Biểu mẫu 06)
+            </div>
+            <input type="file" class="form-control" id="fileKeHoach" accept=".pdf, .xlsx, .xsl, .docx, .jpeg, .jpg, .png" max="1" />
+        </div>
+        <p class=MsoNormal style=" text-align: left;">
+            2. Phân tích, đánh giá các BPAT PLV, tập trung vào các PLV có nguy cơ mất an toàn cao, khối lượng công việc lớn, nhiều mối nguy, rủi ro để từ đó quán triệt, nhắc nhở các ĐVCT; tổ chức phân công cá nhân (hoặc nhóm) KTKS ATLĐ các PLV:
+            <textarea class="form-control" rows="2" id="txtphantichdanhgiabpat" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.PhanTichDanhGia:"")</textarea>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            3. Các lưu ý an toàn trong các thao tác của tuần kế tiếp, đặc biệt các thao tác phức tạp, tại các vị trí có nhiều nguy cơ mất an toàn khi thực hiện thao tác
+            <textarea class="form-control" rows="2" id="txtluuychotuanketiep" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.LuuYAnToan:"")</textarea>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            4. Các chỉ đạo liên quan tổng hợp, theo dõi, phổ biến và xử lý các nguy cơ mất an toàn trên lưới điện
+            <textarea class="form-control" rows="2" id="txtchidaolienquanth" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.ChiDaoLienQuan:"")</textarea>
+        </p>
+        <p class=MsoNormal style=" text-align: left;">
+            5. Các chỉ đạo trong công tác an toàn khác (nếu có):
+            <textarea class="form-control" rows="2" id="txtchidaoctatkhac" placeholder="Nhập...">@(TrangThaiBienBan==5?dataBienBan.ChiDaoAnToan:"")</textarea>
+        </p>
+
+        <br />
+        @if (loaiBaoCao == "tháng")
+        {
+            <div>
+                <p class=MsoNormal style=" text-align: left;">
+                    <b style="text-align: left">
+                        * Lưu ý: đối với giao ban an toàn tháng thì có thêm nội dung xét chế độ an toàn điện, cụ thể:
+                    </b>
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - Người lao động vi phạm, số lượng
+                    <input value="@(TrangThaiBienBan==5?dataBienBan.SoLuongViPham:"")"
+                           name="txtnguoilaodongvipham" style="width:80px" id="txtnguoilaodongvipham" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /><i>Trong đó:</i>
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    + Đề nghị hình thức xử lý giảm thưởng vận hành an toàn, số lượng
+                    <input value="@(TrangThaiBienBan==5?dataBienBan.SoLuongGiamThuong:"")"
+                           name="txtdenghigiamthuong" style="width:80px" id="txtdenghigiamthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /> người.
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    + Đề nghị hình thức xử lý cắt thưởng vận hành an toàn, số lượng
+                    <input value="@(TrangThaiBienBan==5?dataBienBan.SoLuongCatThuong:"")"
+                           name="txtdenghicatthuong" style="width:80px" id="txtdenghicatthuong" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /> người.
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    + Đề nghị hình thức kỷ luật, số lượng
+                    <input value="@(TrangThaiBienBan==5?dataBienBan.SoLuongKyLuat:"")"
+                           name="txtdenghikyluat" style="width:80px" id="txtdenghikyluat" placeholder="……………" searchbox="" class=" input-style input-style4 text-right selectbox-control" type="number" min="0" autocomplete="off" /> người.
+                </p>
+            </div>
+        }
+        <br />
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-lg-6">
+                <p class=MsoNormal style=" text-align: left;">
+                    <b style="text-align: left">
+                        Nơi nhận.
+                    </b>
+
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - PC...... (để B/c nếu có)
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - TVH, Tổ, Đội..... (để thực hiện);
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    - Lưu VT, KHKT, CBAT.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <p class=MsoNormal style=" text-align: left;">
+                    <b style="text-align: left">
+                        Chủ trì cuộc họp
+                    </b>
+                </p>
+                <p class=MsoNormal style=" text-align: left;">
+                    (Ký tên, đóng dấu)
+                </p>
+                <p class=MsoNormal style=" text-align: left; font-weight:bold" id="txtKyTen">
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" class="mytemp">
+    <div class="empdataparent">
+        <div class="empdata">
+            <select class="multiselect-add form-control" multiple="multiple" data-plugin-multiselect data-plugin-options='{ "enableCaseInsensitiveFiltering": true }'>
+                <optgroup label="Nhân viên">
+                    <option value="0">Tên Nhân Viên</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <div id="listchutrigiaoban">
+        <optgroup label="Chủ trì giao ban">
+            @{Html.RenderAction("DanhSachChuTriGiaoBan", "PhienLV", new { roles = "LanhDaoCongViec" });}
+        </optgroup>
+    </div>
+
+
+
+    <div id="listnhanviendonvicongtac">
+        <optgroup label="Thành phần tham gia">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "ChiHuyTrucTiep" });}
+        </optgroup>
+    </div>
+
+
+
+    <div id="listphieulenh">
+        <optgroup label="Phiếu/Lệnh công tác">
+            <option value="1">Phiếu công tác</option>
+            <option value="2">Lệnh công tác</option>
+        </optgroup>
+    </div>
+
+    <div id="listloaiBienBan">
+        <optgroup label="Loại Báo Cáo">
+            <option value="1">BIÊN BẢN</option>
+            <option value="2">THÔNG BÁO</option>
+        </optgroup>
+    </div>
+    <div id="listloaithoigianbc">
+        <optgroup label="Loại thời gian">
+            <option value="1">TUẦN</option>
+            <option value="2">THÁNG</option>
+        </optgroup>
+    </div>
+
+    <div id="listnhanviendonvicongtac">
+        <optgroup label="Nhân viên đơn vị công tác">
+            @{Html.RenderAction("DanhSachNhanVien", "PhienLV", new { roles = "Worker" });}
+        </optgroup>
+    </div>
+
+
+
+    <div id="listgio">
+        <optgroup label="Giờ">
+            @for (int i = 0; i < 23; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listphut">
+        <optgroup label="Phút">
+            @for (int i = 0; i < 59; i = i + 5)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listngay">
+        <optgroup label="Ngày">
+            @for (int i = 1; i < 32; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listthang">
+        <optgroup label="Tháng">
+            @for (int i = 1; i < 13; i++)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </optgroup>
+    </div>
+    <div id="listnam">
+        <optgroup label="Năm">
+            <option value="@(DateTime.Now.Year - 1)">@(DateTime.Now.Year - 1)</option>
+            <option value="@(DateTime.Now.Year)">@(DateTime.Now.Year)</option>
+            <option value="@(DateTime.Now.Year + 1)">@(DateTime.Now.Year + 1)</option>
+        </optgroup>
+    </div>
+    <div id="listnam2">
+        <optgroup label="Năm">
+            <option value="@((DateTime.Now.Year - 1).ToString().Substring(2))">@((DateTime.Now.Year - 1).ToString().Substring(2))</option>
+            <option value="@(DateTime.Now.Year.ToString().Substring(2))">@(DateTime.Now.Year.ToString().Substring(2))</option>
+            <option value="@((DateTime.Now.Year + 1).ToString().Substring(2))">@((DateTime.Now.Year + 1).ToString().Substring(2))</option>
+        </optgroup>
+    </div>
+
+</div>
+<footer class="panel-footer" style="position:fixed; bottom:0;z-index:99999999; width:100%">
+    <div class="row">
+        <div class="col-md-6 text-right">
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-default modal-confirm" onclick="ExportModalToPdf(1)">
+                Tải xuống
+            </button>
+            <button class="btn btn-default " onclick="LuuNhap()">
+                Lưu nháp
+            </button>
+            @if (ViewBag.TrangThaiBienBan == 5)
+            {
+                <button class="btn btn-danger " style=" color:white" onclick="XoaNhap()">Xóa nháp</button>
+            }
+            @if (ViewBag.TrangThaiBienBan == 0 || ViewBag.TrangThaiBienBan == 3 || ViewBag.TrangThaiBienBan == 2 || ViewBag.TrangThaiBienBan == 5)
+            {
+                <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white" onclick="ExportModalToPdf(2)">Trình ký</button>
+            }
+            @if (ViewBag.TrangThaiBienBan == 1)
+            {
+                <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white" onclick="ExportModalToPdf(3)">Ký số</button>
+                <button class="btn btn-default " id="btnKySo" style="background-color: #2d4add; color:white">Trả lại</button>
+            }
+            <button class="btn btn-default modal-dismiss" onclick="parent.ClosePhieuCongTac()" id="modal-dismiss">Đóng</button>
+        </div>
+    </div>
+</footer>
+
+
+<script>
+
+    $(function () {
+        var startX,
+            startWidth,
+            $handle,
+            $table,
+            pressed = false;
+
+        $(document).on({
+            mousemove: function (event) {
+                if (pressed) {
+                    $handle.width(startWidth + (event.pageX - startX));
+                }
+            },
+            mouseup: function () {
+                if (pressed) {
+                    $table.removeClass('resizing');
+                    pressed = false;
+                }
+            }
+        }).on('mousedown', '.table-resizable th', function (event) {
+            $handle = $(this);
+            pressed = true;
+            startX = event.pageX;
+            startWidth = $handle.width();
+
+            $table = $handle.closest('.table-resizable').addClass('resizing');
+        }).on('dblclick', '.table-resizable thead', function () {
+            // Reset column sizes on double click
+            $(this).find('th[style]').css('width', '');
+        });
+
+
+
+
+    });
+
+    function SaveTable() {
+        var from = document.referrer;
+        alert(from);
+        let xxx = httpGet(from);
+        alert(xxx);
+        //table 4
+        var w = $("#divtb4").width();
+        var h = $("#divtb4").height();
+
+
+        var i = 1;
+        $("#tb4 thead tr th").each(function () {
+            var wth = $(this).width();
+            var hth = $(this).height();
+
+            i = i + 1;
+        });
+
+        //table 5
+        var w2 = $("#divtb5").width();
+        var h2 = $("#divtb5").height();
+
+
+        var i2 = 1;
+        $("#tb5 thead tr th").each(function () {
+            var wth2 = $(this).width();
+            var hth2 = $(this).height();
+
+            i2 = i2 + 1;
+        });
+
+        alert("Lưu thành công");
+    }
+
+    function httpGet(theUrl) {
+        let xmlhttp;
+
+        if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else { // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                return xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET", theUrl, false);
+        xmlhttp.send();
+
+        return xmlhttp.response;
+    }
+
+    function LoadSizeTable() {
+
+        //table 4
+        var w = 0;
+        var h = 0;
+
+        if (w > 0)
+            $("#divtb4").css("width", w);
+        if (h > 0)
+            $("#divtb4").css("height", h);
+
+        var i = 1;
+        $("#tb4 thead tr th").each(function () {
+            var wth = 0;
+            var hth = 0;
+
+            if (wth > 0)
+                $(this).css("width", wth);
+            if (hth > 0)
+                $(this).css("height", hth);
+            i = i + 1;
+        });
+
+        //table 5
+        var w2 = 0;
+        var h2 = 0;
+
+        if (w2 > 0)
+            $("#divtb5").css("width", w2);
+        if (h2 > 0)
+            $("#divtb5").css("height", h2);
+
+        var i2 = 1;
+        $("#tb5 thead tr th").each(function () {
+            var wth2 = 0;
+            var hth2 = 0;
+
+            if (wth2 > 0)
+                $(this).css("width", wth2);
+            if (hth2 > 0)
+                $(this).css("height", hth2);
+            i2 = i2 + 1;
+        });
+
+    }
+
+    let timeout;
+
+
+
+    $.datepicker.regional["vi-VN"] = {
+        closeText: "Đóng",
+        prevText: "Trước",
+        nextText: "Sau",
+        currentText: "Hôm nay",
+        monthNames: ["Tháng một", "Tháng hai", "Tháng ba", "Tháng tư", "Tháng năm", "Tháng sáu", "Tháng bảy", "Tháng tám", "Tháng chín", "Tháng mười", "Tháng mười một", "Tháng mười hai"],
+        monthNamesShort: ["Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Mười một", "Mười hai"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+        weekHeader: "Tuần",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    };
+    $.datepicker.setDefaults($.datepicker.regional["vi-VN"]);
+    // Thay đổi loại báo cáo
+
+    $("#LoaiBaoCao").change(function () {
+        var loaiBaoCao = $(this).val();
+        var thoiGianPicker = $("#ChonThoiGian");
+        // Xóa DatePicker cũ nếu có
+        if (thoiGianPicker.data('datepicker')) {
+            thoiGianPicker.datepicker("destroy");
+        }
+        console.log('Check loaiBaoCao', loaiBaoCao)
+        if (loaiBaoCao == "1") {
+            $(".txtThoiGianBC").text("tuần")
+            thoiGianPicker.val("")
+            // Cấu hình chọn tuần
+            thoiGianPicker.attr('placeholder', 'Chọn tuần');
+            if (thoiGianPicker) {
+                thoiGianPicker.datepicker({
+                    showWeek: true,
+                    firstDay: 1,
+                    dateFormat: "dd/mm/yy",
+                    onClose: function (dateText, inst) {
+                        var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                        if (selectedDate) { // Kiểm tra nếu ngày hợp lệ
+                            const weekNumber = $.datepicker.iso8601Week(selectedDate); // Lấy số tuần
+                            const year = selectedDate.getFullYear(); // Lấy năm
+                            $("#ChonThoiGian").val("Tuần " + weekNumber + " năm " + year); // Hiển thị số tuần và năm
+                        } else {
+                            $("#ChonThoiGian").val("");
+                        }
+                    }
+                }).datepicker("show");
+            }
+
+
+        } else if (loaiBaoCao == "2") {
+
+            $(".txtThoiGianBC").text("tháng")
+            thoiGianPicker.val("");
+            // Cấu hình chọn ngày bình thường
+            thoiGianPicker.attr('placeholder', 'Chọn ngày');
+            if (thoiGianPicker) {
+                thoiGianPicker.datepicker({
+                    dateFormat: "dd/mm/yy", // Định dạng ngày
+                    onClose: function (dateText, inst) {
+                        var selectedDate = $("#ChonThoiGian").datepicker("getDate");
+                        if (selectedDate) {
+                            $("#ChonThoiGian").val($.datepicker.formatDate("mm/yy", selectedDate));
+                        } else {
+                            $("#ChonThoiGian").val("");
+                        }
+                    }
+                }).datepicker("show");
+            }
+
+        } else {
+            thoiGianPicker.val("")
+            thoiGianPicker.attr('placeholder', 'Chọn thời gian');
+        }
+     });
+
+    function ShowData() {
+        var thoiGian = $("#ChonThoiGian").val();  // "Tuần 3 năm 2025"
+        var loaiBaoCao = $("#LoaiBaoCao").val();  // Loại báo cáo
+
+
+        if (loaiBaoCao == 2) {
+            var thoiGianParts = thoiGian.split('/');
+            var month = parseInt(thoiGianParts[0]);  // Tháng
+            var year = parseInt(thoiGianParts[1]);  // Năm
+
+            // Tính ngày đầu tháng và ngày cuối tháng
+            var firstDay = new Date(year, month - 1, 1);  // Ngày đầu tháng
+            var lastDay = new Date(year, month, 0);  // Ngày cuối tháng (ngày 0 của tháng tiếp theo)
+            var tuNgay = formatDate(firstDay)
+            var denNgay = formatDate(lastDay)
+            $("#ngayBatDau").val(tuNgay.slice(6, 8));
+            $("#thangBatDau").val(tuNgay.slice(4, 6));
+            $("#ngayKetThuc").val(denNgay.slice(6, 8));
+            $("#thangKetThuc").val(denNgay.slice(4, 6));
+            $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+            Get_SoLuong_PLV('@DonVi.Id', tuNgay, denNgay )
+        } else {
+            var regex = /Tuần (\d+) năm (\d{4})/;
+            var match = thoiGian.match(regex);
+
+            if (match) {
+                var weekNumber = parseInt(match[1]);  // Tuần thứ mấy
+                var year = parseInt(match[2]);  // Năm
+
+                // Tính ngày bắt đầu của tuần (Thứ Hai)
+                var startOfWeek = getStartOfWeek(year, weekNumber);
+                var endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // Ngày cuối tuần (Chủ Nhật)
+                var tuNgay = formatDate(startOfWeek)
+                var denNgay = formatDate(endOfWeek)
+                $("#ngayBatDau").val(tuNgay.slice(6, 8));
+                $("#thangBatDau").val(tuNgay.slice(4, 6));
+                $("#ngayKetThuc").val(denNgay.slice(6, 8));
+                $("#thangKetThuc").val(denNgay.slice(4, 6));
+                $("#namKetThuc").text(denNgay.slice(0, 4) + ")");
+
+                Get_SoLuong_PLV ('@DonVi.Id', tuNgay, denNgay )
+;
+            } else {
+                console.log("Dữ liệu không hợp lệ");
+            }
+        }
+    }
+
+    // Hàm để tính ngày đầu tuần (Thứ Hai) của một tuần trong năm
+    function getStartOfWeek(year, weekNumber) {
+        var date = new Date(year, 0, 1); // Bắt đầu từ ngày 1 tháng 1 của năm
+        var daysOffset = (date.getDay() === 0 ? 6 : date.getDay() - 1); // Điều chỉnh nếu ngày 1 tháng 1 là Chủ Nhật
+        date.setDate(date.getDate() - daysOffset); // Tính Thứ Hai đầu tiên của năm
+
+        // Thêm số tuần để đến tuần cần tính
+        date.setDate(date.getDate() + (weekNumber - 1) * 7);
+
+        return date;
+    }
+
+    // Hàm để định dạng ngày theo định dạng yyyymmdd
+    function formatDate(date) {
+        var year = date.getFullYear();
+        var month = ("0" + (date.getMonth() + 1)).slice(-2); // Đảm bảo tháng có 2 chữ số
+        var day = ("0" + date.getDate()).slice(-2); // Đảm bảo ngày có 2 chữ số
+        return year + month + day;
+    }
+
+
+    function Get_SoLuong_PLV(DonViID, ngayBatDau, ngayKetThuc) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            $.ajax({
+                url: '/BCKHLLV/Get_SoLuong_PLV_BaoCao',
+                type: 'GET',
+                data: {
+                    DonViID: DonViID,
+                    TuNgay: ngayBatDau,
+                    DenNgay: ngayKetThuc
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+                        $('#TongSoPhien').text(data.TongSoPhien);
+                        $('#TongSoPhienKeHoach').text(data.TongSoPhienKeHoach);
+                        $('#TongSoBoSung').text(data.TongSoBoSung);
+                        $('#TongSoDotXuat').text(data.TongSoDotXuat);
+                        $('#TongSoKTKS_TrucTiep').text(data.TongSoKTKS_TrucTiep);
+                        $('#TongSoKTKS_HinhAnh').text(data.TongSoKTKS_HinhAnh);
+                        $('#TyLePhanTram').text(data.TyLePhanTram);
+                    } else {
+                        console.log("Không có dữ liệu123:", response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi AJAX:", error);
+                }
+            });
+        }, 2000);
+    };
+
+
+    function convertToDate(dateString) {
+        var parts = dateString.split(' '); // Tách ngày và giờ
+        var dateParts = parts[0].split('/'); // Tách ngày theo "/"
+        var timeParts = parts[1].split(':'); // Tách giờ, phút, giây
+        var newDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1], timeParts[2]);
+        // Chuyển đối tượng Date thành chuỗi dd-MM-yyyy
+        var day = newDate.getDate().toString().padStart(2, '0'); // Lấy ngày và thêm 0 nếu ngày < 10
+        var month = (newDate.getMonth() + 1).toString().padStart(2, '0'); // Lấy tháng (lưu ý tháng bắt đầu từ 0)
+        var year = newDate.getFullYear();
+
+        var formattedDate = `${year}${month}${day}`;
+
+        return formattedDate;
+    }
+
+    document.getElementById("fileKeHoach").addEventListener("change", function () {
+        const file = this.files[0]; // Lấy tệp đầu tiên
+        if (file) {
+            // Kiểm tra kích thước tệp (giới hạn: 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert("Tệp quá lớn. Kích thước tối đa là 5MB.");
+                this.value = ""; // Xóa tệp đã chọn
+                return;
+            }
+            // Kiểm tra định dạng tệp
+            const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
+            const fileExtension = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert("Định dạng tệp không được hỗ trợ, hoặc dung lượng lớn hơn cho phép.");
+                this.value = ""; // Xóa tệp đã chọn
+            }
+        }
+    });
+
+    function ExportModalToPdf(thaoTac) {
+    const { jsPDF } = window.jspdf;
+    const element = document.querySelector('.Section1');
+    const targetElement = element.querySelector('#top');
+    const tenDonVi = element.querySelector('#tenDonVi');
+    var HoTenNguoiKy = $("#txtchutrigiaoban").val();
+    var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
+    var SoLuongKyLuat = $("#txtdenghikyluat").val()||'0';
+    var SoLuongCatThuong = $("#txtdenghicatthuong").val() || '0';
+    var SoLuongGiamThuong = $("#txtdenghigiamthuong").val() || '0';
+    var SoLuongNguoiViPham = $("#txtnguoilaodongvipham").val() || '0';
+    var ChiDaoAnToan = $("#txtchidaoctatkhac").val();
+    var ChiDaoLienQuan = $("#txtchidaolienquanth").val();
+    var LuuYAnToan = $("#txtluuychotuanketiep").val();
+    var PhanTichDanhGia = $("#txtphantichdanhgiabpat").val();
+    var ViPhamKhac = $("#NoiDung_tongtaikhac").val();
+    var ChiDaoKhacPhuc = $("#txtchidao3").val();
+    var TrachNhiemBoPhan = $("#txttrachnghiembp").val();
+    var KiemDiemAnToan = $("#txtkiemdiemAT").val();
+    var NoiDungDanhGia = $("#NoiDung_DanhGia").val();
+    var ThanhPhanThamGia = $("#thanhPhanThamGia").val();
+    var DiaDiem = $("#txtS62_tinh").val();
+    var TenDonVi = $("#txtTenDonVi").val();
+    var ChucVu = $("#txtChucVuChuTri").val();
+
+    if (targetElement && IdNguoiKy) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (thaoTac == 2) {
+            // Thao tác 2 sẽ được xử lý ở dưới
+        }
+
+    } else {
+        console.error("Không tìm thấy phần tử có ID trong modal");
+        new PNotify({
+            title: 'Thông báo!',
+            text: 'Chọn chủ trì giao ban!',
+            type: 'error'
+        });
+        return;
+    }
+
+    // Thay đổi style của phần tử
+    element.style.padding = '0 0 0 0';
+    element.style.width = '55vw';
+    tenDonVi.style.margin = '-0.5rem 0 0 0';
+
+    // Cấu hình cho html2pdf
+    const options = {
+        margin: 5,
+        filename: 'FileTaiLieu.pdf',
+        image: { type: 'jpeg', quality: 0.3 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }
+
+    if (thaoTac == 1) {
+        html2pdf().set(options).from(element).save();
+    }
+    if (thaoTac == 2) {
+        setTimeout(function () {
+            var dateFrom = convertToDate('@ViewBag.TuNgay');
+            var dateTo = convertToDate('@ViewBag.DenNgay');
+
+            html2pdf()
+                .set(options)
+                .from(element)
+                .toPdf()
+                .get('pdf')
+                .then(function (pdf) {
+                    const pdfBlob = pdf.output('blob');
+                    var IdLoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
+
+                    const formData = new FormData();
+                    formData.append('LoaiBaoCao', IdLoaiBaoCao);
+                    formData.append('SoBienBan', '@soBienBan');
+                    formData.append('TuanThang', '@ViewBag.TuanThang');
+                    formData.append('Nam', 2025);
+                    formData.append('NgayBatDau', dateFrom);
+                    formData.append('NgayKetThuc', dateTo);
+                    formData.append('TrangThai', 1);
+                    formData.append('IdNguoiTrinhKy', "");
+                    formData.append('HoTenNguoiTrinh', "");
+                    formData.append('HoTenNguoiKy', HoTenNguoiKy);
+                    formData.append('IdNguoiKy', IdNguoiKy);
+                    formData.append('IdDonVi', '@donViID');
+                    formData.append('file', pdfBlob, 'TaiLieu.pdf');
+                    formData.append('fileSize', pdfBlob.size);
+
+                    formData.append('SoLuongKyLuat', SoLuongKyLuat);
+                    formData.append('SoLuongCatThuong', SoLuongCatThuong);
+                    formData.append('SoLuongGiamThuong', SoLuongGiamThuong);
+                    formData.append('SoLuongNguoiViPham', SoLuongNguoiViPham);
+                    formData.append('ChiDaoAnToan', ChiDaoAnToan);
+                    formData.append('ChiDaoLienQuan', ChiDaoLienQuan);
+                    formData.append('LuuYAnToan', LuuYAnToan);
+                    formData.append('PhanTichDanhGia', PhanTichDanhGia);
+                    formData.append('ViPhamKhac', ViPhamKhac);
+                    formData.append('ChiDaoKhacPhuc', ChiDaoKhacPhuc);
+                    formData.append('TrachNhiemBoPhan', TrachNhiemBoPhan);
+                    formData.append('KiemDiemAnToan', KiemDiemAnToan);
+                    formData.append('NoiDungDanhGia', NoiDungDanhGia);
+                    formData.append('ThanhPhanThamGia', ThanhPhanThamGia);
+                    formData.append('DiaDiem', DiaDiem);
+                    formData.append('TenDonVi', TenDonVi);
+                    formData.append('ChucVu', ChucVu);
+
+                    console.log(Object.fromEntries(formData));
+
+                    const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
+                    const fileKeHoach = document.getElementById('fileKeHoach').files[0];
+
+                    if (fileKeHoach) {
+                        const fileExtension = fileKeHoach.name.substring(fileKeHoach.name.lastIndexOf(".")).toLowerCase();
+                        if (!allowedExtensions.includes(fileExtension)) {
+                            alert("Định dạng tệp không được hỗ trợ.");
+                            this.value = ""; // Xóa tệp đã chọn
+                            return false;
+                        }
+                        formData.append('fileKeHoach', fileKeHoach);
+                        formData.append('fileKeHoachSize', fileKeHoach.size);
+                    }
+
+                    var url = "";
+                    if ('@ViewBag.TrangThaiBienBan' == 1 || '@ViewBag.TrangThaiBienBan' == 0) {
+                        $("#soBienBan").text(" Số:@soBienBan /BBGBAT-KHKT-@tenVietTat");
+                        url = '/BCGBAT/Insert_BienBanAnToan';
+                    }
+                    if ('@ViewBag.TrangThaiBienBan' == 3 || '@ViewBag.TrangThaiBienBan' == 2) {
+                        url = '/BCGBAT/TrinhKyLai_BienBanAnToan';
+                        formData.append('Id', '@ViewBag.IdBienBan');
+                    }
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log('Success:', data);
+                            if (data.success) {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Trình ký thành công!',
+                                    type: 'success'
+                                });
+                                setTimeout(function () {
+                                    parent.ClosePhieuCongTac();
+                                }, 2000);
+                            } else {
+                                new PNotify({
+                                    title: 'Thông báo!',
+                                    text: 'Lỗi!',
+                                    type: 'error'
+                                });
+                                return false;
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                            new PNotify({
+                                title: 'Thông báo!',
+                                text: 'Lỗi!',
+                                type: 'error'
+                            });
+                            return false;
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Lỗi khi tạo PDF:", error);
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Có lỗi xảy ra khi tạo PDF.',
+                        type: 'error'
+                    });
+                });
+        }, 2000); // Chờ 2 giây để kéo lên top
+    }
+}
+
+    function XoaNhap() {
+        var dataBaoCao = @Html.Raw(Json.Encode(dataBienBan));
+        var Id = parseInt(dataBaoCao.Id);
+        console.log("check Id", typeof(Id))
+        $.ajax({
+            url: "/BCGBAT/Delete_LuuNhap_BienBanAnToan",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ Id: Id }),  // Đóng gói dữ liệu vào đối tượng JSON
+            success: function (data) {
+                console.log("check data", data)
+                if (data.success) {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Xóa nháp thành công!',
+                        type: 'success'
+                    });
+                    setTimeout(function () {
+                        parent.Getdata();
+                        parent.ClosePhieuCongTac();
+                    }, 2000);
+                } else {
+                    new PNotify({
+                        title: 'Thông báo!',
+                        text: 'Lỗi!',
+                        type: 'error'
+                    });
+                    return false;
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Lỗi!',
+                    type: 'error'
+                });
+                return false;
+            }
+        });
+
+    };
+
+function LuuNhap() {
+    var soBienBan = $("#soBienBan").text();
+    var match = soBienBan.match(/\d+/);
+
+    if (match) {
+        soBienBan = match[0];
+    }
+    var LoaiBaoCao = '@loaiBaoCao' == 'tuần' ? '1' : '2';
+    var SoLuongKyLuat = $("#txtdenghikyluat").val() || '0';
+    var SoLuongCatThuong = $("#txtdenghicatthuong").val() || '0';
+    var SoLuongGiamThuong = $("#txtdenghigiamthuong").val() || '0';
+    var SoLuongNguoiViPham = $("#txtnguoilaodongvipham").val() || '0';
+    var ChiDaoAnToan = $("#txtchidaoctatkhac").val();
+    var ChiDaoLienQuan = $("#txtchidaolienquanth").val();
+    var LuuYAnToan = $("#txtluuychotuanketiep").val();
+    var PhanTichDanhGia = $("#txtphantichdanhgiabpat").val();
+    var ViPhamKhac = $("#NoiDung_tongtaikhac").val();
+    var ChiDaoKhacPhuc = $("#txtchidao3").val();
+    var TrachNhiemBoPhan = $("#txttrachnghiembp").val();
+    var KiemDiemAnToan = $("#txtkiemdiemAT").val();
+    var NoiDungDanhGia = $("#NoiDung_DanhGia").val();
+    var ThanhPhanThamGia = $("#thanhPhanThamGia").val();
+    var DiaDiem = $("#txtS62_tinh").val();
+    var TenDonVi = $("#txtTenDonVi").val();
+    var HoTenNguoiKy = $("#txtchutrigiaoban").val();
+    var ChucVu = $("#txtChucVuChuTri").val();
+    var IdNguoiKy = $("#txtchutrigiaoban").attr("data-id");
+    var dateFrom = convertToDate('@ViewBag.TuNgay');
+    var dateTo = convertToDate('@ViewBag.DenNgay');
+    var TuanThang = parseInt('@ViewBag.TuanThang', 10);
+    var IdBienBan = 0;
+    var dataBaoCao= @Html.Raw(Json.Encode(dataBienBan));
+    if (@TrangThaiBienBan == 5 && dataBaoCao != null) {
+        IdBienBan = dataBaoCao.Id;
+    };
+
+    var modelBaoCao = {
+        Id: IdBienBan,
+        IdDonVi:  '@donViID' ,
+        SoBienBan: soBienBan,
+        LoaiBaoCao: LoaiBaoCao,  // Loại báo cáo (tuần hoặc tháng)
+        SoLuongKyLuat: SoLuongKyLuat,  // Số lượng kỷ luật
+        SoLuongCatThuong: SoLuongCatThuong,  // Số lượng cắt thưởng
+        SoLuongGiamThuong: SoLuongGiamThuong,  // Số lượng giảm thưởng
+        SoLuongNguoiViPham: SoLuongNguoiViPham,  // Số lượng người vi phạm
+        ChiDaoAnToan: ChiDaoAnToan,  // Chỉ đạo an toàn
+        ChiDaoLienQuan: ChiDaoLienQuan,  // Chỉ đạo liên quan
+        LuuYAnToan: LuuYAnToan,  // Lưu ý an toàn
+        PhanTichDanhGia: PhanTichDanhGia,  // Phân tích đánh giá
+        ViPhamKhac: ViPhamKhac,  // Vi phạm khác
+        ChiDaoKhacPhuc: ChiDaoKhacPhuc,  // Chỉ đạo khắc phục
+        TrachNhiemBoPhan: TrachNhiemBoPhan,  // Trách nhiệm bộ phận
+        KiemDiemAnToan: KiemDiemAnToan,  // Kiểm điểm an toàn
+        NoiDungDanhGia: NoiDungDanhGia,  // Nội dung đánh giá
+        ThanhPhanThamGia: ThanhPhanThamGia,  // Thành phần tham gia
+        DiaDiem: DiaDiem,  // Địa điểm
+        TenDonVi: TenDonVi,  // Tên đơn vị
+        HoTenNguoiKy: HoTenNguoiKy,  // Họ tên người ký
+        IdNguoiKy: IdNguoiKy,  // ID người ký
+        ChucVu: ChucVu, // Chức vụ
+        NgayBatDau: dateFrom,  // Ngày bắt đầu
+        NgayKetThuc: dateTo,  // Ngày kết thúc
+        TrangThai: 5,
+        TuanThang: TuanThang,
+        Nam: dateFrom.slice(0,4)
+    };
+    console.log("check modelBaoCao", modelBaoCao);
+
+    var url = @TrangThaiBienBan == 5 ? "/BCGBAT/Update_LuuNhap_BienBanAnToan" : "/BCGBAT/LuuNhap_BienBanAnToan";
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(modelBaoCao),
+        success: function (data) {
+            console.log('Success:', data);
+            if (data.success) {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Lưu nháp thành công!',
+                    type: 'success'
+                });
+                setTimeout(function () {
+                    parent.Getdata();
+                    parent.ClosePhieuCongTac();
+                }, 2000);
+            } else {
+                new PNotify({
+                    title: 'Thông báo!',
+                    text: 'Lỗi!',
+                    type: 'error'
+                });
+                return false;
+            }
+        },
+        error: function (error) {
+            console.error('Error:', error);
+            new PNotify({
+                title: 'Thông báo!',
+                text: 'Lỗi!',
+                type: 'error'
+            });
+            return false;
+        }
+    });
+}
+
+
+</script>
+
+
+
+<script src="/Scripts/ViewBienBanQDKTKS.js?v=@(DateTime.Now.ToString("yyyyMMddHHmmssfff"))"></script>

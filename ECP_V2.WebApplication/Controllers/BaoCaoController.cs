@@ -67,7 +67,10 @@ namespace ECP_V2.WebApplication.Controllers
             }
             else
             {
-                var listDonViCon = _faculty_ser.List().Where(x => x.DviCha.Equals(Session["DonViID"].ToString())).Select(x => x.Id).ToList();
+                var listDonViCon = _faculty_ser.List()
+                    .Where(x => x.DviCha != null && x.DviCha.Equals(Session["DonViID"].ToString()))
+                    .Select(x => x.Id)
+                    .ToList();
                 var listDvi = _faculty_ser.List().Where(x => x.Id.Equals(Session["DonViID"].ToString()) || (listDonViCon != null && listDonViCon.Count() > 0 && listDonViCon.Contains(x.Id))).OrderBy(p => p.ViTri).ToList();
                 ViewBag.ListDvi = listDvi.Select(r => new SelectListItem { Value = r.Id.ToString(), Text = r.TenDonVi });
             }
@@ -102,13 +105,15 @@ namespace ECP_V2.WebApplication.Controllers
 
             if (!string.IsNullOrEmpty(dviId))
             {
-                var listDonViCon = _faculty_ser.List().Where(x => x.DviCha.Equals(dviId)).Select(x => x.Id).ToList();
-
+                var listDonViCon = _faculty_ser.List()
+                                    .Where(x => x.DviCha != null && x.DviCha.Equals(Session["DonViID"].ToString()))
+                                    .Select(x => x.Id)
+                                    .ToList();
                 rtnList = rtnList.Where(s => s.DonViId.Equals(dviId) || (listDonViCon != null && listDonViCon.Count() > 0 && listDonViCon.Contains(s.DonViId))).ToList();
             }
             else
             {
-                var listDonViCon = _faculty_ser.List().Where(x => x.DviCha.Equals(Session["DonViID"].ToString())).Select(x => x.Id).ToList();
+                var listDonViCon = _faculty_ser.List().Where(x => x.DviCha != null && x.DviCha.Equals(Session["DonViID"].ToString())).Select(x => x.Id).ToList();
 
                 rtnList = rtnList.Where(s => s.DonViId == Session["DonViID"].ToString() || (listDonViCon != null && listDonViCon.Count() > 0 && listDonViCon.Contains(s.DonViId))).ToList();
             }
@@ -143,9 +148,9 @@ namespace ECP_V2.WebApplication.Controllers
 
             ViewBag.dviId = dviId;
 
-            DisposeAll();
 
             return PartialView("_List", ListNewsPageSize);
+            DisposeAll();
         }
 
         public ActionResult Add()
@@ -207,6 +212,16 @@ namespace ECP_V2.WebApplication.Controllers
                     //luu file
                     if (uploadFile != null)
                     {
+                        var fileExtension = Path.GetExtension(uploadFile.FileName).ToLower();
+                        if (!FilesHelper.ExtenFile(fileExtension))
+                        {
+                            return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                        }
+                        string mimeType = FilesHelper.GetMimeType(uploadFile);
+                        if (!FilesHelper.IsValidMimeType(mimeType))
+                        {
+                            return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                        }
 
                         //objd.FileSize = file.ContentLength;
 
@@ -403,6 +418,17 @@ namespace ECP_V2.WebApplication.Controllers
                         }
                         if (erd == "success" || lstCTBC != null)
                         {
+                            var fileExtension = Path.GetExtension(uploadFile.FileName).ToLower();
+                            if (!FilesHelper.ExtenFile(fileExtension))
+                            {
+                                return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                            }
+                            string mimeType = FilesHelper.GetMimeType(uploadFile);
+                            if (!FilesHelper.IsValidMimeType(mimeType))
+                            {
+                                return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                            }
+
                             //objd.FileSize = file.ContentLength;
 
                             DateTime CreateDate = DateTime.Now;

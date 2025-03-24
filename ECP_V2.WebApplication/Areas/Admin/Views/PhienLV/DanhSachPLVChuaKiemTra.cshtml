@@ -1,0 +1,11 @@
+﻿@model List<ECP_V2.Business.Repository.PhienLVModel>
+@{
+    Layout = null;
+}
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@(item.Id)" data-bat="@(item.Id)">@(item.NoiDung)</option>
+    }
+}

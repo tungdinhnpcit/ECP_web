@@ -8,6 +8,10 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Ninject;
+using ECP_V2.WebApplication.NotificationService;
+using Ninject.Web.WebApi;
+
 
 namespace ECP_V2.WebApplication
 {
@@ -26,6 +30,10 @@ namespace ECP_V2.WebApplication
             config.Formatters.JsonFormatter
                         .SerializerSettings
                         .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            var kernel = new StandardKernel();
+            //kernel.Bind<INotificationService>().To<NotificationService>().InScope(context => HttpContext.Current);
+            //DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
+
         }
 
         //protected void Session_End(Object sender, EventArgs e)

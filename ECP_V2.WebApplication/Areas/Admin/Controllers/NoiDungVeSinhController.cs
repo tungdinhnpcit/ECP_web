@@ -859,6 +859,16 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     model.FileType = Path.GetExtension(fileNameTemp[1]).Remove(0, 1);
                     model.Status = 1;
 
+                    if (!FilesHelper.ExtenFile(Path.GetExtension(fileNameTemp[1])))
+                    {
+                        return Json(new { success = false, message = "Invalid file extension" }, JsonRequestBehavior.AllowGet);
+                    }
+                    string mimeType = FilesHelper.GetMimeType(formFile);
+                    if (!FilesHelper.IsValidMimeType(mimeType))
+                    {
+                        return Json(new { success = false, message = "Invalid MIME type" }, JsonRequestBehavior.AllowGet);
+                    }
+                   
 
                     try
                     {

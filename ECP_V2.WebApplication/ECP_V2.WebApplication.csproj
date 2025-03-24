@@ -78,6 +78,9 @@
       <HintPath>..\packages\CKSource.FileSystem.1.0.0\lib\net45\CKSource.FileSystem.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="DelegateDecompiler, Version=1.0.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
       <HintPath>..\packages\DelegateDecompiler.0.18.1\lib\net40-Client\DelegateDecompiler.dll</HintPath>
       <Private>True</Private>
@@ -149,7 +152,16 @@
     <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.3\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Features, Version=5.0.17.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.5.0.17\lib\net461\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.Primitives, Version=5.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.5.0.1\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1003\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
@@ -216,6 +228,15 @@
     <Reference Include="Ninject, Version=3.3.5.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.5\lib\net45\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.3.2.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.3.2\lib\net45\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common.WebHost, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.WebHost.3.3.0\lib\net45\Ninject.Web.Common.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi, Version=3.3.1.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.WebApi.3.3.1\lib\net45\Ninject.Web.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -250,28 +271,57 @@
       <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="RestSharp, Version=112.1.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.112.1.0\lib\net48\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="SautinSoft.PdfFocus, Version=6.9.7.6, Culture=neutral, PublicKeyToken=0b79b934109b3e9e, processorArchitecture=MSIL">
       <HintPath>..\packages\sautinsoft.pdffocus.6.9.7.6\lib\net45\SautinSoft.PdfFocus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices.Protocols" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Pipelines, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.5.0.2\lib\net461\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.4\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=8.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.8.0.4\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
@@ -285,8 +335,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Http, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.4\lib\net45\System.Web.Http.dll</HintPath>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
@@ -359,6 +409,9 @@
     <Compile Include="Areas\Admin\Controllers\BaoCaoLichSuController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_NoiDungController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_TonThatController.cs" />
+    <Compile Include="Areas\Admin\Controllers\KySoController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BCGBATController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BCKHLLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCKTGSController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCSuco_ChitietController.cs" />
     <Compile Include="Areas\Admin\Controllers\BCSuco_ThNamController.cs" />
@@ -395,6 +448,7 @@
     <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonViController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MemoryPostedFile.cs" />
     <Compile Include="Areas\Admin\Controllers\MenuController.cs" />
     <Compile Include="Areas\Admin\Controllers\MenuOfRoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\NewMenuController.cs" />
@@ -404,6 +458,7 @@
     <Compile Include="Areas\Admin\Controllers\pccc_LoaiThietBiController.cs" />
     <Compile Include="Areas\Admin\Controllers\PCTTTKCNController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhaDatKhongDatController.cs" />
+    <Compile Include="Areas\Admin\Controllers\KeHoachLichLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhienLVController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhienXLSCController.cs" />
     <Compile Include="Areas\Admin\Controllers\PhieuCongTacController.cs" />
@@ -413,6 +468,7 @@
     <Compile Include="Areas\Admin\Controllers\ReportController.cs" />
     <Compile Include="Areas\Admin\Controllers\RolesController.cs" />
     <Compile Include="Areas\Admin\Controllers\sc_ThietBiSuCoController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SendNotifyController.cs" />
     <Compile Include="Areas\Admin\Controllers\SuCoController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemConfigController.cs" />
     <Compile Include="Areas\Admin\Controllers\TaiKhoanController.cs" />
@@ -438,6 +494,7 @@
     <Compile Include="Areas\Admin\Models\tbnn_LoaiThietBiViewModels.cs" />
     <Compile Include="Areas\Admin\Models\TestViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ThietBiNghiemNgatViewModels.cs" />
+    <Compile Include="Controllers\LCTGAController.cs" />
     <Compile Include="Controllers\KTGSController.cs" />
     <Compile Include="Controllers\PmisVitriAPIController.cs" />
     <Compile Include="Controllers\QuanLyRuiRoAPIController.cs" />
@@ -482,6 +539,8 @@
     <Compile Include="Models\BaoCaoCuoiNgayModel.cs" />
     <Compile Include="Models\BaoCaoModel.cs" />
     <Compile Include="Models\DonViModel.cs" />
+    <Compile Include="Models\ExportModelDoc.cs" />
+    <Compile Include="Models\ExportModelExecl.cs" />
     <Compile Include="Models\FacebookLoginViewModel.cs" />
     <Compile Include="Models\FilesViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -502,6 +561,9 @@
     <Compile Include="Providers\AuthContext.cs" />
     <Compile Include="Providers\AuthorizationApiProvider.cs" />
     <Compile Include="Providers\AuthRepository.cs" />
+    <Compile Include="Service\NotificationService.cs" />
+    <Compile Include="Service\INotificationService.cs" />
+    <Compile Include="Service\BaoCaoService.cs" />
     <Compile Include="SignalRHub\ChatHub.cs" />
     <Compile Include="SignalRHub\MessagesHub.cs" />
     <Compile Include="Startup.cs" />
@@ -2058,6 +2120,7 @@
     <Content Include="Content\img\loading.gif" />
     <Content Include="Content\img\progressbar.gif" />
     <Content Include="Content\jquery-ui-themes-1.12.1\AUTHORS.txt" />
+    <Content Include="Content\jquery-ui-themes-1.12.1\datepicker-vi.js" />
     <Content Include="Content\jquery-ui-themes-1.12.1\images\ui-icons_444444_256x240.png" />
     <Content Include="Content\jquery-ui-themes-1.12.1\images\ui-icons_555555_256x240.png" />
     <Content Include="Content\jquery-ui-themes-1.12.1\images\ui-icons_777620_256x240.png" />
@@ -2603,12 +2666,6 @@
     <Content Include="Content\wordsstyle.css" />
     <Content Include="DLL\GoogleDirections.dll" />
     <Content Include="favicon.ico" />
-    <Content Include="Files\AnyOne\1\20160617160732173_w240.png" />
-    <Content Include="Files\AnyOne\1\20160617160732173_w640.png" />
-    <Content Include="Files\AnyOne\1\20160617160732173_w960.png" />
-    <Content Include="Files\AnyOne\1\20160617165155595_w240.png" />
-    <Content Include="Files\AnyOne\1\20160617165155595_w640.png" />
-    <Content Include="Files\AnyOne\1\20160617165155595_w960.png" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\AnhViPhamDemo\vipham1.jpg" />
@@ -4250,6 +4307,7 @@
     <Content Include="Scripts\HluAt\hluat_kh.js" />
     <Content Include="Scripts\HluAt\hluat_report.js" />
     <Content Include="Scripts\HluAt\hluyen_antoan.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery.TextareaLineCount.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\KTGS\html\template.html" />
@@ -4275,6 +4333,7 @@
     <Content Include="Scripts\lenhcongtac.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pdfobject.min.js" />
+    <Content Include="Scripts\ViewBienBanQDKTKS.js" />
     <Content Include="Scripts\phieucongtac.js" />
     <Content Include="Scripts\PlaySound\ting_ting.mp3" />
     <Content Include="Scripts\QLTA\ifrqlta.js" />
@@ -4294,6 +4353,8 @@
     <Content Include="Scripts\quanlyruiro\js\util.js" />
     <Content Include="Scripts\quanlyruiro\js\qlrr.js" />
     <Content Include="Scripts\validation\jquery.validate.unobtrusive.min.js" />
+    <Content Include="ThuVien\GemBox.Document.dll" />
+    <Content Include="ThuVien\GemBox.Spreadsheet.dll" />
     <Content Include="Views\Shared\_PartialSideBarLeft.cshtml" />
     <Content Include="Views\Shared\_PaticalStateLogin.cshtml" />
     <Content Include="Areas\Admin\Views\Menu\AddMenu.cshtml" />
@@ -4761,6 +4822,7 @@
     <Content Include="Areas\Admin\Views\ApprovePlan\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Plan\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BCKTGS\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BCGBAT\ViewBienBanQDKTKS.cshtml" />
     <Content Include="Areas\Admin\Views\LoaiCCDC\CmbPhongBan.cshtml" />
     <Content Include="Areas\Admin\Views\LoaiCCDC\Create.cshtml" />
     <Content Include="Areas\Admin\Views\LoaiCCDC\Edit.cshtml" />
@@ -4791,6 +4853,16 @@
     <Content Include="Areas\Admin\Views\Dmloaidtsuco\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Dmchitieu\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Dmloaitbgsuco\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BCKHLLV\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra_OLD.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\DanhSachPLVChuaKiemTra.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\DanhSachChuTriGiaoBan.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\_ListCTHT.cshtml" />
+    <Content Include="Areas\Admin\Views\PhienLV\_Partial_ListCTHT.cshtml" />
+    <Content Include="Content\MauNhapLieu\HPPC\Ctybc-LLV.Tuan2.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Admin\Views\BCGBAT\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -5052,7 +5124,9 @@
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
     <Content Include="Scripts\jquery-3.6.3.js" />
     <Content Include="Scripts\jquery-2.0.0.min.map" />
-    <Content Include="Scripts\jquery-unified-export-file-1.0.min.js" />
+    <Content Include="Scripts\jquery-unified-export-file-1.0.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\jQuery.FileUpload\canvas-to-blob.min.js" />
     <Content Include="Scripts\jQuery.FileUpload\cors\jquery.postmessage-transport.js" />
     <Content Include="Scripts\jQuery.FileUpload\cors\jquery.xdr-transport.js" />
@@ -5074,6 +5148,8 @@
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
+    <Content Include="report_template\ExportDocKeHoachLichLamViec.docx" />
+    <Content Include="Scripts\AdminPanel\assets\vendor\jquery-idletimer\jquery-idletimer.v12.suo" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -5294,6 +5370,7 @@
     <Folder Include="Scripts\AdminPanel\assets\vendor\plugins\slick\fonts\" />
     <Folder Include="Scripts\AdminPanel\assets\vendor\plugins\tagmanager\" />
     <Folder Include="Scripts\quanlyruiro\css\" />
+    <Folder Include="Views\LCTGA\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
@@ -5333,20 +5410,13 @@
           <IISUrl>http://localhost:7417/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>http://10.21.3.15:7418/</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

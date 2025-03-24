@@ -178,6 +178,20 @@
                 dataType: "json",
                 success: function (data) {
                     console.log(data.Message);
+                    if (data.Message) {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Cập nhật thành công!',
+                            type: 'success'
+                        });
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Thông báo!',
+                            text: 'Lỗi!',
+                            type: 'error'
+                        });
+                    }
                     $(".tr" + idtemp).remove();
                     //$(".box-img").html(data.SlideImage);
                     showResponseX(true);
@@ -297,7 +311,7 @@
         var getIndex = $(this).attr("data-index");
         slideCurrent = parseInt(getIndex);
         $(".spopup").fadeIn(600);
-        
+
         mySlideShow(slideCurrent);
     });
 

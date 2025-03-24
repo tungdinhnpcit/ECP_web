@@ -1,0 +1,188 @@
+﻿@using System.Dynamic
+@{
+    dynamic items = ViewData.Model;
+    var donviId = Session["DonViID"].ToString();
+    var i = 0;
+
+}
+@foreach (var item in items)
+{
+
+    i = i + 1;
+    var comments = ECP_V2.Business.Repository.CommentRepository.GetCommentByPienLVId(item.Id);
+    string style = item.TrangThai_KHLLV == 2 ? "BoSung" : "DaDuyet";
+    <tr class="@style">
+        @if (item.IsChuyenNPC != null && item.IsChuyenNPC == true)
+        {
+            <td class="text-center imgNoiDung" style="text-align:center;">
+            </td>
+        }
+        else
+        {
+            if (item.TrangThai != 7 && item.TrangThai != 5)
+            {
+                <td class="text-center" style="text-align:center;">
+                    <input type="checkbox" class="chkbox" id="ckh_@item.Id" value="@item.Id" />
+                </td>
+            }
+            else
+            {
+                <td></td>
+            }
+        }
+
+        <td>
+            @i
+            <br />
+            <span class="itemphienlvid" style="font-size:11px; color:#999">ID: @item.Id</span>
+            <span class="itemphienlvid" style="font-size:14px; color:#000"><b style="color:@(item.MaLP == 1 ? "green" : "blue")"> @item.SoPhieu</b></span>
+        </td>
+        <td>
+            <span id="spanNoiDung_@item.Id">
+                @item.NoiDung
+            </span>
+            @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
+        </td>
+        <td>
+            <span id="spanPhongBanID_@item.Id">
+                @item.TenPhongBan
+            </span>
+            <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
+        </td>
+        <td>
+            <span id="spanDiaDiem_@item.Id">
+                @item.DiaDiem
+            </span>
+            @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
+        </td>
+        <td>
+            <span id="spanGioBd_@item.Id">
+                @string.Format("{0:HH\\:mm}", @item.GioBd) -
+            </span> <span id="spanGioKt_@item.Id">
+                @string.Format("{0:HH\\:mm}", @item.GioKt)
+            </span>
+
+
+            <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
+        </td>
+        <td>
+            <span id="spanNguoiDuyet_SoPa_@item.Id">
+                @item.NguoiDuyet_SoPa
+            </span>
+            @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
+        </td>
+        <td>
+            <span id="spanNguoiChiHuy_@item.Id">
+                @item.NguoiChiHuy
+            </span>
+            @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
+        </td>
+        <td>
+            <span id="spanGiamSatVien_@item.Id">
+                @item.GiamSatVien
+            </span>
+            @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
+        </td>
+        <td>
+            <span id="spanNguoiKiemSoat_@item.Id">
+                @item.NguoiKiemSoat
+            </span>
+            @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
+        </td>
+        <td>
+            <span id="spanNguoiKiemTraPhieu_@item.Id">
+                @item.NguoiKiemTraPhieu
+            </span>
+            @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
+        </td>
+        <td>
+            <span id="spanLanhDaoTrucBan_@item.Id">
+                @item.LanhDaoTrucBan
+            </span>
+            @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
+        </td>
+        <td>
+            <span id="spanNguoiCapPhieu_@item.Id">
+                @item.NguoiCapPhieu
+            </span>
+            @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
+        </td>
+        <td>
+            <span id="spanLyDoThayDoi_@item.Id">
+                @item.LyDoThayDoi
+            </span>
+            @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
+        </td>
+        @if (item.TrangThai == 3)
+        {
+            <td>@string.Format("{0:HH:mm dd/MM/yyyy}", item.NgayKetThuc)</td>
+        }
+        else
+        {
+            <td></td>
+        }
+
+        @if (((donviId.Length == 4) || donviId.ToUpper().Equals("PH") || donviId.ToUpper().Equals("PN") || donviId.ToUpper().Equals("PM")))
+        {
+            if (item.IsKiemTra != null && item.IsKiemTra == true)
+            {
+                <td style="text-align: center;vertical-align: middle;">
+                    <span class="text-center" style="color:green">
+                        Đã kiểm tra
+                    </span>
+                    @if (item.NgayGioKT != null)
+                    {
+                        <span class="text-center" style="color:green">
+                            @String.Format("{0:d/M/yyyy HH:mm:ss}", @item.NgayGioKT)
+                        </span>
+                    }
+                </td>
+            }
+            else
+            {
+                <td style="text-align: center;vertical-align: middle;">
+                    <span class="text-center" style="color:lightsalmon">
+                        Chưa kiểm tra
+                    </span>
+                </td>
+            }
+        }
+
+        <td style="text-align: center;vertical-align: middle;">
+            <span class="text-center">
+                @{ Html.RenderAction("CountImage", "PhienLV", new { id = item.Id }); }
+            </span>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+            <span id="spanLyDoThayDoi_@item.Id">
+                @(item.HinhThucKiemTra == 1 ? "Kiểm tra đầu giờ" : item.HinhThucKiemTra == 2? "Kiểm tra giữa giờ" : " ")
+            </span>
+        </td>
+        <td style="text-align: center;vertical-align: middle;">
+            <span id="spanLyDoThayDoi_@item.Id">
+                @item.NguoiDaiDienKT
+            </span>
+        </td>
+        <td style="text-align: center;vertical-align: middle;">
+            <span id="spanLyDoThayDoi_@item.Id">
+                @item.LyDoHoanHuy_KHLLV
+            </span>
+        </td>
+
+        <td class="actions" style="width:10%">
+            @if (item.TrangThai_KHLLV == 1
+                //|| item.TrangThai_KHLLV == 2
+                )
+            {
+                <a id="khllvDLT_" href="#modalAnimDeleteKHLLV" title="Xóa kế hoạch" data="@item.KeHoachLV_Id" class="on-default remove-row deleteKhLLV" )">
+                    <i class="fa fa-times" style="font-size: 25px; cursor: pointer; color: red;"></i>
+                </a>
+                <a id="khllv_" href="#modalCanCel" title="Sửa kế hoạch" class="on-default remove-row editKhLLV" data="@item.Id" data-id="@item.KeHoachLV_Id" value="@item.NgayLamViec">
+                    <i class="fa fa-pencil" style="font-size: 25px; cursor: pointer; color: blue;"></i>
+                </a>
+            }
+        </td>
+    </tr>
+
+}
+

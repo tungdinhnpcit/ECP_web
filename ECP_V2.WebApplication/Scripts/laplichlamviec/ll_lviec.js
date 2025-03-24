@@ -2,7 +2,7 @@
 
 var ll_lviec = {
     idpmis: [],
-    index:null,
+    index: null,
     gettreepmis: function (index) {
         modal_treepmis.parrent = this;
         ll_lviec.index = index;
@@ -21,8 +21,11 @@ var ll_lviec = {
     },
 
     save: function (id_plv, index) {
-       var data= ll_lviec.idpmis[index] 
-        var url = "api/v1/ecp2021/UpdateBBanPLV?IDConect=" + $('#DonViID').val() + "&idplv=" + id_plv + "&ID_BBAN=" + data.ID_BB + "&ID_VITRI_PMIS=" + data.ID_PMIS;
+        //console.log(id_plv)
+        //console.log(index)
+        var data = ll_lviec.idpmis[index]
+        var url = "api/v1/ecp2021/UpdateBBanPLV?IDConect=" + $('#DonViID').val() + "&idplv=" + id_plv + "&ID_BBAN=" + data?.ID_BB + "&ID_VITRI_PMIS=" + data?.ID_PMIS;
+        //console.log("check url", url)
         service.ExcuteAjaxtGet(url, null, (d) => { });
     }
 }
@@ -32,7 +35,7 @@ var ll_lviec = {
 var qlthietbi = {
     qltb: [],
     index: null,
-    isload:null,
+    isload: null,
     addThietBi: function (index) {
         this.index = index;
         $('#modal_addTBi').modal();
@@ -54,7 +57,7 @@ var qlthietbi = {
     // load thiết bị
     getAllTBi: function () {
         var url = "api/v1/ecp2021/GetTBi?loaitb=1&ID_Connect=" + service.ID_CONNECT;
-        service.ExcuteAjaxtGet(url, null,(d)=> {
+        service.ExcuteAjaxtGet(url, null, (d) => {
             var html = ''
             var data = d.Data;
             for (i = 0; i < data.length; ++i) {
@@ -62,7 +65,7 @@ var qlthietbi = {
             }
             $('#cboloaitb').html(html);
 
-            });
+        });
     }
 }
 
@@ -174,7 +177,7 @@ var service = {
             "ID_DV": this.ID_CONNECT,
         }
 
-        this.ExcuteAjaxtPost("api/v1/Auth/ECPAuth", JSON.stringify(data), function (d) {
+        this.ExcuteAjaxtPost("api/v1/Auth/GetToken", JSON.stringify(data), function (d) {
             service.token = d.Data.Token;
         });
         // get donvi

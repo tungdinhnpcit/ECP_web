@@ -15,7 +15,7 @@ namespace ECP_V2.Business.Repository
 {
     public class PhieuCongTacRepository : RepositoryBase<plv_PhieuCongTac>
     {
-        
+
         public PhieuCongTacRepository()
             : base()
         {
@@ -90,7 +90,7 @@ namespace ECP_V2.Business.Repository
         {
             try
             {
-                var id = int.Parse(entityId.ToString());
+                int? id = entityId != null ? int.Parse(entityId.ToString()) : (int?)0;
                 return Context.plv_PhieuCongTac.SingleOrDefault(p => p.ID == id);
             }
             catch { return null; }
@@ -137,6 +137,45 @@ namespace ECP_V2.Business.Repository
         public List<plv_PhieuCongTac_Sign> LstPhieucongtacSignByPlvId(int idphien)
         {
             return Context.plv_PhieuCongTac_Sign.Where(e => e.PhienLamViecID == idphien).ToList();
+        }
+        public int XoaPhieucongtacSignByPlvId(int idphien)
+        {
+            var phieuCongTacs = Context.plv_PhieuCongTac_Sign.Where(e => e.PhienLamViecID == idphien).ToList();
+            if (phieuCongTacs.Any())
+            {
+                Context.plv_PhieuCongTac_Sign.RemoveRange(phieuCongTacs);
+                Context.SaveChanges();
+                return phieuCongTacs.Count;
+            }
+
+            return 0;
+        }
+        public bool Revert_KySoLoi(string constr, int PhienLamViecId)
+        {
+            try
+            {
+                using (IDbConnection db = new SqlConnection(constr))
+                {
+                    // Câu lệnh xóa các bản ghi liên quan đến PhienLamViecID
+                    string query = @"
+                delete from plv_PhieuCongTac_Sign where PhienLamViecID= @PhienLamViecID;
+                delete from plv_PhieuCongTac_hientruong where PhienLamViecID= @PhienLamViecID;
+                delete from plv_PhieuCT_NhanVien_hientruong where PhienLamViecID= @PhienLamViecID; ";
+
+                    var rowsAffected = db.Execute(query, new { PhienLamViecId });
+
+                    if (rowsAffected > 0)
+                    {
+                        return true; 
+                    }
+
+                    return false; 
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public override object Update(plv_PhieuCongTac entity, ref string strError)
@@ -224,7 +263,7 @@ namespace ECP_V2.Business.Repository
             catch (Exception ex) { return null; }
         }
 
-        public int GetPhieuCTac(string iddv,int nam,int malp)
+        public int GetPhieuCTac(string iddv, int nam, int malp)
         {
             try
             {
@@ -235,7 +274,7 @@ namespace ECP_V2.Business.Repository
                     try
                     {
                         int n = 1;
-                        int.TryParse(d.SoPhieu,out n);
+                        int.TryParse(d.SoPhieu, out n);
                         number = n + 1;
                     }
                     catch (Exception ex)
@@ -249,20 +288,20 @@ namespace ECP_V2.Business.Repository
                 {
                     plv_SoPhieuHienTai p = new plv_SoPhieuHienTai()
                     {
-                    Nam = nam,
-                    DonViId=iddv,
-                    IsHand=false,
-                    MaLP=malp,    
-                    SoPhieu=number.ToString(),
+                        Nam = nam,
+                        DonViId = iddv,
+                        IsHand = false,
+                        MaLP = malp,
+                        SoPhieu = number.ToString(),
                     };
                     Context.plv_SoPhieuHienTai.Add(p);
                 }
                 // cạp nhật số mới
-                
+
                 Context.SaveChanges();
 
                 return number;
-               
+
             }
             catch (Exception ex) { throw ex; }
         }
@@ -275,7 +314,7 @@ namespace ECP_V2.Business.Repository
             string sophieu = "";
             try
             {
-                
+
                 using (SqlConnection conn = new SqlConnection(Context.Database.Connection.ConnectionString))
                 {
                     conn.Open();
@@ -292,10 +331,11 @@ namespace ECP_V2.Business.Repository
                     return sophieu;
                     conn.Close();
                 }
-                
+
 
                 return sophieu;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }

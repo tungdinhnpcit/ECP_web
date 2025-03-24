@@ -492,7 +492,7 @@
                     </div>
                     <div class="col-md-2" id="content-denngay">
                         <span>Đến ngày: </span>
-                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc">
+                        <input id="GioKt" type="text" placeholder="Thời gian kết thúc" onchange="end_chage()">
                     </div>
                     <div class="col-md-2" style="margin-left:10px">
                         <span>Phiếu ký: &nbsp;</span>
@@ -723,7 +723,8 @@
                           DonViId = (ViewBag.DonViID != null) ? ViewBag.DonViID : Session["DonViID"].ToString(),
                           ttPhien = 0,
                           chuyenNPC = -1,
-                          phieuky = -1
+                          phieuky = -1,
+                          isShowBtnHoanHuy = false
                       });}
                 </div>
             </div>
@@ -796,12 +797,12 @@
 
         $(function () {
 
-            $.datepicker.setDefaults({
+            $.datepicker?.setDefaults({
 
                 buttonImageOnly: true,
                 //buttonImage: "calendar.gif",
                 regional: "vn",
-                dateFormat: 'dd/MM/yyyy'
+                dateFormat: 'dd/mm/yyyy'
             });
 
             //Menu Collapsed Layout
@@ -812,10 +813,18 @@
             var start = $("#GioBd").datepicker({
                 dateFormat: 'dd/mm/yy'
             }).val(yNgay);
+              var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
+
+            var end = $("#GioKt").datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+            end_chage();
+            }}).val(xNgay);
+
 
             ////var denNgay = kendo.toString(kendo.parseDate('@(ViewBag.DenNgay!=null?ViewBag.DenNgay:DateTime.Now)', 'dd/MM/yyyy'), 'dd/MM/yyyy');
             //var end = $("#GioKt").kendoDatePicker({
-            //    format: 'dd/MM/yyyy',
+            //    format: 'dd/mm/yyyy',
             //    change: end_chage
             //}).data("kendoDatePicker").value(denNgay);
 
@@ -824,14 +833,7 @@
             @*var denNgay = moment('@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)').format('dd/MM/yyyy');
             alert('@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)');*@
 
-            var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now)'.split(' ')[0];
 
-            var end = $("#GioKt").datepicker({
-                dateFormat: 'dd/mm/yy',
-                onSelect: function () {
-                    end_chage();
-                }
-            }).val(xNgay);
 
             //khai bao Popup cho nut duyet
             $('#DuyetAll').magnificPopup({
@@ -899,7 +901,7 @@
             var dNgay = '@(DateTime.Now)'.split(' ')[0];
 
             $("#txtNgayTongHop").datepicker({
-                dateFormat: 'dd/mm/yy'
+                dateFormat: 'dd/MM/yy'
             }).val(dNgay);
 
             $('a#btnTongHopBaoCaoCuoiNgayAlert').magnificPopup({
@@ -979,7 +981,7 @@
         }
 
         function Paging(page, pageSize, filter, tcphien, catdien, tiepdia, khac, DateFrom, DateTo, DonViId, PhongBanId, chuyenNPC, phieuky) {
-            loading('Đang tải dữ liệu...', 1);
+            //loading('Đang tải dữ liệu...', 1);
             $("#preloader").unbind("click");
             $('#preloader').click(function () {
                 unloading();
@@ -1017,6 +1019,7 @@
                     ttPhien: ttPhien,
                     chuyenNPC: chuyenNPC,
                     phieuky: phieuky,
+                    isShowBtnHoanHuy: false,
                     LoaiBieuDo: $('#drlLoaiBieuDo').val()
                 },
                 type: 'GET',
@@ -1032,6 +1035,7 @@
                     unloading();
                 }
             });
+            unloading();
         }
 
 
@@ -1114,6 +1118,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
 
@@ -1137,6 +1142,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
 
@@ -1171,6 +1177,7 @@
                     unloading();
                 }
             });
+            unloading();
 
         }
         var options4 = {
@@ -1275,7 +1282,45 @@
                             });
 
                             Paging(parseInt($(".page-number-Current").html()) || 1, 500, $("#txtSearch").val(), $('#cmbTCPhien').val(), $('#cmbTTPhienCatDien').val(), $('#cmbTTPhienTiepDia').val(), $('#cmbTTPhienKhac').val(), $('#GioBd').val(), $('#GioKt').val(), $('#cmbDonViID').val(), $('#cmbPhongBan').val(), $('#cmbDuyetNPC').val());
-
+                             //Gọi API Push Notification khi duyệt thành công
+                            //$.ajax({
+                            //    type: "POST",
+                            //    url: "http://10.21.3.48:8084/api/v1.0/Notify/PushNotificationByUser",
+                            //    contentType: "application/json; charset=utf-8",
+                            //    dataType: "json",
+                            //    data: JSON.stringify({
+                            //        "IDConect": "PN",
+                            //        "userId": "9047e6dd-0408-4e2d-8f99-a665c9f0920e",
+                            //        "title": "title",
+                            //        "name": "NPCIT",
+                            //        "header": "header",
+                            //        "subtitle": "NPCIT nội dung",
+                            //        "contents": "NPCIT test  vào 10:40 AM - 24/12"
+                            //        ,
+                            //        "include_aliases": {
+                            //            "onesignal_id": [
+                            //                "ac7a3567-4076-42c4-b8f5-99b73388cd73"
+                            //            ]
+                            //        }
+                            //    }),
+                            //    success: function (response) {
+                            //         //Kiểm tra kết quả của push notification
+                            //        if (response.Success) {
+                            //            console.log("Thông báo đã được gửi thành công");
+                            //        } else {
+                            //            console.log("Gửi thông báo thất bại: " + response.Error);
+                            //        }
+                            //    },
+                            //    error: function (e) {
+                            //         //Xử lý lỗi khi gọi API push notification
+                            //        console.log("Lỗi khi gọi API PushNotificationByUser", e);
+                            //        new PNotify({
+                            //            title: 'Thông báo!',
+                            //            text: 'Không thể gửi thông báo',
+                            //            type: 'error'
+                            //        });
+                            //    }
+                            //});
 
                         }
                         else {
@@ -1286,6 +1331,7 @@
                                 type: 'error'
                             });
                         }
+
                     },
                     error: function (e) {
                         new PNotify({
@@ -1294,11 +1340,13 @@
                             type: 'error'
                         });
                     }
-
                 });
+                unloading();
+
             }
 
             $.magnificPopup.close();
+            unloading();
         };
 
         function ChuyenHoanModalConfirm() {
@@ -1472,7 +1520,6 @@
 
                         }
                         else {
-
                             new PNotify({
                                 title: 'Thông báo!',
                                 text: 'Duyệt phiên làm việc không thành công',
@@ -1485,7 +1532,7 @@
 
             }
             $.magnificPopup.close();
-
+            unloading();
         }
 
         function DeleteMultipleModalConfirm() {
@@ -1557,7 +1604,7 @@
 
             }
             $.magnificPopup.close();
-
+            unloading();
         }
 
         function GuiNPCAllModalConfirm() {
@@ -1624,6 +1671,7 @@
                                 type: 'error'
                             });
                         }
+                        unloading();
                     }
 
                 });
@@ -1706,7 +1754,7 @@
 
                 });
             }
-
+            unloading();
             $.magnificPopup.close();
         }
 
@@ -2070,7 +2118,8 @@
                 success: function (data) {
 
                     $("#contentKyso").empty();
-                    if (data == "") {
+                    if (data == "" || data == " |  | ") {
+                        $("#contentKyso").append("Chưa ký số");
 
                     }
                     else {
@@ -2203,6 +2252,7 @@
         }
 
     </script>
+    <script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.min.js"></script>
     <script src="~/Scripts/KTGS/js/util_camera.js"></script>
     <script src="~/Scripts/KTGS/js/service.js"></script>
     <script src="~/Scripts/KTGS/js/camera.js?v=13"></script>

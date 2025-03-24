@@ -472,106 +472,113 @@
 
                                                 var comments = ECP_V2.Business.Repository.CommentRepository.GetCommentByPienLVId(item.Id);
 
-                                                <table @*class="@(item.TrangThai != "Đã Duyệt" ? "ChuaDuyet" : "")"*@>
-                                                    <tr>
-                                                        <td colspan="2"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Nội dung công việc: </td>
-                                                        <td>
-                                                            <span id="spanNoiDung_@item.Id">@item.NoiDung</span>
-                                                            @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Đơn vị làm công việc: </td>
-                                                        <td>
-                                                            <span id="spanPhongBanID_@item.Id">@item.TenPhongBan</span>
-                                                            <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Địa điểm (vị trí) công tác: </td>
-                                                        <td>
-                                                            <span id="spanDiaDiem_@item.Id">@item.DiaDiem</span>
-                                                            @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Thời gian công tác: </td>
-                                                        <td>
-                                                            <span id="spanGioBd_@item.Id">@string.Format("{0:HH\\:mm}", @item.GioBd) -</span> <span id="spanGioKt_@item.Id">@string.Format("{0:HH\\:mm}", @item.GioKt)</span>
-                                                            <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Người duyệt: </td>
-                                                        <td>
-                                                            <span id="spanNguoiDuyet_SoPa_@item.Id">@item.NguoiDuyet_SoPa</span>
-                                                            @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Người chỉ huy trực tiếp: </td>
-                                                        <td>
-                                                            <span id="spanNguoiChiHuy_@item.Id">@item.NguoiChiHuy</span>
-                                                            @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Người giám sát ATĐ: </td>
-                                                        <td>
-                                                            <span id="spanGiamSatVien_@item.Id">@item.GiamSatVien</span>
-                                                            @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Người cho phép: </td>
-                                                        <td>
-                                                            <span id="spanNguoiKiemSoat_@item.Id">@item.NguoiKiemSoat</span>
-                                                            @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Người kiểm tra PCT; PTT; LCT: </td>
-                                                        <td>
-                                                            <span id="spanNguoiKiemTraPhieu_@item.Id">@item.NguoiKiemTraPhieu</span>
-                                                            @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Lãnh đạo đơn vị kiểm tra kiểm soát: </td>
-                                                        <td>
-                                                            <span id="spanLanhDaoTrucBan_@item.Id">@item.LanhDaoTrucBan</span>
-                                                            @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Người cấp phiếu </td>
-                                                        <td>
-                                                            <span id="spanNguoiCapPhieu_@item.Id">@item.NguoiCapPhieu</span>
-                                                            @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Thay đổi (nếu có), lý do thay đổi: </td>
-                                                        <td>
-                                                            <span id="spanLyDoThayDoi_@item.Id">@item.LyDoThayDoi</span>
-                                                            @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Thao tác: </td>
-                                                        <td class="actions">
+                                <table @*class="@(item.TrangThai != "Đã Duyệt" ? "ChuaDuyet" : "")"*@>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nội dung công việc: </td>
+                                        <td>
+                                            <span id="spanNoiDung_@item.Id">@item.NoiDung</span>
+                                            @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Đơn vị làm công việc: </td>
+                                        <td>
+                                            <span id="spanPhongBanID_@item.Id">@item.TenPhongBan</span>
+                                            <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Địa điểm (vị trí) công tác: </td>
+                                        <td>
+                                            <span id="spanDiaDiem_@item.Id">@item.DiaDiem</span>
+                                            @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời gian công tác: </td>
+                                        <td>
+                                            <span id="spanGioBd_@item.Id">@string.Format("{0:HH\\:mm}", @item.GioBd) -</span> <span id="spanGioKt_@item.Id">@string.Format("{0:HH\\:mm}", @item.GioKt)</span>
+                                            <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Người duyệt: </td>
+                                        <td>
+                                            <span id="spanNguoiDuyet_SoPa_@item.Id">@item.NguoiDuyet_SoPa</span>
+                                            @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Người chỉ huy trực tiếp: </td>
+                                        <td>
+                                            <span id="spanNguoiChiHuy_@item.Id">@item.NguoiChiHuy</span>
+                                            @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Người giám sát ATĐ: </td>
+                                        <td>
+                                            <span id="spanGiamSatVien_@item.Id">@item.GiamSatVien</span>
+                                            @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Người cho phép: </td>
+                                        <td>
+                                            <span id="spanNguoiKiemSoat_@item.Id">@item.NguoiKiemSoat</span>
+                                            @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Người kiểm tra PCT; PTT; LCT: </td>
+                                        <td>
+                                            <span id="spanNguoiKiemTraPhieu_@item.Id">@item.NguoiKiemTraPhieu</span>
+                                            @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lãnh đạo đơn vị kiểm tra kiểm soát: </td>
+                                        <td>
+                                            <span id="spanLanhDaoTrucBan_@item.Id">@item.LanhDaoTrucBan</span>
+                                            @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lãnh đạo công việc: </td>
+                                        <td>
+                                            <span id="spanLanhDaoCongViec_@item.Id">@item.LanhDaoCongViec</span>
+                                            @Html.TextArea("LanhDaoCongViec_" + (string)item.Id.ToString(), (string)item.LanhDaoCongViec, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo công việc" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Người cấp phiếu </td>
+                                        <td>
+                                            <span id="spanNguoiCapPhieu_@item.Id">@item.NguoiCapPhieu</span>
+                                            @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thay đổi (nếu có), lý do thay đổi: </td>
+                                        <td>
+                                            <span id="spanLyDoThayDoi_@item.Id">@item.LyDoThayDoi</span>
+                                            @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thao tác: </td>
+                                        <td class="actions">
 
-                                                            @*@if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
-                                                                {
-                                                                    <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
-                                                                }*@
+                                            @*@if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
+                {
+                    <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
+                }*@
 
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                        </td>
+                                    </tr>
+                                </table>
 
                                                 <hr style="padding: 2px 0;" />
                                             }
@@ -623,6 +630,9 @@
                                                 </th>
                                                 <th>
                                                     Lãnh đạo đơn vị kiểm tra kiểm soát
+                                                </th>
+                                                <th>
+                                                    Lãnh đạo công việc
                                                 </th>
                                                 <th>
                                                     Người cấp phiếu
@@ -710,155 +720,161 @@
 
                                                         }
 
-                                                        <tr class="@style">
-                                                            @if (item.TrangThai != 7 && item.TrangThai != 5)
-                                                            {
-                                                                <td class="text-center @(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")" style="text-align:center;">
-                                                                    <input type="checkbox" class="chkbox" id="ckh_@item.IdPhieuCongTac" value="@item.IdPhieuCongTac" />
-                                                                </td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td class="@(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")"></td>
-                                                            }
-                                                            <td>
+                                        <tr class="@style">
+                                            @if (item.TrangThai != 7 && item.TrangThai != 5)
+                                            {
+                                                <td class="text-center @(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")" style="text-align:center;">
+                                                    <input type="checkbox" class="chkbox" id="ckh_@item.IdPhieuCongTac" value="@item.IdPhieuCongTac" />
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="@(!string.IsNullOrEmpty(item.NguoiDuyetPCT)?"imgDaDuyet":"")"></td>
+                                            }
+                                            <td>
 
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">STT: @i</span>
-                                                                <br />
-                                                                <span data-idphieu="@item.MaPCT" class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">
-                                                                    @(item.MaLP == 1 ? "Số phiếu CT" : "Số lệnh CT"):
-                                                                </span>
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">STT: @i</span>
+                                                <br />
+                                                <span data-idphieu="@item.MaPCT" class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">
+                                                    @(item.MaLP == 1 ? "Số phiếu CT" : "Số lệnh CT"):
+                                                </span>
 
-                                                                <span class="itemphienlvid" style="font-size:14px; color:#000"><b style="color:@(item.MaLP == 1 ? "green" : "blue")"> @item.SoPhieu</b></span>
-                                                                <br />
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Phiên: @item.Id</span>
-                                                                <br />
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Mã CRM</span>
-                                                                <br />
-                                                                <a target="_blank" href="~/Content/MauNhapLieu/phiếu giao nhiệm vụ.pdf" style="cursor:pointer"><span class="itemphienlvid" style="font-size:14px; color:#000; font-weight:normal"><b style="color:green">@item.MaYeuCauCRM</b></span></a>
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Ngày CN</span>
-                                                                <br />
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">@(string.Format("{0:dd/MM/yyyy HH:mm}", item.NgayCNPCT))</span>
-                                                                <br />
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Người CN</span>
-                                                                <br />
-                                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">@item.NguoiCNPCT</span>
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanNoiDung_@item.Id">
-                                                                    @item.NoiDung
-                                                                </span>
-                                                                @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanPhongBanID_@item.Id">
-                                                                    @item.TenPhongBan
-                                                                </span>
-                                                                <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanDiaDiem_@item.Id">
-                                                                    @item.DiaDiem
-                                                                </span>
-                                                                @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanGioBd_@item.Id">
-                                                                    @string.Format("{0:HH\\:mm}", @item.GioBd) -
-                                                                </span> <span id="spanGioKt_@item.Id">
-                                                                    @string.Format("{0:HH\\:mm}", @item.GioKt)
-                                                                </span>
-
-
-                                                                <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanNguoiDuyet_SoPa_@item.Id">
-                                                                    @item.NguoiDuyet_SoPa
-                                                                </span>
-                                                                @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanNguoiChiHuy_@item.Id">
-                                                                    @item.NguoiChiHuy
-                                                                </span>
-                                                                @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanGiamSatVien_@item.Id">
-                                                                    @item.GiamSatVien
-                                                                </span>
-                                                                @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanNguoiKiemSoat_@item.Id">
-                                                                    @item.NguoiKiemSoat
-                                                                </span>
-                                                                @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanNguoiKiemTraPhieu_@item.Id">
-                                                                    @item.NguoiKiemTraPhieu
-                                                                </span>
-                                                                @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanLanhDaoTrucBan_@item.Id">
-                                                                    @item.LanhDaoTrucBan
-                                                                </span>
-                                                                @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanNguoiCapPhieu_@item.Id">
-                                                                    @item.NguoiCapPhieu
-                                                                </span>
-                                                                @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
-                                                            </td>
-                                                            <td>
-                                                                <span id="spanLyDoThayDoi_@item.Id">
-                                                                    @item.LyDoThayDoi
-                                                                </span>
-                                                                @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
-                                                            </td>
-
-                                                            <td class="actions" style="width:10%">
-
-                                                                @*@if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
-        {
-            <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
-        }*@
-                                                                <a id="UpdateSoPhieu_@(item.Id)_@(item.MaPCT)" href="#modalAnimUpdateSoPhieu" title="Cập nhật phiếu công tác" class="on-default updateSoPhieu"><i class="fa fa-bookmark" style="font-size: 25px; cursor: pointer"></i></a>
-                                                                @if (User.IsInRole("DuyetViec"))
-                                                                {
-                                                                    if (item.NguoiDuyetPCT == null)
-                                                                    {
-                                                                        <a href="#modalAnimDuyet" id="Duyet_@item.MaPCT" title="Duyệt phiếu/lệnh công tác" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <a href="#modalAnimHuyDuyet" id="HuyDuyet_@item.MaPCT" title="Hủy duyệt phiếu/lệnh công tác" class="on-editing cancel-row Duyet"><i class="fa fa-pause" style="font-size:25px;cursor:pointer"></i></a>
-                                                                    }
-                                                                }
-                                                                @if (User.IsInRole("NguoiCapSoPhieu") && string.IsNullOrEmpty(item.SoPhieu) && !string.IsNullOrEmpty(item.NguoiDuyetPCT))
-                                                                {
-                                                                    <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)" href="#modalAnimCapSoPhieuLenh" title="Cấp số phiếu/lệnh công tác" class="on-default CapSoPhieuLenh"><i class="fa fa-paypal" style="font-size: 25px; cursor: pointer"></i></a>
-                                                                    <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)_@(item.MaLP)" href="#modalAnimChonSoPhieu" title="Chọn số phiếu/lệnh công tác" class="on-default ChonSoPhieuLenh"><i class="fa fa-hand-o-up" style="font-size: 25px; cursor: pointer"></i></a>
-                                                                }
+                                                <span class="itemphienlvid" style="font-size:14px; color:#000"><b style="color:@(item.MaLP == 1 ? "green" : "blue")"> @item.SoPhieu</b></span>
+                                                <br />
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Phiên: @item.Id</span>
+                                                <br />
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Mã CRM</span>
+                                                <br />
+                                                <a target="_blank" href="~/Content/MauNhapLieu/phiếu giao nhiệm vụ.pdf" style="cursor:pointer"><span class="itemphienlvid" style="font-size:14px; color:#000; font-weight:normal"><b style="color:green">@item.MaYeuCauCRM</b></span></a>
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Ngày CN</span>
+                                                <br />
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">@(string.Format("{0:dd/MM/yyyy HH:mm}", item.NgayCNPCT))</span>
+                                                <br />
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">Người CN</span>
+                                                <br />
+                                                <span class="itemphienlvid" style="font-size:10px; color:#666; font-weight:normal">@item.NguoiCNPCT</span>
+                                            </td>
+                                            <td>
+                                                <span id="spanNoiDung_@item.Id">
+                                                    @item.NoiDung
+                                                </span>
+                                                @Html.TextArea("NoiDung_" + (string)item.Id.ToString(), (string)item.NoiDung, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Nội dung công việc" })
+                                            </td>
+                                            <td>
+                                                <span id="spanPhongBanID_@item.Id">
+                                                    @item.TenPhongBan
+                                                </span>
+                                                <select class="chosen-select" id="PhongBanID_@item.Id" style="display:none"></select>
+                                            </td>
+                                            <td>
+                                                <span id="spanDiaDiem_@item.Id">
+                                                    @item.DiaDiem
+                                                </span>
+                                                @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
+                                            </td>
+                                            <td>
+                                                <span id="spanGioBd_@item.Id">
+                                                    @string.Format("{0:HH\\:mm}", @item.GioBd) -
+                                                </span> <span id="spanGioKt_@item.Id">
+                                                    @string.Format("{0:HH\\:mm}", @item.GioKt)
+                                                </span>
 
 
-                                                                <a id="SignSoPhieu_@item.Id" href="#modalAnimKyso" title="Ký số Phiếu/Lệnh" class="on-default SignSoPhieu"><i class="fa fa-pencil" style="font-size: 20px;color:red; cursor: pointer"></i></a>
+                                                <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioBd_@item.Id" value="@item.GioBd" placeholder="Giờ bắt đầu" data-plugin-options='{ "showMeridian": false }'>  <input type="text" style="width: 65px; display: none" data-plugin-timepicker class="form-control" id="GioKt_@item.Id" value="@item.GioKt" placeholder="Giờ kết thúc" data-plugin-options='{ "showMeridian": false }'>
+                                            </td>
+                                            <td>
+                                                <span id="spanNguoiDuyet_SoPa_@item.Id">
+                                                    @item.NguoiDuyet_SoPa
+                                                </span>
+                                                @Html.TextArea("NguoiDuyet_SoPa_" + (string)item.Id.ToString(), (string)item.NguoiDuyet_SoPa, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người duyệt, chức danh; ngày duyệt phương án, số PA" })
+                                            </td>
+                                            <td>
+                                                <span id="spanNguoiChiHuy_@item.Id">
+                                                    @item.NguoiChiHuy
+                                                </span>
+                                                @Html.TextArea("NguoiChiHuy_" + (string)item.Id.ToString(), (string)item.NguoiChiHuy, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người chỉ huy trực tiếp" })
+                                            </td>
+                                            <td>
+                                                <span id="spanGiamSatVien_@item.Id">
+                                                    @item.GiamSatVien
+                                                </span>
+                                                @Html.TextArea("GiamSatVien_" + (string)item.Id.ToString(), (string)item.GiamSatVien, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người giám sát ATLĐ" })
+                                            </td>
+                                            <td>
+                                                <span id="spanNguoiKiemSoat_@item.Id">
+                                                    @item.NguoiKiemSoat
+                                                </span>
+                                                @Html.TextArea("NguoiKiemSoat_" + (string)item.Id.ToString(), (string)item.NguoiKiemSoat, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm soát đơn vị công tác" })
+                                            </td>
+                                            <td>
+                                                <span id="spanNguoiKiemTraPhieu_@item.Id">
+                                                    @item.NguoiKiemTraPhieu
+                                                </span>
+                                                @Html.TextArea("NguoiKiemTraPhieu_" + (string)item.Id.ToString(), (string)item.NguoiKiemTraPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người kiểm tra PCT; PTT; LCT" })
+                                            </td>
+                                            <td>
+                                                <span id="spanLanhDaoTrucBan_@item.Id">
+                                                    @item.LanhDaoTrucBan
+                                                </span>
+                                                @Html.TextArea("LanhDaoTrucBan_" + (string)item.Id.ToString(), (string)item.LanhDaoTrucBan, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo đơn vị trực ban kiểm soát" })
+                                            </td>
+                                            <td>
+                                                <span id="spanLanhDaoCongViec_@item.Id">
+                                                    @item.LanhDaoCongViec
+                                                </span>
+                                                @Html.TextArea("LanhDaoCongViec_" + (string)item.Id.ToString(), (string)item.LanhDaoCongViec, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Lãnh đạo công việc" })
+                                            </td>
+                                            <td>
+                                                <span id="spanNguoiCapPhieu_@item.Id">
+                                                    @item.NguoiCapPhieu
+                                                </span>
+                                                @Html.TextArea("NguoiCapPhieu_" + (string)item.Id.ToString(), (string)item.NguoiCapPhieu, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Người cấp phiếu" })
+                                            </td>
+                                            <td>
+                                                <span id="spanLyDoThayDoi_@item.Id">
+                                                    @item.LyDoThayDoi
+                                                </span>
+                                                @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
+                                            </td>
+
+                                            <td class="actions" style="width:10%">
+
+                                                @*@if ((item.TrangThai != 2 && item.TrangThai != 3 && item.TrangThai != 7) || User.IsInRole("Admin"))
+            {
+                <a id="Delete_@item.Id" href="#modalAnimDelete" title="Xóa phiếu công tác" class="on-default remove-row delete"><i class="fa fa-trash-o" style="font-size: 25px; cursor: pointer"></i></a>
+            }*@
+                                                <a id="UpdateSoPhieu_@(item.Id)_@(item.MaPCT)" href="#modalAnimUpdateSoPhieu" title="Cập nhật phiếu công tác" class="on-default updateSoPhieu"><i class="fa fa-bookmark" style="font-size: 25px; cursor: pointer"></i></a>
+                                                @if (User.IsInRole("DuyetViec"))
+                                                {
+                                                    if (item.NguoiDuyetPCT == null)
+                                                    {
+                                                        <a href="#modalAnimDuyet" id="Duyet_@item.MaPCT" title="Duyệt phiếu/lệnh công tác" class="on-editing cancel-row Duyet"><i class="fa fa-check-circle" style="font-size:25px;cursor:pointer"></i></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#modalAnimHuyDuyet" id="HuyDuyet_@item.MaPCT" title="Hủy duyệt phiếu/lệnh công tác" class="on-editing cancel-row Duyet"><i class="fa fa-pause" style="font-size:25px;cursor:pointer"></i></a>
+                                                    }
+                                                }
+                                                @if (User.IsInRole("NguoiCapSoPhieu") && string.IsNullOrEmpty(item.SoPhieu) && !string.IsNullOrEmpty(item.NguoiDuyetPCT))
+                                                {
+                                                    <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)" href="#modalAnimCapSoPhieuLenh" title="Cấp số phiếu/lệnh công tác" class="on-default CapSoPhieuLenh"><i class="fa fa-paypal" style="font-size: 25px; cursor: pointer"></i></a>
+                                                    <a id="CapSoPhieuLenh_@(item.Id)_@(item.MaPCT)_@(item.MaLP)" href="#modalAnimChonSoPhieu" title="Chọn số phiếu/lệnh công tác" class="on-default ChonSoPhieuLenh"><i class="fa fa-hand-o-up" style="font-size: 25px; cursor: pointer"></i></a>
+                                                }
 
 
-                                                                <!----Ký số-->
-                                                                <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
-                                                                @*@if (User.IsInRole("BBKSPATC"))
-        {*@
-                                                                <a id="KsBBKS_@item.Id" href="#modalBBKS" title="Biên bản khảo sát" class="KsBBKS"><i class="fa fa-shirtsinbulk" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
-                                                                <a id="KsPATC_@item.Id" href="#modalPATC" title="Phương án thi công" class="KsPATC"><i class="fa fa-file-powerpoint-o" style="font-size: 20px;color:red; cursor: pointer"></i></a>
+                                                <a id="SignSoPhieu_@item.Id" href="#modalAnimKyso" title="Ký số Phiếu/Lệnh" class="on-default SignSoPhieu"><i class="fa fa-pencil" style="font-size: 20px;color:red; cursor: pointer"></i></a>
 
-                                                                @*  }*@
-                                                            </td>
-                                                        </tr>
+
+                                                <!----Ký số-->
+                                                <a id="ViewSign_@item.Id" href="#modalViewKyso" title="Xem file ký" class="ViewSign"><i class="fa fa fa-cloud-download" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
+                                                @*@if (User.IsInRole("BBKSPATC"))
+            {*@
+                                                <a id="KsBBKS_@item.Id" href="#modalBBKS" title="Biên bản khảo sát" class="KsBBKS"><i class="fa fa-shirtsinbulk" style="font-size: 20px;color:blue; cursor: pointer"></i></a>
+                                                <a id="KsPATC_@item.Id" href="#modalPATC" title="Phương án thi công" class="KsPATC"><i class="fa fa-file-powerpoint-o" style="font-size: 20px;color:red; cursor: pointer"></i></a>
+
+                                                @*  }*@
+                                            </td>
+                                        </tr>
                                                     }
                                                 }
                                             }

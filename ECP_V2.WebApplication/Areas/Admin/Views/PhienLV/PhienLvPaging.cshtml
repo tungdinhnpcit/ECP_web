@@ -7,6 +7,7 @@
     List<plv_ThuocTinhPhien> listThuocTinhPhienLV = ViewBag.ListThuocTinhPhien;
 
     List<plv_PhieuCongTac> listPhieuCongTac = null;
+    
     if (ViewBag.PhieuLenh != null)
     {
         listPhieuCongTac = ViewBag.PhieuLenh;
@@ -174,6 +175,12 @@
                         Thay đổi (nếu có), lý do thay đổi
                     </th>
                     <th>
+                        Hình thức kiểm tra hiện trường
+                    </th>
+                    <th>
+                        Đại diện Đoàn KT hiện trường
+                    </th>
+                    <th>
                         Trạng thái
                     </th>
                     <th class="spacetd">
@@ -188,7 +195,7 @@
                 @foreach (var group in Model.Data.GroupBy(x => x.NgayLamViec.Date))
                 {
                     <tr id="@(group.Key.DayOfWeek)" class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
-                        <td colspan="20">
+                        <td colspan="24">
                             <span class="h5">@ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(@group.Key)</span>
                         </td>
                     </tr>
@@ -213,7 +220,7 @@
                         }
                         var rowCount = group2.OrderBy(x => x.GioBd);
                         <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue;z-index:999999999999">
-                            <td colspan="20">
+                            <td colspan="24">
                                 <a title="Thu gọn lại" style="margin-right: 10px; cursor: pointer" class="" onclick="ExpandCollapseRow('r@(group.Key.ToString("yyyyMMdd"))@(loaiPhien)', this)">
                                     <i class="fa fa-compress btn btn-primary"></i>
                                 </a>
@@ -481,6 +488,25 @@
                                     }
                                 }
 
+                                //Kế hoạch lịch kiểm tra
+                                string tenHinhThucKT = "";
+                                int loaiHinhThucKT = 0;
+                                if (item.HinhThucKiemTra != null)
+                                {
+
+                                    if (item.HinhThucKiemTra == 1)
+                                    {
+                                        loaiHinhThucKT = 1;
+                                        tenHinhThucKT = "Kiểm tra đầu giờ";
+                                    }
+                                    else if (item.HinhThucKiemTra == 2)
+                                    {
+                                        loaiHinhThucKT = 2;
+                                        tenHinhThucKT = "Kiểm tra giữa giờ";
+                                    }
+
+                                }
+
             <tr class="r@(group.Key.ToString("yyyyMMdd") + loaiPhien) @style" data-phienlvid="@item.Id">
                 <td>
                     @(rowIndex)
@@ -502,10 +528,13 @@
                     <div class="multiselect-wap"></div>
                 </td>
                 <td>
-                    @if(@item.DiaDiem.Length < 50){
-                    <span id="spanDiaDiem_@item.Id">@item.DiaDiem</span>
-                    }     else{
-                    <span id="spanDiaDiem_@item.Id">@item.DiaDiem.Substring(0, 49)<p class="mousechange" onclick="fnViewDiaDiem('@item.DiaDiem')">  ...</p></span>
+                    @if (@item.DiaDiem.Length < 50)
+                    {
+                        <span id="spanDiaDiem_@item.Id">@item.DiaDiem</span>
+                    }
+                    else
+                    {
+                        <span id="spanDiaDiem_@item.Id">@item.DiaDiem.Substring(0, 49)<p class="mousechange" onclick="fnViewDiaDiem('@item.DiaDiem')">  ...</p></span>
                     }
 
                     @Html.TextArea("DiaDiem_" + (string)item.Id.ToString(), (string)item.DiaDiem, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Địa điểm (vị trí) công tác" })
@@ -617,12 +646,30 @@
                     <span id="spanLyDoThayDoi_@item.Id">@item.LyDoThayDoi</span>
                     @Html.TextArea("LyDoThayDoi_" + (string)item.Id.ToString(), (string)item.LyDoThayDoi, new { @class = "form-control", @rows = "2", @style = "display:none", @placeholder = "Thay đổi (nếu có), lý do thay đổi" })
                 </td>
+
+                @*2 cột kế hoạch lịch làm việc*@
+                <td class="radioStyle" onlyone="1">
+                    <span id="spanHinhThucKiemTra_@item.Id">@(tenHinhThucKT)</span>
+                    <span>
+                        @Html.TextArea("HinhThucKiemTra_" + (string)item.Id.ToString(), tenHinhThucKT, new { @class = "PhieuLenh_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Hình thức kiểm tra hiện trường", @datasourceidname = "listhinhthuckt", @dataempid = (loaiHinhThucKT > 0 ? loaiHinhThucKT.ToString() : "") })
+                    </span>
+                    <div class="multiselect-wap"></div>
+                </td>
+                <td class="@(LanhDaoCongViec_Error)" onlyone="1">
+                    <span id="spanNguoiDaiDienKT_@item.Id">@item.NguoiDaiDienKT</span>
+                    <span>
+                        @Html.TextArea("NguoiDaiDienKT_" + (string)item.Id.ToString(), (string)item.NguoiDaiDienKT, new { @class = "LanhDaoCongViec_SelectEmp form-control", @rows = "2", @style = "display:none", @placeholder = "Đại diện đoàn KT hiện trường", @datasourceidname = "listlanhdaocongviec", @dataempid = item.LanhDaoCongViec_Id, @searchbox = "1" })
+                    </span>
+                    <div class="multiselect-wap"></div>
+                </td>
+                @*end kế hoạch*@
+
                 <td class="text-center" style="text-align:center">
                     <span id="spanTrangThai_@item.TrangThai">@(trangThaiPhienLV.Any(x => x.Id == item.TrangThai) ? trangThaiPhienLV.SingleOrDefault(x => x.Id == item.TrangThai).Name : "")</span>
                 </td>
                 <td class="spacetd"></td>
                 <td class="actions">
-                    <a target="_blank" href="/Admin/PhienLV/ChiTietPhienLV/@(item.Id)" id="Edit_@item.Id" title="Chi tiết phiên làm việc" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer"></i></a>
+                    <a target="_blank" href="/Admin/PhienLV/ChiTietPhienLV/@(item.Id)" id="EditView_@item.Id" title="Chi tiết phiên làm việc" class="on-default edit-row"><i class="fa fa-book" style="font-size:25px;cursor:pointer"></i></a>
 
                     @if (item.TrangThai == 1)
                     {
@@ -647,7 +694,7 @@
                         }
                     }
 
-                    <a id="Update_@item.Id" onclick="update(this, '@string.Format("{0:dd/MM/yyyy HH:mm:ss}",@group.Key)', '@group2.Key')" title="Cập nhật" class="on-editing save-row" style="display:none"><i class="fa fa-save" style="font-size: 25px; cursor: pointer"></i></a>
+                    <a id="Update_@item.Id" onclick="update(this, '@string.Format("{0:dd/MM/yyyy HH:mm:ss}",@group.Key)', '@group2.Key')" title="Cập nhật1" class="on-editing save-row" style="display:none"><i class="fa fa-save" style="font-size: 25px; cursor: pointer"></i></a>
                     <a id="UpdateHuyBo_@item.Id" onclick="updateHuyBo(this, '@string.Format("{0:dd/MM/yyyy HH:mm:ss}",@group.Key)', '@group2.Key')" title="Cập nhật hủy bỏ" class="on-editing save-row" style="display:none"><i class="fa fa-save" style="font-size: 25px; cursor: pointer"></i></a>
                     <a id="Cancel_@item.Id" onclick="cancel(this)" title="Hủy bỏ" class="on-editing cancel-row" style="display:none"><i class="fa fa-times" style="font-size: 25px; cursor: pointer"></i></a>
                     <a id="CancelHuyBo_@item.Id" onclick="cancelHuyBo(this)" title="Hủy bỏ" class="on-editing cancel-row" style="display:none"><i class="fa fa-undo" style="font-size: 25px; cursor: pointer"></i></a>
