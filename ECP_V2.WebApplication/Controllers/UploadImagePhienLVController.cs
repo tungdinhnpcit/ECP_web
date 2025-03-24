@@ -21,6 +21,8 @@ namespace ECP_V2.WebApplication.Controllers
         private SystemConfigRepository systemConfigRepository = new SystemConfigRepository();
         private PhienLVRepository phienLVRepository = new PhienLVRepository();
         private IdentityManager identityManager = new IdentityManager();
+        private readonly LCTGARepository _lctGA = new LCTGARepository(System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString);
+
 
         private void DisposeAll()
         {
@@ -352,6 +354,102 @@ namespace ECP_V2.WebApplication.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult UploadFileGhiAm(int id, IEnumerable<HttpPostedFileBase> files)
+        {
+            try
+            {
+                if (files != null && files.Count() > 0)
+                {
+                    List<tblImage> list = new List<tblImage>();
+                    var phienLV = phienLVRepository.GetById(id);
+
+                    if (phienLV != null)
+                    {
+                        foreach (var file in files)
+                        {
+
+
+                            //string uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/";
+                            string username = System.Configuration.ConfigurationManager.AppSettings["FTP_USER"];
+                            string password = System.Configuration.ConfigurationManager.AppSettings["FTP_PASS"];
+
+                            string uploadurl = System.Configuration.ConfigurationManager.AppSettings["FTP_URL"] + phienLV.DonViId;
+
+                            string URL_FileGhiAm = System.Configuration.ConfigurationManager.AppSettings["URL_FileGhiAm"];
+
+                            String filename = phienLV.DonViId + "_" + Guid.NewGuid();
+                            string datetime_saveimg = DateTime.Now.ToString("yyyyMMddHHmmss").ToString();
+
+                            String strCurrentDir01 = uploadurl + "/" + phienLV.PhongBanID;
+                            String strCurrentDir02 = strCurrentDir01 + "/" + phienLV.NgayLamViec.Year;
+                            String strCurrentDir03 = strCurrentDir02 + "/" + phienLV.NgayLamViec.Month;
+                            String strCurrentDir04 = strCurrentDir03 + "/" + phienLV.NgayLamViec.Day;
+                            FtpFolderCreate(uploadurl, username, password);
+                            FtpFolderCreate(strCurrentDir01, username, password);
+                            FtpFolderCreate(strCurrentDir02, username, password);
+                            FtpFolderCreate(strCurrentDir03, username, password);
+                            FtpFolderCreate(strCurrentDir04, username, password);
+                            //string url = "/" + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
+
+                            // Lấy phần mở rộng của file
+                            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+                            // Kiểm tra xem phần mở rộng của file có hợp lệ không
+                            if (!FilesHelper.ExtenFile(fileExtension))
+                            {
+                                throw new InvalidOperationException("Unsupported file extension.");
+                            }
+                            var mimeType = file.ContentType.ToLower();
+                            if (!FilesHelper.IsValidMimeType(mimeType))
+                            {
+                                throw new InvalidOperationException("Unsupported file!");
+                            }
+
+                            var uploadfilename = DateTime.Now.ToString("yyyyMMddHHmmssfff") + Path.GetExtension(file.FileName);
+                            Stream streamObj = file.InputStream;
+                            byte[] buffer = new byte[file.ContentLength];
+                            streamObj.Read(buffer, 0, buffer.Length);
+                            streamObj.Close();
+                            streamObj = null;
+                            string ftpurl = String.Format("{0}/{1}", strCurrentDir04, uploadfilename);
+                            var requestObj = FtpWebRequest.Create(ftpurl) as FtpWebRequest;
+                            requestObj.Method = WebRequestMethods.Ftp.UploadFile;
+                            requestObj.Credentials = new NetworkCredential(username, password);
+                            Stream requestStream = requestObj.GetRequestStream();
+                            requestStream.Write(buffer, 0, buffer.Length);
+                            requestStream.Flush();
+                            requestStream.Close();
+                            requestObj = null;
+
+                     
+                            var user = identityManager.GetUser(User.Identity.Name);
+
+                            tblImage model = new tblImage();
+                            string url = URL_FileGhiAm + phienLV.DonViId + "/" + phienLV.PhongBanID + "/" + phienLV.NgayLamViec.Year + "/" + phienLV.NgayLamViec.Month + "/" + phienLV.NgayLamViec.Day + "/" + uploadfilename;
+
+                            _lctGA.UpdateLinkFileGhiAm(phienLV.MaPCT??0, url);
+                         
+                        }
+
+                    
+                        DisposeAll();
+
+                        return Json(new { success = true, responseText = "" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+
+                DisposeAll();
+
+                return Json(new { success = false, errorText = "Chưa chọn đơn vị" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                DisposeAll();
+
+                return Json(new { success = false, errorText = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public bool FtpDirectoryExists(string directoryPath, string ftpUser, string ftpPassword)
         {
             bool IsExists = true;
@@ -368,6 +466,28 @@ namespace ECP_V2.WebApplication.Controllers
                 IsExists = false;
             }
             return IsExists;
+        }
+
+        private bool FtpFolderCreate(string folder_name, string username, string password)
+        {
+            System.Net.FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(folder_name);
+            request.Credentials = new NetworkCredential(username, password);
+            request.Method = WebRequestMethods.Ftp.MakeDirectory;
+
+            try
+            {
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                {
+                }
+            }
+            catch (WebException ex)
+            {
+                FtpWebResponse response = (FtpWebResponse)ex.Response;
+                // an error occurred
+                if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                    return false;
+            }
+            return true;
         }
 
         private bool CreateFTPDirectory(string directory, string ftpUser, string ftpPassword)

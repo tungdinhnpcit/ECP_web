@@ -152,7 +152,7 @@ namespace ECP_V2.WebApplication.Helpers
         public static bool ExtenFile(string exten)
         {
             //min 8 chars
-            string[] DSFile = { "pdf", "doc", "xls", "xlsx", "docx", "jpg", "jpeg", "png", "tiff", "rar", "zip" };
+            string[] DSFile = { "pdf", "doc", "xls", "xlsx", "docx", "jpg", "jpeg", "png", "tiff", "rar", "zip", "mp3", "wav" };
             string extension = exten.Replace(".", "").ToLower();
 
             if (DSFile.Contains(extension))
@@ -193,7 +193,8 @@ namespace ECP_V2.WebApplication.Helpers
                 "application/x-rar-compressed", // .rar
                 "application/zip", // .zip
                 "application/x-zip-compressed", // Một số hệ thống dùng kiểu này cho .zip
-                "multipart/x-zip" // Một số hệ thống khác cũng dùng kiểu này cho .zip
+                "multipart/x-zip", // Một số hệ thống khác cũng dùng kiểu này cho .zip
+                "audio/wav"
             };
 
             return allowedMimeTypes.Contains(mimeType);

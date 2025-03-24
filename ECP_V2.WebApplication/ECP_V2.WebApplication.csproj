@@ -18,9 +18,9 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44302</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -407,6 +407,7 @@
     <Compile Include="Areas\Admin\Controllers\atvs_KeHoachController.cs" />
     <Compile Include="Areas\Admin\Controllers\atvs_KetQuaController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaoCaoLichSuController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LCTGAController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_NoiDungController.cs" />
     <Compile Include="Areas\Admin\Controllers\bcbs_TonThatController.cs" />
     <Compile Include="Areas\Admin\Controllers\KySoController.cs" />
@@ -1583,6 +1584,8 @@
     <Content Include="Content\admin\atvs_DanhMuc\index.js" />
     <Content Include="Content\admin\atvs_KeHoach\index.js" />
     <Content Include="Content\admin\atvs_KetQua\index.js" />
+    <Content Include="Content\admin\LCTGA\lctgaPhien.js" />
+    <Content Include="Content\admin\LCTGA\index.js" />
     <Content Include="Content\admin\bcbs_NoiDung\index.js" />
     <Content Include="Content\admin\bcbs_TonThat\index.js" />
     <Content Include="Content\admin\bcls\index.js" />
@@ -2556,6 +2559,8 @@
     <Content Include="Content\MauNhapLieu\ThietBiNghiemNgat\tbnn.xlsx" />
     <Content Include="Content\MauNhapLieu\VSLD\vsld_QuanTracMoiTruong_Template.xlsx" />
     <Content Include="Content\mystyle.css" />
+    <Content Include="Content\photoviewer\photoviewer.css" />
+    <Content Include="Content\photoviewer\photoviewer.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Slide\Images\ajax-loader.gif" />
     <Content Include="Content\Slide\Images\back.png" />
@@ -4308,6 +4313,7 @@
     <Content Include="Scripts\HluAt\hluat_report.js" />
     <Content Include="Scripts\HluAt\hluyen_antoan.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\howler\howler.min.js" />
     <Content Include="Scripts\jquery.TextareaLineCount.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
     <Content Include="Scripts\KTGS\html\template.html" />
@@ -4333,6 +4339,13 @@
     <Content Include="Scripts\lenhcongtac.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pdfobject.min.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.common.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.css" />
+    <Content Include="Scripts\photoviewer\photoviewer.esm.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.js" />
+    <Content Include="Scripts\photoviewer\photoviewer.min.css" />
+    <Content Include="Scripts\photoviewer\photoviewer.min.js" />
+    <Content Include="Scripts\photoviewer\voice.png" />
     <Content Include="Scripts\ViewBienBanQDKTKS.js" />
     <Content Include="Scripts\phieucongtac.js" />
     <Content Include="Scripts\PlaySound\ting_ting.mp3" />
@@ -4857,6 +4870,8 @@
     <Content Include="Areas\Admin\Views\KeHoachLichLV\DanhSachPLVChuaKiemTra_OLD.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachPLVChuaKiemTra.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\DanhSachChuTriGiaoBan.cshtml" />
+    <Content Include="Areas\Admin\Views\LCTGA\_HistoryModal.cshtml" />
+    <Content Include="Areas\Admin\Views\LCTGA\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\_ListCTHT.cshtml" />
     <Content Include="Areas\Admin\Views\PhienLV\_Partial_ListCTHT.cshtml" />
     <Content Include="Content\MauNhapLieu\HPPC\Ctybc-LLV.Tuan2.xlsx">
@@ -5389,6 +5404,9 @@
       <Name>ECP_V2.DataAccess</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -5410,7 +5428,7 @@
           <IISUrl>http://localhost:7417/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>http://10.21.3.15:7418/</CustomServerUrl>
+          <CustomServerUrl>http://10.21.3.133:7418/</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

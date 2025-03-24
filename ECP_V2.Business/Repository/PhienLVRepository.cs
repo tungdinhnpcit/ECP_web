@@ -2444,6 +2444,12 @@ namespace ECP_V2.Business.Repository
         public string LyDoHoanHuy_KHLLV { set; get; }
         public int? TrangThai_KHLLV { set; get; }
         public Boolean isShowBtnHoanHuy { set; get; }
+        public int? LoaiLCT { set; get; }
+        public string LinkFile { set; get; }
+        public string LinkFileHT { set; get; }
+        public int? TrangThaiDuyetGA { set; get; }
+        public string LanhDaoDuyetId { set; get; }
+        public int? IdGhiAm { set; get; }
     }
     public class PhienLVTuan
     {

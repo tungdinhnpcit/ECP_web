@@ -1,0 +1,227 @@
+﻿@{
+    //string[] roles = ViewBag.listrole;
+    ViewBag.Title = "Danh sách lệnh công tác ghi âm";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+
+    var donViRepository = new ECP_V2.Business.Repository.DonViRepository();
+    string donviId = Session["DonViID"].ToString();
+    var donVi = donViRepository.GetById(Session["DonViID"].ToString());
+}
+
+@section ScriptSignalR{
+    @Scripts.Render("~/Scripts/jquery-unified-export-file-1.0.min.js")
+    <script src="~/Scripts/AdminJS/mustache/mustache.min.js"></script>
+    <script src="~/Scripts/AdminJS/bootbox/bootbox.js"></script>
+    <script src="~/Content/admin/shared/javi.js"></script>
+    <script src="~/Scripts/photoviewer/photoviewer.js"></script>
+    <script src="~/Content/admin/shared/numberToString.js"></script>
+    <script src="~/Scripts/howler/howler.min.js"></script>
+
+    <script src="~/Content/admin/LCTGA/index.js"></script>
+    <script>
+        var ndObj = new ndController();
+        ndObj.initialize();
+    </script>
+}
+
+<link href="@Url.Content("~/Content/photoviewer/photoviewer.css")" rel="stylesheet">
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.theme.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/jquery-ui-themes-1.12.1/jquery-ui.css")" rel="stylesheet" />
+
+<style>
+    .cssDatepicker {
+        display: block;
+        width: 100%;
+        height: 38px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+
+    .listRolesName table thead th {
+        padding-left: 8px;
+        padding-right: 8px !important;
+    }
+
+    .nd-isNPC {
+        background-color: antiquewhite !important
+    }
+
+
+    tr.header-collapse {
+        cursor: pointer;
+    }
+
+    .header-collapse .sign:after {
+        content: "+";
+        display: inline-block;
+    }
+
+    .header-collapse.expand .sign:after {
+        content: "-";
+    }
+
+    .css-arrow-lctga {
+        font-size: 3rem;
+        color: dodgerblue;
+        justify-content: center;
+        display: flex
+    }
+
+    .mic-link-ghiam {
+        font-size: 2rem;
+        cursor: pointer;
+    }
+</style>
+
+<input type="hidden" id="hidKyBaoCao" value="0" />
+
+<div class="block-fluid">
+    <div class="panel panel-visible">
+        <div class="panel-heading br-b-n">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks" style="margin-right:20px"></span>Danh sách lệnh công tác ghi âm
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <div id="datatable_wrapper" class="dataTables_wrapper dt-bootstrap no-footer">
+                <div class="row datatables-header form-inline row">
+                    <div class="col-sm-12 col-md-3">
+                        <span>Chọn đơn vị</span>
+                        <br />
+                        <select class="form-control" id="ddlDonVi" style="height:38px">
+                            @try
+                            {
+                                @Html.Raw(ECP_V2.Business.Repository.DonViRepository.GetAllDonViHtml2(Session["DonViID"].ToString()))
+                            }
+                            catch { }
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+
+                        <div class="col-md-6 col-sm-6">
+                            <span>Từ ngày: &nbsp;</span>
+                            <br />
+                            <input id="GioBd" type="text" class="cssDatepicker" placeholder="Thời gian bắt đầu">
+                        </div>
+                        <div class="col-md-6 col-sm-6" id="content-denngay">
+                            <span>Đến ngày: </span>
+                            <br />
+                            <input id="GioKt" type="text" class="cssDatepicker" placeholder="Thời gian kết thúc">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <span>Trạng thái LCT</span>
+                        <br />
+                        <select class="form-control" onchange="TrangThaiLCT(this)" id="drlTrangThaiLCT" style="height:38px">
+                            <option value="">Chọn trạng thái kiểm định</option>
+                            <option value="100" selected>Tất cả</option>
+                            <option value="0">Chờ duyệt</option>
+                            <option value="1">Đã duyệt/Chờ nhận lệnh</option>
+                            <option value="2">Nhận lệnh</option>
+                            <option value="3">Đã hoàn thành</option>
+                            <option value="10">Hủy duyệt</option>
+                            <option value="11">Không nhận lệnh</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-md-3" style="padding-top: 10px">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" id="btnlayDL" style="height:38px; float:right; margin-left:15px"><i class="fa fa-file-excel-o" aria-hidden="true" style="margin-right:5px"></i>Lấy dữ liệu</button>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="listRolesName list">
+                    <div class="ibox-content">
+                        <table class="table table-bordered table-hover dataTables-example" id="table-content">
+                            <thead>
+                                <tr class="gradeX">
+
+                                    <th style="width:3% ;text-align:center">STT</th>
+                                    <th style="width:10%">Đơn vị thực hiện</th>
+                                    <th style="width:5%">Số phiếu</th>
+                                    <th style="width:10%; text-align:center">Người giao</th>
+                                    <th style="width:10%; text-align:center">Người nhận lênh</th>
+                                    <th style="width:10%; text-align:center">Người duyệt</th>
+                                    <th style="width:10%; text-align:center">Tình trạng</th>
+                                    <th style="width:10%; text-align:center">TG giao</th>
+                                    <th style="width:10%; text-align:center">TG duyệt</th>
+                                    <th style="width:10%; text-align:center">TG nhận</th>
+                                    <th style="width:10%; text-align:center">TG hoàn thành</th>
+                                    <th style="width:10%; text-align:center">Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-content">
+                            </tbody>
+                            <tfoot>
+                                <tr class="gradeX">
+                                    <th style="text-align:center" colspan="5" id="lblTong-string">Tổng </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+          var yNgay = '@(ViewBag.TuNgay != null?ViewBag.TuNgay : DateTime.Now)'.split(' ')[0];
+   var start = $("#GioBd").datepicker({
+       dateFormat: 'dd/mm/yy'
+   }).val(yNgay);
+
+   var xNgay = '@(ViewBag.DenNgay != null?ViewBag.DenNgay : DateTime.Now.AddDays(1))'.split(' ')[0];
+   var end = $("#GioKt").datepicker({
+       dateFormat: 'dd/mm/yy',
+   }).val(xNgay);
+
+    });
+
+</script>
+
+<script id="table-template" type="x-tmpl-mustache">
+    <tr class="gradeA">
+        <td style="text-align:center">{{STT}}</td>
+        <td>{{DViCPhieu}}</td>
+        <td>{{SoPhieu}}</td>
+        <td>{{TenNguoiNhap}}</td>
+    <td>{{TenNhanLenh}}</td>
+           <td>{{TenNguoiDuyet}}</td>
+     <td>{{TrangThai}}</td>
+         <td>{{NgayNhap}}</td>
+           <td>{{NgayDuyet}}</td>
+        <td>{{NgayNhanLenh}}</td>
+         <td>{{TGHoanThanh}}</td>
+         <td>{{GhiChu}}</td>
+         <th scope="row" style="text-align:center">
+         <a href="#" class="btn btn-sm btn-view-chitiet {{hienthi}}" title="Bổ sung thông tin phiếu" data-id="{{Id}}" data-iddv="{{DViCPhieu}}" style="font-size:18px;{{color}}"><i class="fa fa-plus"></i></a>
+         <a>
+       <i  data-linkfile="{{LinkFile}}" title="Lệnh ghi âm" data-id="{{Id}}" id="playvoice-{{Id}}" class="play-btn fa fa-play mic-link-ghiam" aria-hidden="true"></i>
+        </a>
+         </div>
+        </th>
+    </tr>
+</script>
+
+
+@Html.Partial("_HistoryModal")

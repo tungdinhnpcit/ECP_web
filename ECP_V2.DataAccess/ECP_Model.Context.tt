@@ -13,6 +13,8 @@ var modelNamespace = loader.GetModelNamespace(inputFile);
 var codeStringGenerator = new CodeStringGenerator(code, typeMapper, ef);
 
 var container = itemCollection.OfType<EntityContainer>().FirstOrDefault();
+return string.Empty;
+
 if (container == null)
 {
     return string.Empty;

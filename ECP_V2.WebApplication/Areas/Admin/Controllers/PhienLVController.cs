@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -70,6 +71,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         private KeHoachLichLamViecRepository _keHoachLichLamViecRepository = new KeHoachLichLamViecRepository();
         private string strcon = System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString;
 
+        private readonly LCTGARepository _lctGA = new LCTGARepository(System.Configuration.ConfigurationManager.ConnectionStrings["IdentityDbContext"].ConnectionString);
         SafeTrainRepository safeTrainRepository = new SafeTrainRepository();
         ApprovePlanReponsitory appPlanRepo = new ApprovePlanReponsitory();
 
@@ -15040,6 +15042,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     sophieu = pctRepo.GetSoPhieuCtac(phieuCongTacObj.DonViId, DateTime.Now.Year, phieuCongTacObj.MaLP, Session["UserName"].ToString(), 0);
                     phieuCongTacObj.SoPhieu = sophieu;
 
+
+
                     //Cấp thành công thì cập nhật lịch sử cấp
                     #region Luu lich su cap phieu
                     string errls = "";
@@ -15235,6 +15239,113 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { success = false, responseText = "Cấp số Phiếu/Lệnh không thành công" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult> CapSoPhieuLenhGhiAm(string Id, string LoaiLCT, string NguoiNhanLenh)
+        {
+            string kt = "";
+            try
+            {
+                string errorUpdatePhieuCongTac = "";
+                plv_PhieuCongTac phieuCongTacObj = _pcongtac_ser.GetById(int.Parse(Id));
+                if (string.IsNullOrEmpty(phieuCongTacObj.NguoiDuyet))
+                    return Json(new { success = false, responseText = "Phiếu/ Lệnh công tác chưa được duyệt !" }, JsonRequestBehavior.AllowGet);
+
+                if (string.IsNullOrEmpty(phieuCongTacObj.SoPhieu))
+                {
+                    //#region sinh ma tu dong
+                    DateTime now = DateTime.Now;
+                    string sophieu = "";
+                    PhieuCongTacRepository pctRepo = new PhieuCongTacRepository();
+                    sophieu = pctRepo.GetSoPhieuCtac(phieuCongTacObj.DonViId, DateTime.Now.Year, phieuCongTacObj.MaLP, Session["UserName"].ToString(), 0);
+                    phieuCongTacObj.SoPhieu = sophieu;
+                   
+                    //Cấp thành công thì cập nhật lịch sử cấp
+                    #region Luu lich su cap phieu
+                    string errls = "";
+                    plv_LichSuCapSoPhieu objls = new plv_LichSuCapSoPhieu();
+                    objls.MaLP = phieuCongTacObj.MaLP;
+                    objls.NgayTao = DateTime.Now;
+                    objls.NguoiTao = User.Identity.Name;
+                    objls.SoPhieu = sophieu;
+                    objls.DonViId = Session["DonViID"].ToString();
+                    objls.MaPCT = phieuCongTacObj.ID;
+                    objls.Thang = now.Month;
+                    objls.Nam = now.Year;
+                    objls.TramId = phieuCongTacObj.TramId;
+                    _lsCapSoPhieu_ser.Create(objls, ref errls);
+                    #endregion
+                }
+
+
+                int idPhieuCongTac = (int)_pcongtac_ser.Update(phieuCongTacObj, ref errorUpdatePhieuCongTac);
+                string phieuLenh = " [ Phiếu Công Tác ] ";
+                if (phieuCongTacObj.MaLP == 2)
+                {
+                    phieuLenh = " [ Lệnh Công Tác ] ";
+                }
+                if (idPhieuCongTac > 0)
+                {
+                    DisposeAll();
+
+                    return Json(new { success = true, responseText = "Cấp số" + phieuLenh + "thành công" }, JsonRequestBehavior.AllowGet);
+                }
+
+                DisposeAll();
+
+                return Json(new { success = false, responseText = "Cấp số" + phieuLenh + "không thành công" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                DisposeAll();
+
+                kt = ex.Message;
+                ////NLoger.Error("loggerDatabase", string.Format("Lỗi cấp số Phiếu/Lệnh. Chi tiết: {0}", ex.Message));
+                return Json(new { success = false, responseText = "Cấp số Phiếu/Lệnh không thành công" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChuyenSangLCTGhiAm(string Id, string NguoiNhanLenh)
+        {
+            string kt = "";
+            try
+            {
+
+                _lctGA.sp_GA_CapPhieuLCTGATuWeb(int.Parse(Id), NguoiNhanLenh, User.Identity.GetUserId());
+
+                return Json(new { success = true, responseText = "Cập nhật thành công" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+
+                kt = ex.Message;
+                ////NLoger.Error("loggerDatabase", string.Format("Lỗi cấp số Phiếu/Lệnh. Chi tiết: {0}", ex.Message));
+                return Json(new { success = false, responseText = "Cấp số không thành công" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CapNhatDuyetLCTGhiAm(string Id, string TrangThai)
+        {
+            string kt = "";
+            try
+            {
+
+                _lctGA.sp_GA_DuyetLctGhiAmTuWeb(int.Parse(Id), int.Parse(TrangThai), User.Identity.GetUserId());
+
+                return Json(new { success = true, responseText = "Cập nhật thành công" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+
+                kt = ex.Message;
+                ////NLoger.Error("loggerDatabase", string.Format("Lỗi cấp số Phiếu/Lệnh. Chi tiết: {0}", ex.Message));
+                return Json(new { success = false, responseText = "Cấp số không thành công" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         [HttpGet]
         public async Task<ActionResult> ChuyenHoanPhieuLenh(string Id)
@@ -17500,6 +17611,19 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
 
+        public JsonResult GetInfoPhieuCongTac(int Id)
+        {
+            try
+            {
+
+                var plv = _lctGA.sp_GA_PhieuCongTac_ByPhienLV(Id);
+                return Json(new { success = true, data = plv }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public ActionResult PhieuCongTac(int phienlvid)
         {
             int phieucongtacid = 0;
@@ -18118,7 +18242,9 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 model = model.ToList().Where(x => (x.TrangThai == 2 || x.TrangThai == 3) && x.NguoiDuyet != null).ToList();
                 foreach (var item in model)
                 {
-                    var objPCT = _pcongtac_ser.GetById(item.MaPCT);
+                    //var objPCT = _pcongtac_ser.GetById(item.MaPCT);
+                    var objPCT = _lctGA.get_plv_PhieuCongTac(item.MaPCT ?? 0);
+
                     if (objPCT != null)
                     {
                         //item.TT_Phien = (int)objPCT.MaTT;
@@ -18130,6 +18256,12 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         item.MaYeuCauCRM = objPCT.MaYeuCauCRM;
                         item.NguoiCNPCT = objPCT.NguoiCN != null ? objPCT.NguoiCN : objPCT.NguoiTao;
                         item.NgayCNPCT = objPCT.NgayCN != null ? objPCT.NgayCN : objPCT.NgayTao;
+                        item.LoaiLCT = objPCT.LoaiLCT;
+                        item.LinkFile = objPCT.LinkFile;
+                        item.LinkFileHT = objPCT.LinkFileHT;
+                        item.TrangThaiDuyetGA = objPCT.TrangThaiDuyetGA;
+                        item.LanhDaoDuyetId = objPCT.LanhDaoDuyetId;
+                        item.IdGhiAm = objPCT.IdGhiAm;
                     }
                 }
                 if (filterOption == 0 && !string.IsNullOrEmpty(filterTemp) && model != null)

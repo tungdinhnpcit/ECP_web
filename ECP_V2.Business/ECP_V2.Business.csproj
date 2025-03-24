@@ -89,6 +89,7 @@
     <Compile Include="Repository\atvs_DanhMucRepository.cs" />
     <Compile Include="Repository\atvs_KeHoachRepository.cs" />
     <Compile Include="Repository\atvs_KetQuaRepository.cs" />
+    <Compile Include="Repository\LCTGARepository.cs" />
     <Compile Include="Repository\BaoCaoAnToanRepository.cs" />
     <Compile Include="Repository\bcbs_ChiTieuRepository.cs" />
     <Compile Include="Repository\bcbs_LichSuRepository.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="ViewModels\HLAT\ResultExam.cs" />
     <Compile Include="ViewModels\HLAT\StatusClass.cs" />
     <Compile Include="ViewModels\HLAT\TypeEdu.cs" />
+    <Compile Include="ViewModels\LCTGA\LCTGhiAm.cs" />
     <Compile Include="ViewModels\PagingModel\PagedResult.cs" />
     <Compile Include="ViewModels\PagingModel\PagedResultBase.cs" />
   </ItemGroup>
