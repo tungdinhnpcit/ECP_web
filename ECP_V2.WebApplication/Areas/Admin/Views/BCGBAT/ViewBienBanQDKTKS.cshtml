@@ -1205,7 +1205,7 @@
                     }
 
                     var url = "";
-                    if ('@ViewBag.TrangThaiBienBan' == 1 || '@ViewBag.TrangThaiBienBan' == 0) {
+                    if ('@ViewBag.TrangThaiBienBan' == 1 || '@ViewBag.TrangThaiBienBan' == 0|| '@ViewBag.TrangThaiBienBan' == 5) {
                         $("#soBienBan").text(" Số:@soBienBan /BBGBAT-KHKT-@tenVietTat");
                         url = '/BCGBAT/Insert_BienBanAnToan';
                     }
