@@ -100,7 +100,8 @@
         }
 
         this.ExcuteAjaxtPost("api/v1/Auth/ECPAuth", JSON.stringify(data), function (d) {
-            service.token = d.Data.Token;            
+            service.token = " ";            
+            //service.token = d.Data.Token;            
         });  
         // get donvi
 
