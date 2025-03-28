@@ -99,8 +99,9 @@
             "ID_DV": user.MA_DVIQLY
         }
 
-        this.ExcuteAjaxtPost("api/v1/Auth/GetToken", JSON.stringify(data), function (d) {
-            service.token = d.Data.Token;            
+        this.ExcuteAjaxtPost("api/v1/Auth/ECPAuth", JSON.stringify(data), function (d) {
+            service.token = " ";            
+            //service.token = d.Data.Token;            
         });  
         // get donvi
 

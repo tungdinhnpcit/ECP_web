@@ -2831,7 +2831,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             //Lấy đơn vị
             string dv = _dvi_ser.GetDvConnect();
-            string token = await LogInApi(dv);
+            //string token = await LogInApi(dv);
+            string token = " ";
             string url = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
             string path = url + "api/v1/PLV/UploadFileBBKSPATCNotSign";
             string kq = "";
@@ -3147,7 +3148,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             //byte[] bFile = appPlanRepo.getFileSign(id, 0);
             string dv = _dvi_ser.GetDvConnect();
-            string token = await LogInApi(dv);
+            //string token = await LogInApi(dv);
+            string token = " ";
             string kq = "";
 
 
@@ -3212,7 +3214,8 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             {
                 // Lấy đơn vị
                 string dv = _dvi_ser.GetDvConnect();
-                string token = await LogInApi(dv);
+                //string token = await LogInApi(dv);
+                string token = " ";
                 Console.WriteLine($"token từ LogInApi: {token}");
 
                 string url = System.Configuration.ConfigurationManager.AppSettings["UrlKTGS"].ToString();
