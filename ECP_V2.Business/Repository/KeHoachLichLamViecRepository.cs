@@ -119,7 +119,7 @@ namespace ECP_V2.Business.Repository
                 {
                     await connectionDB.OpenAsync();
 
-                    var sql = @"DELETE FROM plv_KeHoachLichLamViec
+                    var sql = @"UPDATE plv_KeHoachLichLamViec set TrangThai = 0
                                 WHERE Id = @Id;
                                 SELECT @@ROWCOUNT;";
                     return await connectionDB.ExecuteScalarAsync<int>(sql, new { Id });
