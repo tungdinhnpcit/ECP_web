@@ -2365,6 +2365,46 @@ namespace ECP_V2.Business.Repository
         }
 
         #endregion
+        public string DuyetNhieuPhien(string ids, string nguoiCapNhat)
+        {
+            try
+            {
+                using (var db = new ECP_V2Entities())
+                {
+                    // Câu truy vấn SQL để cập nhật trạng thái phiên làm việc
+                    var query = @"
+                UPDATE tblPhienLamViec
+                SET 
+                    NgayDuyet = @NgayDuyet,
+                    NguoiDuyet = @NguoiDuyet,
+                    TrangThai = 2
+                WHERE Id IN (" + ids + ")";
+
+                    db.Database.ExecuteSqlCommand(query,
+                        new SqlParameter("@NgayDuyet", DateTime.Now),
+                        new SqlParameter("@NguoiDuyet", nguoiCapNhat)
+                    );
+
+                    return null; // Trả về null nếu không có lỗi
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Lỗi: {ex.Message}";
+            }
+        }
+
+
+        public List<tblPhienLamViec> GetPhienLamViecByIds(List<int> ids)
+        {
+            using (var db = new ECP_V2Entities())
+            {
+                return db.tblPhienLamViecs.Where(plv => ids.Contains(plv.Id)).ToList();
+            }
+        }
+
+
+
     }
 
     public class PhienLVModel

@@ -25,6 +25,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -34,7 +35,6 @@ using System.Web.Mvc;
 //using System.Web.Services.Description;
 using System.Web.UI.WebControls;
 using Message = ECP_V2.DataAccess.Message;
-
 
 namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 {
@@ -14009,256 +14009,314 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         #endregion
 
         #region DuyetAllPhieuLenh
+        //[HttpPost]
+        //public async Task<ActionResult> DuyetAllPhienLv(List<string> listId)
+        //{
+        //    string kt = "";
+        //    try
+        //    {
+        //        List<string> userPushNotificationWeb = new List<string>();
+        //        Dictionary<string, int> messageList = new Dictionary<string, int>();
+        //        if (listId != null && listId.Count > 0)
+        //        {
+        //            List<PhienLamViecResponse> json = new List<PhienLamViecResponse>();
+        //            string error = "Phiên làm việc: ";
+
+        //            foreach (var Id in listId)
+        //            {
+        //                tblPhienLamViec plv = new tblPhienLamViec();
+        //                plv.Id = int.Parse(Id);
+        //                plv.TrangThai = (int)TrangThaiPhienLV.DaDuyet;
+        //                plv.NgayDuyet = DateTime.Now;
+        //                plv.NguoiDuyet = User.Identity.Name;
+
+        //                kt = _plviec_ser.PhienLamViec_Duyet(plv);
+        //                if (kt == "")
+        //                {
+
+
+
+        //                    plv = _plviec_ser.GetById(plv.Id);
+
+        //                    //   #region Notify mobile khi update phiên
+
+        //                    //   var userIds = new List<string>
+        //                    //{
+        //                    //     plv.NguoiDuyet_SoPa_Id,
+        //                    //     plv.NguoiChiHuy_Id,
+        //                    //     plv.GiamSatVien_Id,
+        //                    //     plv.NguoiKiemSoat_Id,
+        //                    //     plv.NguoiKiemTraPhieu_Id,
+        //                    //     plv.LanhDaoTrucBan_Id,
+        //                    //     plv.LanhDaoCongViec_Id,
+        //                    //     plv.NguoiCapPhieu_Id,
+        //                    //   //plv.NguoiDaiDienKT_Id // Phiên làm việc
+        //                    //}.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+        //                    //   if (userIds.Any())
+        //                    //   {
+        //                    //       var UserThaoTac = _nhanvien_ser.GetByUserName(User.Identity.Name);
+        //                    //       foreach (var userId in userIds)
+        //                    //       {
+        //                    //           var requestData = new
+        //                    //           {
+        //                    //               IDConect = "PN",
+        //                    //               userId = userId,
+        //                    //               title = "Duyệt phiên làm việc",
+        //                    //               name = "NPCIT",
+        //                    //               header = "header",
+        //                    //               subtitle = " ",
+        //                    //               contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt phiên làm việc",
+        //                    //           };
+
+        //                    //           var jsonContent = JsonConvert.SerializeObject(requestData);
+        //                    //           var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        //                    //           using (HttpClient httpClient = new HttpClient())
+        //                    //           {
+        //                    //               var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+        //                    //               var response = await httpClient.PostAsync(Api_Notify, content);
+
+        //                    //               if (response.IsSuccessStatusCode)
+        //                    //               {
+        //                    //                   var result = await response.Content.ReadAsStringAsync();
+        //                    //                   var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+        //                    //                   if (!apiResponse.Success)
+        //                    //                   {
+        //                    //                       //return Json(new { success = false, responseText = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+        //                    //                   }
+        //                    //               }
+        //                    //           }
+        //                    //       }
+
+        //                    //       //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+        //                    //   }
+        //                    //   else
+        //                    //   {
+        //                    //       //return Json(new { success = false, responseText = "Không có nguòi nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
+        //                    //   }
+
+
+        //                    //   #endregion
+
+        //                    string userName = WebConfigurationManager.AppSettings["userEmail"];
+        //                    string password = WebConfigurationManager.AppSettings["passEmail"];
+
+        //                    IBaseConverter<tblPhienLamViec, PhienLVModel> baseConverter = new AutoMapConverter<tblPhienLamViec, PhienLVModel>();
+        //                    var model = baseConverter.ConvertObject(plv);
+
+        //                    tblNhanVien nv = _nhanvien_ser.GetByUserName(plv.NguoiTao);
+
+        //                    if (nv != null)
+        //                    {
+        //                        userPushNotificationWeb.Add(nv.Username);
+
+        //                        Message message = new Message();
+        //                        message.NoiDung = model.NoiDung + " vừa được duyệt bởi " + User.Identity.Name;
+        //                        message.NgayTao = DateTime.Now;
+        //                        message.NguoiTao = User.Identity.Name;
+        //                        message.LoaiThongBao = (int)LoaiThongBao.TaoCongViec;
+        //                        message.MaTaiKhoan = nv.Id;
+        //                        message.TrangThai = (int)TrangThaiMessage.UnRead;
+        //                        message.MA_DVIQLY = nv.DonViId;
+        //                        message.MA_PBAN = model.PhongBanID.ToString();
+        //                        message.PhienLamViecId = model.Id;
+
+        //                        string errorMessage = "";
+
+        //                        try
+        //                        {
+        //                            var messageId = await Task.Run(() => messagesRepository.Create(message, ref errorMessage));
+        //                            messageList.Add(nv.Username, int.Parse(messageId.ToString()));
+        //                        }
+        //                        catch
+        //                        {
+        //                        }
+
+        //                        try
+        //                        {
+        //                            tblPhienLamViec_NhatKy nhatKy = new tblPhienLamViec_NhatKy();
+
+        //                            nhatKy.PhienLamViecId = plv.Id;
+        //                            nhatKy.NgayTao = DateTime.Now;
+        //                            nhatKy.NguoiTao = User.Identity.Name;
+        //                            nhatKy.DonViId = plv.DonViId;
+        //                            nhatKy.TrangThaiCu = (int)TrangThaiPhienLV.VuaTao;
+        //                            nhatKy.TrangThaiMoi = (int)TrangThaiPhienLV.DaDuyet;
+        //                            nhatKy.GhiChu = "Duyệt công việc";
+        //                            nhatKy.PhongBanId = plv.PhongBanID;
+
+        //                            string strError = "";
+        //                            nhatKyPhienLamViecRepository.Create(nhatKy, ref strError);
+        //                        }
+        //                        catch
+        //                        {
+
+        //                        }
+
+
+        //                    }
+        //                    var jsonDuyetPhienLV = new PhienLamViecResponse()
+        //                    {
+        //                        success = true,
+        //                        responseText = ""
+        //                    };
+
+        //                    json.Add(jsonDuyetPhienLV);
+        //                }
+        //                else
+        //                {
+        //                    var jsonDuyetPhienLV = new PhienLamViecResponse()
+        //                    {
+        //                        success = false,
+        //                        responseText = ""
+        //                    };
+
+        //                    json.Add(jsonDuyetPhienLV);
+
+        //                    error += plv.Id + " ";
+        //                }
+        //            }
+
+
+        //            var check = json.Where(x => x.success == false).FirstOrDefault();
+
+        //            if (check != null)
+        //            {
+        //                error += "không thành công!";
+        //                DisposeAll();
+
+        //                return Json(new { success = false, responseText = error, isDuyet = false }, JsonRequestBehavior.AllowGet);
+        //            }
+        //            else
+        //            {
+        //                DisposeAll();
+        //                return Json(new { success = true, responseText = "Duyệt phiên làm việc thành công" }, JsonRequestBehavior.AllowGet);
+        //            }
+        //        }
+        //        DisposeAll();
+        //        return Json(new { success = false, responseText = "Duyệt phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        DisposeAll();
+        //        kt = ex.Message;
+        //        return Json(new { success = false, responseText = "Duyệt phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
         [HttpPost]
         public async Task<ActionResult> DuyetAllPhienLv(List<string> listId)
         {
-            string kt = "";
+            if (listId == null || !listId.Any())
+            {
+                return Json(new { success = false, responseText = "Duyệt phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
+            }
+
             try
             {
-                List<string> userPushNotificationWeb = new List<string>();
-                Dictionary<string, int> messageList = new Dictionary<string, int>();
-                if (listId != null && listId.Count > 0)
+                var UsernameThaoTac = User.Identity.Name;
+                var userThaoTac = _nhanvien_ser.GetByUserName(UsernameThaoTac);
+                var ids = listId.Select(int.Parse).ToList();
+
+                // ✅ Cập nhật tất cả phiên trong 1 lần SQL
+                string ketQua = _plviec_ser.DuyetNhieuPhien(string.Join(",", ids), UsernameThaoTac);
+                if (!string.IsNullOrEmpty(ketQua))
                 {
-                    List<PhienLamViecResponse> json = new List<PhienLamViecResponse>();
-                    string error = "Phiên làm việc: ";
-
-                    foreach (var Id in listId)
-                    {
-                        tblPhienLamViec plv = new tblPhienLamViec();
-                        plv.Id = int.Parse(Id);
-                        plv.TrangThai = (int)TrangThaiPhienLV.DaDuyet;
-                        plv.NgayDuyet = DateTime.Now;
-                        plv.NguoiDuyet = User.Identity.Name;
-
-                        kt = _plviec_ser.PhienLamViec_Duyet(plv);
-                        if (kt == "")
-                        {
-
-
-
-                            plv = _plviec_ser.GetById(plv.Id);
-
-                            //   #region Notify mobile khi update phiên
-
-                            //   var userIds = new List<string>
-                            //{
-                            //     plv.NguoiDuyet_SoPa_Id,
-                            //     plv.NguoiChiHuy_Id,
-                            //     plv.GiamSatVien_Id,
-                            //     plv.NguoiKiemSoat_Id,
-                            //     plv.NguoiKiemTraPhieu_Id,
-                            //     plv.LanhDaoTrucBan_Id,
-                            //     plv.LanhDaoCongViec_Id,
-                            //     plv.NguoiCapPhieu_Id,
-                            //   //plv.NguoiDaiDienKT_Id // Phiên làm việc
-                            //}.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
-                            //   if (userIds.Any())
-                            //   {
-                            //       var UserThaoTac = _nhanvien_ser.GetByUserName(User.Identity.Name);
-                            //       foreach (var userId in userIds)
-                            //       {
-                            //           var requestData = new
-                            //           {
-                            //               IDConect = "PN",
-                            //               userId = userId,
-                            //               title = "Duyệt phiên làm việc",
-                            //               name = "NPCIT",
-                            //               header = "header",
-                            //               subtitle = " ",
-                            //               contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt phiên làm việc",
-                            //           };
-
-                            //           var jsonContent = JsonConvert.SerializeObject(requestData);
-                            //           var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                            //           using (HttpClient httpClient = new HttpClient())
-                            //           {
-                            //               var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
-
-                            //               var response = await httpClient.PostAsync(Api_Notify, content);
-
-                            //               if (response.IsSuccessStatusCode)
-                            //               {
-                            //                   var result = await response.Content.ReadAsStringAsync();
-                            //                   var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
-
-                            //                   if (!apiResponse.Success)
-                            //                   {
-                            //                       //return Json(new { success = false, responseText = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
-                            //                   }
-                            //               }
-                            //           }
-                            //       }
-
-                            //       //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
-                            //   }
-                            //   else
-                            //   {
-                            //       //return Json(new { success = false, responseText = "Không có nguòi nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
-                            //   }
-
-
-                            //   #endregion
-
-                            string userName = WebConfigurationManager.AppSettings["userEmail"];
-                            string password = WebConfigurationManager.AppSettings["passEmail"];
-
-                            IBaseConverter<tblPhienLamViec, PhienLVModel> baseConverter = new AutoMapConverter<tblPhienLamViec, PhienLVModel>();
-                            var model = baseConverter.ConvertObject(plv);
-
-                            tblNhanVien nv = _nhanvien_ser.GetByUserName(plv.NguoiTao);
-
-                            if (nv != null)
-                            {
-                                userPushNotificationWeb.Add(nv.Username);
-
-                                Message message = new Message();
-                                message.NoiDung = model.NoiDung + " vừa được duyệt bởi " + User.Identity.Name;
-                                message.NgayTao = DateTime.Now;
-                                message.NguoiTao = User.Identity.Name;
-                                message.LoaiThongBao = (int)LoaiThongBao.TaoCongViec;
-                                message.MaTaiKhoan = nv.Id;
-                                message.TrangThai = (int)TrangThaiMessage.UnRead;
-                                message.MA_DVIQLY = nv.DonViId;
-                                message.MA_PBAN = model.PhongBanID.ToString();
-                                message.PhienLamViecId = model.Id;
-
-                                string errorMessage = "";
-
-                                try
-                                {
-                                    var messageId = await Task.Run(() => messagesRepository.Create(message, ref errorMessage));
-                                    messageList.Add(nv.Username, int.Parse(messageId.ToString()));
-                                }
-                                catch
-                                {
-                                }
-
-                                //try
-                                //{
-                                //    string html = RenderViewHelper.RenderRazorViewToString(this.ControllerContext, "~/Areas/Admin/Views/PhienLV/ChiTietCongViecNhanVienEmail.cshtml", model);
-                                //    await Task.Run(() => MailHelper.SendMail(userName, password, nv.Email, "v/v Thông báo duyệt công việc", html));
-                                //}
-                                //catch
-                                //{
-                                //}
-
-                                //try
-                                //{
-                                //    string accountSid = WebConfigurationManager.AppSettings["accountSid"];
-                                //    string authToken = WebConfigurationManager.AppSettings["authToken"];
-                                //    string fromPhoneNumber = WebConfigurationManager.AppSettings["fromPhoneNumber"];
-
-                                //    TwilioClient.Init(accountSid, authToken);
-
-                                //    var from = new PhoneNumber(fromPhoneNumber);
-                                //    var to = new PhoneNumber("+84" + nv.SoDT.Substring(1));
-
-                                //    var sms = await Task.Run(() => MessageResource.Create(
-                                //        to: to,
-                                //        from: from,
-                                //        body: plv.NoiDung + " vừa được duyệt bởi " + User.Identity.Name));
-                                //}
-                                //catch (Exception e)
-                                //{
-
-                                //}
-
-                                try
-                                {
-                                    tblPhienLamViec_NhatKy nhatKy = new tblPhienLamViec_NhatKy();
-
-                                    nhatKy.PhienLamViecId = plv.Id;
-                                    nhatKy.NgayTao = DateTime.Now;
-                                    nhatKy.NguoiTao = User.Identity.Name;
-                                    nhatKy.DonViId = plv.DonViId;
-                                    nhatKy.TrangThaiCu = (int)TrangThaiPhienLV.VuaTao;
-                                    nhatKy.TrangThaiMoi = (int)TrangThaiPhienLV.DaDuyet;
-                                    nhatKy.GhiChu = "Duyệt công việc";
-                                    nhatKy.PhongBanId = plv.PhongBanID;
-
-                                    string strError = "";
-                                    nhatKyPhienLamViecRepository.Create(nhatKy, ref strError);
-                                }
-                                catch
-                                {
-
-                                }
-
-                                //try
-                                //{
-                                //    NotificationBrowserViewModel noti = new NotificationBrowserViewModel();
-                                //    noti.title = "Phiên làm việc vừa được duyệt";
-                                //    noti.body = plv.NoiDung + " vừa được duyệt bởi " + User.Identity.Name;
-                                //    noti.link = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + ":" + Request.Url.Port + "/Admin/PhienLV/ChiTietPhienLV/" + plv.Id + "/" + message.Id;
-                                //    noti.tag = model.Id.ToString();
-
-                                //    string url = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + ":" + Request.Url.Port + "/signalr";
-
-                                //    using (var connection = new HubConnection(url, useDefaultUrl: false))
-                                //    {
-                                //        IHubProxy hub = connection.CreateHubProxy("MessagesHub");
-                                //        connection.Start().Wait();
-                                //        hub.Invoke("SendMessagesToUsers", new object[] { userPushNotificationWeb, messageList, noti, nv.DonViId }).Wait();
-                                //    }
-                                //}
-                                //catch (Exception ex)
-                                //{
-
-                                //}
-                            }
-
-                            ////NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} duyệt phiên làm việc {1} thành công", User.Identity.Name, plv.NoiDung));
-                            var jsonDuyetPhienLV = new PhienLamViecResponse()
-                            {
-                                success = true,
-                                responseText = ""
-                            };
-
-                            json.Add(jsonDuyetPhienLV);
-                        }
-                        else
-                        {
-                            var jsonDuyetPhienLV = new PhienLamViecResponse()
-                            {
-                                success = false,
-                                responseText = ""
-                            };
-
-                            json.Add(jsonDuyetPhienLV);
-
-                            error += plv.Id + " ";
-                        }
-                    }
-
-
-                    var check = json.Where(x => x.success == false).FirstOrDefault();
-
-                    if (check != null)
-                    {
-                        error += "không thành công!";
-                        DisposeAll();
-
-                        return Json(new { success = false, responseText = error, isDuyet = false }, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        DisposeAll();
-                        return Json(new { success = true, responseText = "Duyệt phiên làm việc thành công" }, JsonRequestBehavior.AllowGet);
-                    }
+                    return Json(new { success = false, responseText = "Duyệt phiên không thành công!" }, JsonRequestBehavior.AllowGet);
                 }
-                DisposeAll();
-                return Json(new { success = false, responseText = "Duyệt phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
 
+                // ✅ Lấy danh sách phiên làm việc sau khi cập nhật để xử lý tiếp
+                var dsPhienLamViec = _plviec_ser.GetPhienLamViecByIds(ids);
+
+                // ✅ Ghi nhật ký duyệt phiên trong background
+                Task.Run(() => CreateLogEntries(dsPhienLamViec, UsernameThaoTac));
+
+                // ✅ Gửi thông báo trong background thread
+                Task.Run(() => SendNotificationsAsync(dsPhienLamViec, userThaoTac));
+
+                return Json(new { success = true, responseText = "Duyệt phiên làm việc thành công" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                DisposeAll();
-                kt = ex.Message;
-                //NLoger.Error("loggerDatabase", string.Format("Lỗi Duyệt phiên làm việc. Chi tiết: {0}", ex.Message));
-                return Json(new { success = false, responseText = "Duyệt phiên làm việc không thành công" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, responseText = "Lỗi: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        private void CreateLogEntries(List<tblPhienLamViec> dsPhienLamViec, string NguoiTao)
+        {
+            foreach (var plv in dsPhienLamViec)
+            {
+                var nhatKy = new tblPhienLamViec_NhatKy
+                {
+                    PhienLamViecId = plv.Id,
+                    NgayTao = DateTime.Now,
+                    NguoiTao = NguoiTao,
+                    DonViId = plv.DonViId,
+                    TrangThaiCu = (int)TrangThaiPhienLV.VuaTao,
+                    TrangThaiMoi = (int)TrangThaiPhienLV.DaDuyet,
+                    GhiChu = "Duyệt công việc",
+                    PhongBanId = plv.PhongBanID
+                };
+
+                string strError = "";
+                nhatKyPhienLamViecRepository.Create(nhatKy, ref strError);
+            }
+        }
+        public async Task SendNotificationsAsync(List<tblPhienLamViec> dsPhienLamViec, tblNhanVien userThaoTac)
+        {
+            var userIds = dsPhienLamViec
+                .SelectMany(plv => new List<string>
+                {
+            plv.NguoiDuyet_SoPa_Id,
+            plv.NguoiChiHuy_Id,
+            plv.GiamSatVien_Id,
+            plv.NguoiKiemSoat_Id,
+            plv.NguoiKiemTraPhieu_Id,
+            plv.LanhDaoTrucBan_Id,
+            plv.LanhDaoCongViec_Id,
+            plv.NguoiCapPhieu_Id
+                })
+                .Where(id => !string.IsNullOrEmpty(id))
+                .Distinct()
+                .ToList();
+
+            if (!userIds.Any()) return;
+
+            var requestData = new
+            {
+                IDConect = "PN",
+                userIds = userIds,
+                title = "Duyệt phiên làm việc",
+                contents = $"{userThaoTac.TenNhanVien} - {userThaoTac.ChucVu} đã duyệt {dsPhienLamViec.Count} phiên làm việc."
+            };
+
+            await SendPushNotificationAsync(requestData);
+        }
+
+        private async Task SendPushNotificationAsync(object requestData)
+        {
+            try
+            {
+                var jsonContent = JsonConvert.SerializeObject(requestData);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.Timeout = TimeSpan.FromSeconds(5);
+                    string apiNotifyUrl = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+                    await httpClient.PostAsync(apiNotifyUrl, content);
+                }
+            }
+            catch (Exception)
+            {
+                // Bỏ qua lỗi, tránh làm treo API
+            }
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult> DuyetAllPhieuLenh(List<string> listId)
