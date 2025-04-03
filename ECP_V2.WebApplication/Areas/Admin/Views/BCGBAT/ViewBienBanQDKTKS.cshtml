@@ -1263,7 +1263,7 @@
     }
 }
 
-    function XoaNhap() {
+function XoaNhap() {
         var dataBaoCao = @Html.Raw(Json.Encode(dataBienBan));
         var Id = parseInt(dataBaoCao.Id);
         console.log("check Id", typeof(Id))
@@ -1341,6 +1341,19 @@ function LuuNhap() {
     if (@TrangThaiBienBan == 5 && dataBaoCao != null) {
         IdBienBan = dataBaoCao.Id;
     };
+    const formData = new FormData();
+    const allowedExtensions = [".pdf", ".xlsx", ".xsl", ".docx", ".jpeg", ".jpg", ".png"];
+    const fileKeHoach = document.getElementById('fileKeHoach').files[0];
+    if (fileKeHoach) {
+        const fileExtension = fileKeHoach.name.substring(fileKeHoach.name.lastIndexOf(".")).toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert("Định dạng tệp không được hỗ trợ.");
+            this.value = ""; // Xóa tệp đã chọn
+            return false;
+        }
+        formData.append('fileKeHoach', fileKeHoach);
+        formData.append('fileKeHoachSize', fileKeHoach.size);
+    }
 
     var modelBaoCao = {
         Id: IdBienBan,
@@ -1372,14 +1385,24 @@ function LuuNhap() {
         TuanThang: TuanThang,
         Nam: dateFrom.slice(0,4)
     };
-    console.log("check modelBaoCao", modelBaoCao);
+    formData.append('fileKeHoach', fileKeHoach);
+    for (var key in modelBaoCao) {
+        if (modelBaoCao.hasOwnProperty(key)) {
+            formData.append(key, modelBaoCao[key]);
+        }
+    }
+    //console.log("check modelBaoCao", modelBaoCao);
+    console.log("check object", Object.fromEntries(formData));
 
     var url = @TrangThaiBienBan == 5 ? "/BCGBAT/Update_LuuNhap_BienBanAnToan" : "/BCGBAT/LuuNhap_BienBanAnToan";
     $.ajax({
         url: url,
         type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(modelBaoCao),
+        //contentType: 'application/json',
+        data: formData,
+        processData: false,
+        contentType: false,
+        //data: JSON.stringify(modelBaoCao),
         success: function (data) {
             console.log('Success:', data);
             if (data.success) {

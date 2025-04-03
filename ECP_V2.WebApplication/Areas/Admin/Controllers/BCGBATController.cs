@@ -471,19 +471,106 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
             }
         }
 
+        //[HttpPost]
+        //public async Task<ActionResult> LuuNhap_BienBanAnToan(ModelBaoCaoAnToan DataInsert)
+        //{
+        //    try
+        //    {
+        //        var userId = User.Identity.GetUserId();
+        //        var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+        //            .FirstOrDefault(x => x.Id == userId);
+        //        DataInsert.IdNguoiTrinhKy = dataNguoiTrinh.Id;
+        //        DataInsert.HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien;
+        //        var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(DataInsert);
+        //        if (IdTaiLieu > 0)
+        //        {
+        //            return Json(new { message = "Insert thành công", success = true });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { message = "Lỗi", success = false });
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { message = ex.Message, success = false });
+        //    }
+        //}
+
         [HttpPost]
-        public async Task<ActionResult> LuuNhap_BienBanAnToan(ModelBaoCaoAnToan DataInsert)
+        public async Task<ActionResult> LuuNhap_BienBanAnToan(FormCollection form, HttpPostedFileBase fileKeHoach)
         {
             try
             {
                 var userId = User.Identity.GetUserId();
                 var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
                     .FirstOrDefault(x => x.Id == userId);
+
+                var DataInsert = new ModelBaoCaoAnToan
+                {
+                    Id = form["Id"],
+                    IdDonVi = form["IdDonVi"],
+                    SoBienBan = Convert.ToInt32(form["SoBienBan"]),
+                    LoaiBaoCao = Convert.ToInt32(form["LoaiBaoCao"]),
+                    SoLuongKyLuat = Convert.ToInt32(form["SoLuongKyLuat"]),
+                    SoLuongCatThuong = Convert.ToInt32(form["SoLuongCatThuong"]),
+                    SoLuongGiamThuong = Convert.ToInt32(form["SoLuongGiamThuong"]),
+                    SoLuongNguoiViPham = Convert.ToInt32(form["SoLuongNguoiViPham"]),
+                    ChiDaoAnToan = form["ChiDaoAnToan"],
+                    ChiDaoLienQuan = form["ChiDaoLienQuan"],
+                    LuuYAnToan = form["LuuYAnToan"],
+                    PhanTichDanhGia = form["PhanTichDanhGia"],
+                    ViPhamKhac = form["ViPhamKhac"],
+                    ChiDaoKhacPhuc = form["ChiDaoKhacPhuc"],
+                    TrachNhiemBoPhan = form["TrachNhiemBoPhan"],
+                    KiemDiemAnToan = form["KiemDiemAnToan"],
+                    NoiDungDanhGia = form["NoiDungDanhGia"],
+                    ThanhPhanThamGia = form["ThanhPhanThamGia"],
+                    DiaDiem = form["DiaDiem"],
+                    TenDonVi = form["TenDonVi"],
+                    HoTenNguoiKy = form["HoTenNguoiKy"],
+                    IdNguoiKy = form["IdNguoiKy"],
+                    ChucVu = form["ChucVu"],
+                    NgayBatDau = form["NgayBatDau"],
+                    NgayKetThuc = form["NgayKetThuc"],
+                    TrangThai = Convert.ToInt32(form["TrangThai"]),
+                    TuanThang = Convert.ToInt32(form["TuanThang"]),
+                    Nam = Convert.ToInt32(form["Nam"]),
+                    // Lưu ý rằng ID người trình ký sẽ được tự động gán từ dữ liệu người dùng
+                    IdNguoiTrinhKy = dataNguoiTrinh.Id,
+                    HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien
+                };
+
+
                 DataInsert.IdNguoiTrinhKy = dataNguoiTrinh.Id;
                 DataInsert.HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien;
                 var IdTaiLieu = await _baocaoantoan.Insert_BienBanAnToan(DataInsert);
+                var fileSize = form["fileSize"];
+                var fileKeHoachSize = form["fileKeHoachSize"];
                 if (IdTaiLieu > 0)
                 {
+                    if (fileKeHoach != null && fileKeHoach.ContentLength > 0)  
+                    {
+                        // Upload file lên API
+                        var result = await UploadFileToApi(fileKeHoach, DataInsert.IdDonVi);
+
+                        if (result.Status)
+                        {
+                            var InfoFile = new ModelFilePath
+                            {
+                                IdLoaiFile = 2,
+                                IdTaiLieu = IdTaiLieu,
+                                TenFile = fileKeHoach.FileName,  // Lấy tên file từ form
+                                MimeType = fileKeHoach.ContentType,  // Lấy kiểu MIME từ form
+                                Size = fileKeHoachSize != null ? Convert.ToInt32(fileKeHoachSize) : 0,
+                                URL = result.Data,  // URL trả về từ API
+                                TrangThai = 1,
+                                IdNguoiCapNhat = dataNguoiTrinh.Id,
+                            };
+                            await _baocaoantoan.Insert_FilePath(InfoFile);
+                        }
+                    }
                     return Json(new { message = "Insert thành công", success = true });
                 }
                 else
@@ -527,7 +614,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-            
+
                 var IdTaiLieu = await _baocaoantoan.Delete_LuuNhap_BienBanAnToan(Id);
                 if (IdTaiLieu > 0)
                 {
