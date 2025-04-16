@@ -269,6 +269,7 @@
                         type: 'success'
                     });
                     setTimeout(function () {
+                        Getdata();
                         ClosePhieuCongTac();
                     }, 500);
                     //let base64 = response.data;
@@ -395,7 +396,9 @@
                         text: 'Thành công!',
                         type: 'success'
                     });
+                    $('#kehoachtuantieptheo').css('display', 'none');
                     setTimeout(function () {
+                        Getdata();
                         ClosePhieuCongTac();
                     }, 500);
                 } else {
@@ -416,7 +419,6 @@
     //// Xử lý lấy ngày và map hiển thị
     // Hàm xử lý khi nhấn nút "Xem"
    async function Getdata() {
-    console.log("check vào đây");
 
     // Lấy giá trị của loại báo cáo và thời gian
     var loaiBaoCao = document.getElementById('LoaiBaoCao').value;
@@ -601,7 +603,7 @@
         return `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${year}`;
     }
 
-   async function ViewBaoCao(dataRow) {
+    async function ViewBaoCao(dataRow) {
     var dataThoiGian = dataRow.getAttribute("id");
     var nam = $("#ChonThoiGian").val();
     var TuanThang = "";
@@ -708,16 +710,16 @@
                 // Hiển thị các thao tác tùy thuộc vào trạng thái của biên bản
                 if (data.TrangThai == 1 || data.TrangThai == 4) {
                     //var newText = "Kế hoạch tuần tiếp theo: " + (data.someField || "Không có kế hoạch mới");
-                    var newHref ='@apiFile'+ data.URL_FileDinhKem || "#";  // Giá trị của href (có thể lấy từ response)
-                    $('#kehoachtuantieptheo').css('display', 'block');
-                    $('#xemLienKet').on('click', function (event) {
-                        event.preventDefault();  // Ngăn chặn hành động mặc định (điều hướng)
-                        window.open(newHref, '_blank');  // Mở URL trong cửa sổ mới
-                    });
-                    // Cập nhật nội dung và liên kết cho thẻ a
-                    //$('#xemLienKet')
-                    //    .text("Xem")  // Cập nhật văn bản cho thẻ a
-                    //    .attr('href', newHref);  // Cập nhật liên kết (href) cho thẻ a
+                    if (data?.URL_FileDinhKem) {
+                        var newHref = '@apiFile' + data.URL_FileDinhKem || "#";
+                        $('#kehoachtuantieptheo').css('display', 'block');
+                        $('#xemLienKet').on('click', function (event) {
+                            event.preventDefault();
+                            window.open(newHref, '_blank');
+                        });
+                    }
+
+
 
                     if (data.TrangThai == 1) {
                        if ('@userId' == data.IdNguoiKy) {
@@ -746,6 +748,14 @@
                         "&LoaiBaoCao=" + TenLoaiBaoCao + "&TuanThang=" + TuanThang + "&TrangThaiBienBan=" + TrangThaiBienBan + "&IdBienBan=" + data.Id + "&soBienBan=" + data.SoBienBan
                         + "&TrangThaiBaoCao=" + TrangThaiBaoCao);
                 } else { // data.TrangThai==5
+                    if (data.URL_FileDinhKem) {
+                         var newHref ='@apiFile'+ data.URL_FileDinhKem || "#";  // Giá trị của href (có thể lấy từ response)
+                        $('#kehoachtuantieptheo').css('display', 'block');
+                        $('#xemLienKet').on('click', function (event) {
+                            event.preventDefault();
+                            window.open(newHref, '_blank');
+                        });
+                    }
                     $("#txtNguoiTrinh").text(data.HoTenNguoiKy);
                     $("#txtThoiGianTrinh").text(formattedDate);
                     $("#txtTrangThai").text("Lưu nháp");

@@ -185,7 +185,6 @@
         width: 99%;
         height: 99%
     }
-
         .table-resizable .resizing {
             cursor: col-resize;
             user-select: none;
@@ -558,8 +557,8 @@
         <br />
         <br />
         <br />
-        <div class="row">
-            <div class="col-lg-6">
+        <div class="row" style="display: flex; justify-content: start;">
+            <div class="col-lg-6" style="width:50%">
                 <p class=MsoNormal style=" text-align: left;">
                     <b style="text-align: left">
                         Nơi nhận.
@@ -1081,7 +1080,7 @@
         }
     });
 
-    function ExportModalToPdf(thaoTac) {
+function ExportModalToPdf(thaoTac) {
     const { jsPDF } = window.jspdf;
     const element = document.querySelector('.Section1');
     const targetElement = element.querySelector('#top');
@@ -1131,7 +1130,7 @@
     // Cấu hình cho html2pdf
     const options = {
         margin: 5,
-        filename: 'FileTaiLieu.pdf',
+        filename: 'BaoCaoGiaoBanAT.pdf',
         image: { type: 'jpeg', quality: 0.3 },
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -1229,6 +1228,7 @@
                                     type: 'success'
                                 });
                                 setTimeout(function () {
+                                    parent.Getdata();
                                     parent.ClosePhieuCongTac();
                                 }, 2000);
                             } else {
@@ -1264,14 +1264,15 @@
 }
 
 function XoaNhap() {
-        var dataBaoCao = @Html.Raw(Json.Encode(dataBienBan));
+    var dataBaoCao = @Html.Raw(Json.Encode(dataBienBan));
+    console.log("check...", dataBaoCao);
         var Id = parseInt(dataBaoCao.Id);
         console.log("check Id", typeof(Id))
         $.ajax({
             url: "/BCGBAT/Delete_LuuNhap_BienBanAnToan",
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ Id: Id }),  // Đóng gói dữ liệu vào đối tượng JSON
+            data: JSON.stringify({ Id: Id }),
             success: function (data) {
                 console.log("check data", data)
                 if (data.success) {
@@ -1338,7 +1339,7 @@ function LuuNhap() {
     var TuanThang = parseInt('@ViewBag.TuanThang', 10);
     var IdBienBan = 0;
     var dataBaoCao= @Html.Raw(Json.Encode(dataBienBan));
-    if (@TrangThaiBienBan == 5 && dataBaoCao != null) {
+    if ([2, 3, 5].includes(Number(@TrangThaiBienBan)) && dataBaoCao != null) {
         IdBienBan = dataBaoCao.Id;
     };
     const formData = new FormData();
@@ -1394,7 +1395,7 @@ function LuuNhap() {
     //console.log("check modelBaoCao", modelBaoCao);
     console.log("check object", Object.fromEntries(formData));
 
-    var url = @TrangThaiBienBan == 5 ? "/BCGBAT/Update_LuuNhap_BienBanAnToan" : "/BCGBAT/LuuNhap_BienBanAnToan";
+    var url = [2, 3, 5].includes(Number(@TrangThaiBienBan))? "/BCGBAT/Update_LuuNhap_BienBanAnToan" : "/BCGBAT/LuuNhap_BienBanAnToan";
     $.ajax({
         url: url,
         type: 'POST',

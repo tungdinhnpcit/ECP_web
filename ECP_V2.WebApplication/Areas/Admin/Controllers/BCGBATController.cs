@@ -584,38 +584,123 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { message = ex.Message, success = false });
             }
         }
-        public async Task<ActionResult> Update_LuuNhap_BienBanAnToan(ModelBaoCaoAnToan DataUpdate)
+        //public async Task<ActionResult> Update_LuuNhap_BienBanAnToan(FormCollection form, HttpPostedFileBase fileKeHoach, ModelBaoCaoAnToan DataUpdate)
+        //{
+        //    try
+        //    {
+        //        var userId = User.Identity.GetUserId();
+        //        var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
+        //            .FirstOrDefault(x => x.Id == userId);
+        //        DataUpdate.IdNguoiTrinhKy = dataNguoiTrinh.Id;
+        //        DataUpdate.HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien;
+        //        var IdTaiLieu = await _baocaoantoan.Update_LuuNhap_BienBanAnToan(DataUpdate);
+        //        if (IdTaiLieu > 0)
+        //        {
+        //            return Json(new { message = "Insert thành công", success = true });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { message = "Lỗi", success = false });
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { message = ex.Message, success = false });
+        //    }
+        //}
+
+        [HttpPost]
+        public async Task<ActionResult> Update_LuuNhap_BienBanAnToan(FormCollection form, HttpPostedFileBase fileKeHoach)
         {
             try
             {
                 var userId = User.Identity.GetUserId();
                 var dataNguoiTrinh = _nhanvien_ser.Context.tblNhanViens
                     .FirstOrDefault(x => x.Id == userId);
-                DataUpdate.IdNguoiTrinhKy = dataNguoiTrinh.Id;
-                DataUpdate.HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien;
-                var IdTaiLieu = await _baocaoantoan.Update_LuuNhap_BienBanAnToan(DataUpdate);
-                if (IdTaiLieu > 0)
+
+                var DataUpdate = new ModelBaoCaoAnToan
                 {
-                    return Json(new { message = "Insert thành công", success = true });
+                    Id = form["Id"],
+                    IdDonVi = form["IdDonVi"],
+                    SoBienBan = Convert.ToInt32(form["SoBienBan"]),
+                    LoaiBaoCao = Convert.ToInt32(form["LoaiBaoCao"]),
+                    SoLuongKyLuat = Convert.ToInt32(form["SoLuongKyLuat"]),
+                    SoLuongCatThuong = Convert.ToInt32(form["SoLuongCatThuong"]),
+                    SoLuongGiamThuong = Convert.ToInt32(form["SoLuongGiamThuong"]),
+                    SoLuongNguoiViPham = Convert.ToInt32(form["SoLuongNguoiViPham"]),
+                    ChiDaoAnToan = form["ChiDaoAnToan"],
+                    ChiDaoLienQuan = form["ChiDaoLienQuan"],
+                    LuuYAnToan = form["LuuYAnToan"],
+                    PhanTichDanhGia = form["PhanTichDanhGia"],
+                    ViPhamKhac = form["ViPhamKhac"],
+                    ChiDaoKhacPhuc = form["ChiDaoKhacPhuc"],
+                    TrachNhiemBoPhan = form["TrachNhiemBoPhan"],
+                    KiemDiemAnToan = form["KiemDiemAnToan"],
+                    NoiDungDanhGia = form["NoiDungDanhGia"],
+                    ThanhPhanThamGia = form["ThanhPhanThamGia"],
+                    DiaDiem = form["DiaDiem"],
+                    TenDonVi = form["TenDonVi"],
+                    HoTenNguoiKy = form["HoTenNguoiKy"],
+                    IdNguoiKy = form["IdNguoiKy"],
+                    ChucVu = form["ChucVu"],
+                    NgayBatDau = form["NgayBatDau"],
+                    NgayKetThuc = form["NgayKetThuc"],
+                    TrangThai = Convert.ToInt32(form["TrangThai"]),
+                    TuanThang = Convert.ToInt32(form["TuanThang"]),
+                    Nam = Convert.ToInt32(form["Nam"]),
+                    IdNguoiTrinhKy = dataNguoiTrinh.Id,
+                    HoTenNguoiTrinh = dataNguoiTrinh.TenNhanVien
+                };
+
+                var rowsAffected = await _baocaoantoan.Update_LuuNhap_BienBanAnToan(DataUpdate);
+                var fileKeHoachSize = form["fileKeHoachSize"];
+
+                if (rowsAffected > 0)
+                {
+                    if (fileKeHoach != null && fileKeHoach.ContentLength > 0)
+                    {
+                        var result = await UploadFileToApi(fileKeHoach, DataUpdate.IdDonVi);
+
+                        if (result.Status)
+                        {
+                            var InfoFile = new ModelFilePath
+                            {
+                                IdLoaiFile = 2,
+                                IdTaiLieu = Convert.ToInt32(DataUpdate.Id),
+                                TenFile = fileKeHoach.FileName,
+                                MimeType = fileKeHoach.ContentType,
+                                Size = fileKeHoachSize != null ? Convert.ToInt32(fileKeHoachSize) : 0,
+                                URL = result.Data,
+                                TrangThai = 1,
+                                IdNguoiCapNhat = dataNguoiTrinh.Id,
+                            };
+                            await _baocaoantoan.Insert_FilePath(InfoFile);
+                        }
+                    }
+
+                    return Json(new { message = "Cập nhật thành công", success = true });
                 }
                 else
                 {
-                    return Json(new { message = "Lỗi", success = false });
+                    return Json(new { message = "Không tìm thấy dữ liệu để cập nhật", success = false });
                 }
-
             }
             catch (Exception ex)
             {
                 return Json(new { message = ex.Message, success = false });
             }
         }
+
         [HttpPost]
         public async Task<ActionResult> Delete_LuuNhap_BienBanAnToan(int Id)
         {
             try
             {
-
+                var IdUser = User.Identity.GetUserId();
                 var IdTaiLieu = await _baocaoantoan.Delete_LuuNhap_BienBanAnToan(Id);
+                await _baocaoantoan.Update_TrangThaiFilePathByBienBan(Id, 0, IdUser);
+
                 if (IdTaiLieu > 0)
                 {
                     return Json(new { message = "Xóa thành công", success = true });
@@ -631,6 +716,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                 return Json(new { message = ex.Message, success = false });
             }
         }
+
 
         private async Task<ResponseData> UploadFileToApi(HttpPostedFileBase file, string IdDonVi)
         {
@@ -787,14 +873,13 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     Subtitle = "Thông báo",
                     Contents = "Thông báo"
                 };
-                var PLVController = new SendNotifyController();
-
+                var NotifyController = new SendNotifyController();
                 if (trangThai == 4)// Ký duyệt
                 {
                     baseRequestData.Title = "Ký duyệt biên bản báo cáo AT";
                     baseRequestData.userId = bienBan.IdNguoiTrinhKy;
                     baseRequestData.Contents = $"{bienBan.HoTenNguoiKy} - đã ký biên bản báo cáo AT";
-                    await PLVController.SendNotification(baseRequestData);
+                    await NotifyController.SendNotification(baseRequestData);
 
                     //await _notificationService.SendNotificationsAsync(new string[] { bienBan.IdNguoiTrinhKy.ToString() }, baseRequestData);
 
@@ -805,16 +890,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     baseRequestData.Title = "Trả lại biên bản báo cáo AT";
                     baseRequestData.userId = bienBan.IdNguoiTrinhKy;
                     baseRequestData.Contents = $"{bienBan.HoTenNguoiKy} - Trả lại biên bản báo cáo AT";
-                    await PLVController.SendNotification(baseRequestData);
-
+                    await NotifyController.SendNotification(baseRequestData);
+                    await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, 0, IdUser);
                     //await _notificationService.SendNotificationsAsync(new string[] { bienBan.IdNguoiTrinhKy.ToString() }, baseRequestData);
                 }
-                var trangThaiFile = 0;
-                if (trangThai == 4)
+                if (trangThai == 2)
                 {
-                    trangThaiFile = 0;
-                };
-                await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, trangThaiFile, IdUser);
+                    await _baocaoantoan.Update_TrangThaiFilePathByBienBan(id, 0, IdUser);
+                }
+
 
             }
             else
