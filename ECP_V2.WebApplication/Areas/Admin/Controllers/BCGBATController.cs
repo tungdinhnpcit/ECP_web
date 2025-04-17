@@ -1196,6 +1196,24 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
 
 
+       public async Task<Object> Update_FilePath_ByURL(string URL, int TrangThai)
+        {
+            try
+            {
+                var rowAffect = _baocaoantoan.Update_FilePath_ByURL(URL, TrangThai);
+
+                if (rowAffect > 0)
+                {
+                    return Json(new { message = "Cập nhật thành công", success = true }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { message = "Không tìm thấy URL hoặc không có thay đổi", success = false }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = $"Đã xảy ra lỗi: {ex.Message}", success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         #endregion
 
