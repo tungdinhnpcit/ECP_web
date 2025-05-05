@@ -10,7 +10,7 @@
 
     i = i + 1;
     var comments = ECP_V2.Business.Repository.CommentRepository.GetCommentByPienLVId(item.Id);
-    string style = item.TrangThai_KHLLV == 2 ? "BoSung" : "DaDuyet";
+    string style = item.TrangThai_KHLLV == 1 ? "DaDuyet" : "BoSung";
     <tr class="@style">
         @if (item.IsChuyenNPC != null && item.IsChuyenNPC == true)
         {

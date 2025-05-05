@@ -303,4 +303,26 @@ public class BaoCaoAnToanRepository
             return data.FirstOrDefault();
         }
     }
+
+    public int Update_FilePath_ByURL(string URL, int TrangThai)
+    {
+        try
+        {
+            using (var db = new ECP_V2Entities())
+            {
+                var rowsAffected = db.Database.ExecuteSqlCommand(
+                    @"UPDATE FilePath SET TrangThai = @TrangThai WHERE URL = @URL",
+                    new SqlParameter("@URL", URL), 
+                    new SqlParameter("@TrangThai", TrangThai)
+                );
+
+                return rowsAffected;  
+            }
+        }
+        catch (Exception ex)
+        {
+            return -1;  
+        }
+    }
+
 }

@@ -673,13 +673,14 @@
 
                                             @foreach (var group in Model.Data.GroupBy(x => x.NgayLamViec))
                                             {
-                                                var dataKeHoach = group.Where(x => x.TrangThai_KHLLV == 0 || x.TrangThai_KHLLV == 1)
+                                                var dataKeHoach = group.Where(x => x.TrangThai_KHLLV == 1)
                                                                           .OrderBy(x => x.KeHoachLV_Id)
                                                                            .ToList();
 
                                                 var dataBoSung = group.Where(x => x.TrangThai_KHLLV == 2)
                                                                         .OrderBy(x => x.KeHoachLV_Id)
                                                                         .ToList();
+                                                var dataHoanHuy = group.Where(x => x.TrangThai_KHLLV == 0).OrderBy(x => x.KeHoachLV_Id).ToList();
                                                 <tr class="group-header" style="background-color: lightgoldenrodyellow; border-color: #eee; color: darkblue;">
                                                     <td colspan="24">
                                                         <span class="h5">@ECP_V2.Business.Repository.PhienLVRepository.GetDayOfWeek(@group.Key)</span>
@@ -698,6 +699,12 @@
                                                     </td>
                                                 </tr>
                                                 @Html.Partial("_Partial_ListCTHT", dataBoSung)
+                                                <tr class="group-header-l2" style="background-color: lightblue; border-color: #eee; color: darkblue; ">
+                                                    <td colspan="24">
+                                                        <span class="h5">KIỂM TRA HOÃN HỦY</span>
+                                                    </td>
+                                                </tr>
+                                                @Html.Partial("_Partial_ListCTHT", dataHoanHuy)
                                             }
                                         </tbody>
                                     </table>

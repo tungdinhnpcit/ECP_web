@@ -662,7 +662,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
         }
 
 
-       
+
 
         #endregion
         #region EditPhienLv
@@ -8749,7 +8749,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         rowIndex++;
                         int j1 = 0;
                         foreach (var ttPhien in group.OrderBy(p => p.ViTri)
-                            .GroupBy(x => x.TrangThai_KHLLV == 2 ? 0 : 2))
+                         .GroupBy(x => x.TrangThai_KHLLV))
                         //foreach (var ttPhien in group.OrderBy(p => p.ViTri).GroupBy(x => x.TrangThai_KHLLV))
                         {
                             j1++;
@@ -8760,7 +8760,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                             var tcp = ttPhien.FirstOrDefault() != null ? ttPhien.FirstOrDefault().TrangThai_KHLLV : 0;
 
-                            rowTerminal.CreateCell(1).SetCellValue((tcp == 0 || tcp == 1) ? "Đăng ký KH kiểm tra hiện trường" : tcp == 2 ? "Thay đổi bổ sung kiểm tra hiện trường" : "");
+                            rowTerminal.CreateCell(1).SetCellValue((tcp == 1) ? "Đăng ký KH kiểm tra hiện trường" : tcp == 2 ? "Thay đổi bổ sung kiểm tra hiện trường" : tcp == 0 ? "Kế hoạch hoãn hủy" : "");
                             rowTerminal.Cells[1].CellStyle = styleTenDvi;
 
                             rowTerminal.CreateCell(2).SetCellValue("");
