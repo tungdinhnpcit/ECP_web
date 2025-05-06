@@ -360,6 +360,7 @@
         var songSrc = $(this).data('linkfile');
         var idvoice = $(this).data('id');
 
+
         if (currentSound) {
          
             currentSound.stop();

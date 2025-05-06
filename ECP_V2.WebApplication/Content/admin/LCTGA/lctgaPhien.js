@@ -62,7 +62,7 @@
         $("#startRecord").prop("disabled", false);
         $("#stopRecord").prop("disabled", true);
     });
-  
+
 
     $("#uploadAudio").click(function () {
         let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
@@ -132,7 +132,7 @@
         var loai = $(this).data('loai');
         //songSrc = songSrc.replace('10.21.3.133:7077', '10.21.3.133:8998');
         var idvoice = $(this).data('id');
-
+       
         if (currentSound) {
 
             currentSound.stop();
@@ -142,43 +142,50 @@
             src: [songSrc],
             volume: 1.0
         });
-
-        if (loai == "ht") {
-            if ($('#playvoice-ht-' + idvoice).hasClass('fa-play-circle')) {
-                $('#playvoice-ht-' + idvoice).removeClass('fa-play-circle');
-                $('#playvoice-ht-' + idvoice).addClass('fa-stop');
-                if (currentSound) {
-
-                    currentSound.play();
-                }
-            } else {
-                $('#playvoice-ht-' + idvoice).addClass('fa-play-circle');
-                $('#playvoice-ht-' + idvoice).removeClass('fa-stop');
-                if (currentSound) {
-
-                    currentSound.stop();
-                }
-
-            }
-        } else {
-            if ($('#playvoice-' + idvoice).hasClass('fa-play')) {
-                $('#playvoice-' + idvoice).removeClass('fa-play');
-                $('#playvoice-' + idvoice).addClass('fa-stop');
-                if (currentSound) {
-
-                    currentSound.play();
-                }
-            } else {
-                $('#playvoice-' + idvoice).addClass('fa-play');
-                $('#playvoice-' + idvoice).removeClass('fa-stop');
-                if (currentSound) {
-
-                    currentSound.stop();
-                }
-
-            }
+        if (songSrc) {
+            window.open(songSrc, '_blank');
         }
-       
+        else {
+            alert("Kiểm tra lại đường dẫn file");
+        }
+        //console.log("check currentSound", currentSound)
+        //if (loai == "ht") {
+        //    if ($('#playvoice-ht-' + idvoice).hasClass('fa-play-circle')) {
+        //        $('#playvoice-ht-' + idvoice).removeClass('fa-play-circle');
+        //        $('#playvoice-ht-' + idvoice).addClass('fa-stop');
+        //        if (currentSound) {
+
+        //            currentSound.play();
+        //        }
+        //    } else {
+        //        $('#playvoice-ht-' + idvoice).addClass('fa-play-circle');
+        //        $('#playvoice-ht-' + idvoice).removeClass('fa-stop');
+        //        if (currentSound) {
+
+        //            currentSound.stop();
+        //        }
+
+        //    }
+        //} else {
+           
+        //    if ($('#playvoice-' + idvoice).hasClass('fa-play')) {
+        //        $('#playvoice-' + idvoice).removeClass('fa-play');
+        //        $('#playvoice-' + idvoice).addClass('fa-stop');
+        //        if (currentSound) {
+
+        //            currentSound.play();
+        //        }
+        //    } else {
+        //        $('#playvoice-' + idvoice).addClass('fa-play');
+        //        $('#playvoice-' + idvoice).removeClass('fa-stop');
+        //        if (currentSound) {
+
+        //            currentSound.stop();
+        //        }
+
+        //    }
+        //}
+
 
     });
 });
