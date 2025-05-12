@@ -22,17 +22,49 @@
         }
     }
 
-    $("#startRecord").click(async function () {
-        let check_microphone = await navigator.permissions.query({ name: "microphone" });
-        if (check_microphone.state.toLowerCase() != "granted") {
-            alert("Vui lòng cấp quyền microphone để sử dụng chức năng ghi âm!");
-        }
-        try {
-            let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    //$("#startRecord").click(async function () {
+    //    let check_microphone = await navigator.permissions.query({ name: "microphone" });
+    //    console.log("check mic, ", check_microphone)
+    //    if (check_microphone.state.toLowerCase() != "granted") {
+    //        alert("Vui lòng cấp quyền microphone để sử dụng chức năng ghi âm!");
+    //    }
+    //    try {
+    //        let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-            console.error("Ghi âm:", stream);
+    //        console.error("Ghi âm:", stream);
+
+    //        mediaRecorder = new MediaRecorder(stream);
+
+    //        mediaRecorder.ondataavailable = event => {
+    //            audioChunks.push(event.data);
+    //        };
+
+    //        mediaRecorder.onstop = () => {
+    //            let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+    //            let audioUrl = URL.createObjectURL(audioBlob);
+    //            $("#audioPlayer").attr("src", audioUrl);
+    //            $("#uploadAudio").prop("disabled", false);
+    //        };
+
+    //        audioChunks = [];
+    //        mediaRecorder.start();
+
+    //        $("#startRecord").prop("disabled", true);
+    //        $("#stopRecord").prop("disabled", false);
+    //    }
+    //    catch {
+    //        alert("Không tìm thấy thiết bị thu âm");
+    //    }
+
+    //});
+    $("#startRecord").click(async function () {
+        try {
+            // Thử lấy quyền sử dụng microphone trực tiếp
+            let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            console.log("Ghi âm stream:", stream);
 
             mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
 
             mediaRecorder.ondataavailable = event => {
                 audioChunks.push(event.data);
@@ -45,17 +77,16 @@
                 $("#uploadAudio").prop("disabled", false);
             };
 
-            audioChunks = [];
             mediaRecorder.start();
 
             $("#startRecord").prop("disabled", true);
             $("#stopRecord").prop("disabled", false);
+        } catch (error) {
+            console.error("Lỗi khi truy cập thiết bị thu âm:", error);
+            alert("Không thể sử dụng microphone. Vui lòng kiểm tra kết nối hoặc cấp quyền trong trình duyệt.");
         }
-        catch {
-            alert("Không tìm thấy thiết bị thu âm");
-        }
-
     });
+
 
     $("#stopRecord").click(function () {
         mediaRecorder.stop();
