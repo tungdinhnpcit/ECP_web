@@ -2356,14 +2356,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             var requestData = new
                             {
-                                IDConect = "PN",
+                                IDConect = plv.DonViId,
                                 userId = userId,
                                 title = "Thêm mới phiên làm việc",
-                                name = "NPCIT",
-                                header = " ",
+                                name = " ",
+                                header = "ECP- Quản lý ATLĐ ",
                                 subtitle = " ",
                                 contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Thêm mới phiên làm việc",
                             };
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -5053,14 +5054,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     {
                                                         var requestData = new
                                                         {
-                                                            IDConect = "PN",
+                                                            IDConect = plv.DonViId,
                                                             userId = userId,
                                                             title = "Thêm mới phiên làm việc",
-                                                            name = "NPCIT",
-                                                            header = " ",
+                                                            name = " ",
+                                                            header = "ECP- Quản lý ATLĐ ",
                                                             subtitle = " ",
                                                             contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Thêm mới phiên làm việc",
                                                         };
+                                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                                                         var jsonContent = JsonConvert.SerializeObject(requestData);
                                                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -6000,14 +6002,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     {
                                                         var requestData = new
                                                         {
-                                                            IDConect = "PN",
+                                                            IDConect = plv.DonViId,
                                                             userId = userId,
-                                                            title = "Thêm mới phiên làm việc",
-                                                            name = "NPCIT",
-                                                            header = " ",
+                                                            title = " ",
+                                                            name = " ",
+                                                            header = "ECP- Quản lý ATLĐ ",
                                                             subtitle = " ",
                                                             contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Thêm mới phiên làm việc",
                                                         };
+                                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                                                         var jsonContent = JsonConvert.SerializeObject(requestData);
                                                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -6936,14 +6939,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                                     {
                                                         var requestData = new
                                                         {
-                                                            IDConect = "PN",
+                                                            IDConect = plv.DonViId,
                                                             userId = userId,
-                                                            title = "Thêm mới phiên làm việc",
-                                                            name = "NPCIT",
-                                                            header = " ",
+                                                            title = " ",
+                                                            name = " ",
+                                                            header = "ECP- Quản lý ATLĐ ",
                                                             subtitle = " ",
                                                             contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Thêm mới phiên làm việc",
                                                         };
+                                                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                                                         var jsonContent = JsonConvert.SerializeObject(requestData);
                                                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -13827,89 +13831,121 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                         }
 
-                        //try
-                        //{
-                        //    NotificationBrowserViewModel noti = new NotificationBrowserViewModel();
-                        //    noti.title = "Phiên làm việc vừa được duyệt";
-                        //    noti.body = plv.NoiDung + " vừa được duyệt bởi " + User.Identity.Name;
-                        //    noti.link = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + ":" + Request.Url.Port + "/Admin/PhienLV/ChiTietPhienLV/" + plv.Id + "/" + message.Id;
-                        //    noti.tag = model.Id.ToString();
 
-                        //    string url = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + ":" + Request.Url.Port + "/signalr";
-
-                        //    using (var connection = new HubConnection(url, useDefaultUrl: false))
-                        //    {
-                        //        IHubProxy hub = connection.CreateHubProxy("MessagesHub");
-                        //        connection.Start().Wait();
-                        //        hub.Invoke("SendMessagesToUsers", new object[] { userPushNotificationWeb, messageList, noti, nv.DonViId }).Wait();
-                        //    }
-                        //}
-                        //catch (Exception ex)
-                        //{
-
-                        //}
                     }
 
-                    ////NLoger.Info("loggerDatabase", string.Format("Tài khoản {0} duyệt phiên làm việc {1} thành công", User.Identity.Name, plv.NoiDung));
-                    ///
                     #region Notify mobile khi update phiên
-                    // plv = _plviec_ser.GetById(plv.Id);
+
+                    //var userIds = new List<string>
+                    //{
+                    // plv.NguoiDuyet_SoPa_Id,
+                    // plv.NguoiChiHuy_Id,
+                    // plv.GiamSatVien_Id,
+                    // plv.NguoiKiemSoat_Id,
+                    // plv.NguoiKiemTraPhieu_Id,
+                    // plv.LanhDaoTrucBan_Id,
+                    // plv.LanhDaoCongViec_Id,
+                    // plv.NguoiCapPhieu_Id,
+                    // //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    //}.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+                    //if (userIds.Any())
+                    //{
+                    //    var UserThaoTac = _nhanvien_ser.GetByUserName(User.Identity.Name);
+                    //    foreach (var userId in userIds)
+                    //    {
+                    //        var requestData = new
+                    //        {
+                    //            IDConect = "PN",
+                    //            userId = userId,
+                    //            title = "Duyệt phiên làm việc",
+                    //            name = "",
+                    //            header = " ",
+                    //            subtitle = " ",
+                    //            contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt phiên làm việc",
+                    //        };
+                    //        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    //        var jsonContent = JsonConvert.SerializeObject(requestData);
+                    //        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                    //        using (HttpClient httpClient = new HttpClient())
+                    //        {
+                    //            var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                    //            var response = await httpClient.PostAsync(Api_Notify, content);
+
+                    //            if (response.IsSuccessStatusCode)
+                    //            {
+                    //                var result = await response.Content.ReadAsStringAsync();
+                    //                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                    //                if (!apiResponse.Success)
+                    //                {
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+
+                    //}
+                    //else
+                    //{
+                    //}
 
                     var userIds = new List<string>
                     {
-                     plv.NguoiDuyet_SoPa_Id,
-                     plv.NguoiChiHuy_Id,
-                     plv.GiamSatVien_Id,
-                     plv.NguoiKiemSoat_Id,
-                     plv.NguoiKiemTraPhieu_Id,
-                     plv.LanhDaoTrucBan_Id,
-                     plv.LanhDaoCongViec_Id,
-                     plv.NguoiCapPhieu_Id,
-                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    plv.NguoiDuyet_SoPa_Id,
+                    plv.NguoiChiHuy_Id,
+                    plv.GiamSatVien_Id,
+                    plv.NguoiKiemSoat_Id,
+                    plv.NguoiKiemTraPhieu_Id,
+                    plv.LanhDaoTrucBan_Id,
+                    plv.LanhDaoCongViec_Id,
+                    plv.NguoiCapPhieu_Id,
+                    //plv.NguoiDaiDienKT_Id // Phiên làm việc
                     }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+
                     if (userIds.Any())
                     {
                         var UserThaoTac = _nhanvien_ser.GetByUserName(User.Identity.Name);
+
                         foreach (var userId in userIds)
                         {
-                            var requestData = new
+                            Task.Run(async () =>
                             {
-                                IDConect = "PN",
-                                userId = userId,
-                                title = "Duyệt phiên làm việc",
-                                name = "",
-                                header = " ",
-                                subtitle = " ",
-                                contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt phiên làm việc",
-                            };
-
-                            var jsonContent = JsonConvert.SerializeObject(requestData);
-                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                            using (HttpClient httpClient = new HttpClient())
-                            {
-                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
-
-                                var response = await httpClient.PostAsync(Api_Notify, content);
-
-                                if (response.IsSuccessStatusCode)
+                                var requestData = new
                                 {
-                                    var result = await response.Content.ReadAsStringAsync();
-                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                    IDConect = plv.DonViId,
+                                    userId = userId,
+                                    title = " ",
+                                    name = "",
+                                    header = "ECP- Quản lý ATLĐ ",
+                                    subtitle = " ",
+                                    contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt phiên làm việc",
+                                };
 
-                                    if (!apiResponse.Success)
+                                // Đặt SecurityProtocol trước khi gửi yêu cầu
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                                var jsonContent = JsonConvert.SerializeObject(requestData);
+                                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                using (HttpClient httpClient = new HttpClient())
+                                {
+                                    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                    try
                                     {
-                                        //return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                        await httpClient.PostAsync(Api_Notify, content);
+                                    }
+                                    catch (Exception ex)
+                                    {
                                     }
                                 }
-                            }
+                            });
                         }
 
-                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
-                        //return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
                     }
 
 
@@ -13987,14 +14023,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                                 {
                                     var requestData = new
                                     {
-                                        IDConect = "PN",
+                                        IDConect = plv.DonViId,
                                         userId = userId,
-                                        title = "Duyệt phiên làm việc",
-                                        name = "NPCIT",
-                                        header = "header",
+                                        title = " ",
+                                        name = " ",
+                                        header = "ECP- Quản lý ATLĐ ",
                                         subtitle = " ",
                                         contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt phiên làm việc",
                                     };
+                                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                                     var jsonContent = JsonConvert.SerializeObject(requestData);
                                     var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -14383,62 +14420,76 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
 
                     IBaseConverter<tblPhienLamViec, PhienLVModel> baseConverter = new AutoMapConverter<tblPhienLamViec, PhienLVModel>();
                     var model = baseConverter.ConvertObject(plv);
+
                     #region Gửi notify mobile
+
                     var userIds = new List<string>
                     {
-                     plv.NguoiDuyet_SoPa_Id,
-                     plv.NguoiChiHuy_Id,
-                     plv.GiamSatVien_Id,
-                     plv.NguoiKiemSoat_Id,
-                     plv.NguoiKiemTraPhieu_Id,
-                     plv.LanhDaoTrucBan_Id,
-                     plv.LanhDaoCongViec_Id,
-                     plv.NguoiCapPhieu_Id,
-                     //plv.NguoiDaiDienKT_Id // Phiên làm việc
+                    plv.NguoiDuyet_SoPa_Id,
+                    plv.NguoiChiHuy_Id,
+                    plv.GiamSatVien_Id,
+                    plv.NguoiKiemSoat_Id,
+                    plv.NguoiKiemTraPhieu_Id,
+                    plv.LanhDaoTrucBan_Id,
+                    plv.LanhDaoCongViec_Id,
+                    plv.NguoiCapPhieu_Id,
+                    //plv.NguoiDaiDienKT_Id // Phiên làm việc
                     }.Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList(); // Loại bỏ Id null hoặc rỗng
+
                     if (userIds.Any())
                     {
                         var UserThaoTac = _nhanvien_ser.GetByUserName(User.Identity.Name);
+
+                        // Dùng Task.Run để thực hiện các yêu cầu đồng thời mà không đợi kết quả
                         foreach (var userId in userIds)
                         {
-                            var requestData = new
+                            Task.Run(async () =>
                             {
-                                IDConect = "PN",
-                                userId = userId,
-                                title = "Duyệt công việc",
-                                name = "NPCIT",
-                                header = "header",
-                                subtitle = " ",
-                                contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt công việc",
-                            };
-
-                            var jsonContent = JsonConvert.SerializeObject(requestData);
-                            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                            using (HttpClient httpClient = new HttpClient())
-                            {
-                                var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
-
-                                var response = await httpClient.PostAsync(Api_Notify, content);
-
-                                if (response.IsSuccessStatusCode)
+                                var requestData = new
                                 {
-                                    var result = await response.Content.ReadAsStringAsync();
-                                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+                                    IDConect = plv.DonViId,
+                                    userId = userId,
+                                    title = " ",
+                                    name = "",
+                                    header = "ECP- Quản lý ATLĐ ",
+                                    subtitle = " ",
+                                    contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Duyệt công việc",
+                                };
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                                    if (!apiResponse.Success)
+                                var jsonContent = JsonConvert.SerializeObject(requestData);
+                                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                                using (HttpClient httpClient = new HttpClient())
+                                {
+                                    var Api_Notify = ApiNotify + "api/v1.0/Notify/PushNotificationByUser";
+
+                                    try
                                     {
-                                        //                    return Json(new { success = false, message = "Gửi thông báo thất bại với ID: " + userId }, JsonRequestBehavior.AllowGet);
+                                        var response = await httpClient.PostAsync(Api_Notify, content);
+
+                                        if (response.IsSuccessStatusCode)
+                                        {
+                                            var result = await response.Content.ReadAsStringAsync();
+                                            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+                                            if (!apiResponse.Success)
+                                            {
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                       
                                     }
                                 }
-                            }
+                            });
                         }
 
-                        //return Json(new { success = true, message = "Thông báo đã được gửi đến tất cả người dùng!" }, JsonRequestBehavior.AllowGet);
+                        
                     }
                     else
                     {
-                        //    return Json(new { success = false, message = "Không có Id nào hợp lệ để gửi thông báo!" }, JsonRequestBehavior.AllowGet);
                     }
 
                     #endregion
@@ -14761,14 +14812,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                             {
                                 var requestData = new
                                 {
-                                    IDConect = "PN",
+                                    IDConect = plv.DonViId,
                                     userId = userId,
-                                    title = "Cấp số phiên làm việc",
-                                    name = "NPCIT",
-                                    header = "header",
+                                    title = " ",
+                                    name = " ",
+                                    header = "ECP- Quản lý ATLĐ ",
                                     subtitle = " ",
                                     contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Cấp số phiên làm việc",
                                 };
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                                 var jsonContent = JsonConvert.SerializeObject(requestData);
                                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -15126,14 +15178,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             var requestData = new
                             {
-                                IDConect = "PN",
+                                IDConect = plv.DonViId,
                                 userId = userId,
-                                title = "Cấp số phiên làm việc",
-                                name = "NPCIT",
-                                header = "header",
+                                title = " ",
+                                name = " ",
+                                header = "ECP- Quản lý ATLĐ ",
                                 subtitle = " ",
                                 contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Cấp số phiên làm việc",
                             };
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -15263,7 +15316,7 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                     PhieuCongTacRepository pctRepo = new PhieuCongTacRepository();
                     sophieu = pctRepo.GetSoPhieuCtac(phieuCongTacObj.DonViId, DateTime.Now.Year, phieuCongTacObj.MaLP, Session["UserName"].ToString(), 0);
                     phieuCongTacObj.SoPhieu = sophieu;
-                   
+
                     //Cấp thành công thì cập nhật lịch sử cấp
                     #region Luu lich su cap phieu
                     string errls = "";
@@ -19095,14 +19148,15 @@ namespace ECP_V2.WebApplication.Areas.Admin.Controllers
                         {
                             var requestData = new
                             {
-                                IDConect = "PN",
+                                IDConect = plv.DonViId,
                                 userId = userId,
-                                title = "Kết thúc phiên làm việc",
-                                name = "",
-                                header = " ",
+                                title = " ",
+                                name = " ",
+                                header = "ECP- Quản lý ATLĐ ",
                                 subtitle = " ",
                                 contents = UserThaoTac.TenNhanVien + " - " + UserThaoTac.ChucVu + "- Kết thúc phiên làm việc",
                             };
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                             var jsonContent = JsonConvert.SerializeObject(requestData);
                             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
